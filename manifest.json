@@ -1,0 +1,14 @@
+{
+  "name": "Golf Majors Pool",
+  "short_name": "Majors Pool",
+  "description": "Golf Majors Pool Dashboard — 7 seasons of standings, analytics, and insights",
+  "start_url": "/golf-majors-pool/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080c0a",
+  "theme_color": "#0d1210",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
