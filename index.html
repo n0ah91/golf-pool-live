@@ -280,7 +280,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-notes{background:var(--bca);border-left:3px solid var(--go);border-radius:0 7px 7px 0;padding:.55rem .7rem;margin-bottom:.5rem}
 .cf-notes-body{font-size:.72rem;color:var(--tp);line-height:1.45}
 .cf-details{margin-bottom:.5rem}
-.cf-details-sum{font-family:var(--fd);font-size:.82rem;color:var(--go);cursor:pointer;padding:.45rem .7rem;background:var(--bca);border:1px solid var(--br);border-radius:7px;list-style:none;display:flex;align-items:center;gap:.3rem;transition:all .2s;user-select:none}
+.cf-details-sum{font-family:var(--fd);font-size:.85rem;color:var(--go);font-weight:600;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;padding:.45rem .7rem;background:var(--bca);border:1px solid var(--br);border-radius:7px;list-style:none;display:flex;align-items:center;gap:.3rem;transition:all .2s;user-select:none}
 .cf-details-sum::-webkit-details-marker{display:none}
 .cf-details-sum::before{content:'\25B6';font-size:.55rem;transition:transform .2s;color:var(--go)}
 .cf-details[open] .cf-details-sum::before{transform:rotate(90deg)}
@@ -1329,7 +1329,7 @@ function renderPreview() {
   // SG emphasis bars (horizontal)
   const sg = course.sgEmphasis || {};
   const sgLabels = {ott:'Off the Tee', app:'Approach', arg:'Around Green', putt:'Putting'};
-  const sgColors = {ott:'#2db5a0', app:'#f4c542', arg:'#e8983e', putt:'#5ec4b6'};
+  const sgColors = {ott:'#ffd966', app:'#f4c542', arg:'#e8983e', putt:'#d4a03a'};
   const maxSg = Math.max(...Object.values(sg));
 
   let sgBars = '';
@@ -1349,13 +1349,7 @@ function renderPreview() {
   var pwScores = pw.slice(0,10).map(function(w){return parseFloat(w.sc)||0;}).filter(function(v){return v!==0||pw[0].sc==='E';});
   var pwBest = Math.min.apply(null, pwScores.length?pwScores:[0]);
   var pwWorst = Math.max.apply(null, pwScores.length?pwScores:[0]);
-  function pwScColor(sc) {
-    var v = parseFloat(sc)||0;
-    if (pwBest===pwWorst) return '#2db5a0';
-    var t = (v-pwWorst)/(pwBest-pwWorst); // 1=best(green),0=worst(white)
-    if(t>0.5){var s=(t-0.5)*2;return 'rgb('+Math.round(244+(45-244)*s)+','+Math.round(197+(181-197)*s)+','+Math.round(66+(160-66)*s)+')';}
-    else{var s2=t*2;return 'rgb('+Math.round(240+(244-240)*s2)+','+Math.round(236+(197-236)*s2)+','+Math.round(228+(66-228)*s2)+')';}
-  }
+  function pwScColor(sc) { return '#2db5a0'; }
   pw.slice(0, 10).forEach(function(w) {
     var scCol = w.sc && w.sc !== '-' ? pwScColor(w.sc) : 'var(--ts)';
     pwHTML += '<tr><td style="color:var(--ts);font-family:var(--fm);white-space:nowrap">' + w.yr + '</td>' +
@@ -1544,8 +1538,8 @@ function renderPreview() {
     // Weather & Conditions — live from Open-Meteo
     '<div class="cf-block">' +
       '<div class="cf-section-title">Conditions</div>' +
-      '<div id="wx-live" style="text-align:center;font-size:.6rem;color:var(--ts);padding:.5rem">Loading live weather...</div>' +
       '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:var(--go)">📡 10-Day Forecast →</a>' +
+      '<div id="wx-live" style="text-align:center;font-size:.6rem;color:var(--ts);padding:.5rem">Loading live weather...</div>' +
     '</div>' +
 
     // Win odds (open by default, collapsible)
@@ -1669,7 +1663,7 @@ function openTourChart(label){
 function openSGCompare(){
   const cats=['Off Tee','Approach','Around Green','Putting'];
   const keys=['ott','app','arg','putt'];
-  const barCols=['#f4c542','#2db5a0','#e8983e','#5ec4b6','#3a86a8','#9b72cf'];
+  const barCols=['#ffd966','#f4c542','#e8983e','#d4a03a','#3a86a8','#9b72cf'];
   const ev=getCurrentEvent(),curCourse=COURSE_MAP[ev];
   const datasets=POOL_NAMES.map((name,i)=>{
     const tc=TOUR_COURSES.find(c=>name.includes(c.n.split(' ')[0])||c.n.includes(name.split(' ')[0]));
@@ -1793,16 +1787,7 @@ async function fetchPreviewOdds() {
 
     // Gradient: green (#2db5a0) → gold (#f4c542) → white (#f0ece4)
     const maxP = parseFloat(top20[0]?.impliedProb||1), minP = parseFloat(top20[top20.length-1]?.impliedProb||0);
-    function oddsColor(prob) {
-      const t = maxP===minP ? 0 : (prob-minP)/(maxP-minP); // 1=top, 0=bottom
-      if (t > 0.5) { // green → gold
-        const s = (t - 0.5) * 2;
-        return 'rgb('+Math.round(244+(45-244)*s)+','+Math.round(197+(181-197)*s)+','+Math.round(66+(160-66)*s)+')';
-      } else { // gold → white
-        const s = t * 2;
-        return 'rgb('+Math.round(240+(244-240)*s)+','+Math.round(236+(197-236)*s)+','+Math.round(228+(66-228)*s)+')';
-      }
-    }
+    function oddsColor(prob) { return '#2db5a0'; }
     let h = '<div class="odds-grid">';
     top20.forEach((p, i) => {
       const ip = typeof inPool === 'function' && inPool(p.rawName) ? ' in-pool' : '';
@@ -2006,17 +1991,7 @@ function renderPrevResults(el, ev, players) {
 
   // Leaderboard with tiered colors: green → gold → white
   const bestSc = top10[0]?.total||0, worstSc = top10[top10.length-1]?.total||0;
-  function prevScColor(sc) {
-    if (bestSc === worstSc) return '#2db5a0';
-    const t = (sc - worstSc) / (bestSc - worstSc); // 1=best(green), 0=worst(white)
-    if (t > 0.5) { // green → gold
-      const s = (t - 0.5) * 2;
-      return 'rgb('+Math.round(244+(45-244)*s)+','+Math.round(197+(181-197)*s)+','+Math.round(66+(160-66)*s)+')';
-    } else { // gold → white
-      const s = t * 2;
-      return 'rgb('+Math.round(240+(244-240)*s)+','+Math.round(236+(197-236)*s)+','+Math.round(228+(66-228)*s)+')';
-    }
-  }
+  function prevScColor(sc) { return '#2db5a0'; }
   top10.forEach(function(p, i) {
     const ip = typeof inPool === 'function' && inPool(p.name) ? ' style="background:rgba(201,162,39,.08)"' : '';
     const col = prevScColor(p.total);
@@ -2304,5 +2279,9 @@ rLive = function() {
 <div class="tour-chart-wrap"><canvas id="tour-cv"></canvas></div>
 <div class="tour-legend"><span class="tl-cur">This Course</span><span class="tl-pool">Pool Courses</span><span class="tl-other">Other Venues</span></div>
 </div></div></div>
+
+<footer style="text-align:center;padding:1.2rem .5rem 1.5rem;font-family:var(--fb);font-size:.7rem">
+<a href="https://account.venmo.com/u/NoahStancamp" target="_blank" style="color:var(--go);text-decoration:none;letter-spacing:.03em;transition:color .2s">🍺 Buy Me a Beer</a>
+</footer>
 </body>
 </html>
