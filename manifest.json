@@ -1,8 +1,8 @@
 {
   "name": "Golf Majors Pool",
   "short_name": "Majors Pool",
-  "description": "Golf Majors Pool Dashboard — 7 seasons of standings, analytics, and insights",
-  "start_url": "/golf-majors-pool/",
+  "description": "Golf Majors Pool — Live Dashboard with Tournament Previews & Analytics",
+  "start_url": "/golf-pool-live/",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#080c0a",
