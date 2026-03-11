@@ -1008,7 +1008,8 @@ function rMjrSch(){
     const sc=m.s==='done'?'s-d':m.s==='live'?'s-l':'s-n';
     const cnt=POOL.entries.filter(e=>e.rosters[m.k]&&e.rosters[m.k].length>0).length;
     const det=EV_DETAIL[m.k]||{};
-    return`<div class="mjr-card ${c}" onclick="switchPreview('${m.k}')" style="cursor:pointer"><div class="mn">${m.n}</div><div style="font-size:.58rem;color:var(--tp);margin-top:.1rem;font-family:var(--fm)">${det.dates||''}</div><div style="font-size:.52rem;color:var(--go);margin-top:.05rem">${det.course||''}</div><div class="ms ${sc}">${sl}</div><div style="font-size:.48rem;color:var(--ts);margin-top:.1rem;line-height:1.3;font-style:italic">${det.teaser||''}</div>`+
+    const statusHTML=m.s==='done'||m.s==='live'?`<div class="ms ${sc}">${sl}</div>`:'';
+    return`<div class="mjr-card ${c}" onclick="switchPreview('${m.k}')" style="cursor:pointer"><div class="mn">${m.n}</div><div style="font-size:.58rem;color:var(--tp);margin-top:.1rem;font-family:var(--fm)">${det.dates||''}</div><div style="font-size:.52rem;color:var(--go);margin-top:.05rem">${det.course||''}</div>${statusHTML}<div style="font-size:.48rem;color:var(--ts);margin-top:.1rem;line-height:1.3;font-style:italic">${det.teaser||''}</div>`+
       (cnt?`<div style="font-size:.5rem;color:var(--td);margin-top:.1rem">${cnt} entries</div>`:'')+
       `</div>`;}).join('');}
 
