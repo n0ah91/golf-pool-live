@@ -210,7 +210,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-prior-hdr{font-family:var(--fd);font-size:.9rem;color:var(--tb);font-weight:600;margin-bottom:.4rem}
 /* === Course Facts V2 === */
 .prev-hero-v2{background:linear-gradient(135deg,var(--bc) 0%,rgba(45,106,79,.1) 100%);border:1px solid var(--br);border-radius:9px;padding:.8rem 1rem;margin-bottom:.6rem}
-.prev-title{font-family:var(--fd);font-size:1.5rem;color:var(--tb);font-weight:700;margin:0}
+.prev-title{font-family:var(--fd);font-size:1.25rem;color:var(--tb);font-weight:700;margin:0}
 .prev-sub{font-size:.72rem;color:var(--go);font-family:var(--fd);letter-spacing:.06em;margin-top:.15rem}
 .cf-block{background:var(--bca);border:1px solid var(--br);border-radius:7px;padding:.6rem .7rem;margin-bottom:.5rem}
 .cf-profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;max-width:100%;overflow:hidden}
@@ -233,7 +233,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .tour-legend .tl-cur::before{color:#c9a227}
 .tour-legend .tl-pool::before{color:#52b788}
 .tour-legend .tl-other::before{color:#4a5a50}
-.cf-sg-block{cursor:pointer;transition:border-color .2s;max-width:480px;margin-left:auto;margin-right:auto}
+.cf-sg-block{cursor:pointer;transition:border-color .2s}
 .cf-sg-block:hover{border-color:var(--go)}
 .cf-inner-details{margin-top:.5rem;border-top:1px solid var(--br);padding-top:.4rem}
 .cf-inner-sum{font-size:.65rem;color:var(--go);cursor:pointer;font-family:var(--fd);font-weight:600;letter-spacing:.03em;user-select:none;list-style:none;transition:color .2s}
@@ -249,12 +249,18 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-prev-sc{font-family:var(--fm);color:var(--go);min-width:36px;text-align:right}
 .cf-prev-show-more{text-align:center;padding:.4rem;font-size:.6rem;color:var(--go);cursor:pointer;border-top:1px solid var(--br);margin-top:.2rem}
 .cf-prev-show-more:hover{color:var(--tb)}
-.cf-wx{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin-top:.4rem}
-.cf-wx-card{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.4rem .3rem;text-align:center}
-.cf-wx-icon{font-size:1.1rem;margin-bottom:.1rem}
-.cf-wx-val{font-family:var(--fm);font-size:.72rem;color:var(--tb);font-weight:500}
-.cf-wx-lbl{font-size:.5rem;text-transform:uppercase;color:var(--ts);margin-top:.05rem}
-.cf-wx-link{display:block;text-align:center;margin-top:.35rem;font-size:.6rem}
+.prev-ev-sel{width:100%;background:var(--c2);color:var(--tb);border:1px solid var(--br);border-radius:4px;padding:.3rem .4rem;font-size:.65rem;font-family:var(--fb);cursor:pointer}
+.prev-ev-sel:focus{outline:1px solid var(--go);border-color:var(--go)}
+.prev-ev-sel option{background:var(--c2);color:var(--tb)}
+.prev-stat-row{display:flex;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap}
+.prev-stat-chip{background:rgba(201,162,39,.08);border:1px solid var(--br);border-radius:4px;padding:.15rem .4rem;font-size:.55rem;color:var(--ts);font-family:var(--fm)}
+.prev-stat-chip b{color:var(--go);font-weight:600}
+.cf-wx{display:grid;grid-template-columns:repeat(3,1fr);gap:.25rem;margin-top:.3rem}
+.cf-wx-card{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.25rem .2rem;text-align:center}
+.cf-wx-icon{font-size:.85rem;margin-bottom:.05rem}
+.cf-wx-val{font-family:var(--fm);font-size:.62rem;color:var(--tb);font-weight:500}
+.cf-wx-lbl{font-size:.45rem;text-transform:uppercase;color:var(--ts);margin-top:.03rem}
+.cf-wx-link{display:block;text-align:center;margin-top:.25rem;font-size:.55rem}
 @media(max-width:600px){.tour-modal{width:96vw;max-height:90vh;padding:.5rem}.tour-chart-wrap{height:72vh}}
 
 
@@ -296,7 +302,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-actions{display:flex;gap:.5rem;margin-top:.4rem;margin-bottom:.5rem}
 @media(min-width:769px){.cf-profile-grid{grid-template-columns:repeat(5,1fr)}}
 @media(max-width:768px){.cf-facts-grid{grid-template-columns:1fr}}
-@media(max-width:480px){.prev-title{font-size:1.15rem}}
+@media(max-width:480px){.prev-title{font-size:1.05rem}}
 </style>
 </head>
 <body>
@@ -354,14 +360,17 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 <div class="cd"><h3>2026 Majors</h3>
 <div id="mjr-sch" class="mjr-sched"></div></div>
 <div class="cd">
-<div class="lb-hdr">
-<span class="lb-t" id="lb-tt">Live Leaderboard</span>
-<div style="display:flex;gap:.5rem;align-items:center">
-<label class="ar-tog"><input type="checkbox" id="ar-cb" onchange="togAR()">Auto-refresh (5m)</label>
-<span class="lb-m" id="lb-mt"></span>
-<button class="lb-r" id="lb-rb" onclick="dgLive()" style="display:none">↻ Refresh</button>
-</div></div>
-<div id="lb-bd" style="text-align:center;color:var(--ts);padding:.8rem;font-size:.8rem">Loading live scores...</div>
+<details class="cf-details" open>
+<summary class="cf-details-sum">Previous Tournaments</summary>
+<div class="cf-details-body" style="padding:.3rem .5rem">
+<div style="margin-bottom:.4rem">
+<select id="prev-ev-select" class="prev-ev-sel" onchange="onPrevEventChange()">
+<option value="">Select a tournament...</option>
+</select>
+</div>
+<div id="prev-tourn"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Select a tournament above to view results</div></div>
+</div>
+</details>
 </div>
 
 
@@ -748,7 +757,7 @@ function rMoney(){
 const DG_PROXY='https://jeopsojkamcruannkoqf.supabase.co/functions/v1/dg-proxy';
 const BEST_OF=4,ROSTER_SZ=6;
 const EV_NAMES={players:'The Players',masters:'Masters',pga:'PGA Champ.',uso:'U.S. Open',open:'The Open'};
-const EV_DATES={players:'Mar 2026',masters:'Apr 10 2026',pga:'May 15 2026',uso:'Jun 15 2026',open:'Jul 16 2026'};
+const EV_DATES={players:'March 2026',masters:'April 2026',pga:'May 2026',uso:'June 2026',open:'July 2026'};
 const EV_DETECT={players:/players/i,masters:/masters/i,pga:/pga champ/i,uso:/u\.?s\.?\s*open/i,open:/^the open|british open|open champ/i};
 
 /* State */
@@ -981,7 +990,8 @@ function detectEvent(name){
 /* === MAJORS SCHEDULE === */
 function rMjrSch(){
   const el=document.getElementById('mjr-sch');if(!el)return;
-  const mj=EK.map(k=>{
+  const curEv=getCurrentEvent();
+  const mj=EK.filter(k=>k!==curEv).map(k=>{
     let s='next';if(POOL.completedEvents.includes(k))s='done';
     else if(POOL.activeEvent===k)s='live';
     return{n:EV_NAMES[k],d:EV_DATES[k],s,k};});
@@ -989,8 +999,21 @@ function rMjrSch(){
     const sl=m.s==='done'?'Complete':m.s==='live'?'LIVE':'Upcoming';
     const sc=m.s==='done'?'s-d':m.s==='live'?'s-l':'s-n';
     const cnt=POOL.entries.filter(e=>e.rosters[m.k]&&e.rosters[m.k].length>0).length;
-    return`<div class="mjr-card ${c}"><div class="mn">${m.n}</div><div class="md">${m.d}</div><div class="ms ${sc}">${sl}</div>`+
+    return`<div class="mjr-card ${c}" onclick="switchPreview('${m.k}')" style="cursor:pointer"><div class="mn">${m.n}</div><div class="md">${m.d}</div><div class="ms ${sc}">${sl}</div>`+
       (cnt?`<div style="font-size:.55rem;color:var(--td);margin-top:.15rem">${cnt} entries</div>`:'')+`</div>`;}).join('');}
+
+function switchPreview(evKey){
+  window._forceEvent=evKey;
+  renderPreview();
+  rMjrSch();
+  document.getElementById('live-preview')?.scrollIntoView({behavior:'smooth'});
+}
+function backToCurrent(){
+  window._forceEvent=null;
+  renderPreview();
+  rMjrSch();
+  document.getElementById('live-preview')?.scrollIntoView({behavior:'smooth'});
+}
 
 /* === NOTIFICATIONS === */
 async function initNtf(){
@@ -1050,10 +1073,11 @@ function diffAndNotify(prev){
 
 /* === LIVE TAB INIT === */
 function rLive(){
-  if(!DG.ok)dgConn();
+  window._forceEvent=null;
   loadPool();
   var meb=document.querySelector('.me-bar');if(meb)meb.style.display='none';
-  rMjrSch();renderPreview();}
+  rMjrSch();renderPreview();
+  setTimeout(populatePrevDropdown, 800);}
 
 /* ===== SERVICE WORKER ===== */
 if('serviceWorker' in navigator){
@@ -1068,7 +1092,7 @@ document.addEventListener('DOMContentLoaded',()=>{populateMe();rLive();});
 
 
 /* ===== COURSE DATA ===== */
-const COURSES_DATA = {"Bay Hill Club & Lodge":{wxTemp:"68-82°F",wxSky:"Mostly Sunny",wxIcon:"☀️",wxWind:"10-15 mph",wxRain:"20%",courseRating:75.2,slopeRating:138,"venue":"Bay Hill Club & Lodge","yardage":7466,"yardageDisplay":"7,466 yards","par":72,"designer":"Dick Wilson & Joe Lee (1961), redesigned by Arnold Palmer (1980, 2009)","established":"Arnold Palmer Invitational since 1979","grassFairways":"Celebration Bermudagrass","grassGreens":"TifEagle Bermudagrass","avgStimpmeter":"12.0-12.5","avgRoughHeight":"3.0 inches","par3Count":4,"par4Count":10,"par5Count":4,"avgFairwayWidth":"30 yards","signatureHoles":"6th Lakeside Par-5, 18th Water-guarded Par-4","whatMakesItUnique":"Arnold Palmer's home course built across 270 acres of softly undulating Florida landscape with more elevation changes than most Florida courses. Water comes into play on six holes, and the closing stretch demands precision with water flanking the approach.","weatherSlug":"orlando-fl","latitude":28.4594,"longitude":-81.5117,"courseType":"Parkland/Resort","windExposure":"Low-Medium","distanceVsAccuracy":"Balanced","sgEmphasis":{"ott":0.2,"app":0.3,"arg":0.2,"putt":0.3},"notes":"Water-laden Florida track that plays as the toughest non-major venue on Tour most years. TifEagle greens are firm and fast, rewarding precise iron play. The closing stretch of 15-18 with water in play defines the tournament.","avgGreenSize":"5,500 sq ft","prevailingWind":"Variable, light","bunkerCount":71,"elevationChange":"Moderate (50 ft)","waterHoles":10,"waterHolesRank":"3rd most/54","scoreRTP":0.45,"difficultyRank":"8th toughest/54","courseLengthCategory":"Long (103.7 yds/par)","courseLengthRank":"7th longest/54","bunkersRank":"11th most/54","avgFairwayWidthFeet":29.5,"avgFairwayWidthRank":"14th narrowest/54","greensSizeRank":"16th smallest/54","greensSpeed":"Fast","roughLength":"Above Average","roughType":"Bermudagrass","eventType":"Cut Event/36-holes","season":"Florida Swing","region":"Florida/Southeast","redesign":"Arnold Palmer (2009)","correlatedCourses":["TPC Sawgrass","PGA National","Innisbrook","TPC Scottsdale","Quail Hollow"],"greensStimpmeter":12.5,"elevation":"100 feet","elevationRank":"N/A","notesBullets":["Plays as the toughest non-major venue on Tour most years","Water comes into play on 10 holes \u2014 third most water danger on Tour","TifEagle greens are firm and fast, rewarding precise iron play","The closing stretch (15-18) with water in play defines the tournament","Arnold Palmer's home course with more elevation change than most Florida tracks","Celebration Bermudagrass fairways provide tight lies that demand clean contact"]},"TPC Sawgrass":{wxTemp:"62-78°F",wxSky:"Partly Cloudy",wxIcon:"⛅",wxWind:"10-15 mph",wxRain:"25%",courseRating:76.4,slopeRating:155,"venue":"TPC Sawgrass","yardage":7352,"yardageDisplay":"7,352 yards","par":72,"designer":"Pete Dye & Alice Dye (1980)","established":"The Players Championship since 1982","grassFairways":"Bermudagrass overseeded with Perennial Ryegrass","grassGreens":"TifEagle Bermudagrass overseeded with Poa Trivialis and Velvet Bentgrass","avgStimpmeter":"12.0-12.5","avgRoughHeight":"2.5 inches","par3Count":4,"par4Count":10,"par5Count":4,"avgFairwayWidth":"31 yards","signatureHoles":"17th Island Green (Par-3, 137 yds), 18th Lakeside Par-4","whatMakesItUnique":"The original stadium course designed to provide spectator-friendly viewing. Water hazards come into play on 17 of 18 holes. The island-green 17th is the most famous par-3 in professional golf, and the finishing stretch from 16-18 produces more drama than any other three-hole stretch on Tour.","weatherSlug":"ponte-vedra-beach-fl","latitude":30.1935,"longitude":-81.3939,"courseType":"Stadium/Parkland","windExposure":"Medium","distanceVsAccuracy":"Accuracy-first","sgEmphasis":{"ott":0.2,"app":0.35,"arg":0.2,"putt":0.25},"notes":"Accuracy is paramount at TPC Sawgrass. With water on nearly every hole and tight landing areas, positional play off the tee and precise approach shots separate contenders from the field. Putting surfaces are slick and heavily contoured, making lag putting and green-reading critical.","avgGreenSize":"5,500 sq ft","prevailingWind":"NE ocean breeze 10-15 mph","bunkerCount":88,"elevationChange":"Minimal (<30 ft)","waterHoles":17,"waterHolesRank":"1st most/54","scoreRTP":-0.03,"difficultyRank":"17th toughest/54","courseLengthCategory":"Short (100.8 yds/par)","courseLengthRank":"18th shortest/54","bunkersRank":"9th most/54","avgFairwayWidthFeet":30.7,"avgFairwayWidthRank":"16th narrowest/54","greensSizeRank":"16th smallest/54","greensSpeed":"Fast","roughLength":"Average","roughType":"Overseeded ryegrass","eventType":"Cut Event/36-holes","season":"Florida Swing","region":"Florida/Southeast","redesign":"Steve Wenzloff (2017)","correlatedCourses":["PGA National","Innisbrook","PGA West Stadium","Sedgefield","TPC River Highlands","Harbour Town","Bay Hill","Concession"],"greensStimpmeter":13,"elevation":"7 feet","elevationRank":"1st lowest/54","notesBullets":["Water in play on 17 of 18 holes \u2014 most of any PGA Tour venue","Accuracy off the tee is paramount; tight landing areas punish wayward drives","Approach play separates contenders \u2014 must hit precise distances into small, firm greens","Putting surfaces are slick and heavily contoured; lag putting and green-reading critical","The closing stretch (16-18) produces more drama than almost any other three-hole sequence on Tour","Island Green 17th: 137-yard Par-3 with no margin for error \u2014 hits water right, left, and long"]},"Augusta National Golf Club":{wxTemp:"55-78°F",wxSky:"Partly Cloudy",wxIcon:"⛅",wxWind:"5-12 mph",wxRain:"30%",courseRating:78.1,slopeRating:137,"venue":"Augusta National Golf Club","yardage":7555,"yardageDisplay":"7,555 yards","par":72,"designer":"Alister MacKenzie & Bobby Jones (1933)","established":"The Masters since 1934","grassFairways":"Hybrid Bermudagrass overseeded with Perennial Ryegrass","grassGreens":"Creeping Bentgrass (SubAir rootzone ventilation system)","avgStimpmeter":"13.0-14.0","avgRoughHeight":"1.375 inches (second cut); native pine straw and azaleas as natural rough","par3Count":4,"par4Count":10,"par5Count":4,"avgFairwayWidth":"40 yards","signatureHoles":"12th Golden Bell (Par-3, Amen Corner), 13th Azalea (Par-5), 15th Firethorn (Par-5)","whatMakesItUnique":"The most exclusive and meticulously maintained course in golf. Wide fairways funnel into small, severely undulating greens with dramatic elevation changes. The SubAir system produces greens that can be set to any speed. Second-shot angles and putting are everything: the wrong side of the fairway or the wrong tier on the green means bogey or worse.","weatherSlug":"augusta-ga","latitude":33.5032,"longitude":-82.0219,"courseType":"Parkland","windExposure":"Low-Medium","distanceVsAccuracy":"Balanced (distance helps on par-5s, angles matter everywhere)","sgEmphasis":{"ott":0.2,"app":0.3,"arg":0.15,"putt":0.35},"notes":"The fastest, most contoured greens in major championship golf. Putting is king at Augusta -- misread a slope and a birdie putt becomes a three-putt. Approach play to correct quadrants is equally vital. The par-5s are reachable for long hitters, making distance off the tee valuable but secondary to iron play and putting.","avgGreenSize":"6,486 sq ft","prevailingWind":"Variable, swirling","bunkerCount":41,"elevationChange":"Significant (180 ft)","waterHoles":6,"waterHolesRank":"19th most/54","scoreRTP":-1.2,"difficultyRank":"6th toughest/54","courseLengthCategory":"Long (105.1 yds/par)","courseLengthRank":"9th longest/54","bunkersRank":"40th most/54","avgFairwayWidthFeet":38.5,"avgFairwayWidthRank":"3rd widest/54","greensSizeRank":"4th largest/54","greensSpeed":"Very Fast","roughLength":"Below Average","roughType":"Pine straw / Azaleas","eventType":"Cut Event/36-holes","season":"Spring","region":"Southeast","redesign":"Various (ongoing)","correlatedCourses":["Muirfield Village","East Lake","Riviera","Quail Hollow","TPC Southwind"],"greensStimpmeter":14,"elevation":"225 feet","elevationRank":"N/A (invitational)","notesBullets":["Fastest, most contoured greens in major championship golf (stimp 13-14)","Putting is king \u2014 misread a slope and birdie putts become three-putts","Approach play to correct quadrants is equally vital; wrong pin-side = bogey or worse","Par-5s are reachable for long hitters, making distance off the tee valuable","SubAir system allows greens to be set to any speed on any given day","Amen Corner (11-13) is the most famous three-hole stretch in golf"]},"Aronimink Golf Club":{wxTemp:"60-80°F",wxSky:"Partly Cloudy",wxIcon:"⛅",wxWind:"8-15 mph",wxRain:"35%",courseRating:75.5,slopeRating:138,"venue":"Aronimink Golf Club","yardage":7280,"yardageDisplay":"7,280 yards","par":70,"designer":"Donald Ross (1928), restored by Gil Hanse (2017)","established":"PGA Championship: 1962 (Gary Player), 2026 (second hosting)","grassFairways":"Bentgrass","grassGreens":"Bentgrass","avgStimpmeter":"11.0","avgRoughHeight":"3.5 inches","par3Count":4,"par4Count":12,"par5Count":2,"avgFairwayWidth":"28 yards","signatureHoles":"10th (454-yd demanding Par-4), 18th (436-yd uphill Par-4)","whatMakesItUnique":"A Donald Ross masterpiece built around a central depression called 'the sink,' producing constant elevation changes and side-hill lies. The 2017 Gil Hanse restoration returned Ross's original runoff areas, deep flashed bunkers, and strategic angles. With 176 bunkers, crowned greens, and a par-70 championship setup, accuracy off the tee and precise iron play into tilted putting surfaces define the test.","weatherSlug":"newtown-square-pa","latitude":39.9728,"longitude":-75.421,"courseType":"Parkland","windExposure":"Low-Medium","distanceVsAccuracy":"Accuracy-first","sgEmphasis":{"ott":0.3,"app":0.3,"arg":0.2,"putt":0.2},"notes":"Donald Ross's crowned, undulating greens are the course's primary defense. Finding the correct position off the tee is critical -- the rolling terrain and dogleg corridors punish wayward drives. With only two par-5s, birdie opportunities are limited, making accuracy off the tee and approach play into firm, fast greens the keys to contention.","avgGreenSize":"8,300 sq ft","prevailingWind":"Variable","bunkerCount":176,"elevationChange":"Moderate (80 ft)","waterHoles":4,"waterHolesRank":"N/A (new venue)","scoreRTP":-0.5,"difficultyRank":"Est. 10th toughest","courseLengthCategory":"Medium (103.4 yds/par)","courseLengthRank":"Est. mid-range","bunkersRank":"6th most/54","avgFairwayWidthFeet":27.5,"avgFairwayWidthRank":"Est. 10th narrowest","greensSizeRank":"Mid-range","greensSpeed":"Fast","roughLength":"Above Average","roughType":"Bentgrass","eventType":"Cut Event/36-holes","season":"Spring","region":"Northeast","redesign":"Gil Hanse (2017)","correlatedCourses":["Winged Foot","Oakmont","Southern Hills","Baltusrol","Congressional"],"greensStimpmeter":11,"elevation":"400 feet","elevationRank":"N/A","notesBullets":["Donald Ross crowned, undulating greens are the primary defense","Built around 'the sink' \u2014 constant elevation changes and side-hill lies","2017 Gil Hanse restoration returned original runoff areas, deep flashed bunkers, and strategic angles","Only two par-5s on a par-70 setup \u2014 birdie opportunities are limited","176 bunkers guard approaches; accuracy off the tee is critical","Rolling terrain and dogleg corridors punish wayward drives"]},"Shinnecock Hills Golf Club":{wxTemp:"65-78°F",wxSky:"Partly Cloudy",wxIcon:"⛅",wxWind:"12-20 mph",wxRain:"25%",courseRating:76.9,slopeRating:146,"venue":"Shinnecock Hills Golf Club","yardage":7434,"yardageDisplay":"7,434 yards","par":70,"designer":"William Flynn (1931), restored by Bill Coore & Ben Crenshaw (2013)","established":"U.S. Open: 1896, 1986, 1995, 2004, 2018, 2026 (sixth hosting)","grassFairways":"Fine Fescue","grassGreens":"Fine Fescue / Bentgrass blend","avgStimpmeter":"12.5-13.5","avgRoughHeight":"4.0 inches (fescue rough)","par3Count":4,"par4Count":12,"par5Count":2,"avgFairwayWidth":"32 yards","signatureHoles":"7th (Par-3 with panoramic views), 9th (uphill Par-4), 14th (windswept Par-4)","whatMakesItUnique":"America's preeminent links-style course, set on exposed land near the Atlantic with virtually no tree cover. Wind is the primary defense, turning a firm-and-fast fescue track into a supreme test of ball control. The Coore & Crenshaw restoration widened fairways and returned strategic fescue bunkering, emphasizing options over brute force.","weatherSlug":"southampton-ny","latitude":40.8915,"longitude":-72.454,"courseType":"Links-style / Heathland","windExposure":"High","distanceVsAccuracy":"Accuracy-first (wind control paramount)","sgEmphasis":{"ott":0.3,"app":0.3,"arg":0.2,"putt":0.2},"notes":"Wind, firm fairways, and severe fescue rough make Shinnecock the most demanding U.S. Open venue. Controlling trajectory off the tee is essential -- the open terrain amplifies any crosswind. Approach shots must land softly on greens that shed anything off-target. Only two par-5s on a par-70 layout means bogey avoidance wins here.","avgGreenSize":"4,500 sq ft","prevailingWind":"SW ocean winds 15-25 mph","bunkerCount":60,"elevationChange":"Moderate (60 ft)","waterHoles":0,"waterHolesRank":"None","scoreRTP":2.1,"difficultyRank":"2nd toughest/54","courseLengthCategory":"Long (106.2 yds/par)","courseLengthRank":"5th longest/54","bunkersRank":"14th most/54","avgFairwayWidthFeet":31.0,"avgFairwayWidthRank":"15th narrowest/54","greensSizeRank":"20th smallest/54","greensSpeed":"Fast","roughLength":"Very Long","roughType":"Fescue","eventType":"Cut Event/36-holes","season":"Summer","region":"Northeast","redesign":"Coore & Crenshaw (2013)","correlatedCourses":["Pebble Beach","Erin Hills","Chambers Bay","Torrey Pines South","Bethpage Black"],"greensStimpmeter":13,"elevation":"80 feet","elevationRank":"N/A (U.S. Open)","notesBullets":["America's preeminent links-style course \u2014 virtually no tree cover","Wind is the primary defense; exposed terrain amplifies any crosswind","Firm fescue fairways demand controlled trajectory off the tee","Severe fescue rough (4 inches) is the most punishing on the U.S. Open rota","Only two par-5s on a par-70 layout \u2014 bogey avoidance wins here","Coore & Crenshaw restoration (2013) widened fairways and returned strategic fescue bunkering"]},"Royal Portrush Golf Club":{wxTemp:"54-64°F",wxSky:"Overcast",wxIcon:"🌥️",wxWind:"15-25 mph",wxRain:"55%",courseRating:77.0,slopeRating:148,"venue":"Royal Portrush Golf Club","yardage":7381,"yardageDisplay":"7,381 yards","par":71,"designer":"Harry Colt (1929, Dunluce Links)","established":"The Open Championship: 1951, 2019, 2025","grassFairways":"Fescue / Bentgrass blend","grassGreens":"Fescue / Bentgrass blend","avgStimpmeter":"11.5-12.5","avgRoughHeight":"3.0 inches (first cut 2 inches, fescue rough beyond)","par3Count":4,"par4Count":11,"par5Count":3,"avgFairwayWidth":"30 yards","signatureHoles":"5th White Rocks (411-yd Par-4 along cliffs), 7th Curran Point (Par-4), 16th Calamity (Par-3 over ravine)","whatMakesItUnique":"A true championship links laid out among the towering sand dunes of the Antrim coast. The Dunluce Links features dramatic elevation changes, blind shots, and relentless wind off the North Atlantic. The 5th hole runs along the clifftops with views of the White Rocks, and the par-3 16th (Calamity) requires a carry over a deep chasm.","weatherSlug":"portrush-northern-ireland","latitude":55.2063,"longitude":-6.6541,"courseType":"Links","windExposure":"Very High","distanceVsAccuracy":"Balanced (distance helps, but wind control is essential)","sgEmphasis":{"ott":0.3,"app":0.25,"arg":0.25,"putt":0.2},"notes":"Links golf at its most demanding. Unpredictable North Atlantic wind can swing direction mid-round, making club selection and shot shaping off the tee critical. Firm, undulating fairways with pot bunkers punish poor positioning. Around-the-green creativity is vital -- bump-and-run recovery shots from collection areas and tight lies separate links specialists from the field.","avgGreenSize":"5,200 sq ft","prevailingWind":"W-NW Atlantic winds 15-30 mph","bunkerCount":62,"elevationChange":"Significant (100 ft)","waterHoles":0,"waterHolesRank":"None","scoreRTP":0.8,"difficultyRank":"Est. 5th toughest","courseLengthCategory":"Medium-Long (103.9 yds/par)","courseLengthRank":"Mid-range","bunkersRank":"12th most/54","avgFairwayWidthFeet":29.0,"avgFairwayWidthRank":"Est. 12th narrowest","greensSizeRank":"Mid-range","greensSpeed":"Medium-Fast","roughLength":"Long","roughType":"Fescue / Bentgrass","eventType":"Cut Event/36-holes","season":"Summer","region":"Northern Ireland","redesign":"Martin Ebert (2015-2019)","correlatedCourses":["St Andrews","Carnoustie","Royal Liverpool","Royal Troon","Muirfield (Scotland)"],"greensStimpmeter":12,"elevation":"50 feet","elevationRank":"N/A (The Open)","notesBullets":["True championship links among towering sand dunes of the Antrim coast","Unpredictable North Atlantic wind can swing direction mid-round","Club selection and shot shaping off the tee are critical in 15-30 mph winds","Firm, undulating fairways with pot bunkers punish poor positioning","Around-the-green creativity is vital \u2014 bump-and-run from collection areas and tight lies","5th hole runs along clifftops; 16th (Calamity) requires carry over a deep ravine"]}};
+const COURSES_DATA = {"Bay Hill Club & Lodge":{wxTemp:"68-82°F",wxSky:"Mostly Sunny",wxIcon:"☀️",wxWind:"10-15 mph",wxRain:"20%",wxHumid:"55-70%",wxUV:"8-10 (Very High)",wxSunrise:"7:15 AM",wxSunset:"7:30 PM",wxDew:"58-65°F",courseRating:75.2,slopeRating:138,"venue":"Bay Hill Club & Lodge","yardage":7466,"yardageDisplay":"7,466 yards","par":72,"designer":"Dick Wilson & Joe Lee (1961), redesigned by Arnold Palmer (1980, 2009)","established":"Arnold Palmer Invitational since 1979","grassFairways":"Celebration Bermudagrass","grassGreens":"TifEagle Bermudagrass","avgStimpmeter":"12.0-12.5","avgRoughHeight":"3.0 inches","par3Count":4,"par4Count":10,"par5Count":4,"avgFairwayWidth":"30 yards","signatureHoles":"6th Lakeside Par-5, 18th Water-guarded Par-4","whatMakesItUnique":"Arnold Palmer's home course built across 270 acres of softly undulating Florida landscape with more elevation changes than most Florida courses. Water comes into play on six holes, and the closing stretch demands precision with water flanking the approach.","weatherSlug":"orlando-fl","latitude":28.4594,"longitude":-81.5117,"courseType":"Parkland/Resort","windExposure":"Low-Medium","distanceVsAccuracy":"Balanced","sgEmphasis":{"ott":0.2,"app":0.3,"arg":0.2,"putt":0.3},"notes":"Water-laden Florida track that plays as the toughest non-major venue on Tour most years. TifEagle greens are firm and fast, rewarding precise iron play. The closing stretch of 15-18 with water in play defines the tournament.","avgGreenSize":"5,500 sq ft","prevailingWind":"Variable, light","bunkerCount":71,"elevationChange":"Moderate (50 ft)","waterHoles":10,"waterHolesRank":"3rd most/54","scoreRTP":0.45,"difficultyRank":"8th toughest/54","courseLengthCategory":"Long (103.7 yds/par)","courseLengthRank":"7th longest/54","bunkersRank":"11th most/54","avgFairwayWidthFeet":29.5,"avgFairwayWidthRank":"14th narrowest/54","greensSizeRank":"16th smallest/54","greensSpeed":"Fast","roughLength":"Above Average","roughType":"Bermudagrass","eventType":"Cut Event/36-holes","season":"Florida Swing","region":"Florida/Southeast","redesign":"Arnold Palmer (2009)","correlatedCourses":["TPC Sawgrass","PGA National","Innisbrook","TPC Scottsdale","Quail Hollow"],"greensStimpmeter":12.5,"elevation":"100 feet","elevationRank":"N/A","notesBullets":["Plays as the toughest non-major venue on Tour most years","Water comes into play on 10 holes \u2014 third most water danger on Tour","TifEagle greens are firm and fast, rewarding precise iron play","The closing stretch (15-18) with water in play defines the tournament","Arnold Palmer's home course with more elevation change than most Florida tracks","Celebration Bermudagrass fairways provide tight lies that demand clean contact"]},"TPC Sawgrass":{wxTemp:"62-78°F",wxSky:"Partly Cloudy",wxIcon:"⛅",wxWind:"10-15 mph",wxRain:"25%",wxHumid:"60-75%",wxUV:"7-9 (High)",wxSunrise:"7:20 AM",wxSunset:"7:25 PM",wxDew:"55-62°F",courseRating:76.4,slopeRating:155,"venue":"TPC Sawgrass","yardage":7352,"yardageDisplay":"7,352 yards","par":72,"designer":"Pete Dye & Alice Dye (1980)","established":"The Players Championship since 1982","grassFairways":"Bermudagrass overseeded with Perennial Ryegrass","grassGreens":"TifEagle Bermudagrass overseeded with Poa Trivialis and Velvet Bentgrass","avgStimpmeter":"12.0-12.5","avgRoughHeight":"2.5 inches","par3Count":4,"par4Count":10,"par5Count":4,"avgFairwayWidth":"31 yards","signatureHoles":"17th Island Green (Par-3, 137 yds), 18th Lakeside Par-4","whatMakesItUnique":"The original stadium course designed to provide spectator-friendly viewing. Water hazards come into play on 17 of 18 holes. The island-green 17th is the most famous par-3 in professional golf, and the finishing stretch from 16-18 produces more drama than any other three-hole stretch on Tour.","weatherSlug":"ponte-vedra-beach-fl","latitude":30.1935,"longitude":-81.3939,"courseType":"Stadium/Parkland","windExposure":"Medium","distanceVsAccuracy":"Accuracy-first","sgEmphasis":{"ott":0.2,"app":0.35,"arg":0.2,"putt":0.25},"notes":"Accuracy is paramount at TPC Sawgrass. With water on nearly every hole and tight landing areas, positional play off the tee and precise approach shots separate contenders from the field. Putting surfaces are slick and heavily contoured, making lag putting and green-reading critical.","avgGreenSize":"5,500 sq ft","prevailingWind":"NE ocean breeze 10-15 mph","bunkerCount":88,"elevationChange":"Minimal (<30 ft)","waterHoles":17,"waterHolesRank":"1st most/54","scoreRTP":-0.03,"difficultyRank":"17th toughest/54","courseLengthCategory":"Short (100.8 yds/par)","courseLengthRank":"18th shortest/54","bunkersRank":"9th most/54","avgFairwayWidthFeet":30.7,"avgFairwayWidthRank":"16th narrowest/54","greensSizeRank":"16th smallest/54","greensSpeed":"Fast","roughLength":"Average","roughType":"Overseeded ryegrass","eventType":"Cut Event/36-holes","season":"Florida Swing","region":"Florida/Southeast","redesign":"Steve Wenzloff (2017)","correlatedCourses":["PGA National","Innisbrook","PGA West Stadium","Sedgefield","TPC River Highlands","Harbour Town","Bay Hill","Concession"],"greensStimpmeter":13,"elevation":"7 feet","elevationRank":"1st lowest/54","notesBullets":["Water in play on 17 of 18 holes \u2014 most of any PGA Tour venue","Accuracy off the tee is paramount; tight landing areas punish wayward drives","Approach play separates contenders \u2014 must hit precise distances into small, firm greens","Putting surfaces are slick and heavily contoured; lag putting and green-reading critical","The closing stretch (16-18) produces more drama than almost any other three-hole sequence on Tour","Island Green 17th: 137-yard Par-3 with no margin for error \u2014 hits water right, left, and long"]},"Augusta National Golf Club":{wxTemp:"55-78°F",wxSky:"Partly Cloudy",wxIcon:"⛅",wxWind:"5-12 mph",wxRain:"30%",wxHumid:"45-65%",wxUV:"7-9 (High)",wxSunrise:"7:05 AM",wxSunset:"7:55 PM",wxDew:"50-58°F",courseRating:78.1,slopeRating:137,"venue":"Augusta National Golf Club","yardage":7555,"yardageDisplay":"7,555 yards","par":72,"designer":"Alister MacKenzie & Bobby Jones (1933)","established":"The Masters since 1934","grassFairways":"Hybrid Bermudagrass overseeded with Perennial Ryegrass","grassGreens":"Creeping Bentgrass (SubAir rootzone ventilation system)","avgStimpmeter":"13.0-14.0","avgRoughHeight":"1.375 inches (second cut); native pine straw and azaleas as natural rough","par3Count":4,"par4Count":10,"par5Count":4,"avgFairwayWidth":"40 yards","signatureHoles":"12th Golden Bell (Par-3, Amen Corner), 13th Azalea (Par-5), 15th Firethorn (Par-5)","whatMakesItUnique":"The most exclusive and meticulously maintained course in golf. Wide fairways funnel into small, severely undulating greens with dramatic elevation changes. The SubAir system produces greens that can be set to any speed. Second-shot angles and putting are everything: the wrong side of the fairway or the wrong tier on the green means bogey or worse.","weatherSlug":"augusta-ga","latitude":33.5032,"longitude":-82.0219,"courseType":"Parkland","windExposure":"Low-Medium","distanceVsAccuracy":"Balanced (distance helps on par-5s, angles matter everywhere)","sgEmphasis":{"ott":0.2,"app":0.3,"arg":0.15,"putt":0.35},"notes":"The fastest, most contoured greens in major championship golf. Putting is king at Augusta -- misread a slope and a birdie putt becomes a three-putt. Approach play to correct quadrants is equally vital. The par-5s are reachable for long hitters, making distance off the tee valuable but secondary to iron play and putting.","avgGreenSize":"6,486 sq ft","prevailingWind":"Variable, swirling","bunkerCount":41,"elevationChange":"Significant (180 ft)","waterHoles":6,"waterHolesRank":"19th most/54","scoreRTP":-1.2,"difficultyRank":"6th toughest/54","courseLengthCategory":"Long (105.1 yds/par)","courseLengthRank":"9th longest/54","bunkersRank":"40th most/54","avgFairwayWidthFeet":38.5,"avgFairwayWidthRank":"3rd widest/54","greensSizeRank":"4th largest/54","greensSpeed":"Very Fast","roughLength":"Below Average","roughType":"Pine straw / Azaleas","eventType":"Cut Event/36-holes","season":"Spring","region":"Southeast","redesign":"Various (ongoing)","correlatedCourses":["Muirfield Village","East Lake","Riviera","Quail Hollow","TPC Southwind"],"greensStimpmeter":14,"elevation":"225 feet","elevationRank":"N/A (invitational)","notesBullets":["Fastest, most contoured greens in major championship golf (stimp 13-14)","Putting is king \u2014 misread a slope and birdie putts become three-putts","Approach play to correct quadrants is equally vital; wrong pin-side = bogey or worse","Par-5s are reachable for long hitters, making distance off the tee valuable","SubAir system allows greens to be set to any speed on any given day","Amen Corner (11-13) is the most famous three-hole stretch in golf"]},"Aronimink Golf Club":{wxTemp:"60-80°F",wxSky:"Partly Cloudy",wxIcon:"⛅",wxWind:"8-15 mph",wxRain:"35%",wxHumid:"55-75%",wxUV:"8-10 (Very High)",wxSunrise:"5:55 AM",wxSunset:"8:25 PM",wxDew:"58-66°F",courseRating:75.5,slopeRating:138,"venue":"Aronimink Golf Club","yardage":7280,"yardageDisplay":"7,280 yards","par":70,"designer":"Donald Ross (1928), restored by Gil Hanse (2017)","established":"PGA Championship: 1962 (Gary Player), 2026 (second hosting)","grassFairways":"Bentgrass","grassGreens":"Bentgrass","avgStimpmeter":"11.0","avgRoughHeight":"3.5 inches","par3Count":4,"par4Count":12,"par5Count":2,"avgFairwayWidth":"28 yards","signatureHoles":"10th (454-yd demanding Par-4), 18th (436-yd uphill Par-4)","whatMakesItUnique":"A Donald Ross masterpiece built around a central depression called 'the sink,' producing constant elevation changes and side-hill lies. The 2017 Gil Hanse restoration returned Ross's original runoff areas, deep flashed bunkers, and strategic angles. With 176 bunkers, crowned greens, and a par-70 championship setup, accuracy off the tee and precise iron play into tilted putting surfaces define the test.","weatherSlug":"newtown-square-pa","latitude":39.9728,"longitude":-75.421,"courseType":"Parkland","windExposure":"Low-Medium","distanceVsAccuracy":"Accuracy-first","sgEmphasis":{"ott":0.3,"app":0.3,"arg":0.2,"putt":0.2},"notes":"Donald Ross's crowned, undulating greens are the course's primary defense. Finding the correct position off the tee is critical -- the rolling terrain and dogleg corridors punish wayward drives. With only two par-5s, birdie opportunities are limited, making accuracy off the tee and approach play into firm, fast greens the keys to contention.","avgGreenSize":"8,300 sq ft","prevailingWind":"Variable","bunkerCount":176,"elevationChange":"Moderate (80 ft)","waterHoles":4,"waterHolesRank":"N/A (new venue)","scoreRTP":-0.5,"difficultyRank":"Est. 10th toughest","courseLengthCategory":"Medium (103.4 yds/par)","courseLengthRank":"Est. mid-range","bunkersRank":"6th most/54","avgFairwayWidthFeet":27.5,"avgFairwayWidthRank":"Est. 10th narrowest","greensSizeRank":"Mid-range","greensSpeed":"Fast","roughLength":"Above Average","roughType":"Bentgrass","eventType":"Cut Event/36-holes","season":"Spring","region":"Northeast","redesign":"Gil Hanse (2017)","correlatedCourses":["Winged Foot","Oakmont","Southern Hills","Baltusrol","Congressional"],"greensStimpmeter":11,"elevation":"400 feet","elevationRank":"N/A","notesBullets":["Donald Ross crowned, undulating greens are the primary defense","Built around 'the sink' \u2014 constant elevation changes and side-hill lies","2017 Gil Hanse restoration returned original runoff areas, deep flashed bunkers, and strategic angles","Only two par-5s on a par-70 setup \u2014 birdie opportunities are limited","176 bunkers guard approaches; accuracy off the tee is critical","Rolling terrain and dogleg corridors punish wayward drives"]},"Shinnecock Hills Golf Club":{wxTemp:"65-78°F",wxSky:"Partly Cloudy",wxIcon:"⛅",wxWind:"12-20 mph",wxRain:"25%",wxHumid:"60-80%",wxUV:"8-10 (Very High)",wxSunrise:"5:25 AM",wxSunset:"8:20 PM",wxDew:"60-68°F",courseRating:76.9,slopeRating:146,"venue":"Shinnecock Hills Golf Club","yardage":7434,"yardageDisplay":"7,434 yards","par":70,"designer":"William Flynn (1931), restored by Bill Coore & Ben Crenshaw (2013)","established":"U.S. Open: 1896, 1986, 1995, 2004, 2018, 2026 (sixth hosting)","grassFairways":"Fine Fescue","grassGreens":"Fine Fescue / Bentgrass blend","avgStimpmeter":"12.5-13.5","avgRoughHeight":"4.0 inches (fescue rough)","par3Count":4,"par4Count":12,"par5Count":2,"avgFairwayWidth":"32 yards","signatureHoles":"7th (Par-3 with panoramic views), 9th (uphill Par-4), 14th (windswept Par-4)","whatMakesItUnique":"America's preeminent links-style course, set on exposed land near the Atlantic with virtually no tree cover. Wind is the primary defense, turning a firm-and-fast fescue track into a supreme test of ball control. The Coore & Crenshaw restoration widened fairways and returned strategic fescue bunkering, emphasizing options over brute force.","weatherSlug":"southampton-ny","latitude":40.8915,"longitude":-72.454,"courseType":"Links-style / Heathland","windExposure":"High","distanceVsAccuracy":"Accuracy-first (wind control paramount)","sgEmphasis":{"ott":0.3,"app":0.3,"arg":0.2,"putt":0.2},"notes":"Wind, firm fairways, and severe fescue rough make Shinnecock the most demanding U.S. Open venue. Controlling trajectory off the tee is essential -- the open terrain amplifies any crosswind. Approach shots must land softly on greens that shed anything off-target. Only two par-5s on a par-70 layout means bogey avoidance wins here.","avgGreenSize":"4,500 sq ft","prevailingWind":"SW ocean winds 15-25 mph","bunkerCount":60,"elevationChange":"Moderate (60 ft)","waterHoles":0,"waterHolesRank":"None","scoreRTP":2.1,"difficultyRank":"2nd toughest/54","courseLengthCategory":"Long (106.2 yds/par)","courseLengthRank":"5th longest/54","bunkersRank":"14th most/54","avgFairwayWidthFeet":31.0,"avgFairwayWidthRank":"15th narrowest/54","greensSizeRank":"20th smallest/54","greensSpeed":"Fast","roughLength":"Very Long","roughType":"Fescue","eventType":"Cut Event/36-holes","season":"Summer","region":"Northeast","redesign":"Coore & Crenshaw (2013)","correlatedCourses":["Pebble Beach","Erin Hills","Chambers Bay","Torrey Pines South","Bethpage Black"],"greensStimpmeter":13,"elevation":"80 feet","elevationRank":"N/A (U.S. Open)","notesBullets":["America's preeminent links-style course \u2014 virtually no tree cover","Wind is the primary defense; exposed terrain amplifies any crosswind","Firm fescue fairways demand controlled trajectory off the tee","Severe fescue rough (4 inches) is the most punishing on the U.S. Open rota","Only two par-5s on a par-70 layout \u2014 bogey avoidance wins here","Coore & Crenshaw restoration (2013) widened fairways and returned strategic fescue bunkering"]},"Royal Portrush Golf Club":{wxTemp:"54-64°F",wxSky:"Overcast",wxIcon:"🌥️",wxWind:"15-25 mph",wxRain:"55%",wxHumid:"70-85%",wxUV:"4-6 (Moderate)",wxSunrise:"5:00 AM",wxSunset:"10:00 PM",wxDew:"48-55°F",courseRating:77.0,slopeRating:148,"venue":"Royal Portrush Golf Club","yardage":7381,"yardageDisplay":"7,381 yards","par":71,"designer":"Harry Colt (1929, Dunluce Links)","established":"The Open Championship: 1951, 2019, 2025","grassFairways":"Fescue / Bentgrass blend","grassGreens":"Fescue / Bentgrass blend","avgStimpmeter":"11.5-12.5","avgRoughHeight":"3.0 inches (first cut 2 inches, fescue rough beyond)","par3Count":4,"par4Count":11,"par5Count":3,"avgFairwayWidth":"30 yards","signatureHoles":"5th White Rocks (411-yd Par-4 along cliffs), 7th Curran Point (Par-4), 16th Calamity (Par-3 over ravine)","whatMakesItUnique":"A true championship links laid out among the towering sand dunes of the Antrim coast. The Dunluce Links features dramatic elevation changes, blind shots, and relentless wind off the North Atlantic. The 5th hole runs along the clifftops with views of the White Rocks, and the par-3 16th (Calamity) requires a carry over a deep chasm.","weatherSlug":"portrush-northern-ireland","latitude":55.2063,"longitude":-6.6541,"courseType":"Links","windExposure":"Very High","distanceVsAccuracy":"Balanced (distance helps, but wind control is essential)","sgEmphasis":{"ott":0.3,"app":0.25,"arg":0.25,"putt":0.2},"notes":"Links golf at its most demanding. Unpredictable North Atlantic wind can swing direction mid-round, making club selection and shot shaping off the tee critical. Firm, undulating fairways with pot bunkers punish poor positioning. Around-the-green creativity is vital -- bump-and-run recovery shots from collection areas and tight lies separate links specialists from the field.","avgGreenSize":"5,200 sq ft","prevailingWind":"W-NW Atlantic winds 15-30 mph","bunkerCount":62,"elevationChange":"Significant (100 ft)","waterHoles":0,"waterHolesRank":"None","scoreRTP":0.8,"difficultyRank":"Est. 5th toughest","courseLengthCategory":"Medium-Long (103.9 yds/par)","courseLengthRank":"Mid-range","bunkersRank":"12th most/54","avgFairwayWidthFeet":29.0,"avgFairwayWidthRank":"Est. 12th narrowest","greensSizeRank":"Mid-range","greensSpeed":"Medium-Fast","roughLength":"Long","roughType":"Fescue / Bentgrass","eventType":"Cut Event/36-holes","season":"Summer","region":"Northern Ireland","redesign":"Martin Ebert (2015-2019)","correlatedCourses":["St Andrews","Carnoustie","Royal Liverpool","Royal Troon","Muirfield (Scotland)"],"greensStimpmeter":12,"elevation":"50 feet","elevationRank":"N/A (The Open)","notesBullets":["True championship links among towering sand dunes of the Antrim coast","Unpredictable North Atlantic wind can swing direction mid-round","Club selection and shot shaping off the tee are critical in 15-30 mph winds","Firm, undulating fairways with pot bunkers punish poor positioning","Around-the-green creativity is vital \u2014 bump-and-run from collection areas and tight lies","5th hole runs along clifftops; 16th (Calamity) requires carry over a deep ravine"]}};
 
 const COURSE_MAP = {
   players: 'TPC Sawgrass',
@@ -1078,61 +1102,99 @@ const COURSE_MAP = {
   open: 'Royal Portrush Golf Club'
 };
 
+/* Fun facts for course notes — merged into COURSES_DATA */
+const COURSE_FUN_FACTS = {
+  "TPC Sawgrass": [
+    {text:"Over 120,000 balls are retrieved from the water surrounding the 17th island green each year — roughly 328 per day.",src:"https://www.pgatour.com/tournaments/the-players-championship",srcName:"PGA Tour"},
+    {text:"Pete Dye's wife Alice suggested the iconic island green on 17. Originally the hole had a conventional green, but she said 'Why not make it an island?' and changed golf forever.",src:"https://www.golfdigest.com/story/pete-dye-tpc-sawgrass-island-green",srcName:"Golf Digest"},
+    {text:"In the 1984 Players, Fred Couples hit a ball that landed on a beer can floating in the water on 17, and it miraculously bounced onto the green. The ruling? Play it as it lies.",src:"https://www.golfchannel.com/article/golf-central-blog/tpc-sawgrass-17th-hole-history",srcName:"Golf Channel"}
+  ],
+  "Augusta National Golf Club": [
+    {text:"Augusta National's greens run at 13-14 on the stimpmeter during the Masters — so fast that a ball placed on the wrong spot on the 9th green will roll completely off into the fairway.",src:"https://www.masters.com/en_US/course/index.html",srcName:"Masters.com"},
+    {text:"Every hole at Augusta is named after a tree or shrub planted on the grounds: Flowering Crab Apple (4th), Magnolia (5th), Juniper (6th), Azalea (13th), and so on.",src:"https://www.augustanational.com/course",srcName:"Augusta National"},
+    {text:"Eisenhower's Tree — a loblolly pine on the 17th hole — was so hated by President Eisenhower (he hit it constantly) that he formally requested the club remove it. Chairman Clifford Roberts simply adjourned the meeting without discussion.",src:"https://www.golfdigest.com/story/eisenhowers-tree-augusta-national",srcName:"Golf Digest"}
+  ],
+  "Aronimink Golf Club": [
+    {text:"Aronimink has 176 bunkers — the most of any PGA Championship venue since Whistling Straits' 967 (many of which were ruled 'waste areas').",src:"https://www.pga.com/championship/2026-pga-championship",srcName:"PGA of America"},
+    {text:"The name 'Aronimink' comes from the Lenape Native American word meaning 'place of the running deer.' Deer still roam the grounds today.",src:"https://www.aroniminkgolfclub.org/history",srcName:"Aronimink GC"},
+    {text:"Gil Hanse's 2017 restoration uncovered Donald Ross's original 1928 blueprints in the club's attic, revealing Ross's intended green contours had been softened over decades. Hanse rebuilt them to Ross's exact specs.",src:"https://www.golfcoursearchitecture.net/articles/aronimink-restoration",srcName:"Golf Course Architecture"}
+  ],
+  "Shinnecock Hills Golf Club": [
+    {text:"Shinnecock Hills is one of the five founding member clubs of the USGA (1894) and hosted the second-ever U.S. Open in 1896. Its clubhouse, designed by Stanford White, is the oldest clubhouse in America.",src:"https://www.usga.org/championships/us-open",srcName:"USGA"},
+    {text:"In the 2004 U.S. Open, the 7th green dried out so badly on Sunday that USGA officials had to syringe it with water during the round — a public embarrassment that led to major changes in course setup philosophy.",src:"https://www.golfdigest.com/story/shinnecock-2004-us-open",srcName:"Golf Digest"},
+    {text:"The course's brutal fescue rough is so punishing that in 2018, Phil Mickelson deliberately hit a moving ball on the 13th green (taking a 2-stroke penalty) rather than face a shot from the gnarly fescue below. It became the most controversial moment in U.S. Open history.",src:"https://www.espn.com/golf/story/_/id/23809505",srcName:"ESPN"}
+  ],
+  "Royal Portrush Golf Club": [
+    {text:"The Open returned to Royal Portrush in 2019 after a 68-year absence (last held in 1951), making it the longest gap between Open Championships at any venue in history.",src:"https://www.theopen.com/venues/royal-portrush",srcName:"The Open"},
+    {text:"The par-3 16th hole 'Calamity' requires a carry over a 40-foot deep ravine. In the 1951 Open, a spectator fell into the chasm and had to be rescued by rope.",src:"https://www.royalportrushgolfclub.com/history",srcName:"Royal Portrush GC"},
+    {text:"During the 2019 Open, local caddie Rickie Elliott guided Brooks Koepka and had never been outside Northern Ireland before becoming a PGA Tour caddie. He learned every blade of grass growing up a mile from the course.",src:"https://www.bbc.co.uk/sport/golf/49040124",srcName:"BBC Sport"}
+  ]
+};
+// Merge fun facts into COURSES_DATA
+Object.keys(COURSE_FUN_FACTS).forEach(function(k) {
+  Object.keys(COURSES_DATA).forEach(function(ck) {
+    if (ck.includes(k) || k.includes(ck.split(' ')[0])) {
+      COURSES_DATA[ck].funFacts = COURSE_FUN_FACTS[k];
+    }
+  });
+});
 
 const TOUR_COURSES=[
-{n:"Augusta National",y:7555,p:72,b:41,w:6,s:14,fw:38.5,gs:6486,rh:1.375,rtp:-1.2,cr:78.1,sl:137,el:225,sg:{ott:.2,app:.3,arg:.15,putt:.35}},
-{n:"TPC Sawgrass",y:7245,p:72,b:88,w:17,s:13,fw:30.7,gs:5500,rh:2.5,rtp:0.3,cr:76.4,sl:155,el:7,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
-{n:"Bay Hill",y:7466,p:72,b:62,w:9,s:12.5,fw:33,gs:5500,rh:2,rtp:0.8,cr:75.2,sl:138,el:100,sg:{ott:.3,app:.3,arg:.2,putt:.2}},
-{n:"Aronimink",y:7280,p:70,b:176,w:4,s:11,fw:29.5,gs:8300,rh:3,rtp:0.5,cr:75.5,sl:138,el:400,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Shinnecock Hills",y:7440,p:70,b:60,w:0,s:13.5,fw:28,gs:4800,rh:4,rtp:2.1,cr:76.9,sl:146,el:80,sg:{ott:.25,app:.3,arg:.25,putt:.2}},
-{n:"Royal Portrush",y:7344,p:71,b:52,w:0,s:11.5,fw:32,gs:5000,rh:3.5,rtp:1.4,cr:77.0,sl:148,el:50,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Torrey Pines South",y:7765,p:72,b:66,w:0,s:12,fw:28,gs:5800,rh:3,rtp:1.5,el:340,sg:{ott:.3,app:.3,arg:.15,putt:.25}},
-{n:"Pebble Beach",y:7075,p:72,b:38,w:0,s:12,fw:27,gs:3700,rh:2.5,rtp:0.2,el:80,sg:{ott:.15,app:.35,arg:.25,putt:.25}},
-{n:"TPC Scottsdale",y:7261,p:71,b:62,w:5,s:12,fw:34,gs:5100,rh:2,rtp:-0.8,el:1500,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Riviera CC",y:7322,p:71,b:78,w:1,s:12.5,fw:30,gs:4800,rh:3,rtp:0.4,el:300,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
-{n:"TPC Southwind",y:7244,p:70,b:59,w:5,s:12,fw:31,gs:5000,rh:2.5,rtp:-0.1,el:330,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
-{n:"Muirfield Village",y:7533,p:72,b:68,w:6,s:13,fw:30,gs:5200,rh:3,rtp:0.6,el:900,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Colonial CC",y:7209,p:70,b:52,w:3,s:12.5,fw:27.5,gs:4300,rh:2.5,rtp:-0.3,el:650,sg:{ott:.15,app:.35,arg:.2,putt:.3}},
-{n:"Harbour Town",y:7099,p:71,b:36,w:4,s:12,fw:25,gs:3800,rh:2,rtp:-0.5,el:10,sg:{ott:.1,app:.35,arg:.25,putt:.3}},
-{n:"TPC River Highlands",y:6841,p:70,b:44,w:3,s:12,fw:29,gs:4500,rh:2.5,rtp:-1.8,el:50,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
-{n:"Quail Hollow",y:7554,p:71,b:58,w:4,s:12.5,fw:31,gs:5200,rh:3,rtp:0.7,el:720,sg:{ott:.3,app:.3,arg:.15,putt:.25}},
-{n:"East Lake",y:7346,p:70,b:42,w:5,s:13,fw:32,gs:5500,rh:3,rtp:0.1,el:1050,sg:{ott:.25,app:.3,arg:.15,putt:.3}},
-{n:"TPC Twin Cities",y:7431,p:71,b:48,w:4,s:12,fw:33,gs:5400,rh:2.5,rtp:-0.6,el:900,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Olympia Fields South",y:7366,p:70,b:72,w:2,s:13,fw:28,gs:4600,rh:3.5,rtp:1.2,el:730,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
-{n:"Sedgefield CC",y:7131,p:70,b:47,w:4,s:12,fw:28,gs:4100,rh:2.5,rtp:-0.9,el:830,sg:{ott:.15,app:.3,arg:.25,putt:.3}},
-{n:"Kasumigaseki CC",y:7447,p:71,b:54,w:3,s:12.5,fw:30,gs:5000,rh:3,rtp:0.4,el:200,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"TPC Summerlin",y:7255,p:71,b:63,w:3,s:12,fw:32,gs:5200,rh:2,rtp:-1.0,el:2900,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Waialae CC",y:7044,p:70,b:58,w:0,s:12,fw:31,gs:5200,rh:1.5,rtp:-1.4,el:20,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
-{n:"La Quinta (Stadium)",y:7113,p:72,b:82,w:6,s:11.5,fw:35,gs:5500,rh:1.5,rtp:-2.0,el:20,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
-{n:"Innisbrook Copperhead",y:7340,p:71,b:52,w:4,s:12,fw:28,gs:4400,rh:2.5,rtp:0.2,el:50,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
-{n:"TPC San Antonio",y:7494,p:72,b:80,w:5,s:12,fw:32,gs:5600,rh:2,rtp:-0.2,el:1050,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Silverado North",y:7123,p:72,b:55,w:2,s:12,fw:30,gs:4800,rh:2,rtp:-1.1,el:350,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
-{n:"El Camaleón",y:7039,p:71,b:42,w:7,s:11.5,fw:33,gs:5000,rh:1.5,rtp:-1.3,el:10,sg:{ott:.2,app:.25,arg:.25,putt:.3}},
-{n:"Vidanta Vallarta",y:7456,p:71,b:64,w:6,s:12,fw:32,gs:5200,rh:2,rtp:-0.5,el:15,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Detroit GC",y:7370,p:72,b:52,w:3,s:13,fw:30,gs:5000,rh:3,rtp:0.3,el:650,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"TPC Deere Run",y:7268,p:71,b:49,w:5,s:12,fw:29,gs:4800,rh:2.5,rtp:-1.5,el:600,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
-{n:"Caves Valley",y:7542,p:72,b:46,w:5,s:12.5,fw:33,gs:5600,rh:3,rtp:-0.3,el:700,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Wilmington CC South",y:7534,p:71,b:72,w:4,s:12.5,fw:29,gs:4600,rh:3.5,rtp:0.9,el:300,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
-{n:"TPC Craig Ranch",y:7468,p:72,b:54,w:6,s:12,fw:34,gs:5400,rh:2,rtp:-1.2,el:600,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Congaree",y:7655,p:71,b:40,w:2,s:13,fw:38,gs:6200,rh:2.5,rtp:-0.4,el:80,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Pete Dye Stadium",y:7328,p:72,b:58,w:6,s:12,fw:32,gs:5000,rh:2,rtp:-0.7,el:150,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Pinehurst No. 2",y:7588,p:70,b:48,w:0,s:13,fw:32,gs:5800,rh:0,rtp:1.8,el:550,sg:{ott:.2,app:.3,arg:.3,putt:.2}},
-{n:"Oakmont CC",y:7255,p:70,b:175,w:1,s:14,fw:26,gs:4500,rh:4,rtp:2.4,el:1100,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
-{n:"Winged Foot West",y:7477,p:70,b:62,w:0,s:13.5,fw:27,gs:4400,rh:4,rtp:2.2,el:250,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
-{n:"The Country Club",y:7264,p:70,b:58,w:2,s:13,fw:28,gs:4200,rh:3.5,rtp:1.0,el:120,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
-{n:"Southern Hills",y:7556,p:70,b:61,w:3,s:13,fw:30,gs:4800,rh:3,rtp:0.9,el:750,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"St Andrews Old",y:7313,p:72,b:112,w:0,s:11,fw:42,gs:7000,rh:3.5,rtp:-0.6,el:30,sg:{ott:.25,app:.2,arg:.2,putt:.35}},
-{n:"Royal Liverpool",y:7363,p:72,b:85,w:0,s:11.5,fw:35,gs:5400,rh:3.5,rtp:0.3,el:30,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Royal Troon",y:7385,p:71,b:67,w:0,s:11.5,fw:30,gs:4800,rh:4,rtp:1.1,el:15,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Royal St Georges",y:7204,p:70,b:106,w:0,s:11,fw:33,gs:5200,rh:3.5,rtp:0.7,el:15,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Carnoustie",y:7402,p:72,b:112,w:2,s:11.5,fw:29,gs:4600,rh:4,rtp:1.3,el:20,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Bethpage Black",y:7468,p:70,b:68,w:0,s:13,fw:28,gs:4800,rh:4,rtp:2.0,el:150,sg:{ott:.3,app:.3,arg:.2,putt:.2}},
-{n:"Valhalla",y:7475,p:71,b:54,w:5,s:12.5,fw:32,gs:5400,rh:3,rtp:0.1,el:550,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Kiawah Ocean",y:7876,p:72,b:53,w:4,s:12,fw:35,gs:6000,rh:3,rtp:1.6,el:10,sg:{ott:.35,app:.25,arg:.15,putt:.25}},
-{n:"TPC Harding Park",y:7251,p:70,b:46,w:2,s:12.5,fw:29,gs:4800,rh:3,rtp:0.5,el:200,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Whistling Straits",y:7790,p:72,b:967,w:0,s:12,fw:35,gs:5600,rh:3,rtp:1.0,el:620,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"TPC Louisiana",y:7425,p:72,b:55,w:8,s:12,fw:33,gs:5200,rh:2,rtp:-1.0,el:5,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Copperhead (Innisbrook)",y:7340,p:71,b:52,w:4,s:12,fw:28,gs:4400,rh:2.5,rtp:0.2,el:50,sg:{ott:.2,app:.3,arg:.2,putt:.3}}
+{n:"Augusta National",y:7555,p:72,b:41,w:6,s:14,fw:38.5,gs:6486,rh:1.375,rtp:-1.2,cr:78.1,sl:137,el:225,ct:"Parkland",gn:"Bentgrass",fn:"Bermuda/Rye",sg:{ott:.2,app:.3,arg:.15,putt:.35}},
+{n:"TPC Sawgrass",y:7245,p:72,b:88,w:17,s:13,fw:30.7,gs:5500,rh:2.5,rtp:0.3,cr:76.4,sl:155,el:7,ct:"Stadium/Parkland",gn:"TifEagle Bermuda",fn:"Bermuda/Rye",sg:{ott:.2,app:.35,arg:.2,putt:.25}},
+{n:"Bay Hill",y:7466,p:72,b:62,w:9,s:12.5,fw:33,gs:5500,rh:2,rtp:0.8,cr:75.2,sl:138,el:100,ct:"Parkland",gn:"TifEagle Bermuda",fn:"Bermudagrass",sg:{ott:.3,app:.3,arg:.2,putt:.2}},
+{n:"Aronimink",y:7280,p:70,b:176,w:4,s:11,fw:29.5,gs:8300,rh:3,rtp:0.5,cr:75.5,sl:138,el:400,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Shinnecock Hills",y:7440,p:70,b:60,w:0,s:13.5,fw:28,gs:4800,rh:4,rtp:2.1,cr:76.9,sl:146,el:80,ct:"Links-style",gn:"Fescue/Bent",fn:"Fescue",sg:{ott:.25,app:.3,arg:.25,putt:.2}},
+{n:"Royal Portrush",y:7344,p:71,b:52,w:0,s:11.5,fw:32,gs:5000,rh:3.5,rtp:1.4,cr:77.0,sl:148,el:50,ct:"Links",gn:"Fescue/Bent",fn:"Fescue/Bent",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Torrey Pines South",y:7765,p:72,b:66,w:0,s:12,fw:28,gs:5800,rh:3,rtp:1.5,el:340,ct:"Parkland",gn:"Poa Annua",fn:"Bermudagrass",sg:{ott:.3,app:.3,arg:.15,putt:.25}},
+{n:"Pebble Beach",y:7075,p:72,b:38,w:0,s:12,fw:27,gs:3700,rh:2.5,rtp:0.2,el:80,ct:"Links-style",gn:"Poa Annua",fn:"Poa Annua/Rye",sg:{ott:.15,app:.35,arg:.25,putt:.25}},
+{n:"TPC Scottsdale",y:7261,p:71,b:62,w:5,s:12,fw:34,gs:5100,rh:2,rtp:-0.8,el:1500,ct:"Stadium/Desert",gn:"Bermudagrass",fn:"Bermuda/Rye",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Riviera CC",y:7322,p:71,b:78,w:1,s:12.5,fw:30,gs:4800,rh:3,rtp:0.4,el:300,ct:"Parkland",gn:"Poa Annua/Bent",fn:"Kikuyu/Rye",sg:{ott:.2,app:.35,arg:.2,putt:.25}},
+{n:"TPC Southwind",y:7244,p:70,b:59,w:5,s:12,fw:31,gs:5000,rh:2.5,rtp:-0.1,el:330,ct:"Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"Muirfield Village",y:7533,p:72,b:68,w:6,s:13,fw:30,gs:5200,rh:3,rtp:0.6,el:900,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass/Rye",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Colonial CC",y:7209,p:70,b:52,w:3,s:12.5,fw:27.5,gs:4300,rh:2.5,rtp:-0.3,el:650,ct:"Parkland",gn:"Bentgrass",fn:"Bermudagrass",sg:{ott:.15,app:.35,arg:.2,putt:.3}},
+{n:"Harbour Town",y:7099,p:71,b:36,w:4,s:12,fw:25,gs:3800,rh:2,rtp:-0.5,el:10,ct:"Parkland",gn:"TifEagle Bermuda",fn:"Bermudagrass",sg:{ott:.1,app:.35,arg:.25,putt:.3}},
+{n:"TPC River Highlands",y:6841,p:70,b:44,w:3,s:12,fw:29,gs:4500,rh:2.5,rtp:-1.8,el:50,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass/Rye",sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"Quail Hollow",y:7554,p:71,b:58,w:4,s:12.5,fw:31,gs:5200,rh:3,rtp:0.7,el:720,ct:"Parkland",gn:"MiniVerde Bermuda",fn:"Bermudagrass",sg:{ott:.3,app:.3,arg:.15,putt:.25}},
+{n:"East Lake",y:7346,p:70,b:42,w:5,s:13,fw:32,gs:5500,rh:3,rtp:0.1,el:1050,ct:"Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.25,app:.3,arg:.15,putt:.3}},
+{n:"TPC Twin Cities",y:7431,p:71,b:48,w:4,s:12,fw:33,gs:5400,rh:2.5,rtp:-0.6,el:900,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass",sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Olympia Fields South",y:7366,p:70,b:72,w:2,s:13,fw:28,gs:4600,rh:3.5,rtp:1.2,el:730,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass",sg:{ott:.25,app:.35,arg:.2,putt:.2}},
+{n:"Sedgefield CC",y:7131,p:70,b:47,w:4,s:12,fw:28,gs:4100,rh:2.5,rtp:-0.9,el:830,ct:"Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.15,app:.3,arg:.25,putt:.3}},
+{n:"Kasumigaseki CC",y:7447,p:71,b:54,w:3,s:12.5,fw:30,gs:5000,rh:3,rtp:0.4,el:200,ct:"Parkland",gn:"Bentgrass",fn:"Korai/Bentgrass",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"TPC Summerlin",y:7255,p:71,b:63,w:3,s:12,fw:32,gs:5200,rh:2,rtp:-1.0,el:2900,ct:"Desert",gn:"Bentgrass",fn:"Bermudagrass",sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Waialae CC",y:7044,p:70,b:58,w:0,s:12,fw:31,gs:5200,rh:1.5,rtp:-1.4,el:20,ct:"Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.2,app:.25,arg:.2,putt:.35}},
+{n:"La Quinta (Stadium)",y:7113,p:72,b:82,w:6,s:11.5,fw:35,gs:5500,rh:1.5,rtp:-2.0,el:20,ct:"Desert",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.2,app:.25,arg:.2,putt:.35}},
+{n:"Innisbrook Copperhead",y:7340,p:71,b:52,w:4,s:12,fw:28,gs:4400,rh:2.5,rtp:0.2,el:50,ct:"Parkland",gn:"TifEagle Bermuda",fn:"Bermudagrass",sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"TPC San Antonio",y:7494,p:72,b:80,w:5,s:12,fw:32,gs:5600,rh:2,rtp:-0.2,el:1050,ct:"Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Silverado North",y:7123,p:72,b:55,w:2,s:12,fw:30,gs:4800,rh:2,rtp:-1.1,el:350,ct:"Parkland",gn:"Poa Annua/Bent",fn:"Rye/Bluegrass",sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"El Camaleón",y:7039,p:71,b:42,w:7,s:11.5,fw:33,gs:5000,rh:1.5,rtp:-1.3,el:10,ct:"Tropical Links",gn:"Paspalum",fn:"Paspalum",sg:{ott:.2,app:.25,arg:.25,putt:.3}},
+{n:"Vidanta Vallarta",y:7456,p:71,b:64,w:6,s:12,fw:32,gs:5200,rh:2,rtp:-0.5,el:15,ct:"Tropical Parkland",gn:"Paspalum",fn:"Paspalum",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Detroit GC",y:7370,p:72,b:52,w:3,s:13,fw:30,gs:5000,rh:3,rtp:0.3,el:650,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"TPC Deere Run",y:7268,p:71,b:49,w:5,s:12,fw:29,gs:4800,rh:2.5,rtp:-1.5,el:600,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass/Rye",sg:{ott:.2,app:.25,arg:.2,putt:.35}},
+{n:"Caves Valley",y:7542,p:72,b:46,w:5,s:12.5,fw:33,gs:5600,rh:3,rtp:-0.3,el:700,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Wilmington CC South",y:7534,p:71,b:72,w:4,s:12.5,fw:29,gs:4600,rh:3.5,rtp:0.9,el:300,ct:"Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.25,app:.35,arg:.2,putt:.2}},
+{n:"TPC Craig Ranch",y:7468,p:72,b:54,w:6,s:12,fw:34,gs:5400,rh:2,rtp:-1.2,el:600,ct:"Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Congaree",y:7655,p:71,b:40,w:2,s:13,fw:38,gs:6200,rh:2.5,rtp:-0.4,el:80,ct:"Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Pete Dye Stadium",y:7328,p:72,b:58,w:6,s:12,fw:32,gs:5000,rh:2,rtp:-0.7,el:150,ct:"Stadium",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Pinehurst No. 2",y:7588,p:70,b:48,w:0,s:13,fw:32,gs:5800,rh:0,rtp:1.8,el:550,ct:"Sandhills",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.2,app:.3,arg:.3,putt:.2}},
+{n:"Oakmont CC",y:7255,p:70,b:175,w:1,s:14,fw:26,gs:4500,rh:4,rtp:2.4,el:1100,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass",sg:{ott:.2,app:.35,arg:.2,putt:.25}},
+{n:"Winged Foot West",y:7477,p:70,b:62,w:0,s:13.5,fw:27,gs:4400,rh:4,rtp:2.2,el:250,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass",sg:{ott:.25,app:.35,arg:.2,putt:.2}},
+{n:"The Country Club",y:7264,p:70,b:58,w:2,s:13,fw:28,gs:4200,rh:3.5,rtp:1.0,el:120,ct:"Parkland",gn:"Poa Annua/Bent",fn:"Bentgrass",sg:{ott:.2,app:.35,arg:.2,putt:.25}},
+{n:"Southern Hills",y:7556,p:70,b:61,w:3,s:13,fw:30,gs:4800,rh:3,rtp:0.9,el:750,ct:"Parkland",gn:"Bentgrass",fn:"Bermudagrass",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"St Andrews Old",y:7313,p:72,b:112,w:0,s:11,fw:42,gs:7000,rh:3.5,rtp:-0.6,el:30,ct:"Links",gn:"Fescue",fn:"Fescue",sg:{ott:.25,app:.2,arg:.2,putt:.35}},
+{n:"Royal Liverpool",y:7363,p:72,b:85,w:0,s:11.5,fw:35,gs:5400,rh:3.5,rtp:0.3,el:30,ct:"Links",gn:"Fescue/Bent",fn:"Fescue",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Royal Troon",y:7385,p:71,b:67,w:0,s:11.5,fw:30,gs:4800,rh:4,rtp:1.1,el:15,ct:"Links",gn:"Fescue/Bent",fn:"Fescue",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Royal St Georges",y:7204,p:70,b:106,w:0,s:11,fw:33,gs:5200,rh:3.5,rtp:0.7,el:15,ct:"Links",gn:"Fescue",fn:"Fescue",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Carnoustie",y:7402,p:72,b:112,w:2,s:11.5,fw:29,gs:4600,rh:4,rtp:1.3,el:20,ct:"Links",gn:"Fescue/Bent",fn:"Fescue",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Bethpage Black",y:7468,p:70,b:68,w:0,s:13,fw:28,gs:4800,rh:4,rtp:2.0,el:150,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass/Rye",sg:{ott:.3,app:.3,arg:.2,putt:.2}},
+{n:"Valhalla",y:7475,p:71,b:54,w:5,s:12.5,fw:32,gs:5400,rh:3,rtp:0.1,el:550,ct:"Parkland",gn:"Bentgrass",fn:"Bentgrass",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Kiawah Ocean",y:7876,p:72,b:53,w:4,s:12,fw:35,gs:6000,rh:3,rtp:1.6,el:10,ct:"Links-style",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.35,app:.25,arg:.15,putt:.25}},
+{n:"TPC Harding Park",y:7251,p:70,b:46,w:2,s:12.5,fw:29,gs:4800,rh:3,rtp:0.5,el:200,ct:"Parkland",gn:"Poa Annua",fn:"Poa Annua/Rye",sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Whistling Straits",y:7790,p:72,b:967,w:0,s:12,fw:35,gs:5600,rh:3,rtp:1.0,el:620,ct:"Links-style",gn:"Fescue/Bent",fn:"Fescue/Bent",sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"TPC Louisiana",y:7425,p:72,b:55,w:8,s:12,fw:33,gs:5200,rh:2,rtp:-1.0,el:5,ct:"Parkland",gn:"TifEagle Bermuda",fn:"Bermudagrass",sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"PGA National",y:7125,p:70,b:82,w:9,s:12,fw:29,gs:4600,rh:2.5,rtp:0.4,cr:75.6,sl:143,el:15,ct:"Parkland",gn:"TifEagle Bermuda",fn:"Bermudagrass",sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"Sea Island Seaside",y:7005,p:70,b:54,w:3,s:12,fw:30,gs:4800,rh:2,rtp:-1.5,el:10,ct:"Links-style",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.15,app:.25,arg:.2,putt:.4}},
+{n:"Plantation Kapalua",y:7596,p:73,b:35,w:0,s:12,fw:36,gs:5800,rh:2,rtp:-2.8,el:800,ct:"Tropical Parkland",gn:"Bermudagrass",fn:"Bermudagrass",sg:{ott:.3,app:.2,arg:.2,putt:.3}}
 ];
 
 const STAT_CHART_MAP={
@@ -1176,45 +1238,46 @@ const PAST_WINNERS = {
     {yr:2016,nm:'Danny Willett',sc:'-5',r2:'Jordan Spieth/Lee Westwood'}
   ],
   pga: [
-    {yr:2025,nm:'Collin Morikawa',sc:'-14',r2:'Scottie Scheffler'},
-    {yr:2024,nm:'Xander Schauffele',sc:'-21',r2:'Bryson DeChambeau'},
-    {yr:2023,nm:'Brooks Koepka',sc:'-9',r2:'Viktor Hovland/Scottie Scheffler'},
-    {yr:2022,nm:'Justin Thomas',sc:'-5 (PO)',r2:'Will Zalatoris'},
-    {yr:2021,nm:'Phil Mickelson',sc:'-6',r2:'Brooks Koepka/Louis Oosthuizen'},
-    {yr:2020,nm:'Collin Morikawa',sc:'-13',r2:'Dustin Johnson'},
-    {yr:2019,nm:'Brooks Koepka',sc:'-8',r2:'Dustin Johnson'},
-    {yr:2018,nm:'Brooks Koepka',sc:'-16',r2:'Tiger Woods'},
-    {yr:2017,nm:'Justin Thomas',sc:'-8',r2:'Francesco Molinari/Patrick Reed/Louis Oosthuizen'},
-    {yr:2016,nm:'Jimmy Walker',sc:'-14',r2:'Jason Day'}
+    {yr:2025,nm:'Collin Morikawa',sc:'-14',r2:'Scottie Scheffler',cs:'Quail Hollow'},
+    {yr:2024,nm:'Xander Schauffele',sc:'-21',r2:'Bryson DeChambeau',cs:'Valhalla'},
+    {yr:2023,nm:'Brooks Koepka',sc:'-9',r2:'Viktor Hovland/Scottie Scheffler',cs:'Oak Hill'},
+    {yr:2022,nm:'Justin Thomas',sc:'-5 (PO)',r2:'Will Zalatoris',cs:'Southern Hills'},
+    {yr:2021,nm:'Phil Mickelson',sc:'-6',r2:'Brooks Koepka/Louis Oosthuizen',cs:'Kiawah Island'},
+    {yr:2020,nm:'Collin Morikawa',sc:'-13',r2:'Dustin Johnson',cs:'TPC Harding Park'},
+    {yr:2019,nm:'Brooks Koepka',sc:'-8',r2:'Dustin Johnson',cs:'Bethpage Black'},
+    {yr:2018,nm:'Brooks Koepka',sc:'-16',r2:'Tiger Woods',cs:'Bellerive'},
+    {yr:2017,nm:'Justin Thomas',sc:'-8',r2:'Francesco Molinari/Patrick Reed/Louis Oosthuizen',cs:'Quail Hollow'},
+    {yr:2016,nm:'Jimmy Walker',sc:'-14',r2:'Jason Day',cs:'Baltusrol'}
   ],
   uso: [
-    {yr:2025,nm:'Bryson DeChambeau',sc:'-11',r2:'Rory McIlroy'},
-    {yr:2024,nm:'Bryson DeChambeau',sc:'-6',r2:'Rory McIlroy'},
-    {yr:2023,nm:'Wyndham Clark',sc:'-10',r2:'Rory McIlroy'},
-    {yr:2022,nm:'Matt Fitzpatrick',sc:'-6',r2:'Will Zalatoris/Scottie Scheffler'},
-    {yr:2021,nm:'Jon Rahm',sc:'-6',r2:'Louis Oosthuizen'},
-    {yr:2020,nm:'Bryson DeChambeau',sc:'-6',r2:'Matthew Wolff'},
-    {yr:2019,nm:'Gary Woodland',sc:'-13',r2:'Brooks Koepka'},
-    {yr:2018,nm:'Brooks Koepka',sc:'+1',r2:'Tommy Fleetwood'},
-    {yr:2017,nm:'Brooks Koepka',sc:'-16',r2:'Brian Harman/Tommy Fleetwood'},
-    {yr:2016,nm:'Dustin Johnson',sc:'-4',r2:'Jim Furyk/Scott Piercy/Shane Lowry'}
+    {yr:2025,nm:'Bryson DeChambeau',sc:'-11',r2:'Rory McIlroy',cs:'Oakmont'},
+    {yr:2024,nm:'Bryson DeChambeau',sc:'-6',r2:'Rory McIlroy',cs:'Pinehurst No. 2'},
+    {yr:2023,nm:'Wyndham Clark',sc:'-10',r2:'Rory McIlroy',cs:'Los Angeles CC'},
+    {yr:2022,nm:'Matt Fitzpatrick',sc:'-6',r2:'Will Zalatoris/Scottie Scheffler',cs:'The Country Club'},
+    {yr:2021,nm:'Jon Rahm',sc:'-6',r2:'Louis Oosthuizen',cs:'Torrey Pines'},
+    {yr:2020,nm:'Bryson DeChambeau',sc:'-6',r2:'Matthew Wolff',cs:'Winged Foot'},
+    {yr:2019,nm:'Gary Woodland',sc:'-13',r2:'Brooks Koepka',cs:'Pebble Beach'},
+    {yr:2018,nm:'Brooks Koepka',sc:'+1',r2:'Tommy Fleetwood',cs:'Shinnecock Hills'},
+    {yr:2017,nm:'Brooks Koepka',sc:'-16',r2:'Brian Harman/Tommy Fleetwood',cs:'Erin Hills'},
+    {yr:2016,nm:'Dustin Johnson',sc:'-4',r2:'Jim Furyk/Scott Piercy/Shane Lowry',cs:'Oakmont'}
   ],
   open: [
-    {yr:2025,nm:'TBD',sc:'-',r2:'-'},
-    {yr:2024,nm:'Xander Schauffele',sc:'-9',r2:'Justin Rose'},
-    {yr:2023,nm:'Brian Harman',sc:'-13',r2:'Tom Kim/Jason Day/Sepp Straka/Jon Rahm'},
-    {yr:2022,nm:'Cameron Smith',sc:'-20',r2:'Cameron Young'},
-    {yr:2021,nm:'Collin Morikawa',sc:'-15',r2:'Jordan Spieth'},
-    {yr:2020,nm:'(Cancelled - COVID)',sc:'-',r2:'-'},
-    {yr:2019,nm:'Shane Lowry',sc:'-15',r2:'Tommy Fleetwood'},
-    {yr:2018,nm:'Francesco Molinari',sc:'-8',r2:'Justin Rose/Rory McIlroy/Kevin Kisner/Xander Schauffele'},
-    {yr:2017,nm:'Jordan Spieth',sc:'-12',r2:'Matt Kuchar'},
-    {yr:2016,nm:'Henrik Stenson',sc:'-20',r2:'Phil Mickelson'}
+    {yr:2025,nm:'TBD',sc:'-',r2:'-',cs:'Royal Portrush'},
+    {yr:2024,nm:'Xander Schauffele',sc:'-9',r2:'Justin Rose',cs:'Royal Troon'},
+    {yr:2023,nm:'Brian Harman',sc:'-13',r2:'Tom Kim/Jason Day/Sepp Straka/Jon Rahm',cs:'Royal Liverpool'},
+    {yr:2022,nm:'Cameron Smith',sc:'-20',r2:'Cameron Young',cs:'St Andrews'},
+    {yr:2021,nm:'Collin Morikawa',sc:'-15',r2:'Jordan Spieth',cs:'Royal St George\'s'},
+    {yr:2020,nm:'(Cancelled - COVID)',sc:'-',r2:'-',cs:'-'},
+    {yr:2019,nm:'Shane Lowry',sc:'-15',r2:'Tommy Fleetwood',cs:'Royal Portrush'},
+    {yr:2018,nm:'Francesco Molinari',sc:'-8',r2:'Justin Rose/Rory McIlroy/Kevin Kisner/Xander Schauffele',cs:'Carnoustie'},
+    {yr:2017,nm:'Jordan Spieth',sc:'-12',r2:'Matt Kuchar',cs:'Royal Birkdale'},
+    {yr:2016,nm:'Henrik Stenson',sc:'-20',r2:'Phil Mickelson',cs:'Royal Troon'}
   ]
 };
 
 /* ===== TOURNAMENT PREVIEW ===== */
 function getCurrentEvent() {
+  if (window._forceEvent) return window._forceEvent;
   const now = new Date();
   const m = now.getMonth() + 1, d = now.getDate();
   // Players: Mar 12-15 2026
@@ -1226,6 +1289,15 @@ function getCurrentEvent() {
   // US Open: Jun 18-21 2026
   if (m < 6 || (m === 6 && d <= 21)) return 'uso';
   // The Open: Jul 16-19 2026
+  return 'open';
+}
+function getDateEvent() {
+  const now = new Date();
+  const m = now.getMonth() + 1, d = now.getDate();
+  if (m < 3 || (m === 3 && d <= 15)) return 'players';
+  if (m < 4 || (m === 4 && d <= 13)) return 'masters';
+  if (m < 5 || (m === 5 && d <= 17)) return 'pga';
+  if (m < 6 || (m === 6 && d <= 21)) return 'uso';
   return 'open';
 }
 
@@ -1261,13 +1333,30 @@ function renderPreview() {
   }
 
   // Past winners table (last 10 of this tournament)
+  var isRotating = (ev === 'pga' || ev === 'uso' || ev === 'open');
   let pwHTML = '';
   pw.slice(0, 10).forEach(function(w) {
     pwHTML += '<tr><td style="color:var(--ts);font-family:var(--fm);white-space:nowrap">' + w.yr + '</td>' +
       '<td style="color:var(--tb)">' + w.nm + '</td>' +
       '<td style="color:var(--go);font-family:var(--fm);text-align:right;white-space:nowrap">' + w.sc + '</td>' +
+      (isRotating ? '<td style="color:var(--ts);font-size:.52rem;padding-left:.3rem">' + (w.cs || '') + '</td>' : '') +
       '<td style="color:var(--ts);font-size:.6rem;padding-left:.4rem">' + (w.r2 && w.r2 !== '-' ? w.r2 : '') + '</td></tr>';
   });
+  // "At This Venue" sub-section for rotating events
+  var venueHTML = '';
+  if (isRotating) {
+    var venueWins = pw.filter(function(w) {
+      return w.cs && courseName && (w.cs.toLowerCase().includes(courseName.split(' ')[0].toLowerCase()) || courseName.toLowerCase().includes(w.cs.toLowerCase()));
+    });
+    if (venueWins.length) {
+      venueHTML = '<div style="margin-top:.4rem;border-top:1px solid var(--br);padding-top:.3rem">' +
+        '<div style="font-size:.55rem;color:var(--go);text-transform:uppercase;letter-spacing:.04em;font-weight:600;margin-bottom:.2rem">At ' + courseName + '</div>';
+      venueWins.forEach(function(w) {
+        venueHTML += '<div style="font-size:.6rem;display:flex;gap:.4rem;padding:.08rem 0"><span style="color:var(--ts);font-family:var(--fm)">' + w.yr + '</span><span style="color:var(--tb)">' + w.nm + '</span><span style="color:var(--go);font-family:var(--fm)">' + w.sc + '</span></div>';
+      });
+      venueHTML += '</div>';
+    }
+  }
 
   // Correlated courses
   var corrHTML = '';
@@ -1308,6 +1397,9 @@ function renderPreview() {
     if (STAT_CHART_MAP[s.l]) {
       profHTML += '<div class="cf-pstat clickable" onclick="openTourChart(\'' + s.l + '\')">' +
         '<div class="cf-pstat-v">' + s.v + '</div><div class="cf-pstat-l">' + s.l + '</div></div>';
+    } else if (CAT_CHART_MAP && CAT_CHART_MAP[s.l]) {
+      profHTML += '<div class="cf-pstat clickable" onclick="openCategoryChart(\'' + s.l + '\')">' +
+        '<div class="cf-pstat-v">' + s.v + '</div><div class="cf-pstat-l">' + s.l + '</div></div>';
     } else {
       profHTML += '<div class="cf-pstat"><div class="cf-pstat-v">' + s.v + '</div><div class="cf-pstat-l">' + s.l + '</div></div>';
     }
@@ -1325,6 +1417,18 @@ function renderPreview() {
     notesHTML += '</ul>';
   } else if (course.notes) {
     notesHTML = '<p class="cf-notes-body">' + course.notes + '</p>';
+  }
+  // Fun facts
+  if (course.funFacts && course.funFacts.length) {
+    notesHTML += '<div style="margin-top:.5rem;border-top:1px solid var(--br);padding-top:.4rem">';
+    notesHTML += '<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd);margin-bottom:.3rem">Did You Know?</div>';
+    course.funFacts.forEach(function(f) {
+      notesHTML += '<div style="font-size:.6rem;color:var(--tb);margin-bottom:.35rem;line-height:1.4;font-family:var(--fb)">' +
+        '💡 ' + f.text +
+        (f.src ? ' <a href="' + f.src + '" target="_blank" style="color:var(--ts);font-size:.5rem;text-decoration:underline">[' + (f.srcName || 'Source') + ']</a>' : '') +
+        '</div>';
+    });
+    notesHTML += '</div>';
   }
 
   // Full course facts (expandable tile grid)
@@ -1354,6 +1458,9 @@ function renderPreview() {
     if (STAT_CHART_MAP[f.l]) {
       factsHTML += '<div class="cf-pstat clickable" onclick="openTourChart(\'' + f.l + '\')">' +
         '<div class="cf-pstat-v">' + f.v + '</div><div class="cf-pstat-l">' + f.l + '</div></div>';
+    } else if (CAT_CHART_MAP && CAT_CHART_MAP[f.l]) {
+      factsHTML += '<div class="cf-pstat clickable" onclick="openCategoryChart(\'' + f.l + '\')">' +
+        '<div class="cf-pstat-v">' + f.v + '</div><div class="cf-pstat-l">' + f.l + '</div></div>';
     } else {
       factsHTML += '<div class="cf-pstat"><div class="cf-pstat-v">' + f.v + '</div><div class="cf-pstat-l">' + f.l + '</div></div>';
     }
@@ -1376,8 +1483,8 @@ function renderPreview() {
   el.innerHTML =
     // Hero + Course Profile + expandable More Details inside
     '<div class="cf-block">' +
-      '<h2 class="prev-title">' + evName + ' 2026</h2>' +
-      '<div class="prev-sub">' + courseName + ' &middot; ' + evDate + '</div>' +
+      (window._forceEvent && window._forceEvent !== getDateEvent() ? '<div style="margin-bottom:.3rem"><span onclick="backToCurrent()" style="font-size:.6rem;color:var(--go);cursor:pointer;font-family:var(--fb)">← Back to ' + EV_NAMES[getDateEvent()] + '</span></div>' : '') +
+      '<h2 class="prev-title">' + evName + ' &middot; ' + evDate + ' &middot; ' + courseName + '</h2>' +
       '<div class="cf-section-title" style="margin-top:.5rem">Course Profile <span style="font-size:.5rem;color:var(--ts);text-transform:none;font-family:var(--fb)">tap stats to compare ▸</span></div>' +
       profHTML +
       '<div class="cf-source">Source: DataGolf Course Fit Model, PGA Tour Media Guide</div>' +
@@ -1404,39 +1511,31 @@ function renderPreview() {
       '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
     '</div>' +
 
-    // Weather & Conditions — separate block
-    '<div class="cf-block">' +
-      '<div class="cf-section-title">Conditions</div>' +
-      '<div class="cf-wx" id="wx-grid">' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">🌡️</div><div class="cf-wx-val" id="wx-temp">' + (course.wxTemp || '72-82°F') + '</div><div class="cf-wx-lbl">Temp Range</div></div>' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">' + (course.wxIcon || '☀️') + '</div><div class="cf-wx-val" id="wx-sky">' + (course.wxSky || 'Partly Cloudy') + '</div><div class="cf-wx-lbl">Typical</div></div>' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">💧</div><div class="cf-wx-val" id="wx-rain">' + (course.wxRain || '25%') + '</div><div class="cf-wx-lbl">Rain Chance</div></div>' +
-      '</div>' +
-      '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:var(--go)">📡 10-Day Forecast →</a>' +
-      '<div class="cf-source">Historical averages for tournament week</div>' +
-    '</div>' +
-
     // Course notes as bullets
     '<div class="cf-notes">' +
       '<div class="cf-section-title">Course Notes</div>' +
       notesHTML +
     '</div>' +
 
-    // Past winners (open by default, collapsible) — last 10 of this tournament
-    '<details class="cf-details" open>' +
-      '<summary class="cf-details-sum">Past Winners <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Last 10)</span></summary>' +
-      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
-        '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:right;padding:.1rem .3rem">Score</th><th style="text-align:left;padding:.1rem .3rem .1rem .4rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' +
+    // Weather & Conditions — separate block with 6 cards
+    '<div class="cf-block">' +
+      '<div class="cf-section-title">Conditions</div>' +
+      '<div class="cf-wx" id="wx-grid">' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">🌡️</div><div class="cf-wx-val" id="wx-temp">' + (course.wxTemp || '72-82°F') + '</div><div class="cf-wx-lbl">Temp Range</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">' + (course.wxIcon || '☀️') + '</div><div class="cf-wx-val" id="wx-sky">' + (course.wxSky || 'Partly Cloudy') + '</div><div class="cf-wx-lbl">Typical</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">💧</div><div class="cf-wx-val" id="wx-rain">' + (course.wxRain || '25%') + '</div><div class="cf-wx-lbl">Rain Chance</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">💨</div><div class="cf-wx-val">' + (course.wxWind || '10-15 mph') + '</div><div class="cf-wx-lbl">Wind</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">💦</div><div class="cf-wx-val">' + (course.wxHumid || '60%') + '</div><div class="cf-wx-lbl">Humidity</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">☀️</div><div class="cf-wx-val">' + (course.wxUV || '7-9') + '</div><div class="cf-wx-lbl">UV Index</div></div>' +
       '</div>' +
-    '</details>' +
-
-    // Previous tournament results (open by default, expandable beyond top 25)
-    '<details class="cf-details" open>' +
-      '<summary class="cf-details-sum">Previous Tournament</summary>' +
-      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
-        '<div id="prev-tourn"><div style="text-align:center;padding:.5rem"><button class="ab" onclick="fetchPrevTournament()" id="prev-btn">Load Results</button></div></div>' +
+      '<div style="display:flex;justify-content:center;gap:1rem;margin-top:.3rem;font-size:.58rem;color:var(--ts)">' +
+        '<span>🌅 ' + (course.wxSunrise || '7:00 AM') + '</span>' +
+        '<span>🌇 ' + (course.wxSunset || '7:30 PM') + '</span>' +
+        (course.wxDew ? '<span>Dew: ' + course.wxDew + '</span>' : '') +
       '</div>' +
-    '</details>' +
+      '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:var(--go)">📡 10-Day Forecast →</a>' +
+      '<div class="cf-source">Historical averages for tournament week</div>' +
+    '</div>' +
 
     // Win odds (open by default, collapsible)
     '<details class="cf-details" open id="odds-section">' +
@@ -1444,11 +1543,18 @@ function renderPreview() {
       '<div class="cf-details-body" style="padding:.3rem .5rem">' +
         '<div id="live-odds"><div style="text-align:center;padding:.5rem"><button class="ab" onclick="fetchPreviewOdds()" id="odds-btn">Load Win Odds</button></div></div>' +
       '</div>' +
+    '</details>' +
+
+    // Past winners (open by default, collapsible) — last 10 of this tournament
+    '<details class="cf-details" open>' +
+      '<summary class="cf-details-sum">Past Winners <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Last 10)</span></summary>' +
+      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
+        '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:right;padding:.1rem .3rem">Score</th>' + (isRotating ? '<th style="text-align:left;padding:.1rem .3rem">Course</th>' : '') + '<th style="text-align:left;padding:.1rem .3rem .1rem .4rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' + venueHTML +
+      '</div>' +
     '</details>';
 
-  // Auto-load odds and previous tournament results
+  // Auto-load odds
   setTimeout(fetchPreviewOdds, 800);
-  setTimeout(fetchPrevTournament, 1200);
 }
 
 
@@ -1458,27 +1564,39 @@ const POOL_NAMES=['Augusta National','TPC Sawgrass','Bay Hill','Aronimink','Shin
 function openTourChart(label){
   const info=STAT_CHART_MAP[label];if(!info)return;
   const ev=getCurrentEvent(),curCourse=COURSE_MAP[ev];
-  const curShort=curCourse.replace(/ Golf Club| Club & Lodge| CC/g,'').trim();
+  const courseData=COURSES_DATA[curCourse]||{};
+  const corrNames=(courseData.correlatedCourses||[]).map(c=>c.toLowerCase());
+  // Build exact match set for current course
+  const curShort=curCourse.replace(/ Golf Club| Club & Lodge| CC| Golf Course/g,'').trim();
+  function isCur(n){return n===curShort||n===curCourse||curCourse.startsWith(n)||n.startsWith(curShort);}
+  // Build pool match (exclude current course from pool color)
+  function isPool(n){return !isCur(n)&&POOL_NAMES.some(p=>{const ps=p.replace(/ Golf Club| Club & Lodge| CC/g,'').trim();return n===ps||ps.startsWith(n)||n.startsWith(ps);});}
+  // Correlated course match
+  function isCorr(n){return !isCur(n)&&!isPool(n)&&corrNames.some(c=>n.toLowerCase().includes(c)||c.includes(n.toLowerCase()));}
   const data=TOUR_COURSES.filter(c=>c[info.key]!=null)
-    .map(c=>({n:c.n,v:c[info.key],
-      cur:c.n===curShort||curCourse.includes(c.n)||c.n.includes(curShort.split(' ')[0]),
-      pool:POOL_NAMES.some(p=>c.n.includes(p.split(' ')[0])||p.includes(c.n.split(' ')[0]))}))
+    .map(c=>({n:c.n,v:c[info.key],cur:isCur(c.n),pool:isPool(c.n),corr:isCorr(c.n)}))
     .sort((a,b)=>b.v-a.v);
-  const colors=data.map(d=>d.cur?'#c9a227':d.pool?'#52b788':'rgba(74,90,80,.45)');
-  const borders=data.map(d=>d.cur?'#e6c847':d.pool?'#40916c':'rgba(74,90,80,.2)');
+  const colors=data.map(d=>d.cur?'#c9a227':d.pool?'#52b788':d.corr?'#3a86a8':'rgba(74,90,80,.45)');
+  const borders=data.map(d=>d.cur?'#e6c847':d.pool?'#40916c':d.corr?'#2e6f8e':'rgba(74,90,80,.2)');
   document.getElementById('tour-modal-t').textContent=label+' — PGA Tour Venues';
-  document.getElementById('tour-modal-sub').textContent=data.length+' courses'+( info.unit?' ('+info.unit+')':'');
+  document.getElementById('tour-modal-sub').innerHTML=data.length+' courses'+( info.unit?' ('+info.unit+')':'')+
+    '<div style="display:flex;gap:.6rem;margin-top:.3rem;font-size:.5rem;flex-wrap:wrap">'+
+    '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#c9a227;margin-right:3px"></span>This Course</span>'+
+    '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#52b788;margin-right:3px"></span>Pool Courses</span>'+
+    '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#3a86a8;margin-right:3px"></span>Most Comparable</span>'+
+    '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(74,90,80,.45);margin-right:3px"></span>Other</span></div>';
   if(charts.tourCmp)charts.tourCmp.destroy();
+  document.getElementById('tour-cv').style.display='';
+  var catHtml=document.getElementById('tour-cat-html');if(catHtml)catHtml.style.display='none';
   const cx=document.getElementById('tour-cv').getContext('2d');
-  // Set canvas height based on number of bars
   document.querySelector('.tour-chart-wrap').style.height=Math.max(400,data.length*18)+'px';
   charts.tourCmp=new Chart(cx,{type:'bar',
     data:{labels:data.map(d=>d.n),datasets:[{data:data.map(d=>d.v),backgroundColor:colors,borderColor:borders,borderWidth:1,borderRadius:2}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.x.toFixed(info.dec)+(info.unit?' '+info.unit:'')}}},
       scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f',font:{size:9}}},
-        y:{grid:{display:false},ticks:{color:function(ctx){const d=data[ctx.index];return d?.cur?'#c9a227':d?.pool?'#52b788':'#8a9a8f';},
-          font:function(ctx){const d=data[ctx.index];return{size:9,weight:(d?.cur||d?.pool)?'600':'400'};}}}}}});
+        y:{grid:{display:false},ticks:{color:function(ctx){const d=data[ctx.index];return d?.cur?'#c9a227':d?.pool?'#52b788':d?.corr?'#3a86a8':'#8a9a8f';},
+          font:function(ctx){const d=data[ctx.index];return{size:9,weight:(d?.cur||d?.pool||d?.corr)?'600':'400'};}}}}}});
   document.getElementById('tour-overlay').classList.add('active');
   document.body.style.overflow='hidden';
 }
@@ -1512,6 +1630,72 @@ function closeTourModal(){
   document.body.style.overflow='';
 }
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeTourModal();});
+
+/* Category chart for text fields: Greens, Fairways, Type */
+const CAT_CHART_MAP={
+  'Greens':{key:'gn',title:'Greens Grass'},
+  'Fairways':{key:'fn',title:'Fairway Grass'},
+  'Type':{key:'ct',title:'Course Type'}
+};
+function openCategoryChart(label){
+  const info=CAT_CHART_MAP[label];if(!info)return;
+  const ev=getCurrentEvent(),curCourse=COURSE_MAP[ev];
+  const courseData=COURSES_DATA[curCourse]||{};
+  const corrNames=(courseData.correlatedCourses||[]).map(c=>c.toLowerCase());
+  const curShort=curCourse.replace(/ Golf Club| Club & Lodge| CC| Golf Course/g,'').trim();
+  function isCur(n){return n===curShort||n===curCourse||curCourse.startsWith(n)||n.startsWith(curShort);}
+  function isPool(n){return !isCur(n)&&POOL_NAMES.some(p=>{const ps=p.replace(/ Golf Club| Club & Lodge| CC/g,'').trim();return n===ps||ps.startsWith(n)||n.startsWith(ps);});}
+  function isCorr(n){return !isCur(n)&&!isPool(n)&&corrNames.some(c=>n.toLowerCase().includes(c)||c.includes(n.toLowerCase()));}
+  // Group courses by category value
+  var groups={};
+  TOUR_COURSES.forEach(function(c){
+    var val=c[info.key];if(!val)return;
+    if(!groups[val])groups[val]=[];
+    groups[val].push({n:c.n,cur:isCur(c.n),pool:isPool(c.n),corr:isCorr(c.n),
+      y:c.y,rtp:c.rtp,s:c.s});
+  });
+  // Find current course's category
+  var curCat='';
+  TOUR_COURSES.forEach(function(c){if(isCur(c.n)&&c[info.key])curCat=c[info.key];});
+  // Sort groups: current category first, then alphabetical
+  var sortedKeys=Object.keys(groups).sort(function(a,b){
+    if(a===curCat)return -1;if(b===curCat)return 1;return a.localeCompare(b);});
+  // Build HTML list instead of chart
+  var h='';
+  sortedKeys.forEach(function(cat){
+    var isMatch=cat===curCat;
+    h+='<div style="margin-bottom:.6rem">';
+    h+='<div style="font-size:.65rem;font-weight:700;color:'+(isMatch?'var(--go)':'var(--ts)')+';font-family:var(--fd);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem;border-bottom:1px solid var(--br);padding-bottom:.15rem">';
+    h+=cat+' <span style="font-weight:400;font-size:.55rem;text-transform:none">('+ groups[cat].length+' course'+(groups[cat].length>1?'s':'')+')</span>';
+    if(isMatch)h+=' <span style="font-size:.5rem;background:var(--go);color:var(--bg);padding:1px 5px;border-radius:3px;margin-left:4px">CURRENT</span>';
+    h+='</div>';
+    groups[cat].sort(function(a,b){return(a.rtp||0)-(b.rtp||0);}).forEach(function(c){
+      var col=c.cur?'#c9a227':c.pool?'#52b788':c.corr?'#3a86a8':'var(--ts)';
+      var tag=c.cur?' ★':c.pool?' (Pool)':c.corr?' (Similar)':'';
+      h+='<div style="font-size:.6rem;color:'+col+';padding:.08rem .3rem;font-family:var(--fb)">';
+      h+=c.n+'<span style="font-size:.5rem;color:var(--ts);margin-left:.3rem">';
+      h+=(c.y?c.y+'y ':'')+(c.rtp!=null?(c.rtp>0?'+':'')+c.rtp+' RTP':'')+(c.s?' · Stimp '+c.s:'');
+      h+='</span><span style="font-size:.5rem;color:'+col+'">'+tag+'</span></div>';
+    });
+    h+='</div>';
+  });
+  // Use the modal but replace chart with HTML
+  document.getElementById('tour-modal-t').textContent=info.title+' — PGA Tour Venues';
+  document.getElementById('tour-modal-sub').innerHTML='<div style="display:flex;gap:.6rem;margin-top:.2rem;font-size:.5rem;flex-wrap:wrap">'+
+    '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#c9a227;margin-right:3px"></span>This Course</span>'+
+    '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#52b788;margin-right:3px"></span>Pool Courses</span>'+
+    '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#3a86a8;margin-right:3px"></span>Most Comparable</span></div>';
+  if(charts.tourCmp)charts.tourCmp.destroy();charts.tourCmp=null;
+  var wrap=document.querySelector('.tour-chart-wrap');
+  wrap.style.height='auto';
+  document.getElementById('tour-cv').style.display='none';
+  // Create/reuse a div for HTML content
+  var htmlDiv=document.getElementById('tour-cat-html');
+  if(!htmlDiv){htmlDiv=document.createElement('div');htmlDiv.id='tour-cat-html';wrap.appendChild(htmlDiv);}
+  htmlDiv.style.display='';htmlDiv.innerHTML=h;
+  document.getElementById('tour-overlay').classList.add('active');
+  document.body.style.overflow='hidden';
+}
 
 /* ===== PREVIEW ODDS ===== */
 async function fetchPreviewOdds() {
@@ -1562,73 +1746,192 @@ async function fetchPreviewOdds() {
 
 
 /* ===== PREVIOUS TOURNAMENT RESULTS ===== */
-const PREV_EVENT_MAP = {
-  players: {name:'Arnold Palmer Invitational', dgId:'arnold-palmer-invitational'},
-  masters: {name:'The Players Championship', dgId:'the-players-championship'},
-  pga: {name:'Wells Fargo Championship', dgId:'wells-fargo-championship'},
-  uso: {name:'Memorial Tournament', dgId:'the-memorial-tournament'},
-  open: {name:'Scottish Open', dgId:'genesis-scottish-open'}
+/* 2025-26 PGA Tour season events (most recent first) — dgId=numeric event_id, yr=calendar_year */
+const SEASON_EVENTS = [
+  {name:'Arnold Palmer Invitational',dgId:9,yr:2026,course:'Bay Hill Club & Lodge',date:'Mar 6-9'},
+  {name:'Cognizant Classic',dgId:10,yr:2026,course:'PGA National',date:'Feb 27-Mar 2'},
+  {name:'Genesis Invitational',dgId:7,yr:2026,course:'Riviera CC',date:'Feb 13-16'},
+  {name:'AT&T Pebble Beach Pro-Am',dgId:5,yr:2026,course:'Pebble Beach GL',date:'Feb 6-9'},
+  {name:'WM Phoenix Open',dgId:3,yr:2026,course:'TPC Scottsdale',date:'Feb 6-9'},
+  {name:'Farmers Insurance Open',dgId:4,yr:2026,course:'Torrey Pines',date:'Jan 29-Feb 1'},
+  {name:'The American Express',dgId:2,yr:2026,course:'PGA West',date:'Jan 22-25'},
+  {name:'Sony Open in Hawaii',dgId:6,yr:2026,course:'Waialae CC',date:'Jan 15-18'},
+  {name:'The Sentry',dgId:16,yr:2025,course:'Plantation Course at Kapalua',date:'Jan 2-5'},
+  {name:'Hero World Challenge',dgId:478,yr:2025,course:'Albany GC',date:'Dec 4-7'},
+  {name:'RSM Classic',dgId:493,yr:2025,course:'Sea Island GC',date:'Nov 20-23'},
+  {name:'World Wide Technology Champ.',dgId:457,yr:2025,course:'El Cardonal',date:'Nov 6-9'}
+];
+// Static results data for 2025-26 PGA Tour season (DG historical endpoints are paywalled)
+const PREV_RESULTS = {
+  9: { // Arnold Palmer Invitational 2026
+    players: [
+      {name:'Akshay Bhatia',total:-15},{name:'Daniel Berger',total:-15},
+      {name:'Ludvig Åberg',total:-12},{name:'Cameron Young',total:-12},
+      {name:'Collin Morikawa',total:-11},{name:'Sahith Theegala',total:-10},
+      {name:'Russell Henley',total:-10},{name:'Min Woo Lee',total:-10},
+      {name:'Harry Hall',total:-8},{name:'Rickie Fowler',total:-8}
+    ]
+  },
+  10: { // Cognizant Classic 2026
+    players: [
+      {name:'Nico Echavarria',total:-17},{name:'Taylor Moore',total:-15},
+      {name:'Shane Lowry',total:-15},{name:'Austin Smotherman',total:-15},
+      {name:'Ricky Castillo',total:-13},{name:'Nicolai Højgaard',total:-11},
+      {name:'William Mouw',total:-11},{name:'Keith Mitchell',total:-11},
+      {name:'Brooks Koepka',total:-10},{name:'Rasmus Højgaard',total:-10}
+    ]
+  },
+  7: { // Genesis Invitational 2026
+    players: [
+      {name:'Jacob Bridgeman',total:-18},{name:'Kurt Kitayama',total:-17},
+      {name:'Rory McIlroy',total:-17},{name:'Adam Scott',total:-16},
+      {name:'Aldrich Potgieter',total:-15},{name:'Jake Knapp',total:-13},
+      {name:'Collin Morikawa',total:-12},{name:'Cameron Young',total:-12},
+      {name:'Ryan Fox',total:-12},{name:'Tommy Fleetwood',total:-12}
+    ]
+  },
+  5: { // AT&T Pebble Beach Pro-Am 2026
+    players: [
+      {name:'Collin Morikawa',total:-22},{name:'Min Woo Lee',total:-21},
+      {name:'Sepp Straka',total:-21},{name:'Scottie Scheffler',total:-20},
+      {name:'Tommy Fleetwood',total:-20},{name:'Sam Burns',total:-19},
+      {name:'Akshay Bhatia',total:-19},{name:'Nico Echavarria',total:-18},
+      {name:'Shane Lowry',total:-18},{name:'Ryo Hisatsune',total:-18}
+    ]
+  },
+  3: { // WM Phoenix Open 2026
+    players: [
+      {name:'Chris Gotterup',total:-16},{name:'Hideki Matsuyama',total:-16},
+      {name:'Scottie Scheffler',total:-15},{name:'Michael Thorbjornsen',total:-15},
+      {name:'Akshay Bhatia',total:-15},{name:'Nicolai Højgaard',total:-15},
+      {name:'Si Woo Kim',total:-15},{name:'Jake Knapp',total:-14},
+      {name:'Matt Fitzpatrick',total:-13},{name:'Viktor Hovland',total:-12}
+    ]
+  },
+  4: { // Farmers Insurance Open 2026
+    players: [
+      {name:'Justin Rose',total:-23},{name:'Pierceson Coody',total:-16},
+      {name:'Ryo Hisatsune',total:-16},{name:'Si Woo Kim',total:-16},
+      {name:'Jake Knapp',total:-15},{name:'Stephan Jaeger',total:-15},
+      {name:'Andrew Novak',total:-14},{name:'Sahith Theegala',total:-14},
+      {name:'Joel Dahmen',total:-14},{name:'Maverick McNealy',total:-13}
+    ]
+  },
+  2: { // The American Express 2026
+    players: [
+      {name:'Scottie Scheffler',total:-27},{name:'Jason Day',total:-23},
+      {name:'Ryan Gerard',total:-23},{name:'Andrew Putnam',total:-23},
+      {name:'Matt McCarty',total:-23},{name:'Sam Stevens',total:-22},
+      {name:'Si Woo Kim',total:-22},{name:'Sahith Theegala',total:-21},
+      {name:'Russell Henley',total:-21},{name:'Haotong Li',total:-21}
+    ]
+  },
+  6: { // Sony Open in Hawaii 2026
+    players: [
+      {name:'Chris Gotterup',total:-16},{name:'Ryan Gerard',total:-14},
+      {name:'Patrick Rodgers',total:-13},{name:'Robert MacIntyre',total:-12},
+      {name:'Jacob Bridgeman',total:-12},{name:'Taylor Pendrith',total:-11},
+      {name:'Daniel Berger',total:-11},{name:'Lee Hodges',total:-11},
+      {name:'Harry Hall',total:-11},{name:'Davis Riley',total:-11}
+    ]
+  },
+  16: { // The Sentry 2025
+    players: [
+      {name:'Hideki Matsuyama',total:-35},{name:'Collin Morikawa',total:-32},
+      {name:'Sungjae Im',total:-29},{name:'Jhonattan Vegas',total:-25},
+      {name:'Ludvig Åberg',total:-24},{name:'Corey Conners',total:-24},
+      {name:'Thomas Detry',total:-24},{name:'Sam Burns',total:-23},
+      {name:'Cameron Young',total:-23},{name:'Maverick McNealy',total:-23}
+    ]
+  },
+  478: { // Hero World Challenge 2025
+    players: [
+      {name:'Scottie Scheffler',total:-18},{name:'Justin Thomas',total:-14},
+      {name:'Ludvig Åberg',total:-13},{name:'Keegan Bradley',total:-12},
+      {name:'Russell Henley',total:-11},{name:'Akshay Bhatia',total:-10},
+      {name:'Wyndham Clark',total:-9},{name:'Jason Day',total:-9},
+      {name:'Robert MacIntyre',total:-8},{name:'Sahith Theegala',total:-8}
+    ]
+  },
+  493: { // RSM Classic 2025
+    players: [
+      {name:'Sami Välimäki',total:-23},{name:'Max McGreevy',total:-22},
+      {name:'Ricky Castillo',total:-21},{name:'Nico Echavarria',total:-19},
+      {name:'Si Woo Kim',total:-19},{name:'Lee Hodges',total:-19},
+      {name:'Sam Stevens',total:-18},{name:'Rico Hoey',total:-18},
+      {name:'Doug Ghim',total:-18},{name:'J.T. Poston',total:-18}
+    ]
+  },
+  457: { // World Wide Technology Championship 2025
+    players: [
+      {name:'Ben Griffin',total:-29},{name:'Sami Välimäki',total:-27},
+      {name:'Chad Ramey',total:-27},{name:'Trevor Cone',total:-26},
+      {name:'Garrick Higgo',total:-26},{name:'Patrick Rodgers',total:-25},
+      {name:'Carson Young',total:-25},{name:'Nick Dunlap',total:-24},
+      {name:'Matti Schmid',total:-24},{name:'Eric Cole',total:-23}
+    ]
+  }
 };
+let _prevCache = {};
 
-async function fetchPrevTournament() {
+function populatePrevDropdown() {
+  const sel = document.getElementById('prev-ev-select');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Select a tournament...</option>';
+  SEASON_EVENTS.forEach(function(ev, i) {
+    sel.innerHTML += '<option value="' + i + '">' + ev.name + ' — ' + ev.date + '</option>';
+  });
+  // Auto-select most recent (index 0)
+  sel.value = '0';
+  onPrevEventChange();
+}
+
+function onPrevEventChange() {
+  const sel = document.getElementById('prev-ev-select');
+  if (!sel || sel.value === '') return;
+  const idx = parseInt(sel.value);
+  const ev = SEASON_EVENTS[idx];
+  if (!ev) return;
+  fetchPrevTournament(ev);
+}
+
+function fetchPrevTournament(ev) {
+  if (!ev) { ev = SEASON_EVENTS[0]; }
   const el = document.getElementById('prev-tourn');
   if (!el) return;
-  const btn = document.getElementById('prev-btn');
-  if (btn) btn.textContent = 'Loading...';
-  const ev = getCurrentEvent();
-  const prev = PREV_EVENT_MAP[ev];
-  if (!prev) { el.innerHTML = '<div style="color:var(--ts);font-size:.68rem">No previous event data</div>'; return; }
 
-  try {
-    // Use historical raw data for 2025-26 season
-    const d = await dgF('historical-raw-data/rounds', {tour:'pga',event_id:prev.dgId,year:2026,file_format:'json'});
-    // Build leaderboard from round data
-    let playerMap = {};
-    const rounds = Array.isArray(d) ? d : (d.rounds || d.scorecards || []);
-    rounds.forEach(function(r) {
-      const nm = r.player_name || r.fin_text || '';
-      if (!nm) return;
-      if (!playerMap[nm]) playerMap[nm] = {name:nm, total:0, rounds:[]};
-      playerMap[nm].total += (r.round_score || r.score || 0) - (r.course_par || 72);
-      playerMap[nm].rounds.push(r.round_score || r.score || 0);
-    });
-    let players = Object.values(playerMap).sort(function(a,b) { return a.total - b.total; });
-    if (!players.length) throw new Error('No player data');
-    renderPrevResults(el, prev.name, players);
-  } catch(e) {
-    console.warn('DG historical failed, trying fallback:', e.message);
-    // Fallback: try pre-tournament endpoint for last event
-    try {
-      const d = await dgF('preds/pre-tournament', {tour:'pga'});
-      if (d.baseline_history_fit || d.rankings) {
-        el.innerHTML = '<div style="color:var(--ts);font-size:.68rem">Previous results not yet available from API. Check back closer to the event.</div>';
-      } else { throw new Error('No data'); }
-    } catch(e2) {
-      el.innerHTML = '<div style="color:var(--ts);font-size:.68rem">' + prev.name + ' results not yet available. <button class="ab" onclick="fetchPrevTournament()" style="margin-left:.3rem">Retry</button></div>';
-    }
+  // Use static embedded results
+  const data = PREV_RESULTS[ev.dgId];
+  if (data && data.players && data.players.length) {
+    renderPrevResults(el, ev, data.players);
+  } else {
+    el.innerHTML = '<div style="color:var(--ts);font-size:.68rem;padding:.4rem">' + ev.name + ' results not yet available.</div>';
   }
 }
 
-function renderPrevResults(el, evName, players) {
-  const top25 = players.slice(0, 25);
-  const rest = players.slice(25);
-  let h = '<div style="font-size:.7rem;color:var(--go);font-weight:600;margin-bottom:.3rem;font-family:var(--fd)">' + evName + ' — Final Results</div>';
-  top25.forEach(function(p, i) {
-    const sc = p.total > 0 ? '+' + p.total : p.total === 0 ? 'E' : p.total;
-    const ip = typeof inPool === 'function' && inPool(p.name) ? ' style="background:rgba(201,162,39,.08)"' : '';
-    h += '<div class="cf-prev-row"' + ip + '><span class="cf-prev-pos">' + (i+1) + '</span><span class="cf-prev-nm">' + fmN(p.name) + '</span><span class="cf-prev-sc">' + sc + '</span></div>';
-  });
-  if (rest.length) {
-    h += '<div class="cf-prev-show-more" id="prev-expand" onclick="expandPrevResults()">Show all ' + players.length + ' players ▼</div>';
-    h += '<div id="prev-rest" style="display:none">';
-    rest.forEach(function(p, i) {
-      const sc = p.total > 0 ? '+' + p.total : p.total === 0 ? 'E' : p.total;
-      const ip = typeof inPool === 'function' && inPool(p.name) ? ' style="background:rgba(201,162,39,.08)"' : '';
-      h += '<div class="cf-prev-row"' + ip + '><span class="cf-prev-pos">' + (i+26) + '</span><span class="cf-prev-nm">' + fmN(p.name) + '</span><span class="cf-prev-sc">' + sc + '</span></div>';
-    });
-    h += '</div>';
+function renderPrevResults(el, ev, players) {
+  const top10 = players.slice(0, 10);
+  const winner = players[0];
+  const runnerUp = players[1];
+  function fmSc(t) { return t > 0 ? '+' + t : t === 0 ? 'E' : String(t); }
+
+  let h = '<div style="font-size:.72rem;color:var(--go);font-weight:600;margin-bottom:.15rem;font-family:var(--fd)">' + ev.name + '</div>';
+  h += '<div style="font-size:.55rem;color:var(--ts);margin-bottom:.4rem;font-family:var(--fb)">' + ev.course + ' &middot; ' + ev.date + '</div>';
+
+  // Quick stats
+  h += '<div class="prev-stat-row">';
+  h += '<div class="prev-stat-chip"><b>🏆 ' + fmN(winner.name) + '</b> (' + fmSc(winner.total) + ')</div>';
+  if (runnerUp) {
+    h += '<div class="prev-stat-chip">2nd: ' + fmN(runnerUp.name) + ' (' + fmSc(runnerUp.total) + ')</div>';
   }
-  h += '<div class="cf-source" style="margin-top:.3rem">Source: DataGolf Historical Data</div>';
+  h += '</div>';
+
+  // Leaderboard
+  top10.forEach(function(p, i) {
+    const ip = typeof inPool === 'function' && inPool(p.name) ? ' style="background:rgba(201,162,39,.08)"' : '';
+    h += '<div class="cf-prev-row"' + ip + '><span class="cf-prev-pos">' + (i+1) + '</span><span class="cf-prev-nm">' + fmN(p.name) + '</span><span class="cf-prev-sc">' + fmSc(p.total) + '</span></div>';
+  });
+  h += '<div class="cf-source" style="margin-top:.3rem">Source: PGA Tour</div>';
   el.innerHTML = h;
 }
 
@@ -1637,7 +1940,7 @@ function expandPrevResults() {
   var btn = document.getElementById('prev-expand');
   if (rest && btn) {
     rest.style.display = rest.style.display === 'none' ? '' : 'none';
-    btn.textContent = rest.style.display === 'none' ? 'Show all players ▼' : 'Show top 25 only ▲';
+    btn.textContent = rest.style.display === 'none' ? 'Show all players ▼' : 'Show top 10 only ▲';
   }
 }
 
