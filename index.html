@@ -235,6 +235,11 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .tour-legend .tl-other::before{color:#4a5a50}
 .cf-sg-block{cursor:pointer;transition:border-color .2s;max-width:480px;margin-left:auto;margin-right:auto}
 .cf-sg-block:hover{border-color:var(--go)}
+.cf-sg-compact:hover{background:var(--bh);border-radius:5px;margin-left:-.3rem;margin-right:-.3rem;padding-left:.3rem;padding-right:.3rem}
+.cf-sg-compact .cf-sg-row{margin-bottom:.2rem}
+.cf-sg-compact .cf-sg-track{height:7px}
+.cf-sg-compact .cf-sg-lbl{font-size:.52rem;min-width:68px}
+.cf-sg-compact .cf-sg-val{font-size:.55rem}
 .cf-wx{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin-top:.4rem}
 .cf-wx-card{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.4rem .3rem;text-align:center}
 .cf-wx-icon{font-size:1.1rem;margin-bottom:.1rem}
@@ -1138,50 +1143,64 @@ const STAT_CHART_MAP={
 
 const PAST_WINNERS = {
   players: [
-    {yr:2025,nm:'Xander Schauffele',sc:'-19'},
-    {yr:2024,nm:'Scottie Scheffler',sc:'-20'},
-    {yr:2023,nm:'Scottie Scheffler',sc:'-17'},
-    {yr:2022,nm:'Cameron Smith',sc:'-13'},
-    {yr:2021,nm:'Justin Thomas',sc:'-14'},
-    {yr:2020,nm:'(Cancelled - COVID)',sc:'-'},
-    {yr:2019,nm:'Rory McIlroy',sc:'-16'},
-    {yr:2018,nm:'Webb Simpson',sc:'-18'}
+    {yr:2025,nm:'Xander Schauffele',sc:'-19',r2:'Collin Morikawa'},
+    {yr:2024,nm:'Scottie Scheffler',sc:'-20',r2:'Xander Schauffele'},
+    {yr:2023,nm:'Scottie Scheffler',sc:'-17',r2:'Tyrrell Hatton'},
+    {yr:2022,nm:'Cameron Smith',sc:'-13',r2:'Anirban Lahiri'},
+    {yr:2021,nm:'Justin Thomas',sc:'-14',r2:'Lee Westwood'},
+    {yr:2020,nm:'(Cancelled - COVID)',sc:'-',r2:'-'},
+    {yr:2019,nm:'Rory McIlroy',sc:'-16',r2:'Jim Furyk'},
+    {yr:2018,nm:'Webb Simpson',sc:'-18',r2:'Charl Schwartzel'},
+    {yr:2017,nm:'Si Woo Kim',sc:'-10',r2:'Ian Poulter/Louis Oosthuizen'},
+    {yr:2016,nm:'Jason Day',sc:'-15',r2:'Kevin Chappell'}
   ],
   masters: [
-    {yr:2025,nm:'Rory McIlroy',sc:'-11'},
-    {yr:2024,nm:'Scottie Scheffler',sc:'-11'},
-    {yr:2023,nm:'Jon Rahm',sc:'-12'},
-    {yr:2022,nm:'Scottie Scheffler',sc:'-10'},
-    {yr:2021,nm:'Hideki Matsuyama',sc:'-10'},
-    {yr:2020,nm:'Dustin Johnson',sc:'-20'},
-    {yr:2019,nm:'Tiger Woods',sc:'-13'}
+    {yr:2025,nm:'Rory McIlroy',sc:'-11',r2:'Hideki Matsuyama'},
+    {yr:2024,nm:'Scottie Scheffler',sc:'-11',r2:'Ludvig Aberg'},
+    {yr:2023,nm:'Jon Rahm',sc:'-12',r2:'Brooks Koepka/Phil Mickelson'},
+    {yr:2022,nm:'Scottie Scheffler',sc:'-10',r2:'Rory McIlroy'},
+    {yr:2021,nm:'Hideki Matsuyama',sc:'-10',r2:'Will Zalatoris'},
+    {yr:2020,nm:'Dustin Johnson',sc:'-20',r2:'Sungjae Im/Cameron Smith'},
+    {yr:2019,nm:'Tiger Woods',sc:'-13',r2:'Dustin Johnson/Brooks Koepka/Xander Schauffele'},
+    {yr:2018,nm:'Patrick Reed',sc:'-15',r2:'Rickie Fowler'},
+    {yr:2017,nm:'Sergio Garcia',sc:'-9 (PO)',r2:'Justin Rose'},
+    {yr:2016,nm:'Danny Willett',sc:'-5',r2:'Jordan Spieth/Lee Westwood'}
   ],
   pga: [
-    {yr:2025,nm:'Collin Morikawa',sc:'-14'},
-    {yr:2024,nm:'Xander Schauffele',sc:'-21'},
-    {yr:2023,nm:'Brooks Koepka',sc:'-9'},
-    {yr:2022,nm:'Justin Thomas',sc:'-5 (PO)'},
-    {yr:2021,nm:'Phil Mickelson',sc:'-6'},
-    {yr:2020,nm:'Collin Morikawa',sc:'-13'},
-    {yr:2019,nm:'Brooks Koepka',sc:'-8'}
+    {yr:2025,nm:'Collin Morikawa',sc:'-14',r2:'Scottie Scheffler'},
+    {yr:2024,nm:'Xander Schauffele',sc:'-21',r2:'Bryson DeChambeau'},
+    {yr:2023,nm:'Brooks Koepka',sc:'-9',r2:'Viktor Hovland/Scottie Scheffler'},
+    {yr:2022,nm:'Justin Thomas',sc:'-5 (PO)',r2:'Will Zalatoris'},
+    {yr:2021,nm:'Phil Mickelson',sc:'-6',r2:'Brooks Koepka/Louis Oosthuizen'},
+    {yr:2020,nm:'Collin Morikawa',sc:'-13',r2:'Dustin Johnson'},
+    {yr:2019,nm:'Brooks Koepka',sc:'-8',r2:'Dustin Johnson'},
+    {yr:2018,nm:'Brooks Koepka',sc:'-16',r2:'Tiger Woods'},
+    {yr:2017,nm:'Justin Thomas',sc:'-8',r2:'Francesco Molinari/Patrick Reed/Louis Oosthuizen'},
+    {yr:2016,nm:'Jimmy Walker',sc:'-14',r2:'Jason Day'}
   ],
   uso: [
-    {yr:2025,nm:'Bryson DeChambeau',sc:'-11'},
-    {yr:2024,nm:'Bryson DeChambeau',sc:'-6'},
-    {yr:2023,nm:'Wyndham Clark',sc:'-10'},
-    {yr:2022,nm:'Matt Fitzpatrick',sc:'-6'},
-    {yr:2021,nm:'Jon Rahm',sc:'-6'},
-    {yr:2020,nm:'Bryson DeChambeau',sc:'-6'},
-    {yr:2019,nm:'Gary Woodland',sc:'-13'}
+    {yr:2025,nm:'Bryson DeChambeau',sc:'-11',r2:'Rory McIlroy'},
+    {yr:2024,nm:'Bryson DeChambeau',sc:'-6',r2:'Rory McIlroy'},
+    {yr:2023,nm:'Wyndham Clark',sc:'-10',r2:'Rory McIlroy'},
+    {yr:2022,nm:'Matt Fitzpatrick',sc:'-6',r2:'Will Zalatoris/Scottie Scheffler'},
+    {yr:2021,nm:'Jon Rahm',sc:'-6',r2:'Louis Oosthuizen'},
+    {yr:2020,nm:'Bryson DeChambeau',sc:'-6',r2:'Matthew Wolff'},
+    {yr:2019,nm:'Gary Woodland',sc:'-13',r2:'Brooks Koepka'},
+    {yr:2018,nm:'Brooks Koepka',sc:'+1',r2:'Tommy Fleetwood'},
+    {yr:2017,nm:'Brooks Koepka',sc:'-16',r2:'Brian Harman/Tommy Fleetwood'},
+    {yr:2016,nm:'Dustin Johnson',sc:'-4',r2:'Jim Furyk/Scott Piercy/Shane Lowry'}
   ],
   open: [
-    {yr:2025,nm:'TBD',sc:'-'},
-    {yr:2024,nm:'Xander Schauffele',sc:'-9'},
-    {yr:2023,nm:'Brian Harman',sc:'-13'},
-    {yr:2022,nm:'Cameron Smith',sc:'-20'},
-    {yr:2021,nm:'Collin Morikawa',sc:'-15'},
-    {yr:2020,nm:'(Cancelled - COVID)',sc:'-'},
-    {yr:2019,nm:'Shane Lowry',sc:'-15'}
+    {yr:2025,nm:'TBD',sc:'-',r2:'-'},
+    {yr:2024,nm:'Xander Schauffele',sc:'-9',r2:'Justin Rose'},
+    {yr:2023,nm:'Brian Harman',sc:'-13',r2:'Tom Kim/Jason Day/Sepp Straka/Jon Rahm'},
+    {yr:2022,nm:'Cameron Smith',sc:'-20',r2:'Cameron Young'},
+    {yr:2021,nm:'Collin Morikawa',sc:'-15',r2:'Jordan Spieth'},
+    {yr:2020,nm:'(Cancelled - COVID)',sc:'-',r2:'-'},
+    {yr:2019,nm:'Shane Lowry',sc:'-15',r2:'Tommy Fleetwood'},
+    {yr:2018,nm:'Francesco Molinari',sc:'-8',r2:'Justin Rose/Rory McIlroy/Kevin Kisner/Xander Schauffele'},
+    {yr:2017,nm:'Jordan Spieth',sc:'-12',r2:'Matt Kuchar'},
+    {yr:2016,nm:'Henrik Stenson',sc:'-20',r2:'Phil Mickelson'}
   ]
 };
 
@@ -1232,12 +1251,13 @@ function renderPreview() {
       '</div>';
   }
 
-  // Past winners table
+  // Past winners table (last 10 of this tournament)
   let pwHTML = '';
-  pw.slice(0, 8).forEach(function(w) {
-    pwHTML += '<tr><td style="color:var(--ts);font-family:var(--fm)">' + w.yr + '</td>' +
+  pw.slice(0, 10).forEach(function(w) {
+    pwHTML += '<tr><td style="color:var(--ts);font-family:var(--fm);white-space:nowrap">' + w.yr + '</td>' +
       '<td style="color:var(--tb)">' + w.nm + '</td>' +
-      '<td style="color:var(--go);font-family:var(--fm);text-align:right">' + w.sc + '</td></tr>';
+      '<td style="color:var(--go);font-family:var(--fm);text-align:right;white-space:nowrap">' + w.sc + '</td>' +
+      '<td style="color:var(--ts);font-size:.6rem;padding-left:.4rem">' + (w.r2 && w.r2 !== '-' ? w.r2 : '') + '</td></tr>';
   });
 
   // Correlated courses
@@ -1298,52 +1318,38 @@ function renderPreview() {
     notesHTML = '<p class="cf-notes-body">' + course.notes + '</p>';
   }
 
-  // Full course facts (expandable)
-  var factsLeft = [
-    {l:'Tournament', v:course.established || evName},
-    {l:'Setup', v:'Par ' + course.par + ', ' + (course.yardageDisplay || course.yardage)},
+  // Full course facts (expandable tile grid)
+  var extFacts = [
+    {l:'Architect', v:course.designer || '-'},
+    {l:'Redesign', v:course.redesign || '-'},
     {l:'Region', v:course.region || '-'},
     {l:'Season', v:course.season || '-'},
     {l:'Event Type', v:course.eventType || '-'},
-    {l:'Course Type', v:course.courseType},
-    {l:'Architect', v:course.designer || '-'},
-    {l:'Redesign', v:course.redesign || '-'},
-    {l:'Course Length', v:course.courseLengthCategory || '-'},
-    {l:'Course Length Rank', v:course.courseLengthRank || '-'},
-    {l:'Elevation', v:course.elevation || course.elevationChange || '-'},
-    {l:'Elevation Rank', v:course.elevationRank || '-'},
-    {l:'Bunkers', v:course.bunkerCount || '-'},
-    {l:'Bunkers Rank', v:course.bunkersRank || '-'}
-  ];
-  var factsRight = [
-    {l:'Water Danger Holes', v:course.waterHoles != null ? course.waterHoles : '-'},
-    {l:'Water Danger Rank', v:course.waterHolesRank || '-'},
     {l:'Score RTP', v:course.scoreRTP != null ? (course.scoreRTP > 0 ? '+' : '') + course.scoreRTP : '-'},
     {l:'Difficulty Rank', v:course.difficultyRank || '-'},
-    {l:'Course Rating', v:course.courseRating || '-'},
-    {l:'Slope Rating', v:course.slopeRating || '-'},
-    {l:'Fairways', v:course.grassFairways || '-'},
-    {l:'Avg Fairway Width', v:(course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' yards' : course.avgFairwayWidth || '-')},
-    {l:'Fairway Width Rank', v:course.avgFairwayWidthRank || '-'},
-    {l:'Rough', v:(course.roughType || '') + ' ' + (course.avgRoughHeight || '')},
-    {l:'Rough Length', v:course.roughLength || '-'},
-    {l:'Greens', v:course.grassGreens || '-'},
-    {l:'Greens Size', v:course.avgGreenSize || '-'},
+    {l:'Course Length Rank', v:course.courseLengthRank || '-'},
+    {l:'Elevation Rank', v:course.elevationRank || '-'},
+    {l:'Bunkers Rank', v:course.bunkersRank || '-'},
+    {l:'Water Danger Rank', v:course.waterHolesRank || '-'},
+    {l:'FW Width Rank', v:course.avgFairwayWidthRank || '-'},
     {l:'Greens Size Rank', v:course.greensSizeRank || '-'},
-    {l:'Greens Stimpmeter', v:course.greensStimpmeter || course.avgStimpmeter || '-'},
-    {l:'Greens Speed', v:course.greensSpeed || '-'}
-  ];
+    {l:'Fairways', v:course.grassFairways || '-'},
+    {l:'Greens', v:course.grassGreens || '-'},
+    {l:'Rough Type', v:(course.roughType || '-') + (course.roughLength ? ' (' + course.roughLength + ')' : '')}
+  ].filter(function(f) { return f.v && f.v !== '-'; });
 
-  var factsHTML = '<div class="cf-facts-grid">';
-  factsHTML += '<div class="cf-facts-col">';
-  factsLeft.forEach(function(f) {
-    factsHTML += '<div class="cf-fact-row"><span class="cf-fact-lbl">' + f.l + ':</span> <span class="cf-fact-val">' + f.v + '</span></div>';
+  // Map for extended clickable facts
+  var extChartMap = {'Score RTP':1};
+  var factsHTML = '<div class="cf-profile-grid">';
+  extFacts.forEach(function(f) {
+    if (STAT_CHART_MAP[f.l]) {
+      factsHTML += '<div class="cf-pstat clickable" onclick="openTourChart(\'' + f.l + '\')">' +
+        '<div class="cf-pstat-v">' + f.v + '</div><div class="cf-pstat-l">' + f.l + '</div></div>';
+    } else {
+      factsHTML += '<div class="cf-pstat"><div class="cf-pstat-v">' + f.v + '</div><div class="cf-pstat-l">' + f.l + '</div></div>';
+    }
   });
-  factsHTML += '</div><div class="cf-facts-col">';
-  factsRight.forEach(function(f) {
-    factsHTML += '<div class="cf-fact-row"><span class="cf-fact-lbl">' + f.l + ':</span> <span class="cf-fact-val">' + f.v + '</span></div>';
-  });
-  factsHTML += '</div></div>';
+  factsHTML += '</div>';
 
   // What makes it unique - as bullets
   var uniqueHTML = '';
@@ -1359,28 +1365,16 @@ function renderPreview() {
   }
 
   el.innerHTML =
-    // Hero
-    '<div class="prev-hero-v2">' +
+    // Hero + Course Profile merged into one block
+    '<div class="cf-block">' +
       '<h2 class="prev-title">' + evName + ' 2026</h2>' +
       '<div class="prev-sub">' + courseName + ' &middot; ' + evDate + '</div>' +
-    '</div>' +
-
-    // Unified course profile
-    '<div class="cf-block">' +
-      '<div class="cf-section-title">Course Profile</div>' +
+      '<div class="cf-section-title" style="margin-top:.5rem">Course Profile <span style="font-size:.5rem;color:var(--ts);text-transform:none;font-family:var(--fb)">tap stats to compare ▸</span></div>' +
       profHTML +
       '<div class="cf-source">Source: DataGolf Course Fit Model, PGA Tour Media Guide</div>' +
     '</div>' +
 
-    // SG Emphasis — standalone
-    '<div class="cf-block cf-sg-block" onclick="openSGCompare()">' +
-      '<div class="cf-section-title">Strokes Gained Emphasis <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">tap to compare ▸</span></div>' +
-      sgBars +
-      '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
-      '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
-    '</div>' +
-
-    // Weather & Conditions
+    // Conditions + SG Emphasis merged
     '<div class="cf-block">' +
       '<div class="cf-section-title">Conditions</div>' +
       '<div class="cf-wx" id="wx-grid">' +
@@ -1389,7 +1383,12 @@ function renderPreview() {
         '<div class="cf-wx-card"><div class="cf-wx-icon">💧</div><div class="cf-wx-val" id="wx-rain">' + (course.wxRain || '25%') + '</div><div class="cf-wx-lbl">Rain Chance</div></div>' +
       '</div>' +
       '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:var(--go)">📡 10-Day Forecast →</a>' +
-      '<div class="cf-source">Historical averages for tournament week</div>' +
+      '<div class="cf-sg-compact" onclick="openSGCompare()" style="cursor:pointer;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--br)">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem"><span style="font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd)">SG Emphasis</span><span style="font-size:.5rem;color:var(--ts);font-family:var(--fb)">tap to compare ▸</span></div>' +
+        '<div class="cf-sg-inline">' + sgBars + '</div>' +
+        '<div style="font-size:.55rem;color:var(--ts);margin-top:.2rem"><span style="color:var(--go);font-weight:600">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
+      '</div>' +
+      '<div class="cf-source" style="margin-top:.3rem">Sources: Weather.com, DataGolf SG Decomposition</div>' +
     '</div>' +
 
     // Course notes as bullets
@@ -1398,24 +1397,24 @@ function renderPreview() {
       notesHTML +
     '</div>' +
 
-    // Expandable full course facts
+    // Expandable full course facts (tile grid)
     '<details class="cf-details">' +
-      '<summary class="cf-details-sum">Full Course Facts</summary>' +
+      '<summary class="cf-details-sum">More Course Details</summary>' +
       '<div class="cf-details-body">' +
         factsHTML +
-        (course.signatureHoles ? '<div class="cf-sig"><span class="cf-fact-lbl">Signature Holes:</span> ' + course.signatureHoles + '</div>' : '') +
+        (course.signatureHoles ? '<div class="cf-sig" style="margin-top:.5rem"><span class="cf-fact-lbl">Signature Holes:</span> ' + course.signatureHoles + '</div>' : '') +
         uniqueHTML +
-        (corrHTML ? '<div class="cf-section-title" style="margin-top:.6rem">Correlated Courses</div>' +
-          '<div class="cf-source" style="margin-bottom:.3rem">Courses with similar SG profiles and scoring patterns per DataGolf</div>' +
-          corrHTML : '') +
-        '<div class="cf-source" style="margin-top:.5rem">Sources: DataGolf Course Fit Model, PGA Tour Course Database, USGA/R&A Championship Records</div>' +
+        (corrHTML ? '<div style="margin-top:.5rem"><span style="font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd)">Correlated Courses</span>' +
+          '<div class="cf-source" style="margin-bottom:.3rem">Courses with similar SG profiles per DataGolf</div>' +
+          corrHTML + '</div>' : '') +
+        '<div class="cf-source" style="margin-top:.5rem">Sources: DataGolf, PGA Tour Course Database, USGA/R&A Records</div>' +
       '</div>' +
     '</details>' +
 
-    // Past winners (collapsible)
+    // Past winners (collapsible) — last 10 of this tournament
     '<details class="cf-section" style="margin-bottom:.5rem">' +
-      '<summary class="cf-section-title" style="cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between"><span>Past Winners</span><span class="pw-arrow" style="font-size:.7rem;color:var(--ts);transition:transform .2s">▼</span></summary>' +
-      '<table class="cf-pw-table"><tbody>' + pwHTML + '</tbody></table>' +
+      '<summary class="cf-section-title" style="cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between"><span>Past Winners <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Last 10)</span></span><span class="pw-arrow" style="font-size:.7rem;color:var(--ts);transition:transform .2s">▼</span></summary>' +
+      '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:right;padding:.1rem .3rem">Score</th><th style="text-align:left;padding:.1rem .3rem .1rem .4rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' +
     '</details>' +
 
     // Win odds
