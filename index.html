@@ -237,7 +237,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-sg-block{cursor:pointer;transition:border-color .2s}
 .cf-sg-block:hover{border-color:var(--go)}
 .cf-inner-details{margin-top:.5rem;border-top:1px solid var(--br);padding-top:.4rem}
-.cf-inner-sum{font-size:.65rem;color:var(--gl);cursor:pointer;font-family:var(--fd);font-weight:600;letter-spacing:.03em;user-select:none;list-style:none;transition:color .2s}
+.cf-inner-sum{font-size:.75rem;color:var(--gl);cursor:pointer;font-family:var(--fb);font-weight:600;letter-spacing:.03em;user-select:none;list-style:none;transition:color .2s}
 .cf-inner-sum::-webkit-details-marker{display:none}
 .cf-inner-sum:hover{color:var(--tb)}
 .cf-inner-details[open] .cf-inner-sum{margin-bottom:.4rem}
@@ -358,7 +358,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 
 <div class="cd" id="live-preview"></div>
 
-<div class="cd"><h3 style="display:flex;align-items:baseline;gap:.4rem">2026 Majors <span style="font-size:.55rem;color:var(--gl);font-weight:400;letter-spacing:.03em">tap for preview →</span></h3>
+<div class="cd"><h3 style="display:flex;align-items:baseline;gap:.4rem">2026 Majors <span style="font-size:.62rem;color:var(--gl);font-weight:500;letter-spacing:.03em;font-family:var(--fb)">tap for preview →</span></h3>
 <div id="mjr-sch" class="mjr-sched"></div></div>
 <div class="cd">
 <details class="cf-details" open>
@@ -1349,9 +1349,9 @@ function renderPreview() {
   pw.slice(0, 10).forEach(function(w) {
     pwHTML += '<tr><td style="color:var(--ts);font-family:var(--fm);white-space:nowrap">' + w.yr + '</td>' +
       '<td style="color:var(--tb)">' + w.nm + '</td>' +
-      '<td style="color:var(--go);font-family:var(--fm);text-align:right;white-space:nowrap">' + w.sc + '</td>' +
-      (isRotating ? '<td style="color:var(--ts);font-size:.58rem;padding-left:.3rem">' + (w.cs || '') + '</td>' : '') +
-      '<td style="color:var(--ts);font-size:.6rem;padding-left:.4rem">' + (w.r2 && w.r2 !== '-' ? w.r2 : '') + '</td></tr>';
+      '<td style="color:var(--go);font-family:var(--fm);text-align:left;white-space:nowrap;padding:.22rem .2rem">' + w.sc + '</td>' +
+      (isRotating ? '<td style="color:var(--ts);font-size:.58rem;padding:.22rem .2rem">' + (w.cs || '') + '</td>' : '') +
+      '<td style="color:var(--ts);font-size:.6rem;padding:.22rem .2rem">' + (w.r2 && w.r2 !== '-' ? w.r2 : '') + '</td></tr>';
   });
   // "At This Venue" sub-section for rotating events
   var venueHTML = '';
@@ -1432,11 +1432,11 @@ function renderPreview() {
   // Fun facts
   if (course.funFacts && course.funFacts.length) {
     notesHTML += '<div style="margin-top:.5rem;border-top:1px solid var(--br);padding-top:.4rem">';
-    notesHTML += '<div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd);margin-bottom:.3rem">Did You Know?</div>';
+    notesHTML += '<div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd);margin-bottom:.3rem">Did You Know?</div>';
     course.funFacts.forEach(function(f) {
-      notesHTML += '<div style="font-size:.6rem;color:var(--tb);margin-bottom:.35rem;line-height:1.4;font-family:var(--fb)">' +
+      notesHTML += '<div style="font-size:.68rem;color:var(--tb);margin-bottom:.35rem;line-height:1.4;font-family:var(--fb)">' +
         '💡 ' + f.text +
-        (f.src ? ' <a href="' + f.src + '" target="_blank" style="color:var(--ts);font-size:.56rem;text-decoration:underline">[' + (f.srcName || 'Source') + ']</a>' : '') +
+        (f.src ? ' <a href="' + f.src + '" target="_blank" style="color:var(--ts);font-size:.6rem;text-decoration:underline">[' + (f.srcName || 'Source') + ']</a>' : '') +
         '</div>';
     });
     notesHTML += '</div>';
@@ -1496,7 +1496,7 @@ function renderPreview() {
     '<div class="cf-block">' +
       (window._forceEvent && window._forceEvent !== getDateEvent() ? '<div style="margin-bottom:.3rem"><span onclick="backToCurrent()" style="font-size:.6rem;color:var(--go);cursor:pointer;font-family:var(--fb)">← Back to ' + EV_NAMES[getDateEvent()] + '</span></div>' : '') +
       '<h2 class="prev-title">' + evName + ' &middot; ' + courseName + '</h2>' +
-      '<div class="cf-section-title" style="margin-top:.5rem">Course Profile <span style="font-size:.58rem;color:var(--gl);text-transform:none;font-family:var(--fb)">tap stats to compare ▸</span></div>' +
+      '<div class="cf-section-title" style="margin-top:.5rem">Course Profile <span style="font-size:.62rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:500">tap stats to compare ▸</span></div>' +
       profHTML +
       '<div class="cf-source">Source: DataGolf Course Fit Model, PGA Tour Media Guide</div>' +
       // More Course Details dropdown inside the profile block
@@ -1516,7 +1516,7 @@ function renderPreview() {
 
     // SG Emphasis — separate block
     '<div class="cf-block cf-sg-block" onclick="openSGCompare()">' +
-      '<div class="cf-section-title">Strokes Gained Emphasis <span style="font-size:.58rem;color:var(--gl);text-transform:none;font-family:var(--fb)">tap to compare ▸</span></div>' +
+      '<div class="cf-section-title">Strokes Gained Emphasis <span style="font-size:.62rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:500">tap to compare ▸</span></div>' +
       sgBars +
       '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
       '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
@@ -1560,7 +1560,7 @@ function renderPreview() {
     '<details class="cf-details" open>' +
       '<summary class="cf-details-sum">Past Winners <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Last 10)</span></summary>' +
       '<div class="cf-details-body" style="padding:.3rem .5rem">' +
-        '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:right;padding:.1rem .3rem">Score</th>' + (isRotating ? '<th style="text-align:left;padding:.1rem .3rem">Course</th>' : '') + '<th style="text-align:left;padding:.1rem .3rem .1rem .4rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' + venueHTML +
+        '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:left;padding:.1rem .2rem">Score</th>' + (isRotating ? '<th style="text-align:left;padding:.1rem .2rem">Course</th>' : '') + '<th style="text-align:left;padding:.1rem .2rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' + venueHTML +
       '</div>' +
     '</details>';
 
