@@ -1013,7 +1013,12 @@ function rLive(){
   rMjrSch();renderPreview();}
 
 /* ===== SERVICE WORKER ===== */
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>{if(r.active&&r.active.scriptURL.includes('golf-majors-pool'))r.unregister();});
+  });
+  navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{});
+}
 
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded',()=>{populateMe();rLive();});
