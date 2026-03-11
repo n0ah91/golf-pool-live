@@ -29,7 +29,7 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .hdr{background:linear-gradient(180deg,var(--bc) 0%,var(--bd) 100%);border-bottom:1px solid var(--br);padding:1rem 1rem 0;text-align:center}
 .hdr h1{font-family:var(--fd);font-weight:700;font-size:2rem;color:var(--tb);letter-spacing:.04em}
 .hdr h1::after{content:'';display:block;width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--go),transparent);margin:.35rem auto 0}
-.hdr .sub{font-family:var(--fb);color:var(--go);font-size:.6rem;margin-top:.25rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500}
+.hdr .sub{font-family:var(--fb);color:var(--go);font-size:.6rem;margin-top:.25rem;margin-bottom:.35rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500}
 .me-bar{display:flex;justify-content:center;align-items:center;gap:.5rem;padding:.5rem .8rem;background:var(--bm);border-bottom:1px solid var(--br);position:sticky;top:0;z-index:50;transition:all .3s}
 .me-bar.selected{background:linear-gradient(180deg,var(--bc) 0%,var(--bm) 100%);border-bottom-color:rgba(201,162,39,.25)}
 .me-bar label{font-size:.72rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em}
@@ -324,7 +324,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <button onclick="go('events')">Events</button>
 <button onclick="go('insights')">Insights</button>
 <button onclick="go('career')">Career</button>
-<button onclick="go('money')">Money</button>
+<button onclick="go('rules')">Rules</button>
 </nav>
 <main>
 <section id="season" class="pn2">
@@ -382,8 +382,66 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <div class="ctrl"><input type="text" id="scc" placeholder="Search players..." oninput="rCareer()"></div>
 <div id="c-stats" class="sr"></div>
 <div class="tw"><table><thead id="c-th"></thead><tbody id="c-tb"></tbody></table></div>
+<div id="c-money"></div>
 </section>
-<section id="money" class="pn2"><div id="m-body"></div></section>
+<section id="rules" class="pn2">
+<div class="cd" style="max-width:640px;margin-left:auto;margin-right:auto">
+<h3>How It Works</h3>
+<div style="font-size:.78rem;color:var(--tp);line-height:1.6">
+
+<div style="margin-bottom:.8rem">
+<div style="font-size:.72rem;color:var(--go);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">The Format</div>
+<ul style="padding-left:1.2rem;margin:0">
+<li>Salary cap pool across <strong style="color:var(--tb)">5 tournaments</strong>: The Players, Masters, PGA Championship, U.S. Open, and The Open</li>
+<li>Pick <strong style="color:var(--tb)">6 golfers per event</strong> — stay under the salary cap</li>
+<li>Only the <strong style="color:var(--tb)">best 4 of 6</strong> scores count each tournament</li>
+<li>Golfers are <strong style="color:var(--tb)">one-and-done</strong> — once picked, they can't be used again all season</li>
+<li>Multiple entries allowed per person</li>
+</ul>
+</div>
+
+<div style="margin-bottom:.8rem">
+<div style="font-size:.72rem;color:var(--go);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Scoring</div>
+<ul style="padding-left:1.2rem;margin:0">
+<li><strong style="color:var(--tb)">Total strokes</strong> — lowest cumulative score wins</li>
+<li>Missed cut / WD / incomplete round = highest (worst) score of that day</li>
+<li>Tiebreaker: predict the winner's total strokes (e.g. 275)</li>
+</ul>
+</div>
+
+<div style="margin-bottom:.8rem">
+<div style="font-size:.72rem;color:var(--go);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.1rem">Finish Bonuses</div>
+<div style="font-size:.6rem;color:var(--ts);margin-bottom:.3rem;font-style:italic">Strokes subtracted from your golfer's total score</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.2rem;margin-top:.3rem;text-align:center">
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−10</div><div style="font-size:.58rem;color:var(--ts)">1st</div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−9</div><div style="font-size:.58rem;color:var(--ts)">2nd</div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−8</div><div style="font-size:.58rem;color:var(--ts)">3rd</div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−7</div><div style="font-size:.58rem;color:var(--ts)">4th</div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−6</div><div style="font-size:.58rem;color:var(--ts)">5th</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.2rem;margin-top:.2rem;text-align:center">
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−5</div><div style="font-size:.58rem;color:var(--ts)">6th</div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−4</div><div style="font-size:.58rem;color:var(--ts)">7th</div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−3</div><div style="font-size:.58rem;color:var(--ts)">8th</div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−2</div><div style="font-size:.58rem;color:var(--ts)">9th</div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem"><div style="font-family:var(--fm);font-size:.82rem;color:var(--gl);font-weight:600">−1</div><div style="font-size:.58rem;color:var(--ts)">10th</div></div>
+</div>
+</div>
+
+<div style="margin-bottom:.8rem">
+<div style="font-size:.72rem;color:var(--go);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Side Pots</div>
+<div style="display:grid;gap:.3rem">
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.45rem .6rem;display:flex;gap:.5rem;align-items:center"><span style="font-size:1rem">📈</span><div><strong style="color:var(--tb)">Bounce Back (BB)</strong><br><span style="color:var(--ts);font-size:.7rem">Largest in-season comeback from a poor start</span></div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.45rem .6rem;display:flex;gap:.5rem;align-items:center"><span style="font-size:1rem">🐴</span><div><strong style="color:var(--tb)">Dark Horse (DH)</strong><br><span style="color:var(--ts);font-size:.7rem">Lowest score from a golfer picked by only one participant</span></div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.45rem .6rem;display:flex;gap:.5rem;align-items:center"><span style="font-size:1rem">💰</span><div><strong style="color:var(--tb)">Money List (ML)</strong><br><span style="color:var(--ts);font-size:.7rem">Most aggregate season winnings</span></div></div>
+<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.45rem .6rem;display:flex;gap:.5rem;align-items:center"><span style="font-size:1rem">💀</span><div><strong style="color:var(--tb)">D.F.L.</strong><br><span style="color:var(--ts);font-size:.7rem">Played every event and still finished dead last</span></div></div>
+</div>
+</div>
+
+<div style="font-size:.65rem;color:var(--td);font-style:italic;text-align:center;border-top:1px solid var(--br);padding-top:.5rem">⚠️ All winnings are fake internet money — bragging rights only</div>
+</div>
+</div>
+</section>
 </main>
 <footer class="ft">The Majors Pool &middot; Est. 2017 &middot; Live Dashboard<br><a href="https://account.venmo.com/u/NoahStancamp" target="_blank" style="color:#e8983e;text-decoration:none;letter-spacing:.04em;font-size:.85rem;margin-top:.4rem;display:inline-block;font-weight:500">🍺 Buy Me a Beer</a></footer>
 <script>
@@ -471,7 +529,7 @@ function superlatives(y){
   const bb=boomBust(y);if(bb.length>0)awards.push({t:'Mr. Consistent',n:bb[0].entry_used,d:'\u03C3 '+bb[0].bb.toFixed(1)+' | Avg Rk '+bb[0].avgEvRank.toFixed(0)});
   // Biggest payday
   const bp=[...e4y(y)].filter(e=>e.winnings>0).sort((a,b)=>b.winnings-a.winnings);
-  if(bp.length>0)awards.push({t:'Biggest Payday',n:bp[0].entry_used,d:'$'+bp[0].winnings.toLocaleString()});
+  if(bp.length>0)awards.push({t:'Biggest Payday',n:bp[0].entry_used,d:Math.round(bp[0].winnings).toLocaleString()});
   return awards;
 }
 function boomBust(y){
@@ -491,7 +549,7 @@ function toggleDet(tr,pid){
   const yrs=Object.keys(pr.seasons).sort();
   let h=`<div style="margin-bottom:.4rem"><strong style="color:var(--tb);font-family:var(--fd);font-size:1.1rem">${pr.canonical_name||pr.identifier}</strong>`;
   if(pr.all_entry_names)h+=` <span class="pn" style="font-size:.65rem">${pr.all_entry_names.join(' / ')}</span>`;
-  if(pr.career)h+=` <span class="pn" style="font-size:.65rem"> | ${pr.career.total_seasons} seasons | $${(pr.career.total_winnings||0).toLocaleString()} career</span>`;
+  if(pr.career)h+=` <span class="pn" style="font-size:.65rem"> | ${pr.career.total_seasons} seasons | ${Math.round(pr.career.total_winnings||0).toLocaleString()} career</span>`;
   h+=`</div><div class="dr-grid">`;
   for(const y of yrs){let sd=pr.seasons[y];if(Array.isArray(sd)){for(const s of sd)h+=yrCard(y,s);}else h+=yrCard(y,sd);}
   h+=`</div>`;td.innerHTML=h;row.appendChild(td);tr.after(row);
@@ -499,16 +557,16 @@ function toggleDet(tr,pid){
 function yrCard(y,s){
   const tc=s.total==null?'':s.total<0?'color:var(--gl)':s.total>0?'color:var(--rd)':'';
   return`<div class="dr-yr"><div class="dy">${y}</div><div class="dr2" style="${tc}">${s.rank!=null?'#'+s.rank:'DNS'} ${s.total!=null?'('+(s.total>0?'+':'')+s.total+')':''}</div>
-    <div class="dt">${s.entry_used}</div>${s.winnings?'<div class="dt" style="color:var(--go)">$'+s.winnings.toLocaleString()+'</div>':''}</div>`;}
+    <div class="dt">${s.entry_used}</div>${s.winnings?'<div class="dt" style="color:var(--go)">'+Math.round(s.winnings).toLocaleString()+'</div>':''}</div>`;}
 
 /* ===== NAV ===== */
 function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
-  ['live','season','events','insights','career','money'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
-  var meb=document.querySelector('.me-bar');if(meb)meb.style.display=t==='live'?'none':'flex';
+  ['live','season','events','insights','career','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
+  var meb=document.querySelector('.me-bar');if(meb)meb.style.display=(t==='live'||t==='rules')?'none':'flex';
   if(t==='season')rSeason();else if(t==='events')rEvents();else if(t==='insights')rInsights();
-  else if(t==='live')rLive();else if(t==='career')rCareer();else if(t==='money')rMoney();}
+  else if(t==='live')rLive();else if(t==='career')rCareer();}
 function chgYr(){S.yr=document.getElementById('yr').value;S.sort={c:'rank',a:true};updateMeBadge();rSeason();}
 
 /* ===== SEASON TAB ===== */
@@ -521,7 +579,7 @@ function rSeason(){
   document.getElementById('ec').textContent=d.length+(d.length<tot?' / '+tot:'');
   document.getElementById('s-stats').innerHTML=
     `<div class="sc"><div class="v">${tot}</div><div class="l">Entries</div></div>`+
-    `<div class="sc"><div class="v">$${pot.toLocaleString()}</div><div class="l">Prize Pool</div></div>`+
+    `<div class="sc"><div class="v">${pot.toLocaleString()}</div><div class="l">Prize Pool</div></div>`+
     `<div class="sc"><div class="v go">${leader?leader.entry_used:'-'}</div><div class="l">${y} Champion</div></div>`+
     `<div class="sc"><div class="v gl">${leader&&leader.total!=null?(leader.total>0?'+':'')+leader.total:'-'}</div><div class="l">Winning Score</div></div>`;
   // Awards
@@ -555,7 +613,7 @@ function rSeason(){
       else if(isRookie(e.person,y))yh=`<span class="yoy nw">NEW</span>`;}
     const ec=EK.map(k=>{const v=e[k];if(v==null)return'<td class="sn">-</td>';
       const c=v<=5?'sg':v<=10?'sg':v>=Math.max(80,tot*.85)?'sb':'';return`<td class="${c}">${v}</td>`;}).join('');
-    const w=e.winnings?'$'+e.winnings.toLocaleString():'-';const wc=e.winnings?'wi':'wi z';
+    const w=e.winnings?Math.round(e.winnings).toLocaleString():'-';const wc=e.winnings?'wi':'wi z';
     const pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
     return`<tr class="${rw}" onclick="toggleDet(this,'${e.id}')"><td class="rc ${rc}">${rd}${yh}</td>
       <td class="nc">${e.entry_used}${pn?'<br><span class="pn">'+pn+'</span>':''}</td>
@@ -584,7 +642,7 @@ function rEvDet(){
     return`<tr class="${rw}" onclick="toggleDet(this,'${e.id}')"><td class="rc ${rc}">${e[k]}</td>
       <td class="nc">${e.entry_used}${pn?'<br><span class="pn">'+pn+'</span>':''}</td>
       <td>${e.rank??'DNS'}</td><td><span class="tp ${tc}">${e.total==null?'DNS':(e.total>0?'+'+e.total:e.total)}</span></td>
-      <td class="${e.winnings?'wi':'wi z'}">${e.winnings?'$'+e.winnings.toLocaleString():'-'}</td></tr>`;}).join('');
+      <td class="${e.winnings?'wi':'wi z'}">${e.winnings?Math.round(e.winnings).toLocaleString():'-'}</td></tr>`;}).join('');
 }
 
 /* ===== INSIGHTS TAB ===== */
@@ -598,7 +656,7 @@ function rRecords(y){
       std=Math.sqrt(v.reduce((s,x)=>s+(x-a)**2,0)/v.length);
       if(std<mc.std)mc={std,n:e.entry_used,a};if(std>bb2.std)bb2={std,n:e.entry_used,a};}}
   document.getElementById('i-records').innerHTML=`<h3>${y} Season Snapshot</h3><div class="ig">
-    <div class="ib"><div class="it">Entries</div><div class="iv">${ents.length}</div><div class="is">$${(ents.length*150).toLocaleString()} pool</div></div>
+    <div class="ib"><div class="it">Entries</div><div class="iv">${ents.length}</div><div class="is">${(ents.length*150).toLocaleString()} pool</div></div>
     <div class="ib"><div class="it">Best Event Finish</div><div class="iv">${bestE.n||'-'}</div><div class="is">#${bestE.r} in ${lb[bestE.k]||''}</div></div>
     <div class="ib"><div class="it">Worst Event Finish</div><div class="iv">${worstE.n||'-'}</div><div class="is">#${worstE.r} in ${lb[worstE.k]||''}</div></div>
     <div class="ib"><div class="it">Steadiest Hand</div><div class="iv">${mc.n||'-'}</div><div class="is">\u03C3 ${mc.std<Infinity?mc.std.toFixed(1):'-'}</div></div>
@@ -646,7 +704,7 @@ function rH2H(){
     ...EK.map(k=>({l:lb[k],va:a[k],vb:b[k],lo:true})),{l:'Winnings',va:a.winnings,vb:b.winnings,lo:false}];
   let wA=0,wB=0;
   const rh=rows.map(r=>{const[ca,cb]=cmp(r.va,r.vb,r.lo);if(ca==='win')wA++;if(cb==='win')wB++;
-    const f=v=>v==null?'-':r.l==='Winnings'?'$'+(v||0).toLocaleString():v;
+    const f=v=>v==null?'-':r.l==='Winnings'?Math.round(v||0).toLocaleString():v;
     return`<div class="h2h-stat"><span class="hv ${ca}">${f(r.va)}</span><span class="hl">${r.l}</span><span class="hv ${cb}">${f(r.vb)}</span></div>`;}).join('');
   document.getElementById('h2h-body').innerHTML=`<div class="h2h">
     <div class="h2h-col"><div class="hname">${na}</div><div style="font-size:1.4rem;font-family:var(--fd);color:${wA>wB?'var(--gl)':'var(--ts)'}">${wA}</div></div>
@@ -707,8 +765,7 @@ function rCareer(){
   document.getElementById('c-stats').innerHTML=
     `<div class="sc"><div class="v">${tp}</div><div class="l">Players</div></div>`+
     `<div class="sc"><div class="v">${seven}</div><div class="l">All 7 Seasons</div></div>`+
-    `<div class="sc"><div class="v">${DB.unknowns.length}</div><div class="l">Unidentified</div></div>`+
-    `<div class="sc"><div class="v">$${Math.round(aw).toLocaleString()}</div><div class="l">All-Time Paid</div></div>`;
+    `<div class="sc"><div class="v">${DB.unknowns.length}</div><div class="l">Unidentified</div></div>`;
   const cs=S.csort;
   document.getElementById('c-th').innerHTML=`<tr>
     <th class="${cs.c==='name'?'s':''}" onclick="cSS('name')">Name${si('name',cs)}</th>
@@ -723,37 +780,36 @@ function rCareer(){
     return`<tr class="${meC}" onclick="toggleDet(this,'${pid}')"><td class="nc">${s.name}${al?'<br><span class="pn">'+al+'</span>':''}</td>
       <td>${s.seasons}</td><td class="${s.bestRank<=3?'r'+s.bestRank:''}">${s.bestRank??'-'}</td>
       <td>${s.avgRank!=null?s.avgRank.toFixed(1):'-'}</td><td>${s.inMoney}</td>
-      <td class="${wc}">${s.totalWinnings?'$'+s.totalWinnings.toLocaleString():'-'}</td></tr>`;}).join('');
+      <td class="${wc}">${s.totalWinnings?Math.round(s.totalWinnings).toLocaleString():'-'}</td></tr>`;}).join('');
+  rEarnings();
 }
 function cSS(c){if(S.csort.c===c)S.csort.a=!S.csort.a;else S.csort={c,a:c==='name'};rCareer();}
 
-/* ===== MONEY TAB ===== */
-function rMoney(){
-  const ct=document.getElementById('m-body');const yrs=DB.metadata.years_covered.map(String).sort().reverse();
-  // Pool economics
-  let totalCollected=0,totalPaid=0,uniqueWinners=new Set();
-  for(const y of yrs){const ents=e4y(y);totalCollected+=ents.length*150;
-    for(const e of ents)if(e.winnings>0){totalPaid+=e.winnings;uniqueWinners.add(e.person);}}
-  let h=`<div class="cd"><h3>Pool Economics (All-Time)</h3><div class="pe">
-    <div class="pe-item"><div class="pv">$${Math.round(totalPaid).toLocaleString()}</div><div class="pl">Total Paid Out</div></div>
-    <div class="pe-item"><div class="pv">${uniqueWinners.size}</div><div class="pl">Unique Winners</div></div>
-    <div class="pe-item"><div class="pv">${yrs.length}</div><div class="pl">Seasons</div></div></div></div>`;
+/* ===== EARNINGS (merged into Career) ===== */
+function rEarnings(){
+  const ct=document.getElementById('c-money');if(!ct)return;
+  const yrs=DB.metadata.years_covered.map(String).sort().reverse();
+  let uniqueWinners=new Set();
+  for(const y of yrs){for(const e of e4y(y))if(e.winnings>0)uniqueWinners.add(e.person);}
+  let h='<div class="cd"><h3>Pool Earnings</h3><div style="font-size:.65rem;color:var(--td);margin-bottom:.5rem;font-style:italic">⚠️ Fake internet money — for bragging rights only</div><div class="pe">'+
+    '<div class="pe-item"><div class="pv">'+uniqueWinners.size+'</div><div class="pl">Unique Winners</div></div>'+
+    '<div class="pe-item"><div class="pv">'+yrs.length+'</div><div class="pl">Seasons</div></div></div></div>';
   // All-time earnings
   const earners=DB.participants.filter(p=>p.career.total_winnings>0).sort((a,b)=>b.career.total_winnings-a.career.total_winnings);
   h+='<div class="cd"><h3>All-Time Earnings</h3><div class="tw" style="margin:0"><table><thead><tr><th>#</th><th>Name</th><th>Yrs</th><th>ITM</th><th>Won</th></tr></thead><tbody>';
   earners.forEach((p,i)=>{const meC=loadMe()===p.canonical_name?'me':'';
-    h+=`<tr class="${meC}"><td class="rc ${i<3?'r'+(i+1):''}">${i+1}</td><td class="nc">${p.canonical_name}</td><td>${p.career.total_seasons}</td><td>${p.career.seasons_in_money}</td><td class="wi">$${p.career.total_winnings.toLocaleString()}</td></tr>`;});
+    h+=`<tr class="${meC}"><td class="rc ${i<3?'r'+(i+1):''}">${i+1}</td><td class="nc">${p.canonical_name}</td><td>${p.career.total_seasons}</td><td>${p.career.seasons_in_money}</td><td class="wi">${Math.round(p.career.total_winnings).toLocaleString()}</td></tr>`;});
   h+='</tbody></table></div></div>';
   // Year by year
   for(const y of yrs){const en=e4y(y).filter(e=>e.winnings>0).sort((a,b)=>(a.rank||999)-(b.rank||999));
     if(!en.length)continue;const tot=e4y(y).length;
-    h+=`<div class="cd"><h3>${y} <span style="color:var(--td);font-size:.8rem">${tot} entries &middot; $${(tot*150).toLocaleString()}</span></h3>`;
+    h+=`<div class="cd"><h3>${y} <span style="color:var(--td);font-size:.8rem">${tot} entries</span></h3>`;
     h+='<div class="tw" style="margin:0"><table><thead><tr><th>Rk</th><th>Entry</th><th>Total</th><th>Won</th></tr></thead><tbody>';
     en.forEach(e=>{const tc=e.total==null?'n':e.total<0?'g':'b';const pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
       const meC=isMe(e)?'me':'';
       h+=`<tr class="${meC}"><td class="rc ${e.rank<=3?'r'+e.rank:''}">${e.rank??'-'}</td>
         <td class="nc">${e.entry_used}${pn?'<br><span class="pn">'+pn+'</span>':''}</td>
-        <td><span class="tp ${tc}">${e.total==null?'DNS':(e.total>0?'+'+e.total:e.total)}</span></td><td class="wi">$${e.winnings.toLocaleString()}</td></tr>`;});
+        <td><span class="tp ${tc}">${e.total==null?'DNS':(e.total>0?'+'+e.total:e.total)}</span></td><td class="wi">${Math.round(e.winnings).toLocaleString()}</td></tr>`;});
     h+='</tbody></table></div></div>';}
   ct.innerHTML=h;
 }
