@@ -130,7 +130,8 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .api-bar .ab:hover{background:var(--gl)}.api-bar .ab.sec{background:var(--bc);color:var(--ts);border:1px solid var(--br)}.api-bar .ab.sec:hover{border-color:var(--gn);color:var(--tb)}
 .dgs{font-size:.65rem;font-family:var(--fm)}.dgs.ok{color:var(--gl)}.dgs.err{color:var(--rd)}.dgs.ld{color:var(--go)}
 .mjr-sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.45rem;margin-bottom:.3rem}
-.mjr-card{background:var(--bc);border:1px solid var(--br);border-radius:7px;padding:.55rem;text-align:center;transition:all .2s}
+.mjr-card{background:var(--bc);border:1px solid var(--br);border-radius:7px;padding:.55rem .45rem;text-align:center;transition:all .2s;cursor:pointer}
+.mjr-card:hover{background:var(--bca);border-color:var(--go);transform:translateY(-1px);box-shadow:0 2px 8px rgba(201,162,39,.1)}
 .mjr-card.done{border-color:var(--gn);opacity:.65}.mjr-card.live{border-color:var(--go);background:rgba(201,162,39,.06);animation:pulse 2s infinite}
 .mjr-card.next{border-color:var(--gl)}
 .mjr-card .mn{font-family:var(--fd);font-size:.88rem;color:var(--tb);font-weight:600}
@@ -357,7 +358,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 
 <div class="cd" id="live-preview"></div>
 
-<div class="cd"><h3>2026 Majors</h3>
+<div class="cd"><h3 style="display:flex;align-items:baseline;gap:.4rem">2026 Majors <span style="font-size:.48rem;color:var(--go);font-weight:400;opacity:.7;letter-spacing:.03em">tap for preview →</span></h3>
 <div id="mjr-sch" class="mjr-sched"></div></div>
 <div class="cd">
 <details class="cf-details" open>
@@ -758,6 +759,13 @@ const DG_PROXY='https://jeopsojkamcruannkoqf.supabase.co/functions/v1/dg-proxy';
 const BEST_OF=4,ROSTER_SZ=6;
 const EV_NAMES={players:'The Players',masters:'Masters',pga:'PGA Champ.',uso:'U.S. Open',open:'The Open'};
 const EV_DATES={players:'March 2026',masters:'April 2026',pga:'May 2026',uso:'June 2026',open:'July 2026'};
+const EV_DETAIL={
+  players:{dates:'Mar 12–15',course:'TPC Sawgrass',teaser:'Island green 17th · Water on 17/18 holes'},
+  masters:{dates:'Apr 9–12',course:'Augusta National',teaser:'Amen Corner · Fastest greens in golf'},
+  pga:{dates:'May 14–17',course:'Aronimink GC',teaser:'176 bunkers · Donald Ross masterpiece'},
+  uso:{dates:'Jun 18–21',course:'Shinnecock Hills',teaser:'Links-style · Brutal fescue rough'},
+  open:{dates:'Jul 16–19',course:'Royal Birkdale',teaser:'New par-3 15th · 60-ft sand dunes'}
+};
 const EV_DETECT={players:/players/i,masters:/masters/i,pga:/pga champ/i,uso:/u\.?s\.?\s*open/i,open:/^the open|british open|open champ/i};
 
 /* State */
@@ -999,8 +1007,10 @@ function rMjrSch(){
     const sl=m.s==='done'?'Complete':m.s==='live'?'LIVE':'Upcoming';
     const sc=m.s==='done'?'s-d':m.s==='live'?'s-l':'s-n';
     const cnt=POOL.entries.filter(e=>e.rosters[m.k]&&e.rosters[m.k].length>0).length;
-    return`<div class="mjr-card ${c}" onclick="switchPreview('${m.k}')" style="cursor:pointer"><div class="mn">${m.n}</div><div class="md">${m.d}</div><div class="ms ${sc}">${sl}</div>`+
-      (cnt?`<div style="font-size:.55rem;color:var(--td);margin-top:.15rem">${cnt} entries</div>`:'')+`</div>`;}).join('');}
+    const det=EV_DETAIL[m.k]||{};
+    return`<div class="mjr-card ${c}" onclick="switchPreview('${m.k}')" style="cursor:pointer"><div class="mn">${m.n}</div><div style="font-size:.58rem;color:var(--tp);margin-top:.1rem;font-family:var(--fm)">${det.dates||''}</div><div style="font-size:.52rem;color:var(--go);margin-top:.05rem">${det.course||''}</div><div class="ms ${sc}">${sl}</div><div style="font-size:.48rem;color:var(--ts);margin-top:.1rem;line-height:1.3;font-style:italic">${det.teaser||''}</div>`+
+      (cnt?`<div style="font-size:.5rem;color:var(--td);margin-top:.1rem">${cnt} entries</div>`:'')+
+      `</div>`;}).join('');}
 
 function switchPreview(evKey){
   window._forceEvent=evKey;
@@ -1406,7 +1416,7 @@ function renderPreview() {
   });
   profHTML += '</div>';
   if (projScore) {
-    profHTML += '<div style="text-align:center;margin-top:.3rem;font-size:.55rem;color:var(--ts);cursor:pointer" onclick="alert(\'10-Handicap Projected Score: ' + projScore + '\\n\\nCourse Rating: ' + course.courseRating + '\\nSlope Rating: ' + course.slopeRating + '\\nFormula: CR + (Slope ÷ 113) × HCP\\n= ' + course.courseRating + ' + (' + course.slopeRating + ' ÷ 113) × 10\\n= ' + projScore + '\')">10-HCP Projected: <span style="color:var(--tb);font-family:var(--fm)">' + projScore + '</span></div>';
+    profHTML += '<div style="text-align:center;margin-top:.7rem;font-size:.55rem;color:var(--ts);cursor:pointer" onclick="alert(\'10-Handicap Projected Score: ' + projScore + '\\n\\nCourse Rating: ' + course.courseRating + '\\nSlope Rating: ' + course.slopeRating + '\\nFormula: CR + (Slope ÷ 113) × HCP\\n= ' + course.courseRating + ' + (' + course.slopeRating + ' ÷ 113) × 10\\n= ' + projScore + '\')">10-HCP Projection: <span style="color:var(--tb);font-family:var(--fm)">' + projScore + '</span></div>';
   }
 
   // Course notes as bullet points
