@@ -213,9 +213,9 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .prev-title{font-family:var(--fd);font-size:1.5rem;color:var(--tb);font-weight:700;margin:0}
 .prev-sub{font-size:.72rem;color:var(--go);font-family:var(--fd);letter-spacing:.06em;margin-top:.15rem}
 .cf-block{background:var(--bca);border:1px solid var(--br);border-radius:7px;padding:.6rem .7rem;margin-bottom:.5rem}
-.cf-profile-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.35rem}
-.cf-pstat{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.35rem .25rem;text-align:center}
-.cf-pstat-v{font-family:var(--fm);font-size:.72rem;color:var(--tb);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cf-profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;max-width:100%;overflow:hidden}
+.cf-pstat{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.35rem .2rem;text-align:center;min-width:0;overflow:hidden}
+.cf-pstat-v{font-family:var(--fm);font-size:.68rem;color:var(--tb);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cf-pstat-l{font-size:.5rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ts);margin-top:.05rem}
 .cf-pstat.clickable{cursor:pointer;transition:border-color .2s,background .2s}
 .cf-pstat.clickable:hover{border-color:var(--go);background:var(--bh)}
@@ -233,15 +233,15 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .tour-legend .tl-cur::before{color:#c9a227}
 .tour-legend .tl-pool::before{color:#52b788}
 .tour-legend .tl-other::before{color:#4a5a50}
-.cf-sg-block{cursor:pointer;transition:border-color .2s}
+.cf-sg-block{cursor:pointer;transition:border-color .2s;max-width:480px;margin-left:auto;margin-right:auto}
 .cf-sg-block:hover{border-color:var(--go)}
-.cf-wx{display:grid;grid-template-columns:repeat(4,1fr);gap:.35rem;margin-top:.4rem}
+.cf-wx{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin-top:.4rem}
 .cf-wx-card{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.4rem .3rem;text-align:center}
 .cf-wx-icon{font-size:1.1rem;margin-bottom:.1rem}
 .cf-wx-val{font-family:var(--fm);font-size:.72rem;color:var(--tb);font-weight:500}
 .cf-wx-lbl{font-size:.5rem;text-transform:uppercase;color:var(--ts);margin-top:.05rem}
 .cf-wx-link{display:block;text-align:center;margin-top:.35rem;font-size:.6rem}
-@media(max-width:600px){.tour-modal{width:96vw;max-height:90vh;padding:.5rem}.tour-chart-wrap{height:72vh}.cf-wx{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.tour-modal{width:96vw;max-height:90vh;padding:.5rem}.tour-chart-wrap{height:72vh}}
 
 
 .cf-section-title{font-family:var(--fd);font-size:.85rem;color:var(--go);font-weight:600;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em}
@@ -280,8 +280,9 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-pw-table td{padding:.22rem .3rem;border-bottom:1px solid var(--br)}
 .cf-pw-table tr:hover{background:var(--bh)}
 .cf-actions{display:flex;gap:.5rem;margin-top:.4rem;margin-bottom:.5rem}
-@media(max-width:768px){.cf-profile-grid{grid-template-columns:repeat(3,1fr)}.cf-facts-grid{grid-template-columns:1fr}}
-@media(max-width:480px){.prev-title{font-size:1.15rem}.cf-profile-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:769px){.cf-profile-grid{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:768px){.cf-facts-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.prev-title{font-size:1.15rem}}
 </style>
 </head>
 <body>
@@ -477,6 +478,7 @@ function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
   ['live','season','events','insights','career','money'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
+  var meb=document.querySelector('.me-bar');if(meb)meb.style.display=t==='live'?'none':'flex';
   if(t==='season')rSeason();else if(t==='events')rEvents();else if(t==='insights')rInsights();
   else if(t==='live')rLive();else if(t==='career')rCareer();else if(t==='money')rMoney();}
 function chgYr(){S.yr=document.getElementById('yr').value;S.sort={c:'rank',a:true};updateMeBadge();rSeason();}
@@ -1036,6 +1038,7 @@ function diffAndNotify(prev){
 function rLive(){
   if(!DG.ok)dgConn();
   loadPool();
+  var meb=document.querySelector('.me-bar');if(meb)meb.style.display='none';
   rMjrSch();renderPreview();}
 
 /* ===== SERVICE WORKER ===== */
@@ -1063,59 +1066,59 @@ const COURSE_MAP = {
 
 
 const TOUR_COURSES=[
-{n:"Augusta National",y:7555,p:72,b:41,w:6,s:14,fw:38.5,gs:6486,rh:1.375,rtp:-1.2,cr:78.1,sl:137,sg:{ott:.2,app:.3,arg:.15,putt:.35}},
-{n:"TPC Sawgrass",y:7245,p:72,b:88,w:17,s:13,fw:30.7,gs:5500,rh:2.5,rtp:0.3,cr:76.4,sl:155,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
-{n:"Bay Hill",y:7466,p:72,b:62,w:9,s:12.5,fw:33,gs:5500,rh:2,rtp:0.8,cr:75.2,sl:138,sg:{ott:.3,app:.3,arg:.2,putt:.2}},
-{n:"Aronimink",y:7280,p:70,b:176,w:4,s:11,fw:29.5,gs:8300,rh:3,rtp:0.5,cr:75.5,sl:138,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Shinnecock Hills",y:7440,p:70,b:60,w:0,s:13.5,fw:28,gs:4800,rh:4,rtp:2.1,cr:76.9,sl:146,sg:{ott:.25,app:.3,arg:.25,putt:.2}},
-{n:"Royal Portrush",y:7344,p:71,b:52,w:0,s:11.5,fw:32,gs:5000,rh:3.5,rtp:1.4,cr:77.0,sl:148,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Torrey Pines South",y:7765,p:72,b:66,w:0,s:12,fw:28,gs:5800,rh:3,rtp:1.5,sg:{ott:.3,app:.3,arg:.15,putt:.25}},
-{n:"Pebble Beach",y:7075,p:72,b:38,w:0,s:12,fw:27,gs:3700,rh:2.5,rtp:0.2,sg:{ott:.15,app:.35,arg:.25,putt:.25}},
-{n:"TPC Scottsdale",y:7261,p:71,b:62,w:5,s:12,fw:34,gs:5100,rh:2,rtp:-0.8,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Riviera CC",y:7322,p:71,b:78,w:1,s:12.5,fw:30,gs:4800,rh:3,rtp:0.4,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
-{n:"TPC Southwind",y:7244,p:70,b:59,w:5,s:12,fw:31,gs:5000,rh:2.5,rtp:-0.1,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
-{n:"Muirfield Village",y:7533,p:72,b:68,w:6,s:13,fw:30,gs:5200,rh:3,rtp:0.6,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Colonial CC",y:7209,p:70,b:52,w:3,s:12.5,fw:27.5,gs:4300,rh:2.5,rtp:-0.3,sg:{ott:.15,app:.35,arg:.2,putt:.3}},
-{n:"Harbour Town",y:7099,p:71,b:36,w:4,s:12,fw:25,gs:3800,rh:2,rtp:-0.5,sg:{ott:.1,app:.35,arg:.25,putt:.3}},
-{n:"TPC River Highlands",y:6841,p:70,b:44,w:3,s:12,fw:29,gs:4500,rh:2.5,rtp:-1.8,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
-{n:"Quail Hollow",y:7554,p:71,b:58,w:4,s:12.5,fw:31,gs:5200,rh:3,rtp:0.7,sg:{ott:.3,app:.3,arg:.15,putt:.25}},
-{n:"East Lake",y:7346,p:70,b:42,w:5,s:13,fw:32,gs:5500,rh:3,rtp:0.1,sg:{ott:.25,app:.3,arg:.15,putt:.3}},
-{n:"TPC Twin Cities",y:7431,p:71,b:48,w:4,s:12,fw:33,gs:5400,rh:2.5,rtp:-0.6,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Olympia Fields South",y:7366,p:70,b:72,w:2,s:13,fw:28,gs:4600,rh:3.5,rtp:1.2,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
-{n:"Sedgefield CC",y:7131,p:70,b:47,w:4,s:12,fw:28,gs:4100,rh:2.5,rtp:-0.9,sg:{ott:.15,app:.3,arg:.25,putt:.3}},
-{n:"Kasumigaseki CC",y:7447,p:71,b:54,w:3,s:12.5,fw:30,gs:5000,rh:3,rtp:0.4,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"TPC Summerlin",y:7255,p:71,b:63,w:3,s:12,fw:32,gs:5200,rh:2,rtp:-1.0,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Waialae CC",y:7044,p:70,b:58,w:0,s:12,fw:31,gs:5200,rh:1.5,rtp:-1.4,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
-{n:"La Quinta (Stadium)",y:7113,p:72,b:82,w:6,s:11.5,fw:35,gs:5500,rh:1.5,rtp:-2.0,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
-{n:"Innisbrook Copperhead",y:7340,p:71,b:52,w:4,s:12,fw:28,gs:4400,rh:2.5,rtp:0.2,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
-{n:"TPC San Antonio",y:7494,p:72,b:80,w:5,s:12,fw:32,gs:5600,rh:2,rtp:-0.2,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Silverado North",y:7123,p:72,b:55,w:2,s:12,fw:30,gs:4800,rh:2,rtp:-1.1,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
-{n:"El Camaleón",y:7039,p:71,b:42,w:7,s:11.5,fw:33,gs:5000,rh:1.5,rtp:-1.3,sg:{ott:.2,app:.25,arg:.25,putt:.3}},
-{n:"Vidanta Vallarta",y:7456,p:71,b:64,w:6,s:12,fw:32,gs:5200,rh:2,rtp:-0.5,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Detroit GC",y:7370,p:72,b:52,w:3,s:13,fw:30,gs:5000,rh:3,rtp:0.3,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"TPC Deere Run",y:7268,p:71,b:49,w:5,s:12,fw:29,gs:4800,rh:2.5,rtp:-1.5,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
-{n:"Caves Valley",y:7542,p:72,b:46,w:5,s:12.5,fw:33,gs:5600,rh:3,rtp:-0.3,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Wilmington CC South",y:7534,p:71,b:72,w:4,s:12.5,fw:29,gs:4600,rh:3.5,rtp:0.9,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
-{n:"TPC Craig Ranch",y:7468,p:72,b:54,w:6,s:12,fw:34,gs:5400,rh:2,rtp:-1.2,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Congaree",y:7655,p:71,b:40,w:2,s:13,fw:38,gs:6200,rh:2.5,rtp:-0.4,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Pete Dye Stadium",y:7328,p:72,b:58,w:6,s:12,fw:32,gs:5000,rh:2,rtp:-0.7,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Pinehurst No. 2",y:7588,p:70,b:48,w:0,s:13,fw:32,gs:5800,rh:0,rtp:1.8,sg:{ott:.2,app:.3,arg:.3,putt:.2}},
-{n:"Oakmont CC",y:7255,p:70,b:175,w:1,s:14,fw:26,gs:4500,rh:4,rtp:2.4,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
-{n:"Winged Foot West",y:7477,p:70,b:62,w:0,s:13.5,fw:27,gs:4400,rh:4,rtp:2.2,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
-{n:"The Country Club",y:7264,p:70,b:58,w:2,s:13,fw:28,gs:4200,rh:3.5,rtp:1.0,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
-{n:"Southern Hills",y:7556,p:70,b:61,w:3,s:13,fw:30,gs:4800,rh:3,rtp:0.9,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"St Andrews Old",y:7313,p:72,b:112,w:0,s:11,fw:42,gs:7000,rh:3.5,rtp:-0.6,sg:{ott:.25,app:.2,arg:.2,putt:.35}},
-{n:"Royal Liverpool",y:7363,p:72,b:85,w:0,s:11.5,fw:35,gs:5400,rh:3.5,rtp:0.3,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Royal Troon",y:7385,p:71,b:67,w:0,s:11.5,fw:30,gs:4800,rh:4,rtp:1.1,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Royal St Georges",y:7204,p:70,b:106,w:0,s:11,fw:33,gs:5200,rh:3.5,rtp:0.7,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Carnoustie",y:7402,p:72,b:112,w:2,s:11.5,fw:29,gs:4600,rh:4,rtp:1.3,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Bethpage Black",y:7468,p:70,b:68,w:0,s:13,fw:28,gs:4800,rh:4,rtp:2.0,sg:{ott:.3,app:.3,arg:.2,putt:.2}},
-{n:"Valhalla",y:7475,p:71,b:54,w:5,s:12.5,fw:32,gs:5400,rh:3,rtp:0.1,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"Kiawah Ocean",y:7876,p:72,b:53,w:4,s:12,fw:35,gs:6000,rh:3,rtp:1.6,sg:{ott:.35,app:.25,arg:.15,putt:.25}},
-{n:"TPC Harding Park",y:7251,p:70,b:46,w:2,s:12.5,fw:29,gs:4800,rh:3,rtp:0.5,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
-{n:"Whistling Straits",y:7790,p:72,b:967,w:0,s:12,fw:35,gs:5600,rh:3,rtp:1.0,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
-{n:"TPC Louisiana",y:7425,p:72,b:55,w:8,s:12,fw:33,gs:5200,rh:2,rtp:-1.0,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
-{n:"Copperhead (Innisbrook)",y:7340,p:71,b:52,w:4,s:12,fw:28,gs:4400,rh:2.5,rtp:0.2,sg:{ott:.2,app:.3,arg:.2,putt:.3}}
+{n:"Augusta National",y:7555,p:72,b:41,w:6,s:14,fw:38.5,gs:6486,rh:1.375,rtp:-1.2,cr:78.1,sl:137,el:225,sg:{ott:.2,app:.3,arg:.15,putt:.35}},
+{n:"TPC Sawgrass",y:7245,p:72,b:88,w:17,s:13,fw:30.7,gs:5500,rh:2.5,rtp:0.3,cr:76.4,sl:155,el:7,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
+{n:"Bay Hill",y:7466,p:72,b:62,w:9,s:12.5,fw:33,gs:5500,rh:2,rtp:0.8,cr:75.2,sl:138,el:100,sg:{ott:.3,app:.3,arg:.2,putt:.2}},
+{n:"Aronimink",y:7280,p:70,b:176,w:4,s:11,fw:29.5,gs:8300,rh:3,rtp:0.5,cr:75.5,sl:138,el:400,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Shinnecock Hills",y:7440,p:70,b:60,w:0,s:13.5,fw:28,gs:4800,rh:4,rtp:2.1,cr:76.9,sl:146,el:80,sg:{ott:.25,app:.3,arg:.25,putt:.2}},
+{n:"Royal Portrush",y:7344,p:71,b:52,w:0,s:11.5,fw:32,gs:5000,rh:3.5,rtp:1.4,cr:77.0,sl:148,el:50,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Torrey Pines South",y:7765,p:72,b:66,w:0,s:12,fw:28,gs:5800,rh:3,rtp:1.5,el:340,sg:{ott:.3,app:.3,arg:.15,putt:.25}},
+{n:"Pebble Beach",y:7075,p:72,b:38,w:0,s:12,fw:27,gs:3700,rh:2.5,rtp:0.2,el:80,sg:{ott:.15,app:.35,arg:.25,putt:.25}},
+{n:"TPC Scottsdale",y:7261,p:71,b:62,w:5,s:12,fw:34,gs:5100,rh:2,rtp:-0.8,el:1500,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Riviera CC",y:7322,p:71,b:78,w:1,s:12.5,fw:30,gs:4800,rh:3,rtp:0.4,el:300,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
+{n:"TPC Southwind",y:7244,p:70,b:59,w:5,s:12,fw:31,gs:5000,rh:2.5,rtp:-0.1,el:330,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"Muirfield Village",y:7533,p:72,b:68,w:6,s:13,fw:30,gs:5200,rh:3,rtp:0.6,el:900,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Colonial CC",y:7209,p:70,b:52,w:3,s:12.5,fw:27.5,gs:4300,rh:2.5,rtp:-0.3,el:650,sg:{ott:.15,app:.35,arg:.2,putt:.3}},
+{n:"Harbour Town",y:7099,p:71,b:36,w:4,s:12,fw:25,gs:3800,rh:2,rtp:-0.5,el:10,sg:{ott:.1,app:.35,arg:.25,putt:.3}},
+{n:"TPC River Highlands",y:6841,p:70,b:44,w:3,s:12,fw:29,gs:4500,rh:2.5,rtp:-1.8,el:50,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"Quail Hollow",y:7554,p:71,b:58,w:4,s:12.5,fw:31,gs:5200,rh:3,rtp:0.7,el:720,sg:{ott:.3,app:.3,arg:.15,putt:.25}},
+{n:"East Lake",y:7346,p:70,b:42,w:5,s:13,fw:32,gs:5500,rh:3,rtp:0.1,el:1050,sg:{ott:.25,app:.3,arg:.15,putt:.3}},
+{n:"TPC Twin Cities",y:7431,p:71,b:48,w:4,s:12,fw:33,gs:5400,rh:2.5,rtp:-0.6,el:900,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Olympia Fields South",y:7366,p:70,b:72,w:2,s:13,fw:28,gs:4600,rh:3.5,rtp:1.2,el:730,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
+{n:"Sedgefield CC",y:7131,p:70,b:47,w:4,s:12,fw:28,gs:4100,rh:2.5,rtp:-0.9,el:830,sg:{ott:.15,app:.3,arg:.25,putt:.3}},
+{n:"Kasumigaseki CC",y:7447,p:71,b:54,w:3,s:12.5,fw:30,gs:5000,rh:3,rtp:0.4,el:200,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"TPC Summerlin",y:7255,p:71,b:63,w:3,s:12,fw:32,gs:5200,rh:2,rtp:-1.0,el:2900,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Waialae CC",y:7044,p:70,b:58,w:0,s:12,fw:31,gs:5200,rh:1.5,rtp:-1.4,el:20,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
+{n:"La Quinta (Stadium)",y:7113,p:72,b:82,w:6,s:11.5,fw:35,gs:5500,rh:1.5,rtp:-2.0,el:20,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
+{n:"Innisbrook Copperhead",y:7340,p:71,b:52,w:4,s:12,fw:28,gs:4400,rh:2.5,rtp:0.2,el:50,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"TPC San Antonio",y:7494,p:72,b:80,w:5,s:12,fw:32,gs:5600,rh:2,rtp:-0.2,el:1050,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Silverado North",y:7123,p:72,b:55,w:2,s:12,fw:30,gs:4800,rh:2,rtp:-1.1,el:350,sg:{ott:.2,app:.3,arg:.2,putt:.3}},
+{n:"El Camaleón",y:7039,p:71,b:42,w:7,s:11.5,fw:33,gs:5000,rh:1.5,rtp:-1.3,el:10,sg:{ott:.2,app:.25,arg:.25,putt:.3}},
+{n:"Vidanta Vallarta",y:7456,p:71,b:64,w:6,s:12,fw:32,gs:5200,rh:2,rtp:-0.5,el:15,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Detroit GC",y:7370,p:72,b:52,w:3,s:13,fw:30,gs:5000,rh:3,rtp:0.3,el:650,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"TPC Deere Run",y:7268,p:71,b:49,w:5,s:12,fw:29,gs:4800,rh:2.5,rtp:-1.5,el:600,sg:{ott:.2,app:.25,arg:.2,putt:.35}},
+{n:"Caves Valley",y:7542,p:72,b:46,w:5,s:12.5,fw:33,gs:5600,rh:3,rtp:-0.3,el:700,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Wilmington CC South",y:7534,p:71,b:72,w:4,s:12.5,fw:29,gs:4600,rh:3.5,rtp:0.9,el:300,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
+{n:"TPC Craig Ranch",y:7468,p:72,b:54,w:6,s:12,fw:34,gs:5400,rh:2,rtp:-1.2,el:600,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Congaree",y:7655,p:71,b:40,w:2,s:13,fw:38,gs:6200,rh:2.5,rtp:-0.4,el:80,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Pete Dye Stadium",y:7328,p:72,b:58,w:6,s:12,fw:32,gs:5000,rh:2,rtp:-0.7,el:150,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Pinehurst No. 2",y:7588,p:70,b:48,w:0,s:13,fw:32,gs:5800,rh:0,rtp:1.8,el:550,sg:{ott:.2,app:.3,arg:.3,putt:.2}},
+{n:"Oakmont CC",y:7255,p:70,b:175,w:1,s:14,fw:26,gs:4500,rh:4,rtp:2.4,el:1100,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
+{n:"Winged Foot West",y:7477,p:70,b:62,w:0,s:13.5,fw:27,gs:4400,rh:4,rtp:2.2,el:250,sg:{ott:.25,app:.35,arg:.2,putt:.2}},
+{n:"The Country Club",y:7264,p:70,b:58,w:2,s:13,fw:28,gs:4200,rh:3.5,rtp:1.0,el:120,sg:{ott:.2,app:.35,arg:.2,putt:.25}},
+{n:"Southern Hills",y:7556,p:70,b:61,w:3,s:13,fw:30,gs:4800,rh:3,rtp:0.9,el:750,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"St Andrews Old",y:7313,p:72,b:112,w:0,s:11,fw:42,gs:7000,rh:3.5,rtp:-0.6,el:30,sg:{ott:.25,app:.2,arg:.2,putt:.35}},
+{n:"Royal Liverpool",y:7363,p:72,b:85,w:0,s:11.5,fw:35,gs:5400,rh:3.5,rtp:0.3,el:30,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Royal Troon",y:7385,p:71,b:67,w:0,s:11.5,fw:30,gs:4800,rh:4,rtp:1.1,el:15,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Royal St Georges",y:7204,p:70,b:106,w:0,s:11,fw:33,gs:5200,rh:3.5,rtp:0.7,el:15,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Carnoustie",y:7402,p:72,b:112,w:2,s:11.5,fw:29,gs:4600,rh:4,rtp:1.3,el:20,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Bethpage Black",y:7468,p:70,b:68,w:0,s:13,fw:28,gs:4800,rh:4,rtp:2.0,el:150,sg:{ott:.3,app:.3,arg:.2,putt:.2}},
+{n:"Valhalla",y:7475,p:71,b:54,w:5,s:12.5,fw:32,gs:5400,rh:3,rtp:0.1,el:550,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"Kiawah Ocean",y:7876,p:72,b:53,w:4,s:12,fw:35,gs:6000,rh:3,rtp:1.6,el:10,sg:{ott:.35,app:.25,arg:.15,putt:.25}},
+{n:"TPC Harding Park",y:7251,p:70,b:46,w:2,s:12.5,fw:29,gs:4800,rh:3,rtp:0.5,el:200,sg:{ott:.25,app:.3,arg:.2,putt:.25}},
+{n:"Whistling Straits",y:7790,p:72,b:967,w:0,s:12,fw:35,gs:5600,rh:3,rtp:1.0,el:620,sg:{ott:.3,app:.25,arg:.2,putt:.25}},
+{n:"TPC Louisiana",y:7425,p:72,b:55,w:8,s:12,fw:33,gs:5200,rh:2,rtp:-1.0,el:5,sg:{ott:.25,app:.25,arg:.2,putt:.3}},
+{n:"Copperhead (Innisbrook)",y:7340,p:71,b:52,w:4,s:12,fw:28,gs:4400,rh:2.5,rtp:0.2,el:50,sg:{ott:.2,app:.3,arg:.2,putt:.3}}
 ];
 
 const STAT_CHART_MAP={
@@ -1125,7 +1128,8 @@ const STAT_CHART_MAP={
   'Water Holes':{key:'w',unit:'/18',dec:0},
   'Stimpmeter':{key:'s',unit:'',dec:1},
   'Green Size':{key:'gs',unit:'sq ft',dec:0},
-  'FW Width':{key:'fw',unit:'ft',dec:1},
+  'FW Width':{key:'fw',unit:'yds',dec:1},
+  'Elevation':{key:'el',unit:'ft',dec:0},
   'Rough':{key:'rh',unit:'in',dec:1},
   'Score RTP':{key:'rtp',unit:'vs par',dec:1},
   'Rating':{key:'cr',unit:'',dec:1},
@@ -1251,16 +1255,14 @@ function renderPreview() {
     {l:'Yardage', v:course.yardageDisplay || course.yardage},
     {l:'Par', v:course.par},
     {l:'Type', v:course.courseType},
-    {l:'Wind', v:course.windExposure},
     {l:'Prevailing', v:course.prevailingWind || '-'},
-    {l:'Elevation', v:course.elevation || course.elevationChange || '-'},
+    {l:'Elevation', v:course.elevation ? course.elevation.replace(' feet',' ft') : (course.elevationChange || '-')},
     {l:'Bunkers', v:course.bunkerCount},
     {l:'Water Holes', v:course.waterHoles != null ? course.waterHoles + '/18' : '-'},
     {l:'Stimpmeter', v:course.greensStimpmeter || course.avgStimpmeter || '-'},
     {l:'Green Size', v:course.avgGreenSize || '-'},
     {l:'Greens', v:(course.grassGreens||'').split(' overseeded')[0].split('(')[0].trim()},
-    {l:'Greens Speed', v:course.greensSpeed || '-'},
-    {l:'FW Width', v:course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' ft' : course.avgFairwayWidth || '-'},
+    {l:'FW Width', v:course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' yds' : course.avgFairwayWidth || '-'},
     {l:'Fairways', v:(course.grassFairways||'').split(' overseeded')[0].trim()},
     {l:'Rough', v:course.avgRoughHeight || '-'},
     {l:'Rating', v:course.courseRating || '-'},
@@ -1282,6 +1284,9 @@ function renderPreview() {
     }
   });
   profHTML += '</div>';
+  if (projScore) {
+    profHTML += '<div style="text-align:center;margin-top:.4rem"><button class="ab" style="font-size:.62rem;padding:.25rem .6rem;border-radius:4px;opacity:.85" onclick="alert(\'10-Handicap Projected Score: ' + projScore + '\\n\\nCourse Rating: ' + course.courseRating + '\\nSlope Rating: ' + course.slopeRating + '\\nFormula: CR + (Slope ÷ 113) × HCP\\n= ' + course.courseRating + ' + (' + course.slopeRating + ' ÷ 113) × 10\\n= ' + projScore + '\')">⛳ 10-Handicap Projected: ' + projScore + '</button></div>';
+  }
 
   // Course notes as bullet points
   var notesHTML = '';
@@ -1318,7 +1323,7 @@ function renderPreview() {
     {l:'Course Rating', v:course.courseRating || '-'},
     {l:'Slope Rating', v:course.slopeRating || '-'},
     {l:'Fairways', v:course.grassFairways || '-'},
-    {l:'Avg Fairway Width', v:(course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' feet' : course.avgFairwayWidth || '-')},
+    {l:'Avg Fairway Width', v:(course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' yards' : course.avgFairwayWidth || '-')},
     {l:'Fairway Width Rank', v:course.avgFairwayWidthRank || '-'},
     {l:'Rough', v:(course.roughType || '') + ' ' + (course.avgRoughHeight || '')},
     {l:'Rough Length', v:course.roughLength || '-'},
@@ -1381,10 +1386,8 @@ function renderPreview() {
       '<div class="cf-wx" id="wx-grid">' +
         '<div class="cf-wx-card"><div class="cf-wx-icon">🌡️</div><div class="cf-wx-val" id="wx-temp">' + (course.wxTemp || '72-82°F') + '</div><div class="cf-wx-lbl">Temp Range</div></div>' +
         '<div class="cf-wx-card"><div class="cf-wx-icon">' + (course.wxIcon || '☀️') + '</div><div class="cf-wx-val" id="wx-sky">' + (course.wxSky || 'Partly Cloudy') + '</div><div class="cf-wx-lbl">Typical</div></div>' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">💨</div><div class="cf-wx-val" id="wx-wind">' + (course.wxWind || course.windExposure || '-') + '</div><div class="cf-wx-lbl">Wind</div></div>' +
         '<div class="cf-wx-card"><div class="cf-wx-icon">💧</div><div class="cf-wx-val" id="wx-rain">' + (course.wxRain || '25%') + '</div><div class="cf-wx-lbl">Rain Chance</div></div>' +
       '</div>' +
-      (projScore ? '<div class="cf-wx-card" style="grid-column:1/-1;margin-top:.15rem"><div class="cf-wx-icon">⛳</div><div class="cf-wx-val">' + projScore + ' <span style="font-size:.6rem;color:var(--ts)">(10-hcp projected)</span></div><div class="cf-wx-lbl">CR ' + course.courseRating + ' / Slope ' + course.slopeRating + ' · Formula: CR + (Slope÷113) × HCP</div></div>' : '') +
       '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:var(--go)">📡 10-Day Forecast →</a>' +
       '<div class="cf-source">Historical averages for tournament week</div>' +
     '</div>' +
@@ -1409,15 +1412,15 @@ function renderPreview() {
       '</div>' +
     '</details>' +
 
-    // Past winners
-    '<div class="cf-section">' +
-      '<div class="cf-section-title">Past Winners</div>' +
+    // Past winners (collapsible)
+    '<details class="cf-section" style="margin-bottom:.5rem">' +
+      '<summary class="cf-section-title" style="cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between"><span>Past Winners</span><span class="pw-arrow" style="font-size:.7rem;color:var(--ts);transition:transform .2s">▼</span></summary>' +
       '<table class="cf-pw-table"><tbody>' + pwHTML + '</tbody></table>' +
-    '</div>' +
+    '</details>' +
 
     // Win odds
     '<div class="cf-section" id="odds-section">' +
-      '<div class="cf-section-title">Win Odds <span style="font-size:.65rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Top 30)</span></div>' +
+      '<div class="cf-section-title">Win Odds <span style="font-size:.65rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Top 20)</span></div>' +
       '<div id="live-odds"><div style="text-align:center;padding:.5rem"><button class="ab" onclick="fetchPreviewOdds()" id="odds-btn">Load Win Odds</button></div></div>' +
     '</div>';
 
@@ -1514,15 +1517,15 @@ async function fetchPreviewOdds() {
       }
     }
     players.sort((a, b) => a.odds - b.odds);
-    const top30 = players.slice(0, 30);
+    const top20 = players.slice(0, 20);
 
     let h = '<div class="odds-grid">';
-    top30.forEach((p, i) => {
+    top20.forEach((p, i) => {
       const ip = typeof inPool === 'function' && inPool(p.rawName) ? ' in-pool' : '';
       const rc = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
       h += '<div class="odds-card' + ip + '">';
       h += '<span class="oc-nm' + (rc ? ' ' + rc : '') + '">' + (i + 1) + '. ' + p.name + '</span>';
-      h += '<span class="oc-odds">+' + Math.round((p.odds - 1) * 100) + ' (' + p.impliedProb + '%)</span>';
+      h += '<span class="oc-odds">' + p.impliedProb + '%</span>';
       h += '</div>';
     });
     h += '</div>';
