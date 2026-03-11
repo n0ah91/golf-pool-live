@@ -27,9 +27,9 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bd)}
 ::-webkit-scrollbar-thumb{background:var(--brl);border-radius:3px}
 .hdr{background:linear-gradient(180deg,var(--bc) 0%,var(--bd) 100%);border-bottom:1px solid var(--br);padding:1rem 1rem 0;text-align:center}
-.hdr h1{font-family:'Playfair Display',var(--fd);font-weight:800;font-size:2.1rem;color:var(--tb);letter-spacing:.02em;font-style:normal}
+.hdr h1{font-family:var(--fd);font-weight:700;font-size:2rem;color:var(--tb);letter-spacing:.04em}
 .hdr h1::after{content:'';display:block;width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--go),transparent);margin:.35rem auto 0}
-.hdr .sub{font-family:'Playfair Display',var(--fd);color:var(--go);font-size:.7rem;margin-top:.25rem;letter-spacing:.2em;text-transform:uppercase;font-weight:400}
+.hdr .sub{font-family:var(--fb);color:var(--go);font-size:.6rem;margin-top:.25rem;letter-spacing:.25em;text-transform:uppercase;font-weight:500}
 .me-bar{display:flex;justify-content:center;align-items:center;gap:.5rem;padding:.6rem;background:var(--bm);border-bottom:1px solid var(--br)}
 .me-bar label{font-size:.72rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em}
 .me-bar select{font-family:var(--fb);font-size:.8rem;padding:.35rem .6rem;background:var(--bc);color:var(--go);border:1px solid var(--br);border-radius:5px;outline:0;max-width:200px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23c9a227' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
@@ -656,7 +656,7 @@ function rDistC(y){
   for(const t of totals){const idx=Math.min(Math.floor((t-mn)/25),bins.length-1);bins[idx].count++;}
   const cx=document.getElementById('dist-chart')?.getContext('2d');if(!cx)return;if(charts.dist)charts.dist.destroy();
   charts.dist=new Chart(cx,{type:'bar',data:{labels:bins.map(b=>`${b.lo}`),datasets:[{data:bins.map(b=>b.count),
-    backgroundColor:bins.map(b=>b.lo<0?'rgba(82,183,136,.45)':'rgba(231,111,81,.35)'),borderColor:bins.map(b=>b.lo<0?'#52b788':'#e76f51'),borderWidth:1,borderRadius:3}]},
+    backgroundColor:bins.map(b=>b.lo<0?'rgba(45,181,160,.45)':'rgba(232,152,62,.35)'),borderColor:bins.map(b=>b.lo<0?'#2db5a0':'#e8983e'),borderWidth:1,borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f',font:{size:9}}}}}});
 }
@@ -1329,7 +1329,7 @@ function renderPreview() {
   // SG emphasis bars (horizontal)
   const sg = course.sgEmphasis || {};
   const sgLabels = {ott:'Off the Tee', app:'Approach', arg:'Around Green', putt:'Putting'};
-  const sgColors = {ott:'#52b788', app:'#c9a227', arg:'#e76f51', putt:'#40916c'};
+  const sgColors = {ott:'#2db5a0', app:'#f4c542', arg:'#e8983e', putt:'#5ec4b6'};
   const maxSg = Math.max(...Object.values(sg));
 
   let sgBars = '';
@@ -1346,10 +1346,21 @@ function renderPreview() {
   // Past winners table (last 10 of this tournament)
   var isRotating = (ev === 'pga' || ev === 'uso' || ev === 'open');
   let pwHTML = '';
+  var pwScores = pw.slice(0,10).map(function(w){return parseFloat(w.sc)||0;}).filter(function(v){return v!==0||pw[0].sc==='E';});
+  var pwBest = Math.min.apply(null, pwScores.length?pwScores:[0]);
+  var pwWorst = Math.max.apply(null, pwScores.length?pwScores:[0]);
+  function pwScColor(sc) {
+    var v = parseFloat(sc)||0;
+    if (pwBest===pwWorst) return '#2db5a0';
+    var t = (v-pwWorst)/(pwBest-pwWorst); // 1=best(green),0=worst(white)
+    if(t>0.5){var s=(t-0.5)*2;return 'rgb('+Math.round(244+(45-244)*s)+','+Math.round(197+(181-197)*s)+','+Math.round(66+(160-66)*s)+')';}
+    else{var s2=t*2;return 'rgb('+Math.round(240+(244-240)*s2)+','+Math.round(236+(197-236)*s2)+','+Math.round(228+(66-228)*s2)+')';}
+  }
   pw.slice(0, 10).forEach(function(w) {
+    var scCol = w.sc && w.sc !== '-' ? pwScColor(w.sc) : 'var(--ts)';
     pwHTML += '<tr><td style="color:var(--ts);font-family:var(--fm);white-space:nowrap">' + w.yr + '</td>' +
       '<td style="color:var(--tb)">' + w.nm + '</td>' +
-      '<td style="color:var(--go);font-family:var(--fm);text-align:left;white-space:nowrap;padding:.22rem .2rem">' + w.sc + '</td>' +
+      '<td style="color:' + scCol + ';font-family:var(--fm);text-align:left;white-space:nowrap;padding:.22rem .2rem">' + w.sc + '</td>' +
       (isRotating ? '<td style="color:var(--ts);font-size:.58rem;padding:.22rem .2rem">' + (w.cs || '') + '</td>' : '') +
       '<td style="color:var(--ts);font-size:.6rem;padding:.22rem .2rem">' + (w.r2 && w.r2 !== '-' ? w.r2 : '') + '</td></tr>';
   });
@@ -1417,7 +1428,9 @@ function renderPreview() {
   });
   profHTML += '</div>';
   if (projScore) {
-    profHTML += '<div style="text-align:center;margin-top:.7rem;font-size:.55rem;color:var(--ts);cursor:pointer" onclick="alert(\'10-Handicap Projected Score: ' + projScore + '\\n\\nCourse Rating: ' + course.courseRating + '\\nSlope Rating: ' + course.slopeRating + '\\nFormula: CR + (Slope ÷ 113) × HCP\\n= ' + course.courseRating + ' + (' + course.slopeRating + ' ÷ 113) × 10\\n= ' + projScore + '\')">10-HCP Projection: <span style="color:var(--tb);font-family:var(--fm)">' + projScore + '</span></div>';
+    var projLow = (parseFloat(projScore) - 3).toFixed(0);
+    var projHigh = (parseFloat(projScore) + 3).toFixed(0);
+    profHTML += '<div style="text-align:center;margin-top:.7rem;font-size:.65rem;color:var(--ts);cursor:pointer" onclick="alert(\'10-Handicap Projected Score: ' + projScore + '\\n\\nCourse Rating: ' + course.courseRating + '\\nSlope Rating: ' + course.slopeRating + '\\nFormula: CR + (Slope ÷ 113) × HCP\\n= ' + course.courseRating + ' + (' + course.slopeRating + ' ÷ 113) × 10\\n= ' + projScore + '\')">10-HCP Projection: <span style="color:var(--tb);font-family:var(--fm)">' + projLow + '–' + projHigh + '</span></div>';
   }
 
   // Course notes as bullet points
@@ -1528,24 +1541,11 @@ function renderPreview() {
       notesHTML +
     '</div>' +
 
-    // Weather & Conditions — separate block with 6 cards
+    // Weather & Conditions — live from Open-Meteo
     '<div class="cf-block">' +
       '<div class="cf-section-title">Conditions</div>' +
-      '<div class="cf-wx" id="wx-grid">' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">🌡️</div><div class="cf-wx-val" id="wx-temp">' + (course.wxTemp || '72-82°F') + '</div><div class="cf-wx-lbl">Temp Range</div></div>' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">' + (course.wxIcon || '☀️') + '</div><div class="cf-wx-val" id="wx-sky">' + (course.wxSky || 'Partly Cloudy') + '</div><div class="cf-wx-lbl">Typical</div></div>' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">💧</div><div class="cf-wx-val" id="wx-rain">' + (course.wxRain || '25%') + '</div><div class="cf-wx-lbl">Rain Chance</div></div>' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">💨</div><div class="cf-wx-val">' + (course.wxWind || '10-15 mph') + '</div><div class="cf-wx-lbl">Wind</div></div>' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">💦</div><div class="cf-wx-val">' + (course.wxHumid || '60%') + '</div><div class="cf-wx-lbl">Humidity</div></div>' +
-        '<div class="cf-wx-card"><div class="cf-wx-icon">☀️</div><div class="cf-wx-val">' + (course.wxUV || '7-9') + '</div><div class="cf-wx-lbl">UV Index</div></div>' +
-      '</div>' +
-      '<div style="display:flex;justify-content:center;gap:1rem;margin-top:.3rem;font-size:.58rem;color:var(--ts)">' +
-        '<span>🌅 ' + (course.wxSunrise || '7:00 AM') + '</span>' +
-        '<span>🌇 ' + (course.wxSunset || '7:30 PM') + '</span>' +
-        (course.wxDew ? '<span>Dew: ' + course.wxDew + '</span>' : '') +
-      '</div>' +
+      '<div id="wx-live" style="text-align:center;font-size:.6rem;color:var(--ts);padding:.5rem">Loading live weather...</div>' +
       '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:var(--go)">📡 10-Day Forecast →</a>' +
-      '<div class="cf-source">Historical averages for tournament week</div>' +
     '</div>' +
 
     // Win odds (open by default, collapsible)
@@ -1564,8 +1564,62 @@ function renderPreview() {
       '</div>' +
     '</details>';
 
-  // Auto-load odds
+  // Auto-load odds + live weather
   setTimeout(fetchPreviewOdds, 800);
+  setTimeout(function(){ fetchLiveWeather(course); }, 200);
+}
+
+async function fetchLiveWeather(course) {
+  const el = document.getElementById('wx-live');
+  if (!el || !course.latitude || !course.longitude) return;
+  try {
+    const lat = course.latitude, lon = course.longitude;
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+
+      '&current=temperature_2m,relative_humidity_2m,precipitation_probability,wind_speed_10m,weather_code,is_day'+
+      '&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max'+
+      '&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=1';
+    const r = await fetch(url);
+    const d = await r.json();
+    const c = d.current, dy = d.daily;
+    const lo = Math.round(dy.temperature_2m_min[0]), hi = Math.round(dy.temperature_2m_max[0]);
+    const curT = Math.round(c.temperature_2m);
+    const wind = Math.round(c.wind_speed_10m);
+    const humid = Math.round(c.relative_humidity_2m);
+    const rain = dy.precipitation_probability_max[0] || 0;
+    const uv = dy.uv_index_max[0];
+    const uvLbl = uv<=2?'Low':uv<=5?'Moderate':uv<=7?'High':uv<=10?'Very High':'Extreme';
+    // Weather code to emoji+label
+    const wc = c.weather_code;
+    let skyIcon='☀️',skyLbl='Clear';
+    if(wc===0){skyIcon=c.is_day?'☀️':'🌙';skyLbl='Clear';}
+    else if(wc<=3){skyIcon='⛅';skyLbl=wc===1?'Mostly Clear':wc===2?'Partly Cloudy':'Overcast';}
+    else if(wc<=48){skyIcon='🌫️';skyLbl='Foggy';}
+    else if(wc<=57){skyIcon='🌦️';skyLbl='Drizzle';}
+    else if(wc<=67){skyIcon='🌧️';skyLbl='Rain';}
+    else if(wc<=77){skyIcon='🌨️';skyLbl='Snow';}
+    else if(wc<=82){skyIcon='🌧️';skyLbl='Showers';}
+    else if(wc<=86){skyIcon='🌨️';skyLbl='Snow Showers';}
+    else{skyIcon='⛈️';skyLbl='Thunderstorm';}
+    // Sunrise/sunset
+    const fmTime=t=>{const d=new Date(t);let h=d.getHours(),m=d.getMinutes(),ap='AM';if(h>=12){ap='PM';if(h>12)h-=12;}if(h===0)h=12;return h+':'+(m<10?'0':'')+m+' '+ap;};
+    const rise = fmTime(dy.sunrise[0]), set = fmTime(dy.sunset[0]);
+    el.innerHTML =
+      '<div class="cf-wx">' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">🌡️</div><div class="cf-wx-val">' + curT + '°F</div><div class="cf-wx-lbl">Now</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">' + skyIcon + '</div><div class="cf-wx-val">' + skyLbl + '</div><div class="cf-wx-lbl">Sky</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">💧</div><div class="cf-wx-val">' + rain + '%</div><div class="cf-wx-lbl">Rain Chance</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">💨</div><div class="cf-wx-val">' + wind + ' mph</div><div class="cf-wx-lbl">Wind</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">💦</div><div class="cf-wx-val">' + humid + '%</div><div class="cf-wx-lbl">Humidity</div></div>' +
+        '<div class="cf-wx-card"><div class="cf-wx-icon">☀️</div><div class="cf-wx-val">' + uv + ' (' + uvLbl + ')</div><div class="cf-wx-lbl">UV Index</div></div>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:center;gap:1rem;margin-top:.3rem;font-size:.58rem;color:var(--ts)">' +
+        '<span>🌡️ ' + lo + '–' + hi + '°F today</span><span>🌅 ' + rise + '</span><span>🌇 ' + set + '</span>' +
+      '</div>' +
+      '<div class="cf-source">Live weather via Open-Meteo</div>';
+  } catch(e) {
+    console.error('Weather error:', e);
+    el.innerHTML = '<div style="font-size:.58rem;color:var(--ts);text-align:center">Weather unavailable</div>';
+  }
 }
 
 
@@ -1615,7 +1669,7 @@ function openTourChart(label){
 function openSGCompare(){
   const cats=['Off Tee','Approach','Around Green','Putting'];
   const keys=['ott','app','arg','putt'];
-  const barCols=['#c9a227','#52b788','#e76f51','#40916c','#3a86a8','#9b72cf'];
+  const barCols=['#f4c542','#2db5a0','#e8983e','#5ec4b6','#3a86a8','#9b72cf'];
   const ev=getCurrentEvent(),curCourse=COURSE_MAP[ev];
   const datasets=POOL_NAMES.map((name,i)=>{
     const tc=TOUR_COURSES.find(c=>name.includes(c.n.split(' ')[0])||c.n.includes(name.split(' ')[0]));
@@ -1737,13 +1791,26 @@ async function fetchPreviewOdds() {
     players.sort((a, b) => a.odds - b.odds);
     const top20 = players.slice(0, 20);
 
+    // Gradient: green (#2db5a0) → gold (#f4c542) → white (#f0ece4)
+    const maxP = parseFloat(top20[0]?.impliedProb||1), minP = parseFloat(top20[top20.length-1]?.impliedProb||0);
+    function oddsColor(prob) {
+      const t = maxP===minP ? 0 : (prob-minP)/(maxP-minP); // 1=top, 0=bottom
+      if (t > 0.5) { // green → gold
+        const s = (t - 0.5) * 2;
+        return 'rgb('+Math.round(244+(45-244)*s)+','+Math.round(197+(181-197)*s)+','+Math.round(66+(160-66)*s)+')';
+      } else { // gold → white
+        const s = t * 2;
+        return 'rgb('+Math.round(240+(244-240)*s)+','+Math.round(236+(197-236)*s)+','+Math.round(228+(66-228)*s)+')';
+      }
+    }
     let h = '<div class="odds-grid">';
     top20.forEach((p, i) => {
       const ip = typeof inPool === 'function' && inPool(p.rawName) ? ' in-pool' : '';
       const rc = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
+      const col = oddsColor(parseFloat(p.impliedProb));
       h += '<div class="odds-card' + ip + '">';
       h += '<span class="oc-nm' + (rc ? ' ' + rc : '') + '">' + (i + 1) + '. ' + p.name + '</span>';
-      h += '<span class="oc-odds">' + p.impliedProb + '%</span>';
+      h += '<span class="oc-odds" style="color:' + col + '">' + p.impliedProb + '%</span>';
       h += '</div>';
     });
     h += '</div>';
@@ -1926,8 +1993,8 @@ function renderPrevResults(el, ev, players) {
   const runnerUp = players[1];
   function fmSc(t) { return t > 0 ? '+' + t : t === 0 ? 'E' : String(t); }
 
-  let h = '<div style="font-size:.72rem;color:var(--go);font-weight:600;margin-bottom:.15rem;font-family:var(--fd)">' + ev.name + '</div>';
-  h += '<div style="font-size:.55rem;color:var(--ts);margin-bottom:.4rem;font-family:var(--fb)">' + ev.course + ' &middot; ' + ev.date + '</div>';
+  let h = '<div class="cf-section-title" style="font-size:.8rem;margin-bottom:.15rem">' + ev.name + '</div>';
+  h += '<div style="font-size:.6rem;color:var(--ts);margin-bottom:.4rem;font-family:var(--fb)">' + ev.course + ' &middot; ' + ev.date + '</div>';
 
   // Quick stats
   h += '<div class="prev-stat-row">';
@@ -1937,10 +2004,23 @@ function renderPrevResults(el, ev, players) {
   }
   h += '</div>';
 
-  // Leaderboard
+  // Leaderboard with tiered colors: green → gold → white
+  const bestSc = top10[0]?.total||0, worstSc = top10[top10.length-1]?.total||0;
+  function prevScColor(sc) {
+    if (bestSc === worstSc) return '#2db5a0';
+    const t = (sc - worstSc) / (bestSc - worstSc); // 1=best(green), 0=worst(white)
+    if (t > 0.5) { // green → gold
+      const s = (t - 0.5) * 2;
+      return 'rgb('+Math.round(244+(45-244)*s)+','+Math.round(197+(181-197)*s)+','+Math.round(66+(160-66)*s)+')';
+    } else { // gold → white
+      const s = t * 2;
+      return 'rgb('+Math.round(240+(244-240)*s)+','+Math.round(236+(197-236)*s)+','+Math.round(228+(66-228)*s)+')';
+    }
+  }
   top10.forEach(function(p, i) {
     const ip = typeof inPool === 'function' && inPool(p.name) ? ' style="background:rgba(201,162,39,.08)"' : '';
-    h += '<div class="cf-prev-row"' + ip + '><span class="cf-prev-pos">' + (i+1) + '</span><span class="cf-prev-nm">' + fmN(p.name) + '</span><span class="cf-prev-sc">' + fmSc(p.total) + '</span></div>';
+    const col = prevScColor(p.total);
+    h += '<div class="cf-prev-row"' + ip + '><span class="cf-prev-pos">' + (i+1) + '</span><span class="cf-prev-nm">' + fmN(p.name) + '</span><span class="cf-prev-sc" style="color:' + col + '">' + fmSc(p.total) + '</span></div>';
   });
   h += '<div class="cf-source" style="margin-top:.3rem">Source: PGA Tour</div>';
   el.innerHTML = h;
