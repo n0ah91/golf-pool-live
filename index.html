@@ -22,8 +22,7 @@
 --r1:#ffd700;--r2:#c0c0c0;--r3:#cd7f32;
 --fd:'Cormorant Garamond',Georgia,serif;--fb:'DM Sans',-apple-system,sans-serif;--fm:'DM Mono',Consolas,monospace;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:17px;-webkit-font-smoothing:antialiased}
-@media(max-width:480px){html{font-size:18px}}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
 body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bd)}
 ::-webkit-scrollbar-thumb{background:var(--brl);border-radius:3px}
@@ -51,7 +50,7 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 .6rem .85rem;border-radius:7px;border:1px solid var(--br)}
 table{width:100%;border-collapse:collapse;font-size:.75rem}
 thead th{position:sticky;top:0;z-index:2;background:var(--bc);color:var(--ts);font-family:var(--fb);font-weight:600;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;padding:.55rem .4rem;text-align:left;border-bottom:1px solid var(--brl);cursor:pointer;user-select:none;white-space:nowrap}
-thead th:hover{color:var(--go)}thead th.s{color:var(--go)}.sa{font-size:.48rem;margin-left:.12rem}
+thead th:hover{color:var(--go)}thead th.s{color:var(--go)}.sa{font-size:.56rem;margin-left:.12rem}
 tbody tr{border-bottom:1px solid var(--br);transition:background .15s;cursor:pointer}tbody tr:hover{background:var(--bh)}
 tbody tr.im{background:rgba(45,106,79,.06)}tbody tr.im:hover{background:rgba(45,106,79,.12)}
 tbody tr.t3{background:rgba(201,162,39,.05)}tbody tr.t3:hover{background:rgba(201,162,39,.09)}
@@ -205,7 +204,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-bullets{list-style:none;padding:0;margin:0}
 .cf-bullets li{font-size:.72rem;color:var(--tp);line-height:1.45;padding:.12rem 0 .12rem .8rem;position:relative}
 .cf-bullets li::before{content:'\2022';color:var(--go);font-size:.8rem;position:absolute;left:0;top:.1rem}
-.cf-source{font-size:.52rem;color:var(--td);font-style:italic;margin-top:.3rem;letter-spacing:.02em}
+.cf-source{font-size:.58rem;color:var(--td);font-style:italic;margin-top:.3rem;letter-spacing:.02em}
 
 
 
@@ -218,10 +217,10 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;max-width:100%;overflow:hidden}
 .cf-pstat{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.35rem .2rem;text-align:center;min-width:0;overflow:hidden}
 .cf-pstat-v{font-family:var(--fm);font-size:.68rem;color:var(--tb);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cf-pstat-l{font-size:.5rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ts);margin-top:.05rem}
+.cf-pstat-l{font-size:.58rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ts);margin-top:.05rem}
 .cf-pstat.clickable{cursor:pointer;transition:border-color .2s,background .2s}
 .cf-pstat.clickable:hover{border-color:var(--go);background:var(--bh)}
-.cf-pstat.clickable .cf-pstat-l::after{content:' ▸';color:var(--go);font-size:.45rem}
+.cf-pstat.clickable .cf-pstat-l::after{content:' ▸';color:var(--go);font-size:.55rem}
 .tour-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;pointer-events:none}
 .tour-overlay.active{opacity:1;pointer-events:all}
 .tour-modal{background:var(--bc);border:1px solid var(--br);border-radius:9px;width:92vw;max-width:620px;max-height:85vh;overflow-y:auto;padding:.8rem 1rem;position:relative}
@@ -238,7 +237,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-sg-block{cursor:pointer;transition:border-color .2s}
 .cf-sg-block:hover{border-color:var(--go)}
 .cf-inner-details{margin-top:.5rem;border-top:1px solid var(--br);padding-top:.4rem}
-.cf-inner-sum{font-size:.65rem;color:var(--go);cursor:pointer;font-family:var(--fd);font-weight:600;letter-spacing:.03em;user-select:none;list-style:none;transition:color .2s}
+.cf-inner-sum{font-size:.65rem;color:var(--gl);cursor:pointer;font-family:var(--fd);font-weight:600;letter-spacing:.03em;user-select:none;list-style:none;transition:color .2s}
 .cf-inner-sum::-webkit-details-marker{display:none}
 .cf-inner-sum:hover{color:var(--tb)}
 .cf-inner-details[open] .cf-inner-sum{margin-bottom:.4rem}
@@ -261,7 +260,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-wx-card{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.25rem .2rem;text-align:center}
 .cf-wx-icon{font-size:.85rem;margin-bottom:.05rem}
 .cf-wx-val{font-family:var(--fm);font-size:.62rem;color:var(--tb);font-weight:500}
-.cf-wx-lbl{font-size:.45rem;text-transform:uppercase;color:var(--ts);margin-top:.03rem}
+.cf-wx-lbl{font-size:.55rem;text-transform:uppercase;color:var(--ts);margin-top:.03rem}
 .cf-wx-link{display:block;text-align:center;margin-top:.25rem;font-size:.55rem}
 @media(max-width:600px){.tour-modal{width:96vw;max-height:90vh;padding:.5rem}.tour-chart-wrap{height:72vh}}
 
@@ -359,7 +358,7 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 
 <div class="cd" id="live-preview"></div>
 
-<div class="cd"><h3 style="display:flex;align-items:baseline;gap:.4rem">2026 Majors <span style="font-size:.48rem;color:var(--go);font-weight:400;opacity:.7;letter-spacing:.03em">tap for preview →</span></h3>
+<div class="cd"><h3 style="display:flex;align-items:baseline;gap:.4rem">2026 Majors <span style="font-size:.55rem;color:var(--gl);font-weight:400;letter-spacing:.03em">tap for preview →</span></h3>
 <div id="mjr-sch" class="mjr-sched"></div></div>
 <div class="cd">
 <details class="cf-details" open>
@@ -1010,8 +1009,8 @@ function rMjrSch(){
     const cnt=POOL.entries.filter(e=>e.rosters[m.k]&&e.rosters[m.k].length>0).length;
     const det=EV_DETAIL[m.k]||{};
     const statusHTML=m.s==='done'||m.s==='live'?`<div class="ms ${sc}">${sl}</div>`:'';
-    return`<div class="mjr-card ${c}" onclick="switchPreview('${m.k}')" style="cursor:pointer"><div class="mn">${m.n}</div><div style="font-size:.58rem;color:var(--tp);margin-top:.1rem;font-family:var(--fm)">${det.dates||''}</div><div style="font-size:.52rem;color:var(--go);margin-top:.05rem">${det.course||''}</div>${statusHTML}<div style="font-size:.48rem;color:var(--ts);margin-top:.1rem;line-height:1.3;font-style:italic">${det.teaser||''}</div>`+
-      (cnt?`<div style="font-size:.5rem;color:var(--td);margin-top:.1rem">${cnt} entries</div>`:'')+
+    return`<div class="mjr-card ${c}" onclick="switchPreview('${m.k}')" style="cursor:pointer"><div class="mn">${m.n}</div><div style="font-size:.62rem;color:var(--tp);margin-top:.1rem;font-family:var(--fm)">${det.dates||''}</div><div style="font-size:.58rem;color:var(--go);margin-top:.05rem">${det.course||''}</div>${statusHTML}<div style="font-size:.55rem;color:var(--ts);margin-top:.1rem;line-height:1.3;font-style:italic">${det.teaser||''}</div>`+
+      (cnt?`<div style="font-size:.56rem;color:var(--td);margin-top:.1rem">${cnt} entries</div>`:'')+
       `</div>`;}).join('');}
 
 function switchPreview(evKey){
@@ -1351,7 +1350,7 @@ function renderPreview() {
     pwHTML += '<tr><td style="color:var(--ts);font-family:var(--fm);white-space:nowrap">' + w.yr + '</td>' +
       '<td style="color:var(--tb)">' + w.nm + '</td>' +
       '<td style="color:var(--go);font-family:var(--fm);text-align:right;white-space:nowrap">' + w.sc + '</td>' +
-      (isRotating ? '<td style="color:var(--ts);font-size:.52rem;padding-left:.3rem">' + (w.cs || '') + '</td>' : '') +
+      (isRotating ? '<td style="color:var(--ts);font-size:.58rem;padding-left:.3rem">' + (w.cs || '') + '</td>' : '') +
       '<td style="color:var(--ts);font-size:.6rem;padding-left:.4rem">' + (w.r2 && w.r2 !== '-' ? w.r2 : '') + '</td></tr>';
   });
   // "At This Venue" sub-section for rotating events
@@ -1437,7 +1436,7 @@ function renderPreview() {
     course.funFacts.forEach(function(f) {
       notesHTML += '<div style="font-size:.6rem;color:var(--tb);margin-bottom:.35rem;line-height:1.4;font-family:var(--fb)">' +
         '💡 ' + f.text +
-        (f.src ? ' <a href="' + f.src + '" target="_blank" style="color:var(--ts);font-size:.5rem;text-decoration:underline">[' + (f.srcName || 'Source') + ']</a>' : '') +
+        (f.src ? ' <a href="' + f.src + '" target="_blank" style="color:var(--ts);font-size:.56rem;text-decoration:underline">[' + (f.srcName || 'Source') + ']</a>' : '') +
         '</div>';
     });
     notesHTML += '</div>';
@@ -1496,8 +1495,8 @@ function renderPreview() {
     // Hero + Course Profile + expandable More Details inside
     '<div class="cf-block">' +
       (window._forceEvent && window._forceEvent !== getDateEvent() ? '<div style="margin-bottom:.3rem"><span onclick="backToCurrent()" style="font-size:.6rem;color:var(--go);cursor:pointer;font-family:var(--fb)">← Back to ' + EV_NAMES[getDateEvent()] + '</span></div>' : '') +
-      '<h2 class="prev-title">' + evName + ' &middot; ' + evDate + ' &middot; ' + courseName + '</h2>' +
-      '<div class="cf-section-title" style="margin-top:.5rem">Course Profile <span style="font-size:.5rem;color:var(--ts);text-transform:none;font-family:var(--fb)">tap stats to compare ▸</span></div>' +
+      '<h2 class="prev-title">' + evName + ' &middot; ' + courseName + '</h2>' +
+      '<div class="cf-section-title" style="margin-top:.5rem">Course Profile <span style="font-size:.58rem;color:var(--gl);text-transform:none;font-family:var(--fb)">tap stats to compare ▸</span></div>' +
       profHTML +
       '<div class="cf-source">Source: DataGolf Course Fit Model, PGA Tour Media Guide</div>' +
       // More Course Details dropdown inside the profile block
@@ -1517,7 +1516,7 @@ function renderPreview() {
 
     // SG Emphasis — separate block
     '<div class="cf-block cf-sg-block" onclick="openSGCompare()">' +
-      '<div class="cf-section-title">Strokes Gained Emphasis <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">tap to compare ▸</span></div>' +
+      '<div class="cf-section-title">Strokes Gained Emphasis <span style="font-size:.58rem;color:var(--gl);text-transform:none;font-family:var(--fb)">tap to compare ▸</span></div>' +
       sgBars +
       '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
       '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
@@ -1592,7 +1591,7 @@ function openTourChart(label){
   const borders=data.map(d=>d.cur?'#e6c847':d.pool?'#40916c':d.corr?'#2e6f8e':'rgba(74,90,80,.2)');
   document.getElementById('tour-modal-t').textContent=label+' — PGA Tour Venues';
   document.getElementById('tour-modal-sub').innerHTML=data.length+' courses'+( info.unit?' ('+info.unit+')':'')+
-    '<div style="display:flex;gap:.6rem;margin-top:.3rem;font-size:.5rem;flex-wrap:wrap">'+
+    '<div style="display:flex;gap:.6rem;margin-top:.3rem;font-size:.58rem;flex-wrap:wrap">'+
     '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#c9a227;margin-right:3px"></span>This Course</span>'+
     '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#52b788;margin-right:3px"></span>Pool Courses</span>'+
     '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#3a86a8;margin-right:3px"></span>Most Comparable</span>'+
@@ -1679,21 +1678,21 @@ function openCategoryChart(label){
     h+='<div style="margin-bottom:.6rem">';
     h+='<div style="font-size:.65rem;font-weight:700;color:'+(isMatch?'var(--go)':'var(--ts)')+';font-family:var(--fd);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem;border-bottom:1px solid var(--br);padding-bottom:.15rem">';
     h+=cat+' <span style="font-weight:400;font-size:.55rem;text-transform:none">('+ groups[cat].length+' course'+(groups[cat].length>1?'s':'')+')</span>';
-    if(isMatch)h+=' <span style="font-size:.5rem;background:var(--go);color:var(--bg);padding:1px 5px;border-radius:3px;margin-left:4px">CURRENT</span>';
+    if(isMatch)h+=' <span style="font-size:.56rem;background:var(--go);color:var(--bg);padding:1px 5px;border-radius:3px;margin-left:4px">CURRENT</span>';
     h+='</div>';
     groups[cat].sort(function(a,b){return(a.rtp||0)-(b.rtp||0);}).forEach(function(c){
       var col=c.cur?'#c9a227':c.pool?'#52b788':c.corr?'#3a86a8':'var(--ts)';
       var tag=c.cur?' ★':c.pool?' (Pool)':c.corr?' (Similar)':'';
       h+='<div style="font-size:.6rem;color:'+col+';padding:.08rem .3rem;font-family:var(--fb)">';
-      h+=c.n+'<span style="font-size:.5rem;color:var(--ts);margin-left:.3rem">';
+      h+=c.n+'<span style="font-size:.56rem;color:var(--ts);margin-left:.3rem">';
       h+=(c.y?c.y+'y ':'')+(c.rtp!=null?(c.rtp>0?'+':'')+c.rtp+' RTP':'')+(c.s?' · Stimp '+c.s:'');
-      h+='</span><span style="font-size:.5rem;color:'+col+'">'+tag+'</span></div>';
+      h+='</span><span style="font-size:.56rem;color:'+col+'">'+tag+'</span></div>';
     });
     h+='</div>';
   });
   // Use the modal but replace chart with HTML
   document.getElementById('tour-modal-t').textContent=info.title+' — PGA Tour Venues';
-  document.getElementById('tour-modal-sub').innerHTML='<div style="display:flex;gap:.6rem;margin-top:.2rem;font-size:.5rem;flex-wrap:wrap">'+
+  document.getElementById('tour-modal-sub').innerHTML='<div style="display:flex;gap:.6rem;margin-top:.2rem;font-size:.58rem;flex-wrap:wrap">'+
     '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#c9a227;margin-right:3px"></span>This Course</span>'+
     '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#52b788;margin-right:3px"></span>Pool Courses</span>'+
     '<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#3a86a8;margin-right:3px"></span>Most Comparable</span></div>';
