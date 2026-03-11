@@ -1504,12 +1504,12 @@ function renderPreview() {
 
   el.innerHTML =
     // Hero + Course Profile + expandable More Details inside
+    '<div style="text-align:center;margin-bottom:.5rem">' +
+      '<a href="https://splashsports.com" target="_blank" style="display:inline-block;font-size:.72rem;font-family:var(--fb);font-weight:600;color:#e76f51;border:1px solid rgba(231,111,81,.35);border-radius:6px;padding:.4rem .8rem;text-decoration:none;transition:all .2s;background:rgba(231,111,81,.06);letter-spacing:.03em">📊 Pool Standings on Splash Sports</a>' +
+    '</div>' +
     '<div class="cf-block">' +
       (window._forceEvent && window._forceEvent !== getDateEvent() ? '<div style="margin-bottom:.3rem"><span onclick="backToCurrent()" style="font-size:.6rem;color:var(--go);cursor:pointer;font-family:var(--fb)">← Back to ' + EV_NAMES[getDateEvent()] + '</span></div>' : '') +
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">' +
-        '<h2 class="prev-title" style="margin:0">' + evName + ' &middot; ' + courseName + '</h2>' +
-        '<a href="https://splashsports.com" target="_blank" style="flex-shrink:0;font-size:.68rem;font-family:var(--fb);font-weight:600;color:#e76f51;border:1px solid rgba(231,111,81,.35);border-radius:5px;padding:.3rem .55rem;text-decoration:none;white-space:nowrap;transition:all .2s;background:rgba(231,111,81,.06)">📊 Standings</a>' +
-      '</div>' +
+      '<h2 class="prev-title">' + evName + ' &middot; ' + courseName + '</h2>' +
       '<div class="cf-section-title" style="margin-top:.5rem">Course Profile <span style="font-size:.62rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:500">tap stats to compare ▸</span></div>' +
       profHTML +
       '<div class="cf-source">Source: DataGolf Course Fit Model, PGA Tour Media Guide</div>' +
