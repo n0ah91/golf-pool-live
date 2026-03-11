@@ -204,21 +204,25 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-bullets li{font-size:.72rem;color:var(--tp);line-height:1.45;padding:.12rem 0 .12rem .8rem;position:relative}
 .cf-bullets li::before{content:'\2022';color:var(--go);font-size:.8rem;position:absolute;left:0;top:.1rem}
 .cf-source{font-size:.52rem;color:var(--td);font-style:italic;margin-top:.3rem;letter-spacing:.02em}
-.cf-extra-keys{margin-top:.35rem;padding-top:.3rem;border-top:1px solid var(--br)}
-.cf-ek{display:flex;justify-content:space-between;font-size:.62rem;padding:.1rem 0}
-.cf-ek-lbl{color:var(--ts)}
+
+
+
 .cf-prior-hdr{font-family:var(--fd);font-size:.9rem;color:var(--tb);font-weight:600;margin-bottom:.4rem}
 /* === Course Facts V2 === */
 .prev-hero-v2{background:linear-gradient(135deg,var(--bc) 0%,rgba(45,106,79,.1) 100%);border:1px solid var(--br);border-radius:9px;padding:.8rem 1rem;margin-bottom:.6rem}
 .prev-title{font-family:var(--fd);font-size:1.5rem;color:var(--tb);font-weight:700;margin:0}
 .prev-sub{font-size:.72rem;color:var(--go);font-family:var(--fd);letter-spacing:.06em;margin-top:.15rem}
-.cf-main{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
-.cf-left,.cf-right{background:var(--bca);border:1px solid var(--br);border-radius:7px;padding:.6rem .7rem}
+.cf-block{background:var(--bca);border:1px solid var(--br);border-radius:7px;padding:.6rem .7rem;margin-bottom:.5rem}
+.cf-profile-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.35rem}
+.cf-pstat{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.35rem .25rem;text-align:center}
+.cf-pstat-v{font-family:var(--fm);font-size:.72rem;color:var(--tb);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cf-pstat-l{font-size:.5rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ts);margin-top:.05rem}
+
 .cf-section-title{font-family:var(--fd);font-size:.85rem;color:var(--go);font-weight:600;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em}
-.cf-qs-row{display:flex;justify-content:space-between;align-items:center;padding:.18rem 0;border-bottom:1px solid rgba(30,46,39,.5);font-size:.7rem}
-.cf-qs-row:last-child{border-bottom:none}
-.cf-qs-lbl{color:var(--ts);font-size:.62rem;text-transform:uppercase;letter-spacing:.04em}
-.cf-qs-val{color:var(--tb);font-family:var(--fm);font-size:.7rem;text-align:right;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+
+
+
 .cf-sg-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem}
 .cf-sg-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ts);min-width:80px}
 .cf-sg-track{flex:1;height:10px;background:var(--bc);border-radius:5px;overflow:hidden;border:1px solid var(--br)}
@@ -250,8 +254,8 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-pw-table td{padding:.22rem .3rem;border-bottom:1px solid var(--br)}
 .cf-pw-table tr:hover{background:var(--bh)}
 .cf-actions{display:flex;gap:.5rem;margin-top:.4rem;margin-bottom:.5rem}
-@media(max-width:768px){.cf-main{grid-template-columns:1fr}.cf-facts-grid{grid-template-columns:1fr}}
-@media(max-width:480px){.prev-title{font-size:1.15rem}}
+@media(max-width:768px){.cf-profile-grid{grid-template-columns:repeat(3,1fr)}.cf-facts-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.prev-title{font-size:1.15rem}.cf-profile-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -1014,7 +1018,12 @@ function diffAndNotify(prev){
 }
 
 /* === LIVE TAB INIT === */
-function rLive(){  const sk=localStorage.getItem('dg_key');  if(sk){document.getElementById('dg-key').value=sk;if(!DG.ok)dgConn();}  loadPool();  rMjrSch();renderPreview();}
+function rLive(){
+  const sk=localStorage.getItem('dg_key');
+  if(sk){document.getElementById('dg-key').value=sk;if(!DG.ok)dgConn();}
+  loadPool();
+  if(POOL.entries.length){document.getElementById('pi-cnt').textContent=POOL.entries.length+' entries loaded';rPE();rEvStatus();}
+  rMjrSch();renderPreview();}
 
 /* ===== SERVICE WORKER ===== */
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
@@ -1148,23 +1157,29 @@ function renderPreview() {
     corrHTML += '</div>';
   }
 
-  // Quick-look stats (left column)
-  var quickStats = [
+  // Unified course profile — all stats in a 3-column grid
+  var profileStats = [
     {l:'Yardage', v:course.yardageDisplay || course.yardage},
     {l:'Par', v:course.par},
     {l:'Type', v:course.courseType},
     {l:'Wind', v:course.windExposure},
-    {l:'Bunkers', v:course.bunkerCount},
-    {l:'Stimp', v:course.greensStimpmeter || course.avgStimpmeter || '-'},
-    {l:'Greens', v:(course.grassGreens||'').split(' overseeded')[0].split('(')[0].trim()},
+    {l:'Prevailing', v:course.prevailingWind || '-'},
     {l:'Elevation', v:course.elevation || course.elevationChange || '-'},
+    {l:'Bunkers', v:course.bunkerCount},
+    {l:'Water Holes', v:course.waterHoles != null ? course.waterHoles + '/18' : '-'},
+    {l:'Stimpmeter', v:course.greensStimpmeter || course.avgStimpmeter || '-'},
+    {l:'Green Size', v:course.avgGreenSize || '-'},
+    {l:'Greens', v:(course.grassGreens||'').split(' overseeded')[0].split('(')[0].trim()},
+    {l:'Greens Speed', v:course.greensSpeed || '-'},
+    {l:'FW Width', v:course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' ft' : course.avgFairwayWidth || '-'},
     {l:'Fairways', v:(course.grassFairways||'').split(' overseeded')[0].trim()},
     {l:'Rough', v:course.avgRoughHeight || '-'}
   ];
-  var qsHTML = '';
-  quickStats.forEach(function(s) {
-    qsHTML += '<div class="cf-qs-row"><span class="cf-qs-lbl">' + s.l + '</span><span class="cf-qs-val">' + s.v + '</span></div>';
+  var profHTML = '<div class="cf-profile-grid">';
+  profileStats.forEach(function(s) {
+    profHTML += '<div class="cf-pstat"><div class="cf-pstat-v">' + s.v + '</div><div class="cf-pstat-l">' + s.l + '</div></div>';
   });
+  profHTML += '</div>';
 
   // Course notes as bullet points
   var notesHTML = '';
@@ -1221,7 +1236,7 @@ function renderPreview() {
   });
   factsHTML += '</div></div>';
 
-  // What makes it unique - as bullets if has sentences
+  // What makes it unique - as bullets
   var uniqueHTML = '';
   if (course.whatMakesItUnique) {
     var sentences = course.whatMakesItUnique.split('. ').filter(function(s) { return s.trim().length > 0; });
@@ -1241,25 +1256,19 @@ function renderPreview() {
       '<div class="prev-sub">' + courseName + ' &middot; ' + evDate + '</div>' +
     '</div>' +
 
-    // Main two-column layout: quick stats + SG
-    '<div class="cf-main">' +
-      '<div class="cf-left">' +
-        '<div class="cf-section-title">Course Profile</div>' +
-        qsHTML +
-        '<div class="cf-source">Source: DataGolf Course Fit Model, PGA Tour Media Guide</div>' +
-      '</div>' +
-      '<div class="cf-right">' +
-        '<div class="cf-section-title">SG Emphasis</div>' +
-        sgBars +
-        '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
-        '<div class="cf-extra-keys">' +
-          '<div class="cf-ek"><span class="cf-ek-lbl">Prevailing Wind:</span> ' + (course.prevailingWind || '-') + '</div>' +
-          '<div class="cf-ek"><span class="cf-ek-lbl">Green Size:</span> ' + (course.avgGreenSize || '-') + '</div>' +
-          '<div class="cf-ek"><span class="cf-ek-lbl">Avg FW Width:</span> ' + (course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' ft' : course.avgFairwayWidth || '-') + '</div>' +
-          '<div class="cf-ek"><span class="cf-ek-lbl">Water Holes:</span> ' + (course.waterHoles != null ? course.waterHoles + '/18' : '-') + '</div>' +
-        '</div>' +
-        '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
-      '</div>' +
+    // Unified course profile
+    '<div class="cf-block">' +
+      '<div class="cf-section-title">Course Profile</div>' +
+      profHTML +
+      '<div class="cf-source">Source: DataGolf Course Fit Model, PGA Tour Media Guide</div>' +
+    '</div>' +
+
+    // SG Emphasis — standalone
+    '<div class="cf-block">' +
+      '<div class="cf-section-title">Strokes Gained Emphasis</div>' +
+      sgBars +
+      '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
+      '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
     '</div>' +
 
     // Course notes as bullets
@@ -1288,21 +1297,15 @@ function renderPreview() {
       '<table class="cf-pw-table"><tbody>' + pwHTML + '</tbody></table>' +
     '</div>' +
 
-    // Win odds - auto-load, no field strength button
+    // Win odds
     '<div class="cf-section" id="odds-section">' +
       '<div class="cf-section-title">Win Odds <span style="font-size:.65rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Top 30)</span></div>' +
       '<div id="live-odds"><div style="text-align:center;padding:.5rem"><button class="ab" onclick="fetchPreviewOdds()" id="odds-btn">Load Win Odds</button></div></div>' +
-    '</div>' +
-
-    // Prior tournament results
-    '<div class="cf-section" id="prior-section">' +
-      '<div class="cf-section-title">Prior Tournament Results</div>' +
-      '<div id="prior-results"><div style="text-align:center;padding:.5rem"><button class="ab sec" onclick="fetchPriorResults()" id="prior-btn">Load Last Week\'s Results</button></div></div>' +
     '</div>';
 
   // Auto-load odds if connected
   if (DG.ok || localStorage.getItem('dg_key')) {
-    setTimeout(fetchPreviewOdds, 300);
+    setTimeout(fetchPreviewOdds, 500);
   }
 }
 
@@ -1358,83 +1361,6 @@ async function fetchPreviewOdds() {
   }
 }
 
-
-/* ===== PRIOR TOURNAMENT RESULTS ===== */
-async function fetchPriorResults() {
-  if (!DG.key) {
-    const sk = localStorage.getItem('dg_key');
-    if (sk) { DG.key = sk; } else {
-      alert('Connect to DataGolf first');
-      return;
-    }
-  }
-  const btn = document.getElementById('prior-btn');
-  const el = document.getElementById('prior-results');
-  if (!el) return;
-  if (btn) btn.textContent = 'Loading...';
-  try {
-    const d = await dgF('preds/in-play', {tour:'pga'});
-    const data = d.data || d.live_stats || [];
-    const evInfo = d.info || {};
-    const evName = evInfo.event_name || 'Last Tournament';
-    const course = evInfo.course || '';
-
-    // Sort by total strokes or position
-    let sorted = [...data].sort((a,b) => {
-      const sa = a.current_pos || a.position || 999;
-      const sb = b.current_pos || b.position || 999;
-      if (typeof sa === 'string' && typeof sb === 'string') return sa.localeCompare(sb);
-      return sa - sb;
-    });
-
-    const top25 = sorted.slice(0, 25);
-    const rest = sorted.slice(25);
-
-    let h = '<div class="cf-prior-hdr">' + evName + (course ? ' &middot; ' + course : '') + '</div>';
-    h += '<div class="tw" style="margin:0"><table><thead><tr>';
-    h += '<th>Pos</th><th>Player</th><th>Score</th><th>Today</th><th>Thru</th>';
-    h += '</tr></thead><tbody>';
-
-    top25.forEach(function(p) {
-      const nm = p.player_name ? fmN(p.player_name) : '-';
-      const pos = p.current_pos || p.position || '-';
-      const score = p.total != null ? (p.total > 0 ? '+' + p.total : p.total === 0 ? 'E' : p.total) : '-';
-      const today = p.today != null ? (p.today > 0 ? '+' + p.today : p.today === 0 ? 'E' : p.today) : '-';
-      const thru = p.thru || '-';
-      const rc = pos === 1 || pos === '1' ? 'r1' : pos === 2 || pos === '2' ? 'r2' : pos === 3 || pos === '3' ? 'r3' : '';
-      h += '<tr><td class="rc ' + rc + '">' + pos + '</td><td class="nc">' + nm + '</td>';
-      h += '<td style="font-family:var(--fm)">' + score + '</td>';
-      h += '<td style="font-family:var(--fm)">' + today + '</td>';
-      h += '<td style="font-family:var(--fm)">' + thru + '</td></tr>';
-    });
-    h += '</tbody></table></div>';
-
-    if (rest.length > 0) {
-      h += '<details class="cf-details" style="margin-top:.3rem"><summary class="cf-details-sum">Show all (' + sorted.length + ' players)</summary>';
-      h += '<div class="cf-details-body"><div class="tw" style="margin:0"><table><thead><tr>';
-      h += '<th>Pos</th><th>Player</th><th>Score</th><th>Today</th><th>Thru</th>';
-      h += '</tr></thead><tbody>';
-      rest.forEach(function(p) {
-        const nm = p.player_name ? fmN(p.player_name) : '-';
-        const pos = p.current_pos || p.position || '-';
-        const score = p.total != null ? (p.total > 0 ? '+' + p.total : p.total === 0 ? 'E' : p.total) : '-';
-        const today = p.today != null ? (p.today > 0 ? '+' + p.today : p.today === 0 ? 'E' : p.today) : '-';
-        const thru = p.thru || '-';
-        h += '<tr><td class="rc">' + pos + '</td><td class="nc">' + nm + '</td>';
-        h += '<td style="font-family:var(--fm)">' + score + '</td>';
-        h += '<td style="font-family:var(--fm)">' + today + '</td>';
-        h += '<td style="font-family:var(--fm)">' + thru + '</td></tr>';
-      });
-      h += '</tbody></table></div></div></details>';
-    }
-
-    h += '<div class="cf-source" style="margin-top:.3rem">Source: DataGolf In-Play Predictions API</div>';
-    el.innerHTML = h;
-  } catch (e) {
-    console.error('Prior results error:', e);
-    el.innerHTML = '<div style="color:var(--rd);font-size:.72rem">Could not load results: ' + e.message + '</div>';
-  }
-}
 
 /* ===== RECAP DATA IMPORT ===== */
 document.getElementById('recap-mode')?.addEventListener('change', function() {
