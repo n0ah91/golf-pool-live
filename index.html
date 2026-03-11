@@ -235,11 +235,20 @@ td,th{padding:.32rem .28rem;font-size:.68rem}.cd{margin:0 .45rem .55rem;padding:
 .tour-legend .tl-other::before{color:#4a5a50}
 .cf-sg-block{cursor:pointer;transition:border-color .2s;max-width:480px;margin-left:auto;margin-right:auto}
 .cf-sg-block:hover{border-color:var(--go)}
-.cf-sg-compact:hover{background:var(--bh);border-radius:5px;margin-left:-.3rem;margin-right:-.3rem;padding-left:.3rem;padding-right:.3rem}
-.cf-sg-compact .cf-sg-row{margin-bottom:.2rem}
-.cf-sg-compact .cf-sg-track{height:7px}
-.cf-sg-compact .cf-sg-lbl{font-size:.52rem;min-width:68px}
-.cf-sg-compact .cf-sg-val{font-size:.55rem}
+.cf-inner-details{margin-top:.5rem;border-top:1px solid var(--br);padding-top:.4rem}
+.cf-inner-sum{font-size:.65rem;color:var(--go);cursor:pointer;font-family:var(--fd);font-weight:600;letter-spacing:.03em;user-select:none;list-style:none;transition:color .2s}
+.cf-inner-sum::-webkit-details-marker{display:none}
+.cf-inner-sum:hover{color:var(--tb)}
+.cf-inner-details[open] .cf-inner-sum{margin-bottom:.4rem}
+.cf-inner-details[open] .cf-inner-sum::after{content:''}
+.cf-inner-body{padding-top:.2rem}
+.cf-prev-row{display:flex;align-items:center;padding:.18rem .3rem;border-bottom:1px solid rgba(30,46,39,.3);font-size:.68rem;gap:.3rem}
+.cf-prev-row:hover{background:var(--bh)}
+.cf-prev-pos{color:var(--ts);font-family:var(--fm);min-width:22px;text-align:right}
+.cf-prev-nm{flex:1;color:var(--tb)}
+.cf-prev-sc{font-family:var(--fm);color:var(--go);min-width:36px;text-align:right}
+.cf-prev-show-more{text-align:center;padding:.4rem;font-size:.6rem;color:var(--go);cursor:pointer;border-top:1px solid var(--br);margin-top:.2rem}
+.cf-prev-show-more:hover{color:var(--tb)}
 .cf-wx{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin-top:.4rem}
 .cf-wx-card{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.4rem .3rem;text-align:center}
 .cf-wx-icon{font-size:1.1rem;margin-bottom:.1rem}
@@ -1365,16 +1374,37 @@ function renderPreview() {
   }
 
   el.innerHTML =
-    // Hero + Course Profile merged into one block
+    // Hero + Course Profile + expandable More Details inside
     '<div class="cf-block">' +
       '<h2 class="prev-title">' + evName + ' 2026</h2>' +
       '<div class="prev-sub">' + courseName + ' &middot; ' + evDate + '</div>' +
       '<div class="cf-section-title" style="margin-top:.5rem">Course Profile <span style="font-size:.5rem;color:var(--ts);text-transform:none;font-family:var(--fb)">tap stats to compare ▸</span></div>' +
       profHTML +
       '<div class="cf-source">Source: DataGolf Course Fit Model, PGA Tour Media Guide</div>' +
+      // More Course Details dropdown inside the profile block
+      '<details class="cf-inner-details">' +
+        '<summary class="cf-inner-sum">More Course Details ▸</summary>' +
+        '<div class="cf-inner-body">' +
+          factsHTML +
+          (course.signatureHoles ? '<div class="cf-sig" style="margin-top:.5rem"><span class="cf-fact-lbl">Signature Holes:</span> ' + course.signatureHoles + '</div>' : '') +
+          uniqueHTML +
+          (corrHTML ? '<div style="margin-top:.5rem"><span style="font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd)">Correlated Courses</span>' +
+            '<div class="cf-source" style="margin-bottom:.3rem">Courses with similar SG profiles per DataGolf</div>' +
+            corrHTML + '</div>' : '') +
+          '<div class="cf-source" style="margin-top:.5rem">Sources: DataGolf, PGA Tour Course Database, USGA/R&A Records</div>' +
+        '</div>' +
+      '</details>' +
     '</div>' +
 
-    // Conditions + SG Emphasis merged
+    // SG Emphasis — separate block
+    '<div class="cf-block cf-sg-block" onclick="openSGCompare()">' +
+      '<div class="cf-section-title">Strokes Gained Emphasis <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">tap to compare ▸</span></div>' +
+      sgBars +
+      '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
+      '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
+    '</div>' +
+
+    // Weather & Conditions — separate block
     '<div class="cf-block">' +
       '<div class="cf-section-title">Conditions</div>' +
       '<div class="cf-wx" id="wx-grid">' +
@@ -1383,12 +1413,7 @@ function renderPreview() {
         '<div class="cf-wx-card"><div class="cf-wx-icon">💧</div><div class="cf-wx-val" id="wx-rain">' + (course.wxRain || '25%') + '</div><div class="cf-wx-lbl">Rain Chance</div></div>' +
       '</div>' +
       '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:var(--go)">📡 10-Day Forecast →</a>' +
-      '<div class="cf-sg-compact" onclick="openSGCompare()" style="cursor:pointer;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--br)">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem"><span style="font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd)">SG Emphasis</span><span style="font-size:.5rem;color:var(--ts);font-family:var(--fb)">tap to compare ▸</span></div>' +
-        '<div class="cf-sg-inline">' + sgBars + '</div>' +
-        '<div style="font-size:.55rem;color:var(--ts);margin-top:.2rem"><span style="color:var(--go);font-weight:600">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
-      '</div>' +
-      '<div class="cf-source" style="margin-top:.3rem">Sources: Weather.com, DataGolf SG Decomposition</div>' +
+      '<div class="cf-source">Historical averages for tournament week</div>' +
     '</div>' +
 
     // Course notes as bullets
@@ -1397,34 +1422,33 @@ function renderPreview() {
       notesHTML +
     '</div>' +
 
-    // Expandable full course facts (tile grid)
-    '<details class="cf-details">' +
-      '<summary class="cf-details-sum">More Course Details</summary>' +
-      '<div class="cf-details-body">' +
-        factsHTML +
-        (course.signatureHoles ? '<div class="cf-sig" style="margin-top:.5rem"><span class="cf-fact-lbl">Signature Holes:</span> ' + course.signatureHoles + '</div>' : '') +
-        uniqueHTML +
-        (corrHTML ? '<div style="margin-top:.5rem"><span style="font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd)">Correlated Courses</span>' +
-          '<div class="cf-source" style="margin-bottom:.3rem">Courses with similar SG profiles per DataGolf</div>' +
-          corrHTML + '</div>' : '') +
-        '<div class="cf-source" style="margin-top:.5rem">Sources: DataGolf, PGA Tour Course Database, USGA/R&A Records</div>' +
+    // Past winners (open by default, collapsible) — last 10 of this tournament
+    '<details class="cf-details" open>' +
+      '<summary class="cf-details-sum">Past Winners <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Last 10)</span></summary>' +
+      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
+        '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:right;padding:.1rem .3rem">Score</th><th style="text-align:left;padding:.1rem .3rem .1rem .4rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' +
       '</div>' +
     '</details>' +
 
-    // Past winners (collapsible) — last 10 of this tournament
-    '<details class="cf-section" style="margin-bottom:.5rem">' +
-      '<summary class="cf-section-title" style="cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between"><span>Past Winners <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Last 10)</span></span><span class="pw-arrow" style="font-size:.7rem;color:var(--ts);transition:transform .2s">▼</span></summary>' +
-      '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:right;padding:.1rem .3rem">Score</th><th style="text-align:left;padding:.1rem .3rem .1rem .4rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' +
+    // Previous tournament results (open by default, expandable beyond top 25)
+    '<details class="cf-details" open>' +
+      '<summary class="cf-details-sum">Previous Tournament</summary>' +
+      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
+        '<div id="prev-tourn"><div style="text-align:center;padding:.5rem"><button class="ab" onclick="fetchPrevTournament()" id="prev-btn">Load Results</button></div></div>' +
+      '</div>' +
     '</details>' +
 
-    // Win odds
-    '<div class="cf-section" id="odds-section">' +
-      '<div class="cf-section-title">Win Odds <span style="font-size:.65rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Top 20)</span></div>' +
-      '<div id="live-odds"><div style="text-align:center;padding:.5rem"><button class="ab" onclick="fetchPreviewOdds()" id="odds-btn">Load Win Odds</button></div></div>' +
-    '</div>';
+    // Win odds (open by default, collapsible)
+    '<details class="cf-details" open id="odds-section">' +
+      '<summary class="cf-details-sum">Win Odds <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Top 20)</span></summary>' +
+      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
+        '<div id="live-odds"><div style="text-align:center;padding:.5rem"><button class="ab" onclick="fetchPreviewOdds()" id="odds-btn">Load Win Odds</button></div></div>' +
+      '</div>' +
+    '</details>';
 
-  // Auto-load odds via proxy
+  // Auto-load odds and previous tournament results
   setTimeout(fetchPreviewOdds, 800);
+  setTimeout(fetchPrevTournament, 1200);
 }
 
 
@@ -1536,6 +1560,86 @@ async function fetchPreviewOdds() {
   }
 }
 
+
+/* ===== PREVIOUS TOURNAMENT RESULTS ===== */
+const PREV_EVENT_MAP = {
+  players: {name:'Arnold Palmer Invitational', dgId:'arnold-palmer-invitational'},
+  masters: {name:'The Players Championship', dgId:'the-players-championship'},
+  pga: {name:'Wells Fargo Championship', dgId:'wells-fargo-championship'},
+  uso: {name:'Memorial Tournament', dgId:'the-memorial-tournament'},
+  open: {name:'Scottish Open', dgId:'genesis-scottish-open'}
+};
+
+async function fetchPrevTournament() {
+  const el = document.getElementById('prev-tourn');
+  if (!el) return;
+  const btn = document.getElementById('prev-btn');
+  if (btn) btn.textContent = 'Loading...';
+  const ev = getCurrentEvent();
+  const prev = PREV_EVENT_MAP[ev];
+  if (!prev) { el.innerHTML = '<div style="color:var(--ts);font-size:.68rem">No previous event data</div>'; return; }
+
+  try {
+    // Use historical raw data for 2025-26 season
+    const d = await dgF('historical-raw-data/rounds', {tour:'pga',event_id:prev.dgId,year:2026,file_format:'json'});
+    // Build leaderboard from round data
+    let playerMap = {};
+    const rounds = Array.isArray(d) ? d : (d.rounds || d.scorecards || []);
+    rounds.forEach(function(r) {
+      const nm = r.player_name || r.fin_text || '';
+      if (!nm) return;
+      if (!playerMap[nm]) playerMap[nm] = {name:nm, total:0, rounds:[]};
+      playerMap[nm].total += (r.round_score || r.score || 0) - (r.course_par || 72);
+      playerMap[nm].rounds.push(r.round_score || r.score || 0);
+    });
+    let players = Object.values(playerMap).sort(function(a,b) { return a.total - b.total; });
+    if (!players.length) throw new Error('No player data');
+    renderPrevResults(el, prev.name, players);
+  } catch(e) {
+    console.warn('DG historical failed, trying fallback:', e.message);
+    // Fallback: try pre-tournament endpoint for last event
+    try {
+      const d = await dgF('preds/pre-tournament', {tour:'pga'});
+      if (d.baseline_history_fit || d.rankings) {
+        el.innerHTML = '<div style="color:var(--ts);font-size:.68rem">Previous results not yet available from API. Check back closer to the event.</div>';
+      } else { throw new Error('No data'); }
+    } catch(e2) {
+      el.innerHTML = '<div style="color:var(--ts);font-size:.68rem">' + prev.name + ' results not yet available. <button class="ab" onclick="fetchPrevTournament()" style="margin-left:.3rem">Retry</button></div>';
+    }
+  }
+}
+
+function renderPrevResults(el, evName, players) {
+  const top25 = players.slice(0, 25);
+  const rest = players.slice(25);
+  let h = '<div style="font-size:.7rem;color:var(--go);font-weight:600;margin-bottom:.3rem;font-family:var(--fd)">' + evName + ' — Final Results</div>';
+  top25.forEach(function(p, i) {
+    const sc = p.total > 0 ? '+' + p.total : p.total === 0 ? 'E' : p.total;
+    const ip = typeof inPool === 'function' && inPool(p.name) ? ' style="background:rgba(201,162,39,.08)"' : '';
+    h += '<div class="cf-prev-row"' + ip + '><span class="cf-prev-pos">' + (i+1) + '</span><span class="cf-prev-nm">' + fmN(p.name) + '</span><span class="cf-prev-sc">' + sc + '</span></div>';
+  });
+  if (rest.length) {
+    h += '<div class="cf-prev-show-more" id="prev-expand" onclick="expandPrevResults()">Show all ' + players.length + ' players ▼</div>';
+    h += '<div id="prev-rest" style="display:none">';
+    rest.forEach(function(p, i) {
+      const sc = p.total > 0 ? '+' + p.total : p.total === 0 ? 'E' : p.total;
+      const ip = typeof inPool === 'function' && inPool(p.name) ? ' style="background:rgba(201,162,39,.08)"' : '';
+      h += '<div class="cf-prev-row"' + ip + '><span class="cf-prev-pos">' + (i+26) + '</span><span class="cf-prev-nm">' + fmN(p.name) + '</span><span class="cf-prev-sc">' + sc + '</span></div>';
+    });
+    h += '</div>';
+  }
+  h += '<div class="cf-source" style="margin-top:.3rem">Source: DataGolf Historical Data</div>';
+  el.innerHTML = h;
+}
+
+function expandPrevResults() {
+  var rest = document.getElementById('prev-rest');
+  var btn = document.getElementById('prev-expand');
+  if (rest && btn) {
+    rest.style.display = rest.style.display === 'none' ? '' : 'none';
+    btn.textContent = rest.style.display === 'none' ? 'Show all players ▼' : 'Show top 25 only ▲';
+  }
+}
 
 /* ===== RECAP DATA IMPORT ===== */
 document.getElementById('recap-mode')?.addEventListener('change', function() {
