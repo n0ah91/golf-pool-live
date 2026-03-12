@@ -18,7 +18,7 @@
 <style>
 :root{--bd:#060e1c;--bm:#0a1628;--bc:#111d33;--bca:#15233d;--bh:#1a2b47;--br:#1e3352;--brl:#27405f;
 --gn:#1a7a6d;--gl:#2db5a0;--gm:#0e4f47;--go:#f4c542;--gol:#ffd966;--god:#b8922e;
---tb:#f0ece4;--tp:#c8c0b4;--ts:#7a8da0;--td:#4e6178;--rd:#e76f51;
+--tb:#f0ece4;--tp:#c8c0b4;--ts:#7a8da0;--td:#4e6178;--rd:#e09478;
 --r1:#ffd700;--r2:#c0c0c0;--r3:#cd7f32;
 --fd:'Cormorant Garamond',Georgia,serif;--fb:'DM Sans',-apple-system,sans-serif;--fm:'DM Mono',Consolas,monospace;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -64,7 +64,7 @@ td.rc{font-weight:600;min-width:38px}
 .r1{color:var(--r1)}.r2{color:var(--r2)}.r3{color:var(--r3)}
 .sg{color:var(--gl)}.sb{color:var(--rd)}.sn{color:var(--td)}
 .tp{display:inline-block;padding:.08rem .35rem;border-radius:9px;font-weight:500;font-size:.7rem}
-.tp.g{background:rgba(82,183,136,.12);color:var(--gl)}.tp.b{background:rgba(231,111,81,.09);color:var(--rd)}.tp.n{background:rgba(138,154,143,.07);color:var(--ts)}
+.tp.g{background:rgba(82,183,136,.12);color:var(--gl)}.tp.b{background:rgba(224,148,120,.09);color:var(--rd)}.tp.n{background:rgba(138,154,143,.07);color:var(--ts)}
 .wi{color:var(--go);font-weight:500}.wi.z{color:var(--td)}
 .pn{font-family:var(--fb);font-size:.58rem;color:var(--td);font-weight:400}
 .yoy{font-size:.58rem;font-family:var(--fm);margin-left:.25rem}.yoy.up{color:var(--gl)}.yoy.dn{color:var(--rd)}.yoy.nw{color:var(--go);font-style:italic;font-family:var(--fb)}
@@ -135,7 +135,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .mjr-card{background:var(--bc);border:1px solid var(--br);border-radius:7px;padding:.55rem .45rem;text-align:center;transition:all .2s;cursor:pointer}
 .mjr-card:hover{background:var(--bca);border-color:var(--go);transform:translateY(-1px);box-shadow:0 2px 8px rgba(201,162,39,.1)}
 .mjr-card.done{border-color:var(--gn);opacity:.65}.mjr-card.live{border-color:var(--go);background:rgba(201,162,39,.06);animation:pulse 2s infinite}
-.mjr-card.next{border-color:#e76f51}
+.mjr-card.next{border-color:#e09478}
 .mjr-card .mn{font-family:var(--fd);font-size:.88rem;color:var(--tb);font-weight:600}
 .mjr-card .md{font-size:.6rem;color:var(--ts);margin-top:.1rem}
 .mjr-card .ms{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem;padding:.12rem .35rem;border-radius:3px;display:inline-block}
@@ -239,7 +239,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-sg-block{cursor:pointer;transition:border-color .2s}
 .cf-sg-block:hover{border-color:var(--go)}
 .cf-inner-details{margin-top:.5rem;border-top:1px solid var(--br);padding-top:.4rem}
-.cf-inner-sum{font-size:.75rem;color:#e76f51;cursor:pointer;font-family:var(--fb);font-weight:600;letter-spacing:.03em;user-select:none;list-style:none;transition:color .2s}
+.cf-inner-sum{font-size:.75rem;color:#e09478;cursor:pointer;font-family:var(--fb);font-weight:600;letter-spacing:.03em;user-select:none;list-style:none;transition:color .2s}
 .cf-inner-sum::-webkit-details-marker{display:none}
 .cf-inner-sum:hover{color:var(--tb)}
 .cf-inner-details[open] .cf-inner-sum{margin-bottom:.4rem}
@@ -1572,7 +1572,7 @@ function renderPreview() {
   el.innerHTML =
     // Hero + Course Profile + expandable More Details inside
     '<div style="text-align:center;margin-bottom:.5rem">' +
-      '<a href="https://splashsports.com" target="_blank" style="display:inline-block;font-size:.72rem;font-family:var(--fb);font-weight:600;color:#e76f51;border:1px solid rgba(231,111,81,.35);border-radius:6px;padding:.4rem .8rem;text-decoration:none;transition:all .2s;background:rgba(231,111,81,.06);letter-spacing:.03em">📊 Pool Standings on Splash Sports</a>' +
+      '<a href="https://splashsports.com" target="_blank" style="display:inline-block;font-size:.72rem;font-family:var(--fb);font-weight:600;color:#e09478;border:1px solid rgba(224,148,120,.35);border-radius:6px;padding:.4rem .8rem;text-decoration:none;transition:all .2s;background:rgba(224,148,120,.06);letter-spacing:.03em">📊 Pool Standings on Splash Sports</a>' +
     '</div>' +
     '<div class="cf-block">' +
       (window._forceEvent && window._forceEvent !== getDateEvent() ? '<div style="margin-bottom:.3rem"><span onclick="backToCurrent()" style="font-size:.6rem;color:var(--go);cursor:pointer;font-family:var(--fb)">← Back to ' + EV_NAMES[getDateEvent()] + '</span></div>' : '') +
