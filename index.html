@@ -1448,7 +1448,7 @@ function renderPreview() {
   var profileStats = [
     {l:'Yardage', v:course.yardageDisplay || course.yardage},
     {l:'Par', v:course.par},
-    {l:'Architect', v:course.designer || '-'},
+    {l:'Architect', v:(course.designer||'-').replace(/\s*\(\d{4}\)/,'').replace(/(\w+)\s+\w+\s*&\s*(\w+)\s+\w+/,'$1 & $2')},
     {l:'Bunkers', v:course.bunkerCount},
     {l:'Water Holes', v:course.waterHoles != null ? course.waterHoles + '/18' : '-'},
     {l:'Stimpmeter', v:course.greensStimpmeter || course.avgStimpmeter || '-'},
