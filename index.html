@@ -330,6 +330,15 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-rnd:hover{border-color:var(--brl);color:var(--tp)}
 .ls-search{background:var(--bm);border:1px solid var(--br);color:var(--tp);font-family:var(--fb);font-size:.62rem;padding:.28rem .5rem;border-radius:12px;flex:1;min-width:90px;outline:none}
 .ls-search:focus{border-color:var(--go);box-shadow:0 0 6px rgba(244,197,66,.12)}
+.ls-mode-btn{background:rgba(244,197,66,.1);border:1px solid rgba(244,197,66,.3);color:var(--go);font-family:var(--fb);font-size:.56rem;padding:.25rem .6rem;border-radius:12px;cursor:pointer;transition:all .2s;font-weight:600;letter-spacing:.03em}
+.ls-mode-btn:hover{background:rgba(244,197,66,.2);border-color:var(--go)}
+.ls-helper{font-size:.58rem;color:var(--ts);padding:.25rem .8rem .1rem;font-family:var(--fb);font-style:italic}
+.ls-insights{display:flex;gap:.35rem;padding:.2rem .8rem .3rem;flex-wrap:wrap}
+.ls-chip{font-size:.52rem;font-family:var(--fb);background:rgba(244,197,66,.08);border:1px solid rgba(244,197,66,.2);color:var(--tp);padding:.15rem .45rem;border-radius:10px;white-space:nowrap}
+.ls-chip-lbl{color:var(--go);font-weight:600;margin-right:.15rem}
+.ls-legend{font-size:.5rem;color:var(--ts);padding:.35rem .5rem .15rem;font-family:var(--fb);display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+.ls-leg-g{color:#2db5a0;font-size:.6rem}.ls-leg-mid{color:rgba(80,90,100,.5);font-size:.6rem}.ls-leg-r{color:#d94040;font-size:.6rem}
+.ls-leg-note{color:var(--td);font-style:italic}
 .ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0;padding:0 .1rem .4rem}
 .ls-hm table{width:100%;border-collapse:collapse;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
 .ls-hm th{background:linear-gradient(180deg,rgba(14,30,50,.95) 0%,rgba(10,22,40,.98) 100%);color:var(--go);font-size:.5rem;text-transform:uppercase;letter-spacing:.05em;padding:.35rem .25rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);border-right:2px solid rgba(30,51,82,.5);cursor:pointer;font-weight:700}
@@ -347,11 +356,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-pos-top10{color:var(--tb)}
 .ls-pos-rest{color:var(--ts)}
 .ls-nm{color:var(--tb);font-weight:600;font-size:.66rem}
-.ls-sc{font-weight:700;font-size:.66rem}
-.ls-sc.sg{color:#2db5a0;text-shadow:0 0 6px rgba(45,181,160,.3)}
-.ls-sc.sb{color:#e09478}
-.ls-thru{color:var(--td);font-family:var(--fm);font-size:.58rem}
-.ls-thru{color:var(--ts);font-family:var(--fm)}
+.ls-sc{font-weight:800;font-size:.7rem;letter-spacing:-.01em}
+.ls-sc.sg{color:#2db5a0;text-shadow:0 0 8px rgba(45,181,160,.35)}
+.ls-sc.sb{color:#e09478;text-shadow:0 0 6px rgba(224,148,120,.2)}
+.ls-thru{color:var(--td);font-family:var(--fm);font-size:.54rem;opacity:.6}
 .ls-stat{font-family:var(--fm);font-weight:600;transition:all .15s;font-size:.62rem;min-width:1.8rem}
 .ls-thru{width:1.6rem}
 .ls-pool{background:rgba(244,197,66,.08)!important}
@@ -424,9 +432,11 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   </div>
   <div class="ls-tabs">
     <button class="ls-tab active" onclick="lsView('hm')">Performance</button>
-    <button class="ls-tab" onclick="lsView('holes')">Hole Difficulty</button>
-    <button class="ls-tab" onclick="lsView('power')">Power Profile</button>
+    <button class="ls-tab" onclick="lsView('holes')">Toughest Holes</button>
+    <button class="ls-tab" onclick="lsView('power')">Bombers vs Control</button>
   </div>
+  <div id="ls-helper" class="ls-helper"></div>
+  <div id="ls-insights" class="ls-insights"></div>
   <div class="ls-ctrl">
     <div class="ls-rounds">
       <button class="ls-rnd active" data-r="event_avg" onclick="lsRound('event_avg')">Event</button>
@@ -435,6 +445,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
       <button class="ls-rnd" data-r="3" onclick="lsRound('3')">R3</button>
       <button class="ls-rnd" data-r="4" onclick="lsRound('4')">R4</button>
     </div>
+    <button class="ls-mode-btn" id="ls-mode-btn" onclick="lsToggleMode()">Advanced</button>
     <input id="ls-search" class="ls-search" placeholder="Search player..." oninput="lsFilter()">
   </div>
   <div id="ls-body"><div style="text-align:center;color:var(--ts);padding:1.5rem;font-size:.72rem">Loading live data...</div></div>
@@ -2609,8 +2620,8 @@ function sgColor(rank,fieldSize){
     B=Math.round(80-s*40);    // 80→40
     alpha=0.95-s*0.6;         // 0.95→0.35
   } else if(t<=0.55){
-    // Dead zone: near-transparent
-    R=80;G=90;B=100;alpha=0.12;
+    // Dead zone: subtle neutral — softer middle to reduce "Christmas tree"
+    R=60;G=70;B=80;alpha=0.06;
   } else {
     // Red zone: faded red → bright red
     const s=(t-0.55)/0.45;
@@ -2625,14 +2636,15 @@ function sgColor(rank,fieldSize){
   return {bg:`rgba(${R},${G},${B},${alpha})`,fg,fw};
 }
 
+let _lsAdvanced=false;
 const LS_COLS=[
-  {key:'sg_ott',hdr:'OTT',tip:'Off the Tee — strokes gained driving'},
-  {key:'sg_app',hdr:'APP',tip:'Approach — strokes gained into the green'},
-  {key:'sg_arg',hdr:'ARG',tip:'Around the Green — chipping & pitching'},
-  {key:'sg_putt',hdr:'PUTT',tip:'Putting — strokes gained on the greens'},
-  {key:'distance',hdr:'DIST',tip:'Average driving distance (yards)'},
-  {key:'great_shots',hdr:'GRT',tip:'Great Shots — exceptional shots vs field'},
-  {key:'prox_fw',hdr:'PROX',tip:'Proximity — avg distance to pin from fairway (ft)'}
+  {key:'sg_ott',hdr:'Drive',abbr:'DRV',tip:'Strokes gained off the tee — how well they\'re driving',core:true},
+  {key:'sg_app',hdr:'Approach',abbr:'APP',tip:'Strokes gained on approach — iron play into greens',core:true},
+  {key:'sg_arg',hdr:'Short Game',abbr:'ARG',tip:'Strokes gained around the green — chipping & pitching',core:true},
+  {key:'sg_putt',hdr:'Putting',abbr:'PUTT',tip:'Strokes gained on the greens — how well they\'re rolling it',core:true},
+  {key:'distance',hdr:'Distance',abbr:'DIST',tip:'Average driving distance in yards — rank vs field',core:false},
+  {key:'great_shots',hdr:'Great Shots',abbr:'GRT',tip:'Exceptional shots relative to field average',core:false},
+  {key:'prox_fw',hdr:'Proximity',abbr:'PROX',tip:'How close approach shots finish to the pin from the fairway',core:false}
 ];
 
 async function fetchLiveStats(round){
@@ -2640,15 +2652,36 @@ async function fetchLiveStats(round){
 }
 async function fetchHoleStats(){return dgF('preds/live-hole-stats',{tour:'pga'});}
 
+function lsToggleMode(){
+  _lsAdvanced=!_lsAdvanced;
+  const btn=document.getElementById('ls-mode-btn');
+  if(btn)btn.textContent=_lsAdvanced?'Simple':'Advanced';
+  if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);
+}
+
+function lsInsights(stats){
+  const el=document.getElementById('ls-insights');if(!el)return;
+  if(!stats||!stats.length){el.innerHTML='';return;}
+  const best=(key,label)=>{
+    const top=stats.filter(p=>p[key]!=null&&p[key]!=='-').sort((a,b)=>a[key]-b[key])[0];
+    return top?{label,name:fmNS(top.player_name||''),rank:top[key]}:null;
+  };
+  const chips=[best('sg_ott','Best Driver'),best('sg_app','Best Approach'),best('sg_putt','Best Putter'),best('great_shots','Most Great Shots')].filter(Boolean);
+  if(!chips.length){el.innerHTML='';return;}
+  el.innerHTML=chips.map(c=>'<span class="ls-chip"><span class="ls-chip-lbl">'+c.label+'</span> '+c.name+'</span>').join('');
+}
+
 function renderSGHeatmap(data){
   const bd=document.getElementById('ls-body');
   if(!data||!data.live_stats||!data.live_stats.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">No live stats available</div>';return;}
   const fieldSize=data.live_stats.length;
-  // Update header with event name
   const evEl=document.getElementById('ls-event-name');
   if(evEl)evEl.textContent=data.event_name||data.info?.course_name||'Live Tournament';
   const updEl=document.getElementById('ls-updated');
   if(updEl&&data.last_updated)updEl.textContent=data.last_updated;
+  // Insight chips
+  lsInsights(data.live_stats);
+  const cols=_lsAdvanced?LS_COLS:LS_COLS.filter(c=>c.core);
   const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return 999;return parseInt(String(s).replace(/^T/,''))||999;};
   const sorted=[...data.live_stats].sort((a,b)=>{
     const ac=String(a.position)==='CUT'||String(a.position)==='WD',bc=String(b.position)==='CUT'||String(b.position)==='WD';
@@ -2658,9 +2691,11 @@ function renderSGHeatmap(data){
   });
   const search=(document.getElementById('ls-search')?.value||'').toLowerCase();
   const filtered=search?sorted.filter(p=>{const nm=(p.player_name||'').toLowerCase();return nm.includes(search)||fmN(p.player_name||'').toLowerCase().includes(search);}):sorted.slice(0,30);
-  let h='<div class="ls-hm"><table><thead><tr>';
+  // Legend line
+  let h='<div class="ls-legend"><span class="ls-leg-g">■</span> Better than field <span class="ls-leg-mid">■</span> Average <span class="ls-leg-r">■</span> Worse than field <span class="ls-leg-note">· Numbers are ranks (1 = best)</span></div>';
+  h+='<div class="ls-hm"><table><thead><tr>';
   h+='<th class="ls-pos">Pos</th><th class="ls-nm">Player</th><th class="ls-sc">Score</th><th class="ls-thru">Thru</th>';
-  LS_COLS.forEach(c=>{h+='<th onclick="lsTip(\''+c.hdr+'\',\''+c.tip.replace(/'/g,"\\'")+'\',this)" style="cursor:pointer">'+c.hdr+'</th>';});
+  cols.forEach(c=>{h+='<th onclick="lsTip(\''+c.hdr+'\',\''+c.tip.replace(/'/g,"\\'")+'\',this)" style="cursor:pointer" title="'+c.tip+'">'+c.hdr+'</th>';});
   h+='</tr></thead><tbody>';
   filtered.forEach((p,i)=>{
     const nm=fmNS(p.player_name||'');
@@ -2676,14 +2711,14 @@ function renderSGHeatmap(data){
     h+='<td class="ls-nm" title="'+fullNm+'">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
     h+='<td class="ls-sc '+scc+'">'+sc+'</td>';
     h+='<td class="ls-thru">'+(p.thru||'-')+'</td>';
-    LS_COLS.forEach(c=>{
+    cols.forEach(c=>{
       const v=p[c.key];const cl=sgColor(v,fieldSize);
       h+='<td class="ls-stat" style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+(v!=null?v:'-')+'</td>';
     });
     h+='</tr>';
   });
   h+='</tbody></table></div>';
-  if(!search&&sorted.length>30)h+='<div style="text-align:center;font-size:.52rem;color:var(--td);padding:.3rem">Showing top 30 of '+sorted.length+' \u00B7 Use search for full field</div>';
+  if(!search&&sorted.length>30)h+='<div style="text-align:center;font-size:.52rem;color:var(--td);padding:.3rem">Showing top 30 of '+sorted.length+' · Use search for full field</div>';
   bd.innerHTML=h;
 }
 
@@ -2768,9 +2803,19 @@ function lsTip(hdr,tip,el){
   d.onclick=e=>{e.stopPropagation();d.remove();};
 }
 
+function lsSetHelper(v){
+  const el=document.getElementById('ls-helper');if(!el)return;
+  const msgs={hm:'How each player ranks vs the field in key strokes-gained categories',holes:'Which holes are playing hardest and easiest this round',power:'Is the course rewarding power or precision right now?'};
+  el.textContent=msgs[v]||'';
+}
 function lsView(v){
   _lsView=v;
   document.querySelectorAll('.ls-tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(v==='hm'?'performance':v==='holes'?'hole':'power')));
+  lsSetHelper(v);
+  // Show/hide mode button and search (only for heatmap)
+  const mBtn=document.getElementById('ls-mode-btn');if(mBtn)mBtn.style.display=v==='hm'?'':'none';
+  const sEl=document.getElementById('ls-search');if(sEl)sEl.style.display=v==='hm'?'':'none';
+  const insEl=document.getElementById('ls-insights');if(insEl)insEl.style.display=v==='hm'?'':'none';
   lsRender();
 }
 function lsRound(r){
