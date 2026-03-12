@@ -2070,11 +2070,11 @@ async function fetchPreviewOdds() {
       const live = await dgF('preds/in-play', {tour:'pga'});
       if (live && live.data && live.data.length) {
         for (const p of live.data) {
-          if (p.win_prob != null && p.win_prob > 0) {
+          if (p.win != null && p.win > 0) {
             players.push({
               name: p.player_name ? fmN(p.player_name) : '-',
               rawName: p.player_name || '-',
-              prob: +(p.win_prob * 100).toFixed(1),
+              prob: +(p.win * 100).toFixed(1),
               pos: p.current_pos || '-',
               score: p.current_score
             });
@@ -2586,33 +2586,31 @@ function buildRecapAnalytics(ev, round, data) {
 /* ===== LIVE STATS PANEL ===== */
 let _lsView='hm',_lsRound='event_avg',_lsData=null,_lsHoleData=null,_holeChart=null;
 
-// Continuous color gradient like Excel conditional formatting
-// Green (rank 1) → Yellow/neutral (median) → Red (last)
+// Excel-style conditional format: vivid green (#2db57a) → cream (#f5f0e0) → vivid red (#d94040)
 function sgColor(rank,fieldSize){
-  if(rank==null||rank==='-')return {bg:'transparent',fg:'var(--td)'};
-  const r=parseInt(rank);if(isNaN(r))return {bg:'transparent',fg:'var(--td)'};
+  if(rank==null||rank==='-')return {bg:'transparent',fg:'var(--td)',fw:'500'};
+  const r=parseInt(rank);if(isNaN(r))return {bg:'transparent',fg:'var(--td)',fw:'500'};
   const n=fieldSize||100;
-  // Normalize 0 (best) to 1 (worst)
-  const t=Math.max(0,Math.min(1,(r-1)/(n-1)));
-  // Three-stop gradient: green → neutral → red
+  const t=Math.max(0,Math.min(1,(r-1)/(n-1))); // 0=best, 1=worst
+  // Excel three-stop: green(0) → cream(0.5) → red(1)
   let R,G,B;
   if(t<=0.5){
-    // Green to neutral: 0→0.5
     const s=t/0.5;
-    R=Math.round(30+s*120);  // 30→150
-    G=Math.round(180-s*80);  // 180→100
-    B=Math.round(140-s*80);  // 140→60
+    R=Math.round(45*(1-s)+245*s);   // 45→245
+    G=Math.round(181*(1-s)+240*s);   // 181→240
+    B=Math.round(122*(1-s)+224*s);   // 122→224
   } else {
-    // Neutral to red: 0.5→1
     const s=(t-0.5)/0.5;
-    R=Math.round(150+s*70);  // 150→220
-    G=Math.round(100-s*55);  // 100→45
-    B=Math.round(60-s*20);   // 60→40
+    R=Math.round(245*(1-s)+217*s);   // 245→217
+    G=Math.round(240*(1-s)+64*s);    // 240→64
+    B=Math.round(224*(1-s)+64*s);    // 224→64
   }
-  const intensity=Math.abs(t-0.5)*2; // 0 at median, 1 at extremes
-  const alpha=0.25+intensity*0.65; // 0.25 at median, 0.9 at extremes
-  const fg=intensity>0.55?'#fff':'rgba(255,255,255,.8)';
-  const fw=intensity>0.7?'800':intensity>0.4?'700':'600';
+  // Strong opacity: extremes near 1.0, median still 0.6
+  const dist=Math.abs(t-0.5)*2;
+  const alpha=0.55+dist*0.4;
+  // Dark text on light cells, light text on saturated cells
+  const fg=dist>0.4?'#0a1628':'rgba(10,22,40,.85)';
+  const fw=dist>0.6?'800':dist>0.3?'700':'600';
   return {bg:`rgba(${R},${G},${B},${alpha})`,fg,fw};
 }
 
