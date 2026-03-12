@@ -2624,17 +2624,17 @@ function sgColor(rank,fieldSize){
     R=Math.round(30+s*30);    // 30→60
     G=Math.round(160-s*40);   // 160→120
     B=Math.round(90-s*30);    // 90→60
-    alpha=0.5-s*0.25;         // 0.5→0.25
+    alpha=0.65-s*0.3;         // 0.65→0.35
   } else if(t<=0.6){
     // Dead zone: nearly invisible
-    R=60;G=70;B=80;alpha=0.04;
+    R=60;G=70;B=80;alpha=0.05;
   } else {
     // Red zone: softer, less saturated
     const s=(t-0.6)/0.4;
     R=Math.round(140+s*40);   // 140→180
     G=Math.round(70-s*30);    // 70→40
     B=Math.round(60-s*20);    // 60→40
-    alpha=0.2+s*0.35;         // 0.2→0.55
+    alpha=0.3+s*0.4;          // 0.3→0.7
   }
   const fg=alpha>0.35?'rgba(255,255,255,.92)':alpha>0.15?'rgba(255,255,255,.75)':'rgba(255,255,255,.5)';
   const fw='400';
