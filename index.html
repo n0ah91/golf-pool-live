@@ -2824,7 +2824,7 @@ function renderSGHeatmap(data){
     return(a.total||0)-(b.total||0);
   });
   const search=(document.getElementById('ls-search')?.value||'').toLowerCase();
-  const top25pct=Math.max(10,Math.ceil(fieldSize*0.25));
+  const top25pct=Math.max(10,Math.ceil(fieldSize*0.33));
   const filtered=search?sorted.filter(p=>{const nm=(p.player_name||'').toLowerCase();return nm.includes(search)||fmN(p.player_name||'').toLowerCase().includes(search);}):sorted.slice(0,top25pct);
   // Legend line
   let h='<div class="ls-legend"><span class="ls-leg-g">■</span> Better than field <span class="ls-leg-mid">■</span> Average <span class="ls-leg-r">■</span> Worse than field <span class="ls-leg-note">· Numbers are ranks (1 = best)</span></div>';
@@ -2858,7 +2858,7 @@ function renderSGHeatmap(data){
     h+='</tr>';
   });
   h+='</tbody></table></div>';
-  if(!search&&sorted.length>top25pct)h+='<div style="text-align:center;font-size:.52rem;color:var(--td);padding:.3rem">Showing top 25% ('+top25pct+' of '+sorted.length+') · Use search for full field</div>';
+  if(!search&&sorted.length>top25pct)h+='<div style="text-align:center;font-size:.52rem;color:var(--td);padding:.3rem">Showing top 33% ('+top25pct+' of '+sorted.length+') · Use search for full field</div>';
   bd.innerHTML=h;
 }
 
