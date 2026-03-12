@@ -2597,10 +2597,12 @@ function renderSGHeatmap(data){
   if(evEl)evEl.textContent=data.event_name||data.info?.course_name||'Live Tournament';
   const updEl=document.getElementById('ls-updated');
   if(updEl&&data.last_updated)updEl.textContent=data.last_updated;
+  const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return 999;return parseInt(String(s).replace(/^T/,''))||999;};
   const sorted=[...data.live_stats].sort((a,b)=>{
-    const ac=String(a.position)==='CUT',bc=String(b.position)==='CUT';
+    const ac=String(a.position)==='CUT'||String(a.position)==='WD',bc=String(b.position)==='CUT'||String(b.position)==='WD';
     if(ac!==bc)return ac?1:-1;
-    return(parseInt(a.position)||999)-(parseInt(b.position)||999);
+    const pa=pPos(a.position),pb=pPos(b.position);if(pa!==pb)return pa-pb;
+    return(a.total||0)-(b.total||0);
   });
   const search=(document.getElementById('ls-search')?.value||'').toLowerCase();
   const filtered=search?sorted.filter(p=>{const nm=(p.player_name||'').toLowerCase();return nm.includes(search)||fmN(p.player_name||'').toLowerCase().includes(search);}):sorted.slice(0,30);
@@ -2612,7 +2614,7 @@ function renderSGHeatmap(data){
     const nm=fmN(p.player_name||'');
     const ip=inPool(p.player_name||'');
     const cut=String(p.position)==='CUT';
-    const pos=parseInt(p.position)||999;
+    const pos=pPos(p.position);
     const posCls=pos===1?'ls-pos-1':pos<=5?'ls-pos-top5':pos<=10?'ls-pos-top10':'ls-pos-rest';
     const sc=p.total!=null?(p.total>0?'+'+p.total:p.total===0?'E':p.total):'-';
     const scc=p.total<0?'sg':p.total>0?'sb':'';
