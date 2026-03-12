@@ -320,41 +320,19 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 <nav class="nav">
 <button class="active" onclick="go('live')">Live</button>
-<button onclick="go('season')">Season</button>
-<button onclick="go('events')">Events</button>
-<button onclick="go('insights')">Insights</button>
-<button onclick="go('career')">Career</button>
+<button onclick="go('history')">History</button>
 <button onclick="go('rules')">Rules</button>
 </nav>
 <main>
-<section id="season" class="pn2">
-<div class="ctrl">
-<select id="yr" onchange="chgYr()"><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option></select>
-<input type="text" id="ss" placeholder="Search..." oninput="rSeason()"><span id="ec" class="cnt"></span></div>
-<div id="s-stats" class="sr"></div>
-<div id="s-awards" class="cd" style="display:none"></div>
-<div id="s-events" class="ev-grid"></div>
-<div class="tw"><table><thead id="s-th"></thead><tbody id="s-tb"></tbody></table></div>
-</section>
-<section id="events" class="pn2">
-<div class="ctrl"><select id="eyr" onchange="rEvents()"><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option></select></div>
-<div id="e-tabs" class="stabs"></div>
-<div id="e-stats" class="sr"></div>
-<div class="tw"><table><thead id="e-th"></thead><tbody id="e-tb"></tbody></table></div>
-</section>
-<section id="insights" class="pn2">
-<div class="ctrl"><select id="iyr" onchange="rInsights()"><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option></select></div>
-<div id="i-records" class="cd"></div>
-<div id="i-movers" class="cd"></div>
-<div id="i-boom" class="cd"></div>
-<div class="cd"><h3>Head-to-Head</h3>
-<div class="ctrl" style="padding:0 0 .4rem"><select id="h2h-a" onchange="rH2H()"></select><select id="h2h-b" onchange="rH2H()"></select></div>
-<div id="h2h-body"></div></div>
-<div class="cd"><h3>Score Distribution</h3><div class="cc"><canvas id="dist-chart"></canvas></div></div>
-<div class="cd"><h3>Player Deep Dive</h3>
-<div class="ctrl" style="padding:0 0 .4rem"><select id="dd-sel" onchange="rDD()"><option value="">Select a player...</option></select></div>
-<div id="dd-body"><div style="text-align:center;padding:1rem .5rem;color:var(--td);font-size:.7rem">Choose a player above to see their full event-by-event breakdown, scoring trends, and career stats</div></div></div>
-<div class="cd"><h3>Pool Growth</h3><div class="cc"><canvas id="g-chart"></canvas></div></div>
+<section id="history" class="pn2">
+<div class="ctrl" id="h-ctrl" style="position:sticky;top:36px;z-index:40;background:var(--bm);border-bottom:1px solid var(--br);display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+<select id="hyr" onchange="chgH()"></select>
+<select id="hev" onchange="chgH()"></select>
+<select id="hpl" onchange="chgH()"></select>
+<input type="text" id="hs" placeholder="Search..." oninput="rHistory()" style="flex:1;min-width:100px">
+<span id="hc" class="cnt"></span>
+</div>
+<div id="h-body"></div>
 </section>
 <section id="live" class="pn2 active">
 
@@ -377,12 +355,6 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 
 
-</section>
-<section id="career" class="pn2">
-<div class="ctrl"><input type="text" id="scc" placeholder="Search players..." oninput="rCareer()"></div>
-<div id="c-stats" class="sr"></div>
-<div class="tw"><table><thead id="c-th"></thead><tbody id="c-tb"></tbody></table></div>
-<div id="c-money"></div>
 </section>
 <section id="rules" class="pn2">
 <div class="cd" style="max-width:640px;margin-left:auto;margin-right:auto">
@@ -454,7 +426,7 @@ const EL={'2019':{players:'Players',masters:'Masters',pga:'PGA',uso:'US Open',op
 '2023':{players:'Players',masters:'Masters',pga:'PGA',uso:'US Open',open:'Open'},
 '2024':{players:'Players',masters:'Masters',pga:'PGA',uso:'US Open',open:'Open'},
 '2025':{players:'Players',masters:'Masters',pga:'PGA',uso:'US Open',open:'Open'}};
-let S={tab:'live',yr:'2025',sort:{c:'rank',a:true},csort:{c:'totalWinnings',a:false},ev:'players',eyr:'2025',iyr:'2025'};
+let S={tab:'live',hyr:'2025',hev:'all',hpl:'all',sort:{c:'rank',a:true},csort:{c:'totalWinnings',a:false}};
 let charts={};
 
 /* ===== DATA ===== */
@@ -486,8 +458,9 @@ function populateMe(){
 function updateMeBadge(){
   const me=loadMe(),badge=document.getElementById('me-badge');
   if(!me){badge.textContent='';return;}
-  const ents=e4y(S.yr);const mine=ents.filter(e=>e.person===me).sort((a,b)=>(a.rank||999)-(b.rank||999));
-  if(mine.length>0&&mine[0].rank!=null)badge.textContent='#'+mine[0].rank+' in '+S.yr;
+  var by=S.hyr!=='all'?S.hyr:DB.metadata.years_covered.map(String).sort().reverse()[0];
+  const ents=e4y(by);const mine=ents.filter(e=>e.person===me).sort((a,b)=>(a.rank||999)-(b.rank||999));
+  if(mine.length>0&&mine[0].rank!=null)badge.textContent='#'+mine[0].rank+' in '+by;
   else badge.textContent='';
 }
 
@@ -563,255 +536,408 @@ function yrCard(y,s){
 function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
-  ['live','season','events','insights','career','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
+  ['live','history','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
   var meb=document.querySelector('.me-bar');if(meb)meb.style.display=(t==='live'||t==='rules')?'none':'flex';
-  if(t==='season')rSeason();else if(t==='events')rEvents();else if(t==='insights')rInsights();
-  else if(t==='live')rLive();else if(t==='career')rCareer();}
-function chgYr(){S.yr=document.getElementById('yr').value;S.sort={c:'rank',a:true};updateMeBadge();rSeason();}
+  if(t==='history'){populateHFilters();rHistory();}
+  else if(t==='live')rLive();}
 
-/* ===== SEASON TAB ===== */
-function rSeason(){
-  const y=S.yr;let d=e4y(y);const q=(document.getElementById('ss')?.value||'').toLowerCase();
-  if(q)d=d.filter(e=>(e.entry_used||'').toLowerCase().includes(q)||(e.person||'').toLowerCase().includes(q));
+/* ===== HISTORY TAB ===== */
+function populateHFilters(){
+  var ys=document.getElementById('hyr');
+  if(ys.options.length<=1){
+    var yrs=DB.metadata.years_covered.map(String).sort().reverse();
+    ys.innerHTML='<option value="all">All Time</option>'+yrs.map(function(y){return'<option value="'+y+'">'+y+'</option>';}).join('');
+    ys.value=S.hyr;
+  }
+  var es=document.getElementById('hev');
+  if(es.options.length<=1){
+    es.innerHTML='<option value="all">All Tournaments</option><option value="players">Players</option><option value="masters">Masters</option><option value="pga">PGA Championship</option><option value="uso">U.S. Open</option><option value="open">The Open</option>';
+    es.value=S.hev;
+  }
+  var ps=document.getElementById('hpl');
+  if(ps.options.length<=1){
+    var pp=DB.participants.filter(function(p){return p.career&&p.career.total_seasons>0;})
+      .sort(function(a,b){return a.canonical_name.localeCompare(b.canonical_name);});
+    ps.innerHTML='<option value="all">All Players</option>'+pp.map(function(p){return'<option value="'+p.id+'">'+p.canonical_name+'</option>';}).join('');
+    ps.value=S.hpl;
+  }
+}
+function chgH(){
+  S.hyr=document.getElementById('hyr').value;
+  S.hev=document.getElementById('hev').value;
+  S.hpl=document.getElementById('hpl').value;
+  S.sort={c:'rank',a:true};
+  rHistory();
+}
+function rHistory(){
+  var hyr=S.hyr,hev=S.hev,hpl=S.hpl;
+  if(hpl!=='all') rPlayerProfile(hpl);
+  else if(hyr==='all'&&hev==='all') rCareerView();
+  else if(hyr==='all'&&hev!=='all') rTournamentHistory(hev);
+  else if(hyr!=='all'&&hev==='all') rSeasonView(hyr);
+  else rEventView(hyr,hev);
+}
+function sS(c){if(S.sort.c===c)S.sort.a=!S.sort.a;else S.sort={c,a:true};rHistory();}
+function cSS(c){if(S.csort.c===c)S.csort.a=!S.csort.a;else S.csort={c,a:c==='name'};rHistory();}
+
+/* --- Season View --- */
+function rSeasonView(y){
+  var d=e4y(y);var q=(document.getElementById('hs')?.value||'').toLowerCase();
+  if(q)d=d.filter(function(e){return(e.entry_used||'').toLowerCase().includes(q)||(e.person||'').toLowerCase().includes(q);});
   d=srt(d,S.sort.c,S.sort.a);
-  const tot=e4y(y).length,pot=tot*150,tw=d.reduce((s,e)=>s+(e.winnings||0),0);
-  const leader=e4y(y).filter(e=>e.rank!=null).sort((a,b)=>a.rank-b.rank)[0];
-  document.getElementById('ec').textContent=d.length+(d.length<tot?' / '+tot:'');
-  document.getElementById('s-stats').innerHTML=
-    `<div class="sc"><div class="v">${tot}</div><div class="l">Entries</div></div>`+
-    `<div class="sc"><div class="v">${pot.toLocaleString()}</div><div class="l">Prize Pool</div></div>`+
-    `<div class="sc"><div class="v go">${leader?leader.entry_used:'-'}</div><div class="l">${y} Champion</div></div>`+
-    `<div class="sc"><div class="v gl">${leader&&leader.total!=null?(leader.total>0?'+':'')+leader.total:'-'}</div><div class="l">Winning Score</div></div>`;
+  var tot=e4y(y).length,pot=tot*150;
+  var leader=e4y(y).filter(function(e){return e.rank!=null;}).sort(function(a,b){return a.rank-b.rank;})[0];
+  document.getElementById('hc').textContent=d.length+(d.length<tot?' / '+tot:'');
+  updateMeBadge();
+  var lb=EL[y]||EL['2025'];var all=e4y(y);
+  var h='';
+  // Stats row
+  h+='<div class="sr">'+
+    '<div class="sc"><div class="v">'+tot+'</div><div class="l">Entries</div></div>'+
+    '<div class="sc"><div class="v">'+pot.toLocaleString()+'</div><div class="l">Prize Pool</div></div>'+
+    '<div class="sc"><div class="v go">'+(leader?leader.entry_used:'-')+'</div><div class="l">'+y+' Champion</div></div>'+
+    '<div class="sc"><div class="v gl">'+(leader&&leader.total!=null?(leader.total>0?'+':'')+leader.total:'-')+'</div><div class="l">Winning Score</div></div></div>';
   // Awards
-  const aw=superlatives(y);const awEl=document.getElementById('s-awards');
-  if(aw.length>0){awEl.style.display='';awEl.innerHTML=`<h3>${y} Superlatives</h3><div class="aw-grid">`+
-    aw.map(a=>`<div class="aw${a.gold?' gold':''}"><div class="at">${a.t}</div><div class="an">${a.n}</div><div class="ad">${a.d}</div></div>`).join('')+'</div>';}
-  else awEl.style.display='none';
+  var aw=superlatives(y);
+  if(aw.length>0){
+    h+='<div class="cd"><h3>'+y+' Superlatives</h3><div class="aw-grid">';
+    aw.forEach(function(a){h+='<div class="aw'+(a.gold?' gold':'')+'"><div class="at">'+a.t+'</div><div class="an">'+a.n+'</div><div class="ad">'+a.d+'</div></div>';});
+    h+='</div></div>';
+  }
   // Event cards
-  const lb=EL[y]||EL['2025'];const all=e4y(y);
-  document.getElementById('s-events').innerHTML=EK.map(k=>{
-    const s2=[...all].filter(e=>e[k]!=null).sort((a,b)=>a[k]-b[k]);const w=s2[0];
-    return`<div class="ev-card" onclick="go('events');document.getElementById('eyr').value='${y}';S.ev='${k}';rEvents()"><div class="ev-n">${lb[k]}</div>`+
-      (w?`<div class="ev-w">${w.entry_used}</div><div class="ev-r">#${w[k]}</div>`:`<div class="ev-r">-</div>`)+`</div>`;}).join('');
-  // YoY data
-  const pmap=yoyMap(y);
-  const ml=Math.ceil(tot*.33),ss=S.sort;
-  document.getElementById('s-th').innerHTML=`<tr>
-    <th class="${ss.c==='rank'?'s':''}" onclick="sS('rank')">Rk${si('rank',ss)}</th>
-    <th class="${ss.c==='entry_used'?'s':''}" onclick="sS('entry_used')">Entry${si('entry_used',ss)}</th>
-    <th class="${ss.c==='total'?'s':''}" onclick="sS('total')">Total${si('total',ss)}</th>
-    ${EK.map(k=>`<th class="${ss.c===k?'s':''}" onclick="sS('${k}')">${lb[k]}${si(k,ss)}</th>`).join('')}
-    <th class="${ss.c==='winnings'?'s':''}" onclick="sS('winnings')">Won${si('winnings',ss)}</th></tr>`;
-  document.getElementById('s-tb').innerHTML=d.map(e=>{
-    const rc=e.rank===1?'r1':e.rank===2?'r2':e.rank===3?'r3':'';
-    const rw=[e.rank!=null&&e.rank<=3?'t3':(e.rank!=null&&e.rank<=ml?'im':''),e.rank===ml?'ml-row':'',isMe(e)?'me':''].filter(Boolean).join(' ');
-    const tc=e.total==null?'n':e.total<0?'g':e.total>0?'b':'n';
-    const td2=e.total==null?'DNS':(e.total>0?'+'+e.total:e.total);const rd=e.rank==null?'DNS':e.rank;
-    // YoY
-    let yh='';if(e.rank!=null){const pr=pmap[e.person];
-      if(pr!=null){const diff=pr-e.rank;yh=diff>0?`<span class="yoy up">\u25B2${diff}</span>`:diff<0?`<span class="yoy dn">\u25BC${Math.abs(diff)}</span>`:`<span class="yoy">=</span>`;}
-      else if(isRookie(e.person,y))yh=`<span class="yoy nw">NEW</span>`;}
-    const ec=EK.map(k=>{const v=e[k];if(v==null)return'<td class="sn">-</td>';
-      const c=v<=5?'sg':v<=10?'sg':v>=Math.max(80,tot*.85)?'sb':'';return`<td class="${c}">${v}</td>`;}).join('');
-    const w=e.winnings?Math.round(e.winnings).toLocaleString():'-';const wc=e.winnings?'wi':'wi z';
-    const pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
-    return`<tr class="${rw}" onclick="toggleDet(this,'${e.id}')"><td class="rc ${rc}">${rd}${yh}</td>
-      <td class="nc">${e.entry_used}${pn?'<br><span class="pn">'+pn+'</span>':''}</td>
-      <td><span class="tp ${tc}">${td2}</span></td>${ec}<td class="${wc}">${w}</td></tr>`;}).join('');
+  h+='<div class="ev-grid">';
+  EK.forEach(function(k){
+    var s2=[...all].filter(function(e){return e[k]!=null;}).sort(function(a,b){return a[k]-b[k];});var w=s2[0];
+    h+='<div class="ev-card" onclick="document.getElementById(\'hev\').value=\''+k+'\';chgH()"><div class="ev-n">'+lb[k]+'</div>';
+    if(w)h+='<div class="ev-w">'+w.entry_used+'</div><div class="ev-r">#'+w[k]+'</div>';
+    else h+='<div class="ev-r">-</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  // Standings table
+  var pmap=yoyMap(y);var ml=Math.ceil(tot*.33),ss=S.sort;
+  h+='<div class="tw"><table><thead><tr>';
+  h+='<th class="'+(ss.c==='rank'?'s':'')+'" onclick="sS(\'rank\')">Rk'+si('rank',ss)+'</th>';
+  h+='<th class="'+(ss.c==='entry_used'?'s':'')+'" onclick="sS(\'entry_used\')">Entry'+si('entry_used',ss)+'</th>';
+  h+='<th class="'+(ss.c==='total'?'s':'')+'" onclick="sS(\'total\')">Total'+si('total',ss)+'</th>';
+  EK.forEach(function(k){h+='<th class="'+(ss.c===k?'s':'')+'" onclick="sS(\''+k+'\')">'+lb[k]+si(k,ss)+'</th>';});
+  h+='<th class="'+(ss.c==='winnings'?'s':'')+'" onclick="sS(\'winnings\')">Won'+si('winnings',ss)+'</th>';
+  h+='</tr></thead><tbody>';
+  d.forEach(function(e){
+    var rc=e.rank===1?'r1':e.rank===2?'r2':e.rank===3?'r3':'';
+    var rw=[e.rank!=null&&e.rank<=3?'t3':(e.rank!=null&&e.rank<=ml?'im':''),e.rank===ml?'ml-row':'',isMe(e)?'me':''].filter(Boolean).join(' ');
+    var tc=e.total==null?'n':e.total<0?'g':e.total>0?'b':'n';
+    var td2=e.total==null?'DNS':(e.total>0?'+'+e.total:e.total);var rd=e.rank==null?'DNS':e.rank;
+    var yh='';if(e.rank!=null){var pr=pmap[e.person];
+      if(pr!=null){var diff=pr-e.rank;yh=diff>0?'<span class="yoy up">\u25B2'+diff+'</span>':diff<0?'<span class="yoy dn">\u25BC'+Math.abs(diff)+'</span>':'<span class="yoy">=</span>';}
+      else if(isRookie(e.person,y))yh='<span class="yoy nw">NEW</span>';}
+    var ec='';EK.forEach(function(k){var v=e[k];if(v==null){ec+='<td class="sn">-</td>';}else{
+      var c2=v<=5?'sg':v<=10?'sg':v>=Math.max(80,tot*.85)?'sb':'';ec+='<td class="'+c2+'">'+v+'</td>';}});
+    var w=e.winnings?Math.round(e.winnings).toLocaleString():'-';var wc=e.winnings?'wi':'wi z';
+    var pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
+    h+='<tr class="'+rw+'" onclick="toggleDet(this,\''+e.id+'\')"><td class="rc '+rc+'">'+rd+yh+'</td>'+
+      '<td class="nc">'+e.entry_used+(pn?'<br><span class="pn">'+pn+'</span>':'')+'</td>'+
+      '<td><span class="tp '+tc+'">'+td2+'</span></td>'+ec+'<td class="'+wc+'">'+w+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  // Collapsible Insights
+  h+='<details class="cf-details" style="margin:.85rem"><summary class="cf-details-sum">Season Insights</summary><div class="cf-details-body">';
+  h+=hRecords(y);
+  h+=hMovers(y);
+  h+=hBoom(y);
+  // H2H
+  h+='<div class="cd"><h3>Head-to-Head</h3>';
+  h+='<div class="ctrl" style="padding:0 0 .4rem"><select id="h2h-a" onchange="hH2H(\''+y+'\')"></select><select id="h2h-b" onchange="hH2H(\''+y+'\')"></select></div>';
+  h+='<div id="h2h-body"><div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.8rem">Select two entries to compare</div></div></div>';
+  // Score Distribution
+  h+='<div class="cd"><h3>Score Distribution</h3><div class="cc"><canvas id="dist-chart"></canvas></div></div>';
+  // Pool Growth
+  h+='<div class="cd"><h3>Pool Growth</h3><div class="cc"><canvas id="g-chart"></canvas></div></div>';
+  h+='</div></details>';
+  document.getElementById('h-body').innerHTML=h;
+  // Initialize interactive parts after DOM is ready
+  setTimeout(function(){
+    hInitH2H(y);
+    hDistC(y);
+    hGC();
+  },50);
 }
-function sS(c){if(S.sort.c===c)S.sort.a=!S.sort.a;else S.sort={c,a:true};rSeason();}
 
-/* ===== EVENTS TAB ===== */
-function rEvents(){
-  const y=document.getElementById('eyr').value;S.eyr=y;const lb=EL[y]||EL['2025'];
-  document.getElementById('e-tabs').innerHTML=EK.map(k=>`<button class="${S.ev===k?'active':''}" onclick="S.ev='${k}';rEvents()">${lb[k]}</button>`).join('');
-  rEvDet();}
-function rEvDet(){
-  const y=S.eyr,k=S.ev,lb=EL[y]||EL['2025'];
-  let ents=e4y(y).filter(e=>e[k]!=null).sort((a,b)=>a[k]-b[k]);const tot=ents.length,allT=e4y(y).length,dns=allT-tot;
-  const avg=tot?(ents.reduce((s,e)=>s+e[k],0)/tot).toFixed(1):'-';const w=ents[0];
-  document.getElementById('e-stats').innerHTML=
-    `<div class="sc"><div class="v">${tot}</div><div class="l">Played</div></div>`+
-    `<div class="sc"><div class="v">${dns}</div><div class="l">DNS</div></div>`+
-    `<div class="sc"><div class="v go">${w?w.entry_used:'-'}</div><div class="l">${lb[k]} Winner</div></div>`+
-    `<div class="sc"><div class="v">${avg}</div><div class="l">Avg Rank</div></div>`;
-  document.getElementById('e-th').innerHTML=`<tr><th>${lb[k]} Rk</th><th>Entry</th><th>Season Rk</th><th>Total</th><th>Won</th></tr>`;
-  document.getElementById('e-tb').innerHTML=ents.map((e,i)=>{
-    const rc=i<3?'r'+(i+1):'';const rw=[i<3?'t3':(i<Math.ceil(tot*.33)?'im':''),isMe(e)?'me':''].filter(Boolean).join(' ');
-    const tc=e.total==null?'n':e.total<0?'g':e.total>0?'b':'n';const pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
-    return`<tr class="${rw}" onclick="toggleDet(this,'${e.id}')"><td class="rc ${rc}">${e[k]}</td>
-      <td class="nc">${e.entry_used}${pn?'<br><span class="pn">'+pn+'</span>':''}</td>
-      <td>${e.rank??'DNS'}</td><td><span class="tp ${tc}">${e.total==null?'DNS':(e.total>0?'+'+e.total:e.total)}</span></td>
-      <td class="${e.winnings?'wi':'wi z'}">${e.winnings?Math.round(e.winnings).toLocaleString():'-'}</td></tr>`;}).join('');
+/* --- Insight helper: records HTML --- */
+function hRecords(y){
+  var ents=e4y(y),lb=EL[y]||EL['2025'];var bestE={r:Infinity},worstE={r:0},mc={std:Infinity},bb2={std:0};
+  for(var i=0;i<ents.length;i++){var e=ents[i];var rk=EK.map(function(k){return{k:k,r:e[k]};}).filter(function(x){return x.r!=null;});
+    for(var j=0;j<rk.length;j++){if(rk[j].r<bestE.r)bestE={r:rk[j].r,n:e.entry_used,k:rk[j].k};if(rk[j].r>worstE.r)worstE={r:rk[j].r,n:e.entry_used,k:rk[j].k};}
+    if(rk.length>=2){var v=rk.map(function(x){return x.r;}),a=v.reduce(function(s,x){return s+x;},0)/v.length,
+      std=Math.sqrt(v.reduce(function(s,x){return s+(x-a)*(x-a);},0)/v.length);
+      if(std<mc.std)mc={std:std,n:e.entry_used,a:a};if(std>bb2.std)bb2={std:std,n:e.entry_used,a:a};}}
+  return'<div class="cd"><h3>'+y+' Season Snapshot</h3><div class="ig">'+
+    '<div class="ib"><div class="it">Entries</div><div class="iv">'+ents.length+'</div><div class="is">'+(ents.length*150).toLocaleString()+' pool</div></div>'+
+    '<div class="ib"><div class="it">Best Event Finish</div><div class="iv">'+(bestE.n||'-')+'</div><div class="is">#'+bestE.r+' in '+(lb[bestE.k]||'')+'</div></div>'+
+    '<div class="ib"><div class="it">Worst Event Finish</div><div class="iv">'+(worstE.n||'-')+'</div><div class="is">#'+worstE.r+' in '+(lb[worstE.k]||'')+'</div></div>'+
+    '<div class="ib"><div class="it">Steadiest Hand</div><div class="iv">'+(mc.n||'-')+'</div><div class="is">\u03C3 '+(mc.std<Infinity?mc.std.toFixed(1):'-')+'</div></div>'+
+    '<div class="ib"><div class="it">Wild Card</div><div class="iv">'+(bb2.n||'-')+'</div><div class="is">\u03C3 '+(bb2.std>0?bb2.std.toFixed(1):'-')+'</div></div></div></div>';
 }
 
-/* ===== INSIGHTS TAB ===== */
-function rInsights(){const y=document.getElementById('iyr').value;S.iyr=y;
-  rRecords(y);rMovers(y);rBoom(y);rH2HS(y);rDistC(y);rDDS();rGC();}
-function rRecords(y){
-  const ents=e4y(y),lb=EL[y]||EL['2025'];let bestE={r:Infinity},worstE={r:0},mc={std:Infinity},bb2={std:0};
-  for(const e of ents){const rk=EK.map(k=>({k,r:e[k]})).filter(x=>x.r!=null);
-    for(const{k,r}of rk){if(r<bestE.r)bestE={r,n:e.entry_used,k};if(r>worstE.r)worstE={r,n:e.entry_used,k};}
-    if(rk.length>=2){const v=rk.map(x=>x.r),a=v.reduce((s,x)=>s+x,0)/v.length,
-      std=Math.sqrt(v.reduce((s,x)=>s+(x-a)**2,0)/v.length);
-      if(std<mc.std)mc={std,n:e.entry_used,a};if(std>bb2.std)bb2={std,n:e.entry_used,a};}}
-  document.getElementById('i-records').innerHTML=`<h3>${y} Season Snapshot</h3><div class="ig">
-    <div class="ib"><div class="it">Entries</div><div class="iv">${ents.length}</div><div class="is">${(ents.length*150).toLocaleString()} pool</div></div>
-    <div class="ib"><div class="it">Best Event Finish</div><div class="iv">${bestE.n||'-'}</div><div class="is">#${bestE.r} in ${lb[bestE.k]||''}</div></div>
-    <div class="ib"><div class="it">Worst Event Finish</div><div class="iv">${worstE.n||'-'}</div><div class="is">#${worstE.r} in ${lb[worstE.k]||''}</div></div>
-    <div class="ib"><div class="it">Steadiest Hand</div><div class="iv">${mc.n||'-'}</div><div class="is">\u03C3 ${mc.std<Infinity?mc.std.toFixed(1):'-'}</div></div>
-    <div class="ib"><div class="it">Wild Card</div><div class="iv">${bb2.n||'-'}</div><div class="is">\u03C3 ${bb2.std>0?bb2.std.toFixed(1):'-'}</div></div></div>`;
-}
-function rMovers(y){
-  const prev=yoyMap(y);const ents=e4y(y).filter(e=>e.rank!=null);
-  const movers=ents.map(e=>{const pr=prev[e.person];if(pr==null)return null;return{...e,diff:pr-e.rank,pr};}).filter(Boolean);
-  movers.sort((a,b)=>b.diff-a.diff);
-  const up=movers.filter(m=>m.diff>0).slice(0,8),down=movers.filter(m=>m.diff<0).sort((a,b)=>a.diff-b.diff).slice(0,8);
-  let h=`<h3>${y} Year-over-Year Movers</h3>`;
-  if(up.length===0&&down.length===0){h+=`<div style="color:var(--ts);text-align:center;padding:.5rem">No YoY data (first year or no returning entries)</div>`;
-    document.getElementById('i-movers').innerHTML=h;return;}
+/* --- Insight helper: movers HTML --- */
+function hMovers(y){
+  var prev=yoyMap(y);var ents=e4y(y).filter(function(e){return e.rank!=null;});
+  var movers=ents.map(function(e){var pr=prev[e.person];if(pr==null)return null;return Object.assign({},e,{diff:pr-e.rank,pr:pr});}).filter(Boolean);
+  movers.sort(function(a,b){return b.diff-a.diff;});
+  var up=movers.filter(function(m){return m.diff>0;}).slice(0,8),down=movers.filter(function(m){return m.diff<0;}).sort(function(a,b){return a.diff-b.diff;}).slice(0,8);
+  var h='<div class="cd"><h3>'+y+' Year-over-Year Movers</h3>';
+  if(up.length===0&&down.length===0){return h+'<div style="color:var(--ts);text-align:center;padding:.5rem">No YoY data (first year or no returning entries)</div></div>';}
   h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">';
   h+='<div><h4 style="color:var(--gl)">Biggest Climbers</h4><div class="tw" style="margin:0"><table><thead><tr><th>Entry</th><th>Change</th><th>Now</th></tr></thead><tbody>';
-  up.forEach(m=>{h+=`<tr><td class="nc">${m.entry_used}</td><td class="sg">+${m.diff}</td><td>#${m.pr} \u2192 #${m.rank}</td></tr>`;});
+  up.forEach(function(m){h+='<tr><td class="nc">'+m.entry_used+'</td><td class="sg">+'+m.diff+'</td><td>#'+m.pr+' \u2192 #'+m.rank+'</td></tr>';});
   h+='</tbody></table></div></div>';
   h+='<div><h4 style="color:var(--rd)">Biggest Drops</h4><div class="tw" style="margin:0"><table><thead><tr><th>Entry</th><th>Change</th><th>Now</th></tr></thead><tbody>';
-  down.forEach(m=>{h+=`<tr><td class="nc">${m.entry_used}</td><td class="sb">${m.diff}</td><td>#${m.pr} \u2192 #${m.rank}</td></tr>`;});
-  h+='</tbody></table></div></div></div>';
-  document.getElementById('i-movers').innerHTML=h;
+  down.forEach(function(m){h+='<tr><td class="nc">'+m.entry_used+'</td><td class="sb">'+m.diff+'</td><td>#'+m.pr+' \u2192 #'+m.rank+'</td></tr>';});
+  h+='</tbody></table></div></div></div></div>';
+  return h;
 }
-function rBoom(y){
-  const bb=boomBust(y);const top=bb.slice(0,12),worst=bb.slice(-10).reverse();
-  let h=`<h3>Consistency Rankings <span style="font-size:.72rem;color:var(--ts)">(lower \u03C3 = more consistent)</span></h3>`;
+
+/* --- Insight helper: boom/bust HTML --- */
+function hBoom(y){
+  var bb=boomBust(y);var top=bb.slice(0,12),worst=bb.slice(-10).reverse();
+  var h='<div class="cd"><h3>Consistency Rankings <span style="font-size:.72rem;color:var(--ts)">(lower \u03C3 = more consistent)</span></h3>';
   h+='<div class="tw" style="margin:0"><table><thead><tr><th>#</th><th>Entry</th><th>\u03C3</th><th>Avg Ev Rk</th><th>Events</th></tr></thead><tbody>';
-  top.forEach((e,i)=>{h+=`<tr class="${isMe(e)?'me':''}"><td class="rc ${i<3?'r'+(i+1):''}">${i+1}</td><td class="nc">${e.entry_used}</td><td class="sg">${e.bb.toFixed(1)}</td><td>${e.avgEvRank.toFixed(0)}</td><td>${e.played}/5</td></tr>`;});
+  top.forEach(function(e,i){h+='<tr class="'+(isMe(e)?'me':'')+'"><td class="rc '+(i<3?'r'+(i+1):'')+'">'+(i+1)+'</td><td class="nc">'+e.entry_used+'</td><td class="sg">'+e.bb.toFixed(1)+'</td><td>'+e.avgEvRank.toFixed(0)+'</td><td>'+e.played+'/5</td></tr>';});
   h+='</tbody></table></div><h4 style="margin-top:.6rem">Most Volatile</h4><div class="tw" style="margin:0"><table><thead><tr><th>#</th><th>Entry</th><th>\u03C3</th><th>Avg Ev Rk</th></tr></thead><tbody>';
-  worst.forEach((e,i)=>{h+=`<tr class="${isMe(e)?'me':''}"><td class="rc">${i+1}</td><td class="nc">${e.entry_used}</td><td class="sb">${e.bb.toFixed(1)}</td><td>${e.avgEvRank.toFixed(0)}</td></tr>`;});
-  h+='</tbody></table></div>';document.getElementById('i-boom').innerHTML=h;
+  worst.forEach(function(e,i){h+='<tr class="'+(isMe(e)?'me':'')+'"><td class="rc">'+(i+1)+'</td><td class="nc">'+e.entry_used+'</td><td class="sb">'+e.bb.toFixed(1)+'</td><td>'+e.avgEvRank.toFixed(0)+'</td></tr>';});
+  h+='</tbody></table></div></div>';
+  return h;
 }
-function rH2HS(y){
-  const ents=e4y(y).filter(e=>e.rank!=null).sort((a,b)=>a.rank-b.rank);
-  const opts='<option value="">Pick...</option>'+ents.map(e=>`<option value="${e.entry_used}">${e.entry_used} (#${e.rank})</option>`).join('');
-  document.getElementById('h2h-a').innerHTML=opts;document.getElementById('h2h-b').innerHTML=opts;
-  const me=loadMe();if(me){const mine=ents.find(e=>e.person===me);if(mine)document.getElementById('h2h-a').value=mine.entry_used;}
-  document.getElementById('h2h-body').innerHTML='<div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.8rem">Select two entries to compare</div>';}
-function rH2H(){
-  const y=S.iyr,ents=e4y(y),na=document.getElementById('h2h-a').value,nb=document.getElementById('h2h-b').value;
+
+/* --- Insight helper: H2H init --- */
+function hInitH2H(y){
+  var ents=e4y(y).filter(function(e){return e.rank!=null;}).sort(function(a,b){return a.rank-b.rank;});
+  var opts='<option value="">Pick...</option>'+ents.map(function(e){return'<option value="'+e.entry_used+'">'+e.entry_used+' (#'+e.rank+')</option>';}).join('');
+  var ha=document.getElementById('h2h-a'),hb=document.getElementById('h2h-b');
+  if(ha)ha.innerHTML=opts;if(hb)hb.innerHTML=opts;
+  var me=loadMe();if(me&&ha){var mine=ents.find(function(e){return e.person===me;});if(mine)ha.value=mine.entry_used;}
+}
+function hH2H(y){
+  var ents=e4y(y),na=document.getElementById('h2h-a')?.value,nb=document.getElementById('h2h-b')?.value;
   if(!na||!nb||na===nb){document.getElementById('h2h-body').innerHTML='<div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.8rem">Select two different entries</div>';return;}
-  const a=ents.find(e=>e.entry_used===na),b=ents.find(e=>e.entry_used===nb);if(!a||!b)return;const lb=EL[y]||EL['2025'];
+  var a=ents.find(function(e){return e.entry_used===na;}),b=ents.find(function(e){return e.entry_used===nb;});if(!a||!b)return;
+  var lb=EL[y]||EL['2025'];
   function cmp(va,vb,lo){if(va==null&&vb==null)return['',''];if(va==null)return['','win'];if(vb==null)return['win',''];
     if(lo)return va<vb?['win','lose']:va>vb?['lose','win']:['',''];return va>vb?['win','lose']:va<vb?['lose','win']:['',''];}
-  const rows=[{l:'Season Rank',va:a.rank,vb:b.rank,lo:true},{l:'Total',va:a.total,vb:b.total,lo:true},
-    ...EK.map(k=>({l:lb[k],va:a[k],vb:b[k],lo:true})),{l:'Winnings',va:a.winnings,vb:b.winnings,lo:false}];
-  let wA=0,wB=0;
-  const rh=rows.map(r=>{const[ca,cb]=cmp(r.va,r.vb,r.lo);if(ca==='win')wA++;if(cb==='win')wB++;
-    const f=v=>v==null?'-':r.l==='Winnings'?Math.round(v||0).toLocaleString():v;
-    return`<div class="h2h-stat"><span class="hv ${ca}">${f(r.va)}</span><span class="hl">${r.l}</span><span class="hv ${cb}">${f(r.vb)}</span></div>`;}).join('');
-  document.getElementById('h2h-body').innerHTML=`<div class="h2h">
-    <div class="h2h-col"><div class="hname">${na}</div><div style="font-size:1.4rem;font-family:var(--fd);color:${wA>wB?'var(--gl)':'var(--ts)'}">${wA}</div></div>
-    <div class="h2h-vs">vs</div>
-    <div class="h2h-col"><div class="hname">${nb}</div><div style="font-size:1.4rem;font-family:var(--fd);color:${wB>wA?'var(--gl)':'var(--ts)'}">${wB}</div></div></div><div style="margin-top:.6rem">${rh}</div>`;
+  var rows=[{l:'Season Rank',va:a.rank,vb:b.rank,lo:true},{l:'Total',va:a.total,vb:b.total,lo:true}];
+  EK.forEach(function(k){rows.push({l:lb[k],va:a[k],vb:b[k],lo:true});});
+  rows.push({l:'Winnings',va:a.winnings,vb:b.winnings,lo:false});
+  var wA=0,wB=0;
+  var rh=rows.map(function(r){var c=cmp(r.va,r.vb,r.lo);var ca=c[0],cb=c[1];if(ca==='win')wA++;if(cb==='win')wB++;
+    var f=function(v){return v==null?'-':r.l==='Winnings'?Math.round(v||0).toLocaleString():v;};
+    return'<div class="h2h-stat"><span class="hv '+ca+'">'+f(r.va)+'</span><span class="hl">'+r.l+'</span><span class="hv '+cb+'">'+f(r.vb)+'</span></div>';}).join('');
+  document.getElementById('h2h-body').innerHTML='<div class="h2h">'+
+    '<div class="h2h-col"><div class="hname">'+na+'</div><div style="font-size:1.4rem;font-family:var(--fd);color:'+(wA>wB?'var(--gl)':'var(--ts)')+'">'+wA+'</div></div>'+
+    '<div class="h2h-vs">vs</div>'+
+    '<div class="h2h-col"><div class="hname">'+nb+'</div><div style="font-size:1.4rem;font-family:var(--fd);color:'+(wB>wA?'var(--gl)':'var(--ts)')+'">'+wB+'</div></div></div><div style="margin-top:.6rem">'+rh+'</div>';
 }
-function rDistC(y){
-  const ents=e4y(y).filter(e=>e.total!=null),totals=ents.map(e=>e.total).sort((a,b)=>a-b);if(!totals.length)return;
-  const mn=Math.floor(totals[0]/25)*25,mx=Math.ceil(totals[totals.length-1]/25)*25;
-  const bins=[];for(let i=mn;i<mx;i+=25)bins.push({lo:i,hi:i+25,count:0});
-  for(const t of totals){const idx=Math.min(Math.floor((t-mn)/25),bins.length-1);bins[idx].count++;}
-  const cx=document.getElementById('dist-chart')?.getContext('2d');if(!cx)return;if(charts.dist)charts.dist.destroy();
-  charts.dist=new Chart(cx,{type:'bar',data:{labels:bins.map(b=>`${b.lo}`),datasets:[{data:bins.map(b=>b.count),
-    backgroundColor:bins.map(b=>b.lo<0?'rgba(45,181,160,.45)':'rgba(232,152,62,.35)'),borderColor:bins.map(b=>b.lo<0?'#2db5a0':'#e8983e'),borderWidth:1,borderRadius:3}]},
+
+/* --- Insight helper: dist chart --- */
+function hDistC(y){
+  var ents=e4y(y).filter(function(e){return e.total!=null;}),totals=ents.map(function(e){return e.total;}).sort(function(a,b){return a-b;});if(!totals.length)return;
+  var mn=Math.floor(totals[0]/25)*25,mx=Math.ceil(totals[totals.length-1]/25)*25;
+  var bins=[];for(var i=mn;i<mx;i+=25)bins.push({lo:i,hi:i+25,count:0});
+  for(var j=0;j<totals.length;j++){var idx=Math.min(Math.floor((totals[j]-mn)/25),bins.length-1);bins[idx].count++;}
+  var cx=document.getElementById('dist-chart')?.getContext('2d');if(!cx)return;if(charts.dist)charts.dist.destroy();
+  charts.dist=new Chart(cx,{type:'bar',data:{labels:bins.map(function(b){return''+b.lo;}),datasets:[{data:bins.map(function(b){return b.count;}),
+    backgroundColor:bins.map(function(b){return b.lo<0?'rgba(45,181,160,.45)':'rgba(232,152,62,.35)';}),borderColor:bins.map(function(b){return b.lo<0?'#2db5a0':'#e8983e';}),borderWidth:1,borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f',font:{size:9}}}}}});
 }
-function rDDS(){const sel=document.getElementById('dd-sel');if(sel.options.length<=1){
-  const pp=DB.participants.filter(p=>p.career.total_seasons>0).sort((a,b)=>a.canonical_name.localeCompare(b.canonical_name));
-  sel.innerHTML='<option value="">Select a player...</option>'+pp.map(p=>`<option value="${p.id}">${p.canonical_name}</option>`).join('');}
-  const me=loadMe();if(me&&!sel.value){const mp=DB.participants.find(p=>p.canonical_name===me);if(mp)sel.value=mp.id;}rDD();}
-function rDD(){
-  const pid=document.getElementById('dd-sel').value,body=document.getElementById('dd-body');
-  if(!pid){body.innerHTML='<div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.8rem">Select a player for radar + progression charts</div>';return;}
-  const pr=[...DB.participants,...(DB.unknowns||[])].find(p=>p.id===pid);if(!pr)return;
-  const yrs=Object.keys(pr.seasons).sort().reverse();
-  body.innerHTML=`<div class="ctrl" style="padding:0 0 .4rem"><select id="rd-yr" onchange="drawRd()">${yrs.map(y=>`<option value="${y}">${y}</option>`).join('')}</select></div>
-    <div class="cc"><canvas id="rd-c"></canvas></div><h4 style="margin-top:.6rem">Rank Progression</h4><div class="cc"><canvas id="pg-c"></canvas></div>`;
-  setTimeout(()=>{drawRd();drawPg(pid);},50);}
-function drawRd(){
-  const pid=document.getElementById('dd-sel').value,yr=document.getElementById('rd-yr')?.value;
-  if(!pid||!yr)return;const pr=[...DB.participants,...(DB.unknowns||[])].find(p=>p.id===pid);if(!pr)return;
-  let sd=pr.seasons[yr];if(Array.isArray(sd))sd=sd[0];if(!sd)return;
-  const lb=EL[yr]||EL['2025'],te=e4y(yr).length,dt=EK.map(k=>{const r=sd[k];return r==null?0:te-r+1;});
-  const cx=document.getElementById('rd-c')?.getContext('2d');if(!cx)return;if(charts.radar)charts.radar.destroy();
-  charts.radar=new Chart(cx,{type:'radar',data:{labels:EK.map(k=>lb[k]),datasets:[{data:dt,backgroundColor:'rgba(201,162,39,.1)',borderColor:'#c9a227',pointBackgroundColor:'#c9a227',borderWidth:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{r:{beginAtZero:true,max:te,grid:{color:'rgba(255,255,255,.05)'},angleLines:{color:'rgba(255,255,255,.05)'},pointLabels:{color:'#d4ccbc',font:{size:10}},ticks:{display:false}}}}});}
-function drawPg(pid){const pr=[...DB.participants,...(DB.unknowns||[])].find(p=>p.id===pid);if(!pr)return;
-  const yrs=Object.keys(pr.seasons).sort(),ranks=yrs.map(y=>{let s=pr.seasons[y];if(Array.isArray(s))s=s[0];return s.rank;});
-  const cx=document.getElementById('pg-c')?.getContext('2d');if(!cx)return;if(charts.prog)charts.prog.destroy();
-  charts.prog=new Chart(cx,{type:'line',data:{labels:yrs,datasets:[{data:ranks,borderColor:'#52b788',backgroundColor:'rgba(82,183,136,.06)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:'#52b788'}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{reverse:true,title:{display:true,text:'Rank',color:'#8a9a8f',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f'}}}}});}
-function rGC(){const cx=document.getElementById('g-chart')?.getContext('2d');if(!cx)return;if(charts.growth)charts.growth.destroy();
-  const yrs=DB.metadata.years_covered.map(String),cts=yrs.map(y=>e4y(y).length);
+
+/* --- Insight helper: growth chart --- */
+function hGC(){
+  var cx=document.getElementById('g-chart')?.getContext('2d');if(!cx)return;if(charts.growth)charts.growth.destroy();
+  var yrs=DB.metadata.years_covered.map(String),cts=yrs.map(function(y){return e4y(y).length;});
   charts.growth=new Chart(cx,{type:'bar',data:{labels:yrs,datasets:[{data:cts,backgroundColor:'rgba(45,106,79,.45)',borderColor:'#2d6a4f',borderWidth:1,borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f'}}}}});}
-
-/* ===== CAREER TAB ===== */
-function rCareer(){
-  let d=cStats();const q=(document.getElementById('scc')?.value||'').toLowerCase();
-  if(q)d=d.filter(s=>s.name.toLowerCase().includes(q)||s.entries.some(e=>e.toLowerCase().includes(q)));
-  d=srt(d,S.csort.c,S.csort.a);
-  const tp=d.length,aw=d.reduce((s,p)=>s+p.totalWinnings,0);
-  const seven=d.filter(s=>s.seasons===7).length;
-  document.getElementById('c-stats').innerHTML=
-    `<div class="sc"><div class="v">${tp}</div><div class="l">Players</div></div>`+
-    `<div class="sc"><div class="v">${seven}</div><div class="l">All 7 Seasons</div></div>`+
-    `<div class="sc"><div class="v">${DB.unknowns.length}</div><div class="l">Unidentified</div></div>`;
-  const cs=S.csort;
-  document.getElementById('c-th').innerHTML=`<tr>
-    <th class="${cs.c==='name'?'s':''}" onclick="cSS('name')">Name${si('name',cs)}</th>
-    <th class="${cs.c==='seasons'?'s':''}" onclick="cSS('seasons')">Yrs${si('seasons',cs)}</th>
-    <th class="${cs.c==='bestRank'?'s':''}" onclick="cSS('bestRank')">Best${si('bestRank',cs)}</th>
-    <th class="${cs.c==='avgRank'?'s':''}" onclick="cSS('avgRank')">Avg${si('avgRank',cs)}</th>
-    <th class="${cs.c==='inMoney'?'s':''}" onclick="cSS('inMoney')">ITM${si('inMoney',cs)}</th>
-    <th class="${cs.c==='totalWinnings'?'s':''}" onclick="cSS('totalWinnings')">Won${si('totalWinnings',cs)}</th></tr>`;
-  document.getElementById('c-tb').innerHTML=d.map(s=>{
-    const wc=s.totalWinnings>0?'wi':'wi z';const al=s.entries.filter(e=>e!==s.name).join(', ');
-    const pid=s.id;const meC=loadMe()===s.name?'me':'';
-    return`<tr class="${meC}" onclick="toggleDet(this,'${pid}')"><td class="nc">${s.name}${al?'<br><span class="pn">'+al+'</span>':''}</td>
-      <td>${s.seasons}</td><td class="${s.bestRank<=3?'r'+s.bestRank:''}">${s.bestRank??'-'}</td>
-      <td>${s.avgRank!=null?s.avgRank.toFixed(1):'-'}</td><td>${s.inMoney}</td>
-      <td class="${wc}">${s.totalWinnings?Math.round(s.totalWinnings).toLocaleString():'-'}</td></tr>`;}).join('');
-  rEarnings();
+      scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f'}}}}});
 }
-function cSS(c){if(S.csort.c===c)S.csort.a=!S.csort.a;else S.csort={c,a:c==='name'};rCareer();}
 
-/* ===== EARNINGS (merged into Career) ===== */
-function rEarnings(){
-  const ct=document.getElementById('c-money');if(!ct)return;
-  const yrs=DB.metadata.years_covered.map(String).sort().reverse();
-  let uniqueWinners=new Set();
-  for(const y of yrs){for(const e of e4y(y))if(e.winnings>0)uniqueWinners.add(e.person);}
-  let h='<div class="cd"><h3>Pool Earnings</h3><div style="font-size:.65rem;color:var(--td);margin-bottom:.5rem;font-style:italic">⚠️ Fake internet money — for bragging rights only</div><div class="pe">'+
+/* --- Event View --- */
+function rEventView(y,ev){
+  var lb=EL[y]||EL['2025'];var k=ev;
+  var ents=e4y(y).filter(function(e){return e[k]!=null;}).sort(function(a,b){return a[k]-b[k];});
+  var tot=ents.length,allT=e4y(y).length,dns=allT-tot;
+  var avg=tot?(ents.reduce(function(s,e){return s+e[k];},0)/tot).toFixed(1):'-';var w=ents[0];
+  var h='<div style="padding:.5rem .85rem"><a href="#" onclick="document.getElementById(\'hev\').value=\'all\';chgH();return false;" style="color:var(--go);font-size:.72rem;text-decoration:none">\u2190 Back to '+y+' Season</a></div>';
+  h+='<div class="sr">'+
+    '<div class="sc"><div class="v">'+tot+'</div><div class="l">Played</div></div>'+
+    '<div class="sc"><div class="v">'+dns+'</div><div class="l">DNS</div></div>'+
+    '<div class="sc"><div class="v go">'+(w?w.entry_used:'-')+'</div><div class="l">'+(lb[k]||k)+' Winner</div></div>'+
+    '<div class="sc"><div class="v">'+avg+'</div><div class="l">Avg Rank</div></div></div>';
+  h+='<div class="tw"><table><thead><tr><th>'+(lb[k]||k)+' Rk</th><th>Entry</th><th>Season Rk</th><th>Total</th><th>Won</th></tr></thead><tbody>';
+  ents.forEach(function(e,i){
+    var rc=i<3?'r'+(i+1):'';var rw=[i<3?'t3':(i<Math.ceil(tot*.33)?'im':''),isMe(e)?'me':''].filter(Boolean).join(' ');
+    var tc=e.total==null?'n':e.total<0?'g':e.total>0?'b':'n';var pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
+    h+='<tr class="'+rw+'" onclick="toggleDet(this,\''+e.id+'\')"><td class="rc '+rc+'">'+e[k]+'</td>'+
+      '<td class="nc">'+e.entry_used+(pn?'<br><span class="pn">'+pn+'</span>':'')+'</td>'+
+      '<td>'+(e.rank!=null?e.rank:'DNS')+'</td><td><span class="tp '+tc+'">'+(e.total==null?'DNS':(e.total>0?'+'+e.total:e.total))+'</span></td>'+
+      '<td class="'+(e.winnings?'wi':'wi z')+'">'+(e.winnings?Math.round(e.winnings).toLocaleString():'-')+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  document.getElementById('h-body').innerHTML=h;
+  document.getElementById('hc').textContent=tot+' entries';
+}
+
+/* --- Career View (All Time) --- */
+function rCareerView(){
+  var d=cStats();var q=(document.getElementById('hs')?.value||'').toLowerCase();
+  if(q)d=d.filter(function(s){return s.name.toLowerCase().includes(q)||s.entries.some(function(e2){return e2.toLowerCase().includes(q);});});
+  d=srt(d,S.csort.c,S.csort.a);
+  var tp=d.length,aw=d.reduce(function(s,p){return s+p.totalWinnings;},0);
+  var seven=d.filter(function(s){return s.seasons===DB.metadata.years_covered.length;}).length;
+  document.getElementById('hc').textContent=tp+' players';
+  updateMeBadge();
+  var h='';
+  h+='<div class="sr">'+
+    '<div class="sc"><div class="v">'+tp+'</div><div class="l">Players</div></div>'+
+    '<div class="sc"><div class="v">'+seven+'</div><div class="l">All '+DB.metadata.years_covered.length+' Seasons</div></div>'+
+    '<div class="sc"><div class="v">'+DB.unknowns.length+'</div><div class="l">Unidentified</div></div></div>';
+  // Career table
+  var cs=S.csort;
+  h+='<div class="tw"><table><thead><tr>';
+  h+='<th class="'+(cs.c==='name'?'s':'')+'" onclick="cSS(\'name\')">Name'+si('name',cs)+'</th>';
+  h+='<th class="'+(cs.c==='seasons'?'s':'')+'" onclick="cSS(\'seasons\')">Yrs'+si('seasons',cs)+'</th>';
+  h+='<th class="'+(cs.c==='bestRank'?'s':'')+'" onclick="cSS(\'bestRank\')">Best'+si('bestRank',cs)+'</th>';
+  h+='<th class="'+(cs.c==='avgRank'?'s':'')+'" onclick="cSS(\'avgRank\')">Avg'+si('avgRank',cs)+'</th>';
+  h+='<th class="'+(cs.c==='inMoney'?'s':'')+'" onclick="cSS(\'inMoney\')">ITM'+si('inMoney',cs)+'</th>';
+  h+='<th class="'+(cs.c==='totalWinnings'?'s':'')+'" onclick="cSS(\'totalWinnings\')">Won'+si('totalWinnings',cs)+'</th>';
+  h+='</tr></thead><tbody>';
+  d.forEach(function(s){
+    var wc=s.totalWinnings>0?'wi':'wi z';var al=s.entries.filter(function(e2){return e2!==s.name;}).join(', ');
+    var pid=s.id;var meC=loadMe()===s.name?'me':'';
+    h+='<tr class="'+meC+'" onclick="toggleDet(this,\''+pid+'\')"><td class="nc">'+s.name+(al?'<br><span class="pn">'+al+'</span>':'')+'</td>'+
+      '<td>'+s.seasons+'</td><td class="'+(s.bestRank<=3?'r'+s.bestRank:'')+'">'+((s.bestRank!=null)?s.bestRank:'-')+'</td>'+
+      '<td>'+(s.avgRank!=null?s.avgRank.toFixed(1):'-')+'</td><td>'+s.inMoney+'</td>'+
+      '<td class="'+wc+'">'+(s.totalWinnings?Math.round(s.totalWinnings).toLocaleString():'-')+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  // Earnings section
+  var yrs=DB.metadata.years_covered.map(String).sort().reverse();
+  var uniqueWinners=new Set();
+  yrs.forEach(function(y2){e4y(y2).forEach(function(e2){if(e2.winnings>0)uniqueWinners.add(e2.person);});});
+  h+='<div class="cd"><h3>Pool Earnings</h3><div style="font-size:.65rem;color:var(--td);margin-bottom:.5rem;font-style:italic">Fake internet money -- for bragging rights only</div><div class="pe">'+
     '<div class="pe-item"><div class="pv">'+uniqueWinners.size+'</div><div class="pl">Unique Winners</div></div>'+
     '<div class="pe-item"><div class="pv">'+yrs.length+'</div><div class="pl">Seasons</div></div></div></div>';
   // All-time earnings
-  const earners=DB.participants.filter(p=>p.career.total_winnings>0).sort((a,b)=>b.career.total_winnings-a.career.total_winnings);
+  var earners=DB.participants.filter(function(p){return p.career.total_winnings>0;}).sort(function(a,b){return b.career.total_winnings-a.career.total_winnings;});
   h+='<div class="cd"><h3>All-Time Earnings</h3><div class="tw" style="margin:0"><table><thead><tr><th>#</th><th>Name</th><th>Yrs</th><th>ITM</th><th>Won</th></tr></thead><tbody>';
-  earners.forEach((p,i)=>{const meC=loadMe()===p.canonical_name?'me':'';
-    h+=`<tr class="${meC}"><td class="rc ${i<3?'r'+(i+1):''}">${i+1}</td><td class="nc">${p.canonical_name}</td><td>${p.career.total_seasons}</td><td>${p.career.seasons_in_money}</td><td class="wi">${Math.round(p.career.total_winnings).toLocaleString()}</td></tr>`;});
+  earners.forEach(function(p,i){var meC=loadMe()===p.canonical_name?'me':'';
+    h+='<tr class="'+meC+'"><td class="rc '+(i<3?'r'+(i+1):'')+'">'+(i+1)+'</td><td class="nc">'+p.canonical_name+'</td><td>'+p.career.total_seasons+'</td><td>'+p.career.seasons_in_money+'</td><td class="wi">'+Math.round(p.career.total_winnings).toLocaleString()+'</td></tr>';});
   h+='</tbody></table></div></div>';
   // Year by year
-  for(const y of yrs){const en=e4y(y).filter(e=>e.winnings>0).sort((a,b)=>(a.rank||999)-(b.rank||999));
-    if(!en.length)continue;const tot=e4y(y).length;
-    h+=`<div class="cd"><h3>${y} <span style="color:var(--td);font-size:.8rem">${tot} entries</span></h3>`;
+  yrs.forEach(function(y2){var en=e4y(y2).filter(function(e2){return e2.winnings>0;}).sort(function(a,b){return(a.rank||999)-(b.rank||999);});
+    if(!en.length)return;var tot=e4y(y2).length;
+    h+='<div class="cd"><h3>'+y2+' <span style="color:var(--td);font-size:.8rem">'+tot+' entries</span></h3>';
     h+='<div class="tw" style="margin:0"><table><thead><tr><th>Rk</th><th>Entry</th><th>Total</th><th>Won</th></tr></thead><tbody>';
-    en.forEach(e=>{const tc=e.total==null?'n':e.total<0?'g':'b';const pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
-      const meC=isMe(e)?'me':'';
-      h+=`<tr class="${meC}"><td class="rc ${e.rank<=3?'r'+e.rank:''}">${e.rank??'-'}</td>
-        <td class="nc">${e.entry_used}${pn?'<br><span class="pn">'+pn+'</span>':''}</td>
-        <td><span class="tp ${tc}">${e.total==null?'DNS':(e.total>0?'+'+e.total:e.total)}</span></td><td class="wi">${Math.round(e.winnings).toLocaleString()}</td></tr>`;});
-    h+='</tbody></table></div></div>';}
-  ct.innerHTML=h;
+    en.forEach(function(e2){var tc=e2.total==null?'n':e2.total<0?'g':'b';var pn=e2.person!==e2.entry_used&&e2.person!=='Unknown'?e2.person:'';
+      var meC=isMe(e2)?'me':'';
+      h+='<tr class="'+meC+'"><td class="rc '+(e2.rank<=3?'r'+e2.rank:'')+'">'+(e2.rank!=null?e2.rank:'-')+'</td>'+
+        '<td class="nc">'+e2.entry_used+(pn?'<br><span class="pn">'+pn+'</span>':'')+'</td>'+
+        '<td><span class="tp '+tc+'">'+(e2.total==null?'DNS':(e2.total>0?'+'+e2.total:e2.total))+'</span></td><td class="wi">'+Math.round(e2.winnings).toLocaleString()+'</td></tr>';});
+    h+='</tbody></table></div></div>';});
+  // Pool Growth chart
+  h+='<div class="cd"><h3>Pool Growth</h3><div class="cc"><canvas id="g-chart"></canvas></div></div>';
+  document.getElementById('h-body').innerHTML=h;
+  setTimeout(function(){hGC();},50);
+}
+
+/* --- Tournament History (cross-year for one event) --- */
+function rTournamentHistory(ev){
+  var evNames={players:'The Players',masters:'Masters',pga:'PGA Championship',uso:'U.S. Open',open:'The Open'};
+  var yrs=DB.metadata.years_covered.map(String).sort().reverse();
+  var h='<div style="padding:.5rem .85rem"><span style="font-family:var(--fd);font-size:1.3rem;color:var(--tb);font-weight:700">'+(evNames[ev]||ev)+'</span><span style="color:var(--ts);font-size:.72rem;margin-left:.5rem">All-Time</span></div>';
+  // Winners per year
+  h+='<div class="cd"><h3>Winners by Year</h3><div class="ev-grid">';
+  yrs.forEach(function(y){
+    var lb=EL[y]||EL['2025'];
+    var ents=e4y(y).filter(function(e){return e[ev]!=null;}).sort(function(a,b){return a[ev]-b[ev];});
+    var w=ents[0];
+    h+='<div class="ev-card" onclick="document.getElementById(\'hyr\').value=\''+y+'\';chgH()"><div class="ev-n">'+y+'</div>';
+    if(w)h+='<div class="ev-w">'+w.entry_used+'</div><div class="ev-r">#'+w[ev]+'</div>';
+    else h+='<div class="ev-r">No data</div>';
+    h+='</div>';
+  });
+  h+='</div></div>';
+  // All-time leaderboard for this event - aggregate best finishes
+  var allFinishes=[];
+  yrs.forEach(function(y){
+    e4y(y).forEach(function(e){
+      if(e[ev]!=null)allFinishes.push({entry:e.entry_used,person:e.person,id:e.id,rank:e[ev],year:y,seasonRank:e.rank,total:e.total});
+    });
+  });
+  allFinishes.sort(function(a,b){return a.rank-b.rank;});
+  h+='<div class="cd"><h3>All-Time '+(evNames[ev]||ev)+' Leaderboard</h3>';
+  h+='<div class="tw" style="margin:0"><table><thead><tr><th>Rk</th><th>Entry</th><th>Year</th><th>Season Rk</th></tr></thead><tbody>';
+  allFinishes.slice(0,50).forEach(function(e,i){
+    var rc=i<3?'r'+(i+1):'';var meC=(loadMe()===e.person)?'me':'';
+    h+='<tr class="'+meC+'" onclick="toggleDet(this,\''+e.id+'\')"><td class="rc '+rc+'">'+e.rank+'</td><td class="nc">'+e.entry+'</td><td>'+e.year+'</td><td>'+(e.seasonRank!=null?e.seasonRank:'-')+'</td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  document.getElementById('h-body').innerHTML=h;
+  document.getElementById('hc').textContent=allFinishes.length+' finishes';
+}
+
+/* --- Player Profile --- */
+function rPlayerProfile(pid){
+  var pr=[...DB.participants,...(DB.unknowns||[])].find(function(p){return p.id===pid;});
+  if(!pr){document.getElementById('h-body').innerHTML='<div style="text-align:center;color:var(--ts);padding:2rem;font-size:.8rem">Player not found</div>';return;}
+  var yrs=Object.keys(pr.seasons).sort().reverse();
+  var h='<div style="padding:.5rem .85rem"><a href="#" onclick="document.getElementById(\'hpl\').value=\'all\';chgH();return false;" style="color:var(--go);font-size:.72rem;text-decoration:none">\u2190 Back</a></div>';
+  // Header
+  h+='<div class="cd"><div style="display:flex;align-items:baseline;gap:.5rem;margin-bottom:.4rem">';
+  h+='<span style="font-family:var(--fd);font-size:1.4rem;color:var(--tb);font-weight:700">'+(pr.canonical_name||pr.identifier)+'</span>';
+  if(pr.all_entry_names)h+='<span class="pn" style="font-size:.65rem">'+pr.all_entry_names.join(' / ')+'</span>';
+  h+='</div>';
+  if(pr.career){
+    h+='<div class="ig">';
+    h+='<div class="ib"><div class="it">Seasons</div><div class="iv">'+pr.career.total_seasons+'</div></div>';
+    h+='<div class="ib"><div class="it">Best Rank</div><div class="iv">'+(pr.career.best_rank!=null?'#'+pr.career.best_rank:'-')+'</div></div>';
+    h+='<div class="ib"><div class="it">Avg Rank</div><div class="iv">'+(pr.career.avg_rank!=null?pr.career.avg_rank.toFixed(1):'-')+'</div></div>';
+    h+='<div class="ib"><div class="it">In the Money</div><div class="iv">'+pr.career.seasons_in_money+'</div></div>';
+    h+='<div class="ib"><div class="it">Career Earnings</div><div class="iv">'+Math.round(pr.career.total_winnings||0).toLocaleString()+'</div></div>';
+    h+='</div>';
+  }
+  h+='</div>';
+  // Radar chart
+  h+='<div class="cd"><h3>Event Performance</h3>';
+  h+='<div class="ctrl" style="padding:0 0 .4rem"><select id="rd-yr" onchange="hDrawRd(\''+pid+'\')">';
+  yrs.forEach(function(y){h+='<option value="'+y+'">'+y+'</option>';});
+  h+='</select></div>';
+  h+='<div class="cc"><canvas id="rd-c"></canvas></div>';
+  h+='<h4 style="margin-top:.6rem">Rank Progression</h4><div class="cc"><canvas id="pg-c"></canvas></div></div>';
+  // Year-by-year cards
+  h+='<div class="cd"><h3>Year by Year</h3><div class="dr-grid">';
+  yrs.forEach(function(y){var sd=pr.seasons[y];if(Array.isArray(sd)){sd.forEach(function(s){h+=yrCard(y,s);});}else{h+=yrCard(y,sd);}});
+  h+='</div></div>';
+  document.getElementById('h-body').innerHTML=h;
+  document.getElementById('hc').textContent=yrs.length+' seasons';
+  setTimeout(function(){hDrawRd(pid);hDrawPg(pid);},50);
+}
+function hDrawRd(pid){
+  var pr=[...DB.participants,...(DB.unknowns||[])].find(function(p){return p.id===pid;});if(!pr)return;
+  var yr=document.getElementById('rd-yr')?.value;if(!yr)return;
+  var sd=pr.seasons[yr];if(Array.isArray(sd))sd=sd[0];if(!sd)return;
+  var lb=EL[yr]||EL['2025'],te=e4y(yr).length;
+  var dt=EK.map(function(k){var r=sd[k];return r==null?0:te-r+1;});
+  var cx=document.getElementById('rd-c')?.getContext('2d');if(!cx)return;if(charts.radar)charts.radar.destroy();
+  charts.radar=new Chart(cx,{type:'radar',data:{labels:EK.map(function(k){return lb[k];}),datasets:[{data:dt,backgroundColor:'rgba(201,162,39,.1)',borderColor:'#c9a227',pointBackgroundColor:'#c9a227',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{r:{beginAtZero:true,max:te,grid:{color:'rgba(255,255,255,.05)'},angleLines:{color:'rgba(255,255,255,.05)'},pointLabels:{color:'#d4ccbc',font:{size:10}},ticks:{display:false}}}}});
+}
+function hDrawPg(pid){
+  var pr=[...DB.participants,...(DB.unknowns||[])].find(function(p){return p.id===pid;});if(!pr)return;
+  var yrs=Object.keys(pr.seasons).sort(),ranks=yrs.map(function(y){var s=pr.seasons[y];if(Array.isArray(s))s=s[0];return s.rank;});
+  var cx=document.getElementById('pg-c')?.getContext('2d');if(!cx)return;if(charts.prog)charts.prog.destroy();
+  charts.prog=new Chart(cx,{type:'line',data:{labels:yrs,datasets:[{data:ranks,borderColor:'#52b788',backgroundColor:'rgba(82,183,136,.06)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:'#52b788'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{reverse:true,title:{display:true,text:'Rank',color:'#8a9a8f',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f'}}}}});
 }
 
 /* ===== LIVE TAB ===== */
