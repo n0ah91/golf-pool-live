@@ -1459,12 +1459,13 @@ function renderPreview() {
     {l:'Slope', v:course.slopeRating || '-'}
   ];
 
-  // 10-handicap score projection under TOUR conditions
-  // Base: CR + (Slope/113) * HCP, then +3 for tour setup (faster greens, thicker rough, tucked pins, narrower FW)
-  var projScore = null;
+  // Score projections under TOUR conditions
+  // Tour adj: +3 strokes for tour setup (13+ stimp, 4" rough, narrow FW, tucked pins)
   var tourAdj = 3;
+  var projScratch = null, proj10 = null;
   if (course.courseRating && course.slopeRating) {
-    projScore = (course.courseRating + (course.slopeRating / 113) * 10 + tourAdj).toFixed(1);
+    projScratch = (course.courseRating + tourAdj).toFixed(1);
+    proj10 = (course.courseRating + (course.slopeRating / 113) * 10 + tourAdj).toFixed(1);
   }
   var profHTML = '<div class="cf-profile-grid">';
   profileStats.forEach(function(s) {
@@ -1479,10 +1480,15 @@ function renderPreview() {
     }
   });
   profHTML += '</div>';
-  if (projScore) {
-    var projLow = (parseFloat(projScore) - 3).toFixed(0);
-    var projHigh = (parseFloat(projScore) + 3).toFixed(0);
-    profHTML += '<div style="text-align:center;margin-top:.7rem;font-size:.78rem;color:var(--ts);cursor:pointer" onclick="alert(\'10-HCP Tour Conditions Projection: ' + projScore + '\\n\\nCourse Rating: ' + course.courseRating + '\\nSlope Rating: ' + course.slopeRating + '\\nTour Setup Adjustment: +' + tourAdj + '\\n\\nFormula: CR + (Slope ÷ 113) × HCP + Tour Adj\\n= ' + course.courseRating + ' + (' + course.slopeRating + ' ÷ 113) × 10 + ' + tourAdj + '\\n= ' + projScore + '\\n\\nTour setup: 13+ stimp greens, 4\\\" rough,\\nnarrower fairways, tucked pins\')">10-HCP Projection w/ Tour Conditions: <span style="color:var(--tb);font-family:var(--fm)">' + projLow + '–' + projHigh + '</span></div>';
+  if (projScratch && proj10) {
+    var sLow = (parseFloat(projScratch) - 2).toFixed(0);
+    var sHigh = (parseFloat(projScratch) + 3).toFixed(0);
+    var tLow = (parseFloat(proj10) - 2).toFixed(0);
+    var tHigh = (parseFloat(proj10) + 3).toFixed(0);
+    profHTML += '<div style="display:flex;justify-content:center;gap:1.2rem;margin-top:.7rem;flex-wrap:wrap">';
+    profHTML += '<div style="font-size:.75rem;color:var(--ts);cursor:pointer" onclick="alert(\'Scratch Golfer Tour Projection: ' + projScratch + '\\n\\nCourse Rating: ' + course.courseRating + ' (scratch baseline)\\nTour Setup Adjustment: +' + tourAdj + '\\n\\nFormula: CR + Tour Adj\\n= ' + course.courseRating + ' + ' + tourAdj + ' = ' + projScratch + '\\n\\nRange: ' + sLow + '–' + sHigh + ' (±2-3 for conditions)\\n\\nWhy +' + tourAdj + '? Tour setups are harder than\\nmember play: 13+ stimp greens, 4+ inch rough,\\nnarrowed fairways, and tucked pin positions.\')">Scratch w/ Tour Conditions: <span style="color:var(--tb);font-family:var(--fm)">' + sLow + '–' + sHigh + '</span></div>';
+    profHTML += '<div style="font-size:.75rem;color:var(--ts);cursor:pointer" onclick="alert(\'10-HCP Tour Projection: ' + proj10 + '\\n\\nCourse Rating: ' + course.courseRating + '\\nSlope Rating: ' + course.slopeRating + '\\nTour Setup Adjustment: +' + tourAdj + '\\n\\nFormula: CR + (Slope ÷ 113) × HCP + Tour Adj\\n= ' + course.courseRating + ' + (' + course.slopeRating + ' ÷ 113) × 10 + ' + tourAdj + '\\n= ' + proj10 + '\\n\\nRange: ' + tLow + '–' + tHigh + ' (±2-3 for conditions)\\n\\nWhy +' + tourAdj + '? Tour setups are harder than\\nmember play: 13+ stimp greens, 4+ inch rough,\\nnarrowed fairways, and tucked pin positions.\')">10-HCP w/ Tour Conditions: <span style="color:var(--tb);font-family:var(--fm)">' + tLow + '–' + tHigh + '</span></div>';
+    profHTML += '</div>';
   }
 
   // Course notes as bullet points
