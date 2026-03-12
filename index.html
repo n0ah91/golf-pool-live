@@ -340,7 +340,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-leg-g{color:#2db5a0;font-size:.6rem}.ls-leg-mid{color:rgba(80,90,100,.5);font-size:.6rem}.ls-leg-r{color:#d94040;font-size:.6rem}
 .ls-leg-note{color:var(--td);font-style:italic}
 .ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0;padding:0 .1rem .4rem}
-.ls-hm table{width:100%;border-collapse:collapse;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
+.ls-hm table{width:100%;border-collapse:separate;border-spacing:2px 1px;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
 .ls-hm th{background:linear-gradient(180deg,rgba(14,30,50,.95) 0%,rgba(10,22,40,.98) 100%);color:var(--go);font-size:.5rem;text-transform:uppercase;letter-spacing:.05em;padding:.35rem .25rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);border-right:2px solid rgba(30,51,82,.5);cursor:pointer;font-weight:700}
 .ls-hm th:last-child{border-right:none}
 .ls-hm td{padding:.25rem .2rem;text-align:center;border-bottom:2px solid rgba(30,51,82,.4);border-right:2px solid rgba(30,51,82,.3)}
@@ -360,7 +360,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-sc.sg{color:#2db5a0;text-shadow:0 0 8px rgba(45,181,160,.35)}
 .ls-sc.sb{color:#e09478;text-shadow:0 0 6px rgba(224,148,120,.2)}
 .ls-thru{color:var(--ts);font-family:var(--fm);font-size:.58rem;opacity:.85}
-.ls-stat{font-family:var(--fm);font-weight:600;transition:all .15s;font-size:.62rem;min-width:1.8rem}
+.ls-stat{font-family:var(--fm);font-weight:400;transition:all .15s;font-size:.62rem;min-width:1.8rem;border-radius:3px}
 .ls-thru{width:1.6rem}
 .ls-pool{background:rgba(244,197,66,.08)!important}
 .ls-pool td:nth-child(2){border-left:3px solid var(--go)!important}
@@ -433,7 +433,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   <div class="ls-tabs">
     <button class="ls-tab active" onclick="lsView('hm')">Performance</button>
     <button class="ls-tab" onclick="lsView('holes')">Toughest Holes</button>
-    <button class="ls-tab" onclick="lsView('power')">Bombers vs Control</button>
+    <button class="ls-tab" onclick="lsView('power')">Bomb vs. Control</button>
   </div>
   <div id="ls-helper" class="ls-helper"></div>
   <div id="ls-insights" class="ls-insights"></div>
@@ -2610,32 +2610,31 @@ let _lsView='hm',_lsRound='event_avg',_lsData=null,_lsHoleData=null,_holeChart=n
 // Vintage Excel conditional format on dark bg
 // Bright green (#22c55e) → transparent middle → vivid red (#ef4444)
 function sgColor(rank,fieldSize){
-  if(rank==null||rank==='-')return {bg:'transparent',fg:'var(--td)',fw:'500'};
-  const r=parseInt(rank);if(isNaN(r))return {bg:'transparent',fg:'var(--td)',fw:'500'};
+  if(rank==null||rank==='-')return {bg:'transparent',fg:'var(--td)',fw:'400'};
+  const r=parseInt(rank);if(isNaN(r))return {bg:'transparent',fg:'var(--td)',fw:'400'};
   const n=fieldSize||100;
   const t=Math.max(0,Math.min(1,(r-1)/(n-1))); // 0=best, 1=worst
   let R,G,B,alpha;
-  if(t<=0.45){
-    // Green zone: bright green → faded green
-    const s=t/0.45;
-    R=Math.round(20+s*40);    // 20→60
-    G=Math.round(200-s*80);   // 200→120
-    B=Math.round(80-s*40);    // 80→40
-    alpha=0.95-s*0.6;         // 0.95→0.35
-  } else if(t<=0.55){
-    // Dead zone: subtle neutral — softer middle to reduce "Christmas tree"
-    R=60;G=70;B=80;alpha=0.06;
+  if(t<=0.4){
+    // Green zone: softer, less saturated
+    const s=t/0.4;
+    R=Math.round(30+s*30);    // 30→60
+    G=Math.round(160-s*40);   // 160→120
+    B=Math.round(90-s*30);    // 90→60
+    alpha=0.5-s*0.25;         // 0.5→0.25
+  } else if(t<=0.6){
+    // Dead zone: nearly invisible
+    R=60;G=70;B=80;alpha=0.04;
   } else {
-    // Red zone: faded red → bright red
-    const s=(t-0.55)/0.45;
-    R=Math.round(160+s*60);   // 160→220
-    G=Math.round(80-s*50);    // 80→30
-    B=Math.round(60-s*30);    // 60→30
-    alpha=0.35+s*0.6;         // 0.35→0.95
+    // Red zone: softer, less saturated
+    const s=(t-0.6)/0.4;
+    R=Math.round(140+s*40);   // 140→180
+    G=Math.round(70-s*30);    // 70→40
+    B=Math.round(60-s*20);    // 60→40
+    alpha=0.2+s*0.35;         // 0.2→0.55
   }
-  const dist=Math.abs(t-0.5)*2;
-  const fg=alpha>0.6?'#fff':alpha>0.35?'rgba(255,255,255,.9)':'rgba(255,255,255,.6)';
-  const fw=dist>0.6?'600':dist>0.3?'500':'400';
+  const fg=alpha>0.35?'rgba(255,255,255,.92)':alpha>0.15?'rgba(255,255,255,.75)':'rgba(255,255,255,.5)';
+  const fw='400';
   return {bg:`rgba(${R},${G},${B},${alpha})`,fg,fw};
 }
 
@@ -2813,7 +2812,7 @@ function lsSetHelper(v){
 }
 function lsView(v){
   _lsView=v;
-  document.querySelectorAll('.ls-tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(v==='hm'?'performance':v==='holes'?'hole':'power')));
+  document.querySelectorAll('.ls-tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(v==='hm'?'performance':v==='holes'?'hole':'bomb')));
   lsSetHelper(v);
   // Show/hide mode button and search (only for heatmap)
   const mBtn=document.getElementById('ls-mode-btn');if(mBtn)mBtn.style.display=v==='hm'?'':'none';
