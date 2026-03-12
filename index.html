@@ -1528,9 +1528,8 @@ function renderPreview() {
     {l:'Water Danger Rank', v:course.waterHolesRank || '-'},
     {l:'FW Width Rank', v:course.avgFairwayWidthRank || '-'},
     {l:'Greens Size Rank', v:course.greensSizeRank || '-'},
-    {l:'Greens', v:course.grassGreens || '-'},
-    {l:'Fairways', v:course.grassFairways || '-'},
-    {l:'Rough Type', v:(course.roughType || '-') + (course.roughLength ? ' (' + course.roughLength + ')' : '')}
+    {l:'Greens Grass', v:(course.grassGreens||'').split(' overseeded')[0].split('(')[0].trim() || '-'},
+    {l:'FW Grass', v:(course.grassFairways||'').split(' overseeded')[0].trim() || '-'}
   ].filter(function(f) { return f.v && f.v !== '-'; });
 
   // Map for extended clickable facts
