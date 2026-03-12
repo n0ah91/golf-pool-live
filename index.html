@@ -355,7 +355,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-pos-top5{color:#2db5a0}
 .ls-pos-top10{color:var(--tb)}
 .ls-pos-rest{color:var(--ts)}
-.ls-nm{color:var(--tb);font-weight:600;font-size:.66rem}
+.ls-nm{color:var(--tb);font-weight:500;font-size:.64rem}
 .ls-sc{font-weight:800;font-size:.7rem;letter-spacing:-.01em}
 .ls-sc.sg{color:#2db5a0;text-shadow:0 0 8px rgba(45,181,160,.35)}
 .ls-sc.sb{color:#e09478;text-shadow:0 0 6px rgba(224,148,120,.2)}
@@ -2635,7 +2635,7 @@ function sgColor(rank,fieldSize){
   }
   const dist=Math.abs(t-0.5)*2;
   const fg=alpha>0.6?'#fff':alpha>0.35?'rgba(255,255,255,.9)':'rgba(255,255,255,.6)';
-  const fw=dist>0.6?'800':dist>0.3?'700':'600';
+  const fw=dist>0.6?'600':dist>0.3?'500':'400';
   return {bg:`rgba(${R},${G},${B},${alpha})`,fg,fw};
 }
 
