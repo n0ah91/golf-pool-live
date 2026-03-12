@@ -307,6 +307,53 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 @media(min-width:769px){.cf-profile-grid{grid-template-columns:repeat(5,1fr)}}
 @media(max-width:768px){.cf-facts-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.prev-title{font-size:1.05rem}}
+/* Live Stats Panel */
+.ls-panel{background:var(--bc);border-radius:8px;padding:.6rem;margin-top:.5rem}
+.ls-tabs{display:flex;gap:.3rem;margin-bottom:.5rem;border-bottom:1px solid var(--br);padding-bottom:.4rem}
+.ls-tab{background:none;border:none;color:var(--ts);font-family:var(--fb);font-size:.68rem;padding:.3rem .6rem;cursor:pointer;border-radius:4px 4px 0 0;transition:all .2s;border-bottom:2px solid transparent}
+.ls-tab.active{color:var(--go);border-bottom-color:var(--go);font-weight:600}
+.ls-tab:hover{color:var(--tb)}
+.ls-ctrl{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap}
+.ls-rounds{display:flex;gap:.2rem}
+.ls-rnd{background:var(--bm);border:1px solid var(--br);color:var(--ts);font-family:var(--fb);font-size:.58rem;padding:.2rem .45rem;border-radius:4px;cursor:pointer;transition:all .2s}
+.ls-rnd.active{background:rgba(244,197,66,.12);border-color:var(--go);color:var(--go);font-weight:600}
+.ls-rnd:hover{border-color:var(--brl);color:var(--tp)}
+.ls-search{background:var(--bm);border:1px solid var(--br);color:var(--tp);font-family:var(--fb);font-size:.62rem;padding:.25rem .5rem;border-radius:4px;flex:1;min-width:90px;outline:none}
+.ls-search:focus{border-color:var(--go)}
+.ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:4px}
+.ls-hm table{width:100%;border-collapse:collapse;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
+.ls-hm th{background:var(--bm);color:var(--ts);font-size:.52rem;text-transform:uppercase;letter-spacing:.04em;padding:.35rem .4rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--br);cursor:help}
+.ls-hm td{padding:.3rem .4rem;text-align:center;border-bottom:1px solid rgba(30,51,82,.3)}
+.ls-hm th:nth-child(1),.ls-hm td:nth-child(1){text-align:center;width:2rem}
+.ls-hm th:nth-child(2),.ls-hm td:nth-child(2){text-align:left;position:sticky;left:0;z-index:1;background:var(--bc);min-width:100px}
+.ls-hm thead th:nth-child(2){z-index:3}
+.ls-pos{font-family:var(--fm);font-weight:600;color:var(--ts)}
+.ls-nm{color:var(--tb);font-weight:500}
+.ls-sc{font-weight:600}
+.ls-sc.sg{color:var(--gl)}
+.ls-sc.sb{color:var(--rd)}
+.ls-thru{color:var(--ts);font-family:var(--fm)}
+.ls-stat{font-family:var(--fm);font-weight:500;color:var(--tb);transition:background .2s}
+.sg-g1{background:#0d3b2e}.sg-g2{background:#15634e}.sg-g3{background:#1d8a6e}.sg-g4{background:#25a88a}.sg-g5{background:#2db5a0;color:#0a1628;font-weight:700}
+.sg-r1{background:#5a1a1a}.sg-r2{background:#8b3030}.sg-r3{background:#b84a3a}.sg-r4{background:#d06850}.sg-r5{background:#e09478;color:#0a1628;font-weight:700}
+.ls-pool{background:rgba(244,197,66,.06)!important}
+.ls-pool td:nth-child(2){border-left:2px solid var(--go)}
+.ls-hole-wrap{height:240px;position:relative}
+.ls-hole-wrap canvas{width:100%!important;height:100%!important}
+.ls-power{padding:.5rem .3rem;text-align:center}
+.ls-power-title{font-family:var(--fd);font-size:1rem;color:var(--tb);font-weight:600;margin-bottom:.15rem}
+.ls-power-sub{font-size:.58rem;color:var(--ts);margin-bottom:.8rem}
+.ls-gauge{margin:0 auto;max-width:340px}
+.ls-gauge-labels{display:flex;justify-content:space-between;font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem;font-family:var(--fb)}
+.ls-gauge-track{height:8px;background:linear-gradient(90deg,var(--gl) 0%,var(--brl) 50%,var(--rd) 100%);border-radius:4px;position:relative;margin-bottom:.4rem}
+.ls-gauge-fill{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;border:2px solid var(--tb);transform:translateX(-50%);transition:left .4s}
+.ls-gauge-val{font-size:.72rem;font-weight:600;margin-top:.3rem;font-family:var(--fb)}
+.ls-power-detail{max-width:300px;margin:.6rem auto 0;text-align:left}
+.ls-pd-row{display:flex;align-items:center;gap:.4rem;font-size:.58rem;color:var(--tp);margin-bottom:.3rem}
+.ls-pd-row span:first-child{min-width:110px;font-family:var(--fb)}
+.ls-pd-bar{flex:1;height:6px;background:var(--bm);border-radius:3px;overflow:hidden;display:inline-flex}
+.ls-pd-bar span{height:100%;border-radius:3px;transition:width .4s}
+.ls-pd-row span:last-child{min-width:28px;text-align:right;font-family:var(--fm);color:var(--ts)}
 </style>
 </head>
 <body>
@@ -337,6 +384,36 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </section>
 <section id="live" class="pn2 active">
 
+<div class="cd" id="lb-wrap">
+  <div class="lb-hdr">
+    <span class="lb-t" id="lb-tt">Live Leaderboard</span>
+    <span style="display:flex;align-items:center;gap:.4rem">
+      <span class="lb-m" id="lb-mt"></span>
+      <button class="lb-r" id="lb-rb" onclick="dgLive()" style="display:none">&#8635; Refresh</button>
+      <button class="lb-r" onclick="dgConn()">Connect to DG</button>
+      <label style="font-size:.55rem;color:var(--ts);display:flex;align-items:center;gap:.2rem"><input type="checkbox" id="ar-cb" onchange="togAR()"> Auto</label>
+    </span>
+  </div>
+  <div id="lb-bd"><div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.72rem">Press "Connect to DG" to load live data</div></div>
+</div>
+<div id="ls-panel" class="ls-panel" style="display:none">
+  <div class="ls-tabs">
+    <button class="ls-tab active" onclick="lsView('hm')">Performance</button>
+    <button class="ls-tab" onclick="lsView('holes')">Hole Difficulty</button>
+    <button class="ls-tab" onclick="lsView('power')">Power Profile</button>
+  </div>
+  <div class="ls-ctrl">
+    <div class="ls-rounds">
+      <button class="ls-rnd active" data-r="event_avg" onclick="lsRound('event_avg')">Event</button>
+      <button class="ls-rnd" data-r="1" onclick="lsRound('1')">R1</button>
+      <button class="ls-rnd" data-r="2" onclick="lsRound('2')">R2</button>
+      <button class="ls-rnd" data-r="3" onclick="lsRound('3')">R3</button>
+      <button class="ls-rnd" data-r="4" onclick="lsRound('4')">R4</button>
+    </div>
+    <input id="ls-search" class="ls-search" placeholder="Search player..." oninput="lsFilter()">
+  </div>
+  <div id="ls-body"></div>
+</div>
 <div class="cd" id="live-preview"></div>
 
 <div class="cd"><h3 style="display:flex;align-items:baseline;gap:.4rem">2026 Majors <span style="font-size:.62rem;color:var(--gl);font-weight:500;letter-spacing:.03em;font-family:var(--fb)">tap for preview →</span></h3>
@@ -977,9 +1054,9 @@ async function dgLive(){
   if(!DG.ok)return;const mt=document.getElementById('lb-mt');mt.textContent='Loading...';
   const prevSnap=DG.lb?captureSnap():null;
   try{const d=await dgF('preds/in-play',{tour:'pga'});DG.lb=d;rLB(d);mt.textContent='Updated '+new Date().toLocaleTimeString();
-    detectEvent(d.info?.event_name);if(hasPool())calcPL();if(prevSnap)diffAndNotify(prevSnap);}
+    detectEvent(d.info?.event_name);if(hasPool())calcPL();if(prevSnap)diffAndNotify(prevSnap);loadLiveStats();}
   catch(e){try{const d=await dgF('preds/live-tournament-stats',{stats:'sg_total,sg_putt,sg_app,sg_ott',round:'event_avg',display:'value'});
-    DG.lb=d;rLBS(d);mt.textContent='Updated '+new Date().toLocaleTimeString();if(hasPool())calcPL();}
+    DG.lb=d;rLBS(d);mt.textContent='Updated '+new Date().toLocaleTimeString();if(hasPool())calcPL();loadLiveStats();}
     catch(e2){document.getElementById('lb-bd').innerHTML='<div style="color:var(--rd);text-align:center;padding:.5rem;font-size:.75rem">No active tournament: '+e.message+'</div>';mt.textContent='Error';}}}
 function togAR(){const cb=document.getElementById('ar-cb');
   if(cb.checked){DG.ar=setInterval(dgLive,300000);}else{clearInterval(DG.ar);DG.ar=null;}}
@@ -2460,6 +2537,153 @@ function buildRecapAnalytics(ev, round, data) {
   }
 
   el2.innerHTML = h2;
+}
+
+/* ===== LIVE STATS PANEL ===== */
+let _lsView='hm',_lsRound='event_avg',_lsData=null,_lsHoleData=null,_holeChart=null;
+
+function sgTier(rank,fieldSize){
+  if(rank==null||rank==='-')return '';
+  const r=parseInt(rank);if(isNaN(r))return '';
+  const pct=r/(fieldSize||100);
+  if(pct<=0.15)return 'sg-g5';if(pct<=0.30)return 'sg-g3';if(pct<=0.50)return '';if(pct<=0.70)return 'sg-r3';return 'sg-r5';
+}
+
+const LS_COLS=[
+  {key:'sg_ott',hdr:'Driving',tip:'Strokes gained off the tee — how well they\'re driving'},
+  {key:'sg_app',hdr:'Approach',tip:'Strokes gained on approach shots into the green'},
+  {key:'sg_arg',hdr:'Short Game',tip:'Strokes gained around the green — chipping & pitching'},
+  {key:'sg_putt',hdr:'Putting',tip:'Strokes gained on the greens'},
+  {key:'distance',hdr:'Distance',tip:'Average driving distance (yards)'},
+  {key:'great_shots',hdr:'Great Shots',tip:'Exceptional shots vs field average'},
+  {key:'prox_fw',hdr:'Proximity',tip:'Avg distance to pin from fairway (feet)'}
+];
+
+async function fetchLiveStats(round){
+  return dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt,distance,great_shots,prox_fw',round:round||'event_avg',display:'rank'});
+}
+async function fetchHoleStats(){return dgF('preds/live-hole-stats',{tour:'pga'});}
+
+function renderSGHeatmap(data){
+  const bd=document.getElementById('ls-body');
+  if(!data||!data.live_stats||!data.live_stats.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">No live stats available</div>';return;}
+  const fieldSize=data.live_stats.length;
+  const sorted=[...data.live_stats].sort((a,b)=>{
+    const ac=String(a.position)==='CUT',bc=String(b.position)==='CUT';
+    if(ac!==bc)return ac?1:-1;
+    return(parseInt(a.position)||999)-(parseInt(b.position)||999);
+  });
+  const show=sorted.slice(0,25);
+  const search=(document.getElementById('ls-search')?.value||'').toLowerCase();
+  let h='<div class="ls-hm"><table><thead><tr>';
+  h+='<th class="ls-pos">Pos</th><th class="ls-nm">Player</th><th class="ls-sc">Score</th><th class="ls-thru">Thru</th>';
+  LS_COLS.forEach(c=>{h+='<th title="'+c.tip+'">'+c.hdr+'</th>';});
+  h+='</tr></thead><tbody>';
+  show.forEach(p=>{
+    const nm=fmN(p.player_name||'');
+    if(search&&!nm.toLowerCase().includes(search)&&!(p.player_name||'').toLowerCase().includes(search))return;
+    const ip=inPool(p.player_name||'');
+    const cut=String(p.position)==='CUT';
+    const sc=p.total!=null?(p.total>0?'+'+p.total:p.total===0?'E':p.total):'-';
+    const scc=p.total<0?'sg':p.total>0?'sb':'';
+    h+='<tr'+(cut?' style="opacity:.4"':'')+(ip?' class="ls-pool"':'')+'>';
+    h+='<td class="ls-pos">'+(p.position||'-')+'</td>';
+    h+='<td class="ls-nm">'+nm+(ip?' <span style="color:var(--go);font-size:.45rem">\u25CF</span>':'')+'</td>';
+    h+='<td class="ls-sc '+scc+'">'+sc+'</td>';
+    h+='<td class="ls-thru">'+(p.thru||'-')+'</td>';
+    LS_COLS.forEach(c=>{
+      const v=p[c.key];const tier=sgTier(v,fieldSize);
+      h+='<td class="ls-stat '+tier+'">'+(v!=null?v:'-')+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  if(sorted.length>25)h+='<div style="text-align:center;font-size:.55rem;color:var(--td);padding:.2rem">Showing top 25 of '+sorted.length+'</div>';
+  h+='<div style="font-size:.5rem;color:var(--td);padding:.2rem .4rem;text-align:right">Updated: '+(data.last_updated||'')+' \u00B7 Source: DataGolf</div>';
+  bd.innerHTML=h;
+}
+
+function renderHoleChart(data){
+  const bd=document.getElementById('ls-body');
+  if(!data||!data.courses||!data.courses.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">No hole data available</div>';return;}
+  const roundIdx=_lsRound==='event_avg'?0:Math.min(parseInt(_lsRound)-1,data.courses[0].rounds.length-1);
+  const round=data.courses[0].rounds[roundIdx];
+  if(!round||!round.holes){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">No data for this round</div>';return;}
+  const holes=round.holes.sort((a,b)=>a.hole-b.hole);
+  const labels=holes.map(h=>'H'+h.hole);
+  const deltas=holes.map(h=>+(h.total.avg_score-h.par).toFixed(3));
+  const colors=deltas.map(d=>d>0.05?'#b84a3a':d<-0.05?'#2db5a0':'#4e6178');
+  bd.innerHTML='<div class="ls-hole-wrap"><canvas id="ls-hole-cv"></canvas></div>';
+  if(_holeChart){_holeChart.destroy();_holeChart=null;}
+  const ctx=document.getElementById('ls-hole-cv').getContext('2d');
+  _holeChart=new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[{data:deltas,backgroundColor:colors,borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{
+      title:(items)=>{const i=items[0].dataIndex;const h=holes[i];return 'Hole '+h.hole+' \u00B7 Par '+h.par+' \u00B7 '+h.yardage+' yds';},
+      label:(item)=>{const h=holes[item.dataIndex];const d=deltas[item.dataIndex];return 'Avg: '+h.total.avg_score.toFixed(2)+' ('+(d>0?'+':'')+d.toFixed(3)+' vs par)';},
+      afterLabel:(item)=>{const h=holes[item.dataIndex];const t=h.total;return '\uD83E\uDD85 '+(t.eagles_or_better||0)+'  \uD83D\uDC26 '+t.birdies+'  \u26F3 '+t.pars+'  \uD83D\uDC80 '+t.bogeys+'  \u274C '+(t.doubles_or_worse||0);}
+    }}},scales:{x:{ticks:{color:'#7a8da0',font:{size:10,family:'DM Sans'}},grid:{display:false}},
+      y:{ticks:{color:'#7a8da0',font:{size:10,family:'DM Mono'},callback:v=>(v>0?'+':'')+v.toFixed(2)},grid:{color:'rgba(30,51,82,.4)'},
+        title:{display:true,text:'Avg Score vs Par',color:'#7a8da0',font:{size:11,family:'DM Sans'}}}}}});
+}
+
+function renderPowerProfile(data){
+  const bd=document.getElementById('ls-body');
+  if(!data||!data.live_stats||!data.live_stats.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">Power Profile unavailable for this round</div>';return;}
+  const stats=data.live_stats.filter(p=>p.distance!=null&&p.prox_fw!=null);
+  if(stats.length<10){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">Insufficient data for Power Profile</div>';return;}
+  const n=stats.length;
+  const top25=[...data.live_stats].sort((a,b)=>(parseInt(a.position)||999)-(parseInt(b.position)||999)).slice(0,25);
+  const t25dist=top25.filter(p=>p.distance!=null);
+  const t25prox=top25.filter(p=>p.prox_fw!=null);
+  const avgDR=t25dist.length?t25dist.reduce((s,p)=>s+p.distance,0)/t25dist.length:n/2;
+  const avgPR=t25prox.length?t25prox.reduce((s,p)=>s+p.prox_fw,0)/t25prox.length:n/2;
+  const distSignal=1-(avgDR/n);
+  const proxSignal=1-(avgPR/n);
+  const powerIdx=Math.round((0.7*distSignal+0.3*(1-proxSignal))*100);
+  const clamped=Math.max(5,Math.min(95,powerIdx));
+  const lbl=clamped<35?'Favoring Control & Precision':clamped>65?'Favoring Power & Distance':'Balanced \u2014 No Strong Advantage';
+  const clr=clamped<35?'var(--gl)':clamped>65?'var(--rd)':'var(--go)';
+  let h='<div class="ls-power">';
+  h+='<div class="ls-power-title">What\'s Working This Round?</div>';
+  h+='<div class="ls-power-sub">'+(data.event_name||'')+' \u00B7 '+(_lsRound==='event_avg'?'Event Average':'Round '+_lsRound)+'</div>';
+  h+='<div class="ls-gauge">';
+  h+='<div class="ls-gauge-labels"><span>Control</span><span>Power</span></div>';
+  h+='<div class="ls-gauge-track"><div class="ls-gauge-fill" style="left:'+clamped+'%;background:'+clr+'"></div></div>';
+  h+='<div class="ls-gauge-val" style="color:'+clr+'">'+lbl+'</div>';
+  h+='</div>';
+  h+='<div class="ls-power-detail">';
+  h+='<div class="ls-pd-row"><span>Distance Advantage</span><span class="ls-pd-bar"><span style="width:'+Math.round(distSignal*100)+'%;background:var(--rd)"></span></span><span>'+Math.round(distSignal*100)+'%</span></div>';
+  h+='<div class="ls-pd-row"><span>Proximity Advantage</span><span class="ls-pd-bar"><span style="width:'+Math.round(proxSignal*100)+'%;background:var(--gl)"></span></span><span>'+Math.round(proxSignal*100)+'%</span></div>';
+  h+='</div>';
+  h+='<div style="font-size:.5rem;color:var(--td);padding:.3rem;text-align:center">Based on top-25 field ranks for distance and proximity \u00B7 Source: DataGolf</div>';
+  h+='</div>';
+  bd.innerHTML=h;
+}
+
+function lsView(v){
+  _lsView=v;
+  document.querySelectorAll('.ls-tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(v==='hm'?'performance':v==='holes'?'hole':'power')));
+  lsRender();
+}
+function lsRound(r){
+  _lsRound=r;
+  document.querySelectorAll('.ls-rnd').forEach(b=>b.classList.toggle('active',b.getAttribute('data-r')===r));
+  if(_lsView==='hm'||_lsView==='power'){fetchLiveStats(r).then(d=>{_lsData=d;lsRender();}).catch(()=>{});}
+  else if(_lsView==='holes'){lsRender();}
+}
+function lsFilter(){if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);}
+function lsRender(){
+  if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);
+  else if(_lsView==='holes')renderHoleChart(_lsHoleData);
+  else if(_lsView==='power'&&_lsData)renderPowerProfile(_lsData);
+}
+async function loadLiveStats(){
+  const panel=document.getElementById('ls-panel');if(!panel)return;
+  try{
+    const[stats,holes]=await Promise.all([fetchLiveStats(_lsRound).catch(()=>null),fetchHoleStats().catch(()=>null)]);
+    if(stats&&stats.live_stats&&stats.live_stats.length){_lsData=stats;_lsHoleData=holes;panel.style.display='';lsRender();}
+    else{panel.style.display='none';}
+  }catch(e){panel.style.display='none';}
 }
 
 /* ===== OVERRIDE rLive ===== */
