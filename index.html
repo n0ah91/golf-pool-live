@@ -21,7 +21,7 @@
 --gn:#1a7a6d;--gl:#2db5a0;--gm:#0e4f47;--go:#f4c542;--gol:#ffd966;--god:#b8922e;
 --tb:#f0ece4;--tp:#c8c0b4;--ts:#7a8da0;--td:#4e6178;--rd:#e09478;
 --r1:#ffd700;--r2:#c0c0c0;--r3:#cd7f32;
---fd:'Cormorant Garamond',Georgia,serif;--fb:'DM Sans',-apple-system,sans-serif;--fm:'DM Mono',Consolas,monospace;}
+--fd:'DM Sans',-apple-system,sans-serif;--fb:'DM Sans',-apple-system,sans-serif;--fm:'DM Mono',Consolas,monospace;--fh:'DM Sans',-apple-system,sans-serif;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;-webkit-font-smoothing:antialiased}
 body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh;overflow-x:hidden}
@@ -187,7 +187,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .pw-sc{color:var(--go);font-family:var(--fm);min-width:40px;text-align:right}
 /* === Odds Grid === */
 .odds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.35rem;margin:.5rem 0}
-.odds-card{display:flex;justify-content:space-between;align-items:center;background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.35rem .5rem;font-size:.78rem}
+.odds-card{display:flex;justify-content:space-between;align-items:center;background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.35rem .5rem;font-size:.7rem}
 .odds-card .oc-nm{color:var(--tb);font-family:var(--fb)}
 .odds-card .oc-odds{color:var(--go);font-family:var(--fm);font-weight:400;font-size:.72rem}
 .odds-card.in-pool{border-color:var(--gl)}
@@ -345,20 +345,29 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-leg-g{color:#2db5a0;font-size:.55rem}.ls-leg-mid{color:rgba(80,90,100,.4);font-size:.55rem}.ls-leg-r{color:#d94040;font-size:.55rem}
 .ls-leg-note{color:var(--td);font-style:italic}
 .ls-div{border-left:2px solid rgba(244,197,66,.2)!important}
-.ls-fl-btn{background:rgba(100,140,220,.1)!important;border-color:rgba(100,140,220,.35)!important;color:var(--tb)!important}
-.ls-fl-btn:hover{background:rgba(100,140,220,.2)!important;border-color:rgba(100,140,220,.5)!important}
-.ls-fl-btn.active{background:rgba(100,140,220,.2)!important;border-color:rgba(100,140,220,.5)!important}
-.ls-fl-icon{margin-right:.15rem}
-.ls-fl-panel{width:100%;display:flex;gap:.6rem;padding:.3rem 0 .1rem;flex-wrap:wrap}
-.ls-fl-group{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap}
-.ls-fl-title{font-weight:700;font-size:.56rem;font-family:var(--fb)}
-.ls-fl-lean{color:#2db5a0}.ls-fl-fade{color:#e09478}
-.ls-fl-sub{font-size:.46rem;color:var(--td);font-style:italic;margin-right:.2rem}
-.ls-fl-lean-chip{background:rgba(45,181,160,.08)!important;border-color:rgba(45,181,160,.25)!important}
-.ls-fl-lean-chip:hover{background:rgba(45,181,160,.18)!important}
-.ls-fl-fade-chip{background:rgba(224,148,120,.08)!important;border-color:rgba(224,148,120,.25)!important}
-.ls-fl-fade-chip:hover{background:rgba(224,148,120,.18)!important}
-.ls-fl-delta{font-size:.46rem;color:var(--td);margin-left:.2rem;font-family:var(--fm)}
+.ls-tab-fl{color:#7bade8!important;border-color:rgba(100,150,235,.45)!important;font-weight:600!important}
+.ls-tab-fl:hover{background:rgba(100,150,235,.12)!important;border-color:rgba(100,150,235,.6)!important}
+.ls-tab-fl.active{background:rgba(100,150,235,.2)!important;border-color:rgba(100,150,235,.7)!important;color:#a0c4f5!important}
+.ls-fl-view{padding:.4rem .6rem}
+.ls-fl-section{margin-bottom:.6rem}
+.ls-fl-hdr{font-family:var(--fh);font-size:.8rem;font-weight:700;margin-bottom:.35rem;display:flex;align-items:center;gap:.35rem}
+.ls-fl-hdr-lean{color:#2db5a0}.ls-fl-hdr-fade{color:#e09478}
+.ls-fl-sub{font-size:.5rem;color:var(--td);font-style:italic;font-weight:400;font-family:var(--fb)}
+.ls-fl-card{background:var(--bca);border:1px solid var(--br);border-radius:6px;padding:.5rem .6rem;margin-bottom:.35rem;transition:border-color .2s}
+.ls-fl-card-lean{border-left:3px solid rgba(45,181,160,.5)}
+.ls-fl-card-fade{border-left:3px solid rgba(224,148,120,.5)}
+.ls-fl-card:hover{border-color:rgba(244,197,66,.3)}
+.ls-fl-name{font-family:var(--fb);font-size:.68rem;color:var(--tb);font-weight:600;cursor:pointer}
+.ls-fl-name:hover{color:var(--go)}
+.ls-fl-meta{font-size:.52rem;color:var(--td);font-family:var(--fm);margin-top:.15rem}
+.ls-fl-why{font-size:.56rem;color:var(--tp);font-family:var(--fb);margin-top:.25rem;line-height:1.45;padding:.3rem .4rem;background:rgba(10,20,35,.4);border-radius:4px}
+.ls-fl-bars{display:flex;gap:.5rem;margin-top:.25rem;flex-wrap:wrap}
+.ls-fl-bar-item{display:flex;align-items:center;gap:.2rem;font-size:.5rem;font-family:var(--fm);color:var(--td)}
+.ls-fl-bar-label{min-width:32px;text-align:right}
+.ls-fl-bar-track{width:50px;height:6px;background:rgba(30,51,82,.5);border-radius:3px;overflow:hidden}
+.ls-fl-bar-fill{height:100%;border-radius:3px}
+.ls-fl-bar-val{min-width:18px}
+.ls-fl-empty{text-align:center;color:var(--td);padding:1.5rem;font-size:.68rem;font-family:var(--fb)}
 .ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0;padding:0 .1rem .4rem}
 .ls-hm table{width:100%;border-collapse:separate;border-spacing:2px 1px;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
 .ls-hm th{background:linear-gradient(180deg,rgba(14,30,50,.95) 0%,rgba(10,22,40,.98) 100%);color:var(--go);font-size:.54rem;text-transform:uppercase;letter-spacing:.04em;padding:.35rem .3rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);border-right:2px solid rgba(30,51,82,.5);cursor:pointer;font-weight:700}
@@ -402,7 +411,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-pd-row span:first-child{min-width:120px;font-family:var(--fb);font-weight:500}
 .ls-pd-bar{flex:1;height:10px;background:rgba(30,51,82,.5);border-radius:5px;overflow:hidden;display:inline-flex}
 .ls-pd-bar span{height:100%;border-radius:5px;transition:width .4s}
-.ls-pd-row span:last-child{min-width:32px;text-align:right;font-family:var(--fm);color:var(--tb);font-weight:600}
+.ls-pd-row span:last-child{min-width:32px;text-align:right;font-family:var(--fm);color:var(--td);font-weight:400;font-size:.56rem}
 </style>
 </head>
 <body>
@@ -454,6 +463,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
     <button class="ls-tab active" onclick="lsView('hm')">Performance</button>
     <button class="ls-tab" onclick="lsView('holes')">Toughest Holes</button>
     <button class="ls-tab" onclick="lsView('power')">Bomb vs. Control</button>
+    <button class="ls-tab ls-tab-fl" onclick="lsView('fl')">Fades &amp; Leans</button>
   </div>
   <div id="ls-helper" class="ls-helper"></div>
   <div id="ls-insights" class="ls-insights"></div>
@@ -2692,34 +2702,91 @@ function lsChipClick(name){
 }
 
 function lsFadesLeans(stats){
-  // Compare leaderboard position vs avg core SG rank
-  // Lean = avg stat rank much better (lower) than position → upside
-  // Fade = avg stat rank much worse (higher) than position → downside
   const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return null;return parseInt(String(s).replace(/^T/,''));};
   const coreKeys=['sg_ott','sg_app','sg_arg','sg_putt'];
+  const keyLabels={sg_ott:'Drive',sg_app:'Approach',sg_arg:'Short Game',sg_putt:'Putting'};
+  const fieldSize=stats.length||100;
   const scored=stats.filter(p=>{
     const pos=pPos(p.position);if(!pos||pos>60)return false;
     return coreKeys.every(k=>p[k]!=null&&p[k]!=='-');
   }).map(p=>{
     const pos=pPos(p.position);
-    const avgRank=coreKeys.reduce((s,k)=>s+parseInt(p[k]),0)/coreKeys.length;
-    return{name:fmNS(p.player_name||''),pos,avgRank,delta:pos-avgRank};
+    const ranks={};coreKeys.forEach(k=>{ranks[k]=parseInt(p[k]);});
+    const avgRank=coreKeys.reduce((s,k)=>s+ranks[k],0)/coreKeys.length;
+    // Find best and worst category
+    const sorted=[...coreKeys].sort((a,b)=>ranks[a]-ranks[b]);
+    const best={key:sorted[0],rank:ranks[sorted[0]],label:keyLabels[sorted[0]]};
+    const worst={key:sorted[3],rank:ranks[sorted[3]],label:keyLabels[sorted[3]]};
+    return{name:fmNS(p.player_name||''),pos,avgRank,delta:pos-avgRank,ranks,best,worst,total:p.total,thru:p.thru};
   });
-  // Lean = biggest positive delta (position worse than stats suggest → due for improvement)
-  // Fade = biggest negative delta (position better than stats suggest → due for regression)
   scored.sort((a,b)=>b.delta-a.delta);
-  const leans=scored.filter(p=>p.delta>8).slice(0,3);
+  const leans=scored.filter(p=>p.delta>5).slice(0,5);
   scored.sort((a,b)=>a.delta-b.delta);
-  const fades=scored.filter(p=>p.delta<-8).slice(0,3);
-  return{leans,fades};
+  const fades=scored.filter(p=>p.delta<-5).slice(0,5);
+  return{leans,fades,fieldSize};
 }
-let _flOpen=false;
-function lsToggleFL(){
-  _flOpen=!_flOpen;
-  const panel=document.getElementById('ls-fl-panel');
-  if(panel)panel.style.display=_flOpen?'':'none';
-  const btn=document.getElementById('ls-fl-btn');
-  if(btn)btn.classList.toggle('active',_flOpen);
+function flWhy(p,type){
+  const coreKeys=['sg_ott','sg_app','sg_arg','sg_putt'];
+  const keyLabels={sg_ott:'driving',sg_app:'approach play',sg_arg:'short game',sg_putt:'putting'};
+  if(type==='lean'){
+    let why='Sitting at '+p.pos+ordSuffix(p.pos)+' but stats say they should be around '+Math.round(p.avgRank)+ordSuffix(Math.round(p.avgRank))+'. ';
+    why+='Their '+p.best.label.toLowerCase()+' ranks '+p.best.rank+ordSuffix(p.best.rank)+' in the field';
+    if(p.worst.rank>p.ranks[p.best.key]+20) why+=', though '+p.worst.label.toLowerCase()+' ('+p.worst.rank+ordSuffix(p.worst.rank)+') is holding them back';
+    why+='. Look for a move up the board.';
+    return why;
+  } else {
+    let why='At '+p.pos+ordSuffix(p.pos)+' but underlying stats point closer to '+Math.round(p.avgRank)+ordSuffix(Math.round(p.avgRank))+'. ';
+    why+=p.worst.label+' ranks just '+p.worst.rank+ordSuffix(p.worst.rank)+' in the field';
+    if(p.best.rank<p.ranks[p.worst.key]-20) why+=' \u2014 '+p.best.label.toLowerCase()+' ('+p.best.rank+ordSuffix(p.best.rank)+') is carrying them';
+    why+='. Could slide back.';
+    return why;
+  }
+}
+function ordSuffix(n){const s=['th','st','nd','rd'],v=n%100;return(s[(v-20)%10]||s[v]||s[0]);}
+function renderFadesLeans(data){
+  const bd=document.getElementById('ls-body');
+  if(!data||!data.live_stats||!data.live_stats.length){bd.innerHTML='<div class="ls-fl-empty">No live stats available for analysis</div>';return;}
+  const fl=lsFadesLeans(data.live_stats);
+  if(!fl.leans.length&&!fl.fades.length){bd.innerHTML='<div class="ls-fl-empty">No significant fades or leans right now \u2014 the field is performing close to expectation</div>';return;}
+  const coreKeys=['sg_ott','sg_app','sg_arg','sg_putt'];
+  const keyLabels={sg_ott:'DRV',sg_app:'APP',sg_arg:'ARG',sg_putt:'PUTT'};
+  const fs=fl.fieldSize;
+  function renderCard(p,type){
+    const clr=type==='lean'?'#2db5a0':'#e09478';
+    const arrow=type==='lean'?'\u25B2':'\u25BC';
+    const sc=p.total==null?'':p.total<0?p.total:p.total>0?'+'+p.total:'E';
+    const scClr=p.total==null?'var(--td)':p.total<0?'#2db5a0':p.total>0?'#e09478':'var(--tp)';
+    let h='<div class="ls-fl-card ls-fl-card-'+type+'">';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center">';
+    h+='<span class="ls-fl-name" onclick="lsChipClick(\''+p.name.replace(/'/g,"\\'")+'\')" title="Click to filter in Performance tab"><span style="color:'+clr+'">'+arrow+'</span> '+p.name+'</span>';
+    h+='<span style="font-family:var(--fm);font-size:.6rem"><span style="color:var(--td)">Pos '+p.pos+'</span> <span style="color:'+scClr+';font-weight:600;margin-left:.3rem">'+sc+'</span>'+(p.thru?' <span style="color:var(--td);font-size:.5rem">thru '+p.thru+'</span>':'')+'</span>';
+    h+='</div>';
+    h+='<div class="ls-fl-meta">Avg SG rank: '+Math.round(p.avgRank)+' · Delta: '+(p.delta>0?'+':'')+Math.round(p.delta)+' positions</div>';
+    h+='<div class="ls-fl-bars">';
+    coreKeys.forEach(k=>{
+      const r=p.ranks[k];const pct=Math.max(5,Math.round((1-r/fs)*100));
+      const barClr=r<=Math.ceil(fs*0.25)?'#2db5a0':r>=Math.ceil(fs*0.75)?'#e09478':'rgba(244,197,66,.5)';
+      h+='<div class="ls-fl-bar-item"><span class="ls-fl-bar-label">'+keyLabels[k]+'</span><span class="ls-fl-bar-track"><span class="ls-fl-bar-fill" style="width:'+pct+'%;background:'+barClr+'"></span></span><span class="ls-fl-bar-val">'+r+'</span></div>';
+    });
+    h+='</div>';
+    h+='<div class="ls-fl-why">'+flWhy(p,type)+'</div>';
+    h+='</div>';
+    return h;
+  }
+  let h='<div class="ls-fl-view">';
+  if(fl.leans.length){
+    h+='<div class="ls-fl-section"><div class="ls-fl-hdr ls-fl-hdr-lean">\u25B2 Leans <span class="ls-fl-sub">Playing better than their score shows</span></div>';
+    fl.leans.forEach(p=>{h+=renderCard(p,'lean');});
+    h+='</div>';
+  }
+  if(fl.fades.length){
+    h+='<div class="ls-fl-section"><div class="ls-fl-hdr ls-fl-hdr-fade">\u25BC Fades <span class="ls-fl-sub">Score flatters the performance</span></div>';
+    fl.fades.forEach(p=>{h+=renderCard(p,'fade');});
+    h+='</div>';
+  }
+  h+='<div style="font-size:.46rem;color:var(--td);padding:.2rem;text-align:center;font-family:var(--fb)">Compares leaderboard position vs average strokes-gained rank across drive, approach, short game & putting \u00B7 Source: DataGolf</div>';
+  h+='</div>';
+  bd.innerHTML=h;
 }
 
 function lsInsights(stats){
@@ -2732,23 +2799,6 @@ function lsInsights(stats){
   const chips=[best('sg_ott','Best Driver'),best('sg_app','Best Approach'),best('sg_putt','Best Putter'),best('distance','Longest'),best('prox_fw','Closest Prox'),best('great_shots','Most A+ Shots')].filter(Boolean);
   if(!chips.length){el.innerHTML='';return;}
   let h=chips.map(c=>'<span class="ls-chip" onclick="lsChipClick(\''+c.name.replace(/'/g,"\\'")+'\')" title="Click to filter"><span class="ls-chip-lbl">'+c.label+'</span> '+c.name+'</span>').join('');
-  // Fades & Leans button
-  const fl=lsFadesLeans(stats);
-  if(fl.leans.length||fl.fades.length){
-    h+='<span class="ls-chip ls-fl-btn" id="ls-fl-btn" onclick="lsToggleFL()" title="Who\'s due for a move?"><span class="ls-fl-icon">📊</span> Fades & Leans</span>';
-    h+='<div id="ls-fl-panel" class="ls-fl-panel" style="display:'+ (_flOpen?'':'none') +'">';
-    if(fl.leans.length){
-      h+='<div class="ls-fl-group"><span class="ls-fl-title ls-fl-lean">▲ Leans</span><span class="ls-fl-sub">Playing better than score shows</span>';
-      fl.leans.forEach(p=>{h+='<span class="ls-chip ls-fl-lean-chip" onclick="lsChipClick(\''+p.name.replace(/'/g,"\\'")+'\')">'+p.name+' <span class="ls-fl-delta">Pos '+p.pos+' · Avg rank '+Math.round(p.avgRank)+'</span></span>';});
-      h+='</div>';
-    }
-    if(fl.fades.length){
-      h+='<div class="ls-fl-group"><span class="ls-fl-title ls-fl-fade">▼ Fades</span><span class="ls-fl-sub">Score flatters the performance</span>';
-      fl.fades.forEach(p=>{h+='<span class="ls-chip ls-fl-fade-chip" onclick="lsChipClick(\''+p.name.replace(/'/g,"\\'")+'\')">'+p.name+' <span class="ls-fl-delta">Pos '+p.pos+' · Avg rank '+Math.round(p.avgRank)+'</span></span>';});
-      h+='</div>';
-    }
-    h+='</div>';
-  }
   el.innerHTML=h;
 }
 
@@ -2827,9 +2877,9 @@ function renderHoleChart(data){
     const intensity=Math.min(1,Math.abs(d)/maxD);
     if(d>0.03)return `rgba(217,64,64,${0.35+intensity*0.6})`;
     if(d<-0.03)return `rgba(45,181,96,${0.35+intensity*0.6})`;
-    return 'rgba(78,97,120,0.4)';
+    return 'rgba(244,197,66,0.35)';
   });
-  const borderColors=deltas.map(d=>d>0.03?'#ef4444':d<-0.03?'#22c55e':'#4e6178');
+  const borderColors=deltas.map(d=>d>0.03?'#ef4444':d<-0.03?'#22c55e':'#c9a830');
   const courseName=data.courses[0].course_name||'';
   bd.innerHTML='<div style="text-align:center;padding:.4rem .2rem 0"><span style="font-family:var(--fh);font-size:.85rem;color:var(--go)">Hole Difficulty</span> <span style="font-size:.55rem;color:var(--td)">'+courseName+' \u00B7 '+(_lsRound==='event_avg'?'Event Avg':'Round '+_lsRound)+'</span></div><div class="ls-hole-wrap"><canvas id="ls-hole-cv"></canvas></div>';
   if(_holeChart){_holeChart.destroy();_holeChart=null;}
@@ -2895,12 +2945,13 @@ function lsTip(hdr,tip,el){
 
 function lsSetHelper(v){
   const el=document.getElementById('ls-helper');if(!el)return;
-  const msgs={hm:'How each player ranks vs the field in key strokes-gained categories',holes:'Which holes are playing hardest and easiest this round',power:'Is the course rewarding power or precision right now?'};
+  const msgs={hm:'How each player ranks vs the field in key strokes-gained categories',holes:'Which holes are playing hardest and easiest this round',power:'Is the course rewarding power or precision right now?',fl:'Players whose score doesn\u2019t match how they\u2019re actually playing'};
   el.textContent=msgs[v]||'';
 }
 function lsView(v){
   _lsView=v;
-  document.querySelectorAll('.ls-tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(v==='hm'?'performance':v==='holes'?'hole':'bomb')));
+  const tabMap={hm:'performance',holes:'hole',power:'bomb',fl:'fades'};
+  document.querySelectorAll('.ls-tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(tabMap[v]||'')));
   lsSetHelper(v);
   // Show/hide toggle and search (only for heatmap)
   const tog=document.getElementById('ls-toggle');if(tog)tog.style.display=v==='hm'?'':'none';
@@ -2911,7 +2962,7 @@ function lsView(v){
 function lsRound(r){
   _lsRound=r;
   document.querySelectorAll('.ls-rnd').forEach(b=>b.classList.toggle('active',b.getAttribute('data-r')===r));
-  if(_lsView==='hm'||_lsView==='power'){fetchLiveStats(r).then(d=>{_lsData=d;lsRender();}).catch(()=>{});}
+  if(_lsView==='hm'||_lsView==='power'||_lsView==='fl'){fetchLiveStats(r).then(d=>{_lsData=d;lsRender();}).catch(()=>{});}
   else if(_lsView==='holes'){lsRender();}
 }
 function lsFilter(){if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);}
@@ -2919,6 +2970,7 @@ function lsRender(){
   if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);
   else if(_lsView==='holes')renderHoleChart(_lsHoleData);
   else if(_lsView==='power'&&_lsData)renderPowerProfile(_lsData);
+  else if(_lsView==='fl'&&_lsData)renderFadesLeans(_lsData);
 }
 /* ===== DATA VALIDATION — quadruple check all incoming data ===== */
 function validateLiveStats(data,label){
