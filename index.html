@@ -1843,6 +1843,13 @@ function renderPreview() {
       '</details>' +
     '</div>' +
 
+    // Weather & Conditions — live from Open-Meteo (moved above SG for visibility)
+    '<div class="cf-block">' +
+      '<div class="cf-section-title" style="display:flex;align-items:baseline;justify-content:space-between">Conditions <span id="wx-time" style="font-size:.48rem;color:var(--td);font-family:var(--fm);font-weight:400;text-transform:none;letter-spacing:0"></span></div>' +
+      '<div id="wx-live" style="text-align:center;font-size:.6rem;color:var(--ts);padding:.5rem">Loading live weather...</div>' +
+      '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:#e8983e">📡 10-Day Forecast →</a>' +
+    '</div>' +
+
     // SG Emphasis — collapsed by default
     '<details class="cf-details">' +
       '<summary class="cf-details-sum">Strokes Gained Emphasis <span style="font-size:.55rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:400">tap to compare ▸</span></summary>' +
@@ -1860,13 +1867,6 @@ function renderPreview() {
         notesHTML +
       '</div>' +
     '</details>' +
-
-    // Weather & Conditions — live from Open-Meteo
-    '<div class="cf-block">' +
-      '<div class="cf-section-title">Conditions</div>' +
-      '<div id="wx-live" style="text-align:center;font-size:.6rem;color:var(--ts);padding:.5rem">Loading live weather...</div>' +
-      '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:#e8983e">📡 10-Day Forecast →</a>' +
-    '</div>' +
 
     // Past winners (open by default, collapsible) — last 10 of this tournament
     '<details class="cf-details" open>' +
@@ -1928,6 +1928,9 @@ async function fetchLiveWeather(course) {
         '<span>🌡️ ' + lo + '–' + hi + '°F today</span><span>🌅 ' + rise + '</span><span>🌇 ' + set + '</span>' +
       '</div>' +
       '<div class="cf-source">Live weather via Open-Meteo</div>';
+    // Show "as of" timestamp
+    const wxTime=document.getElementById('wx-time');
+    if(wxTime){const now=new Date();let h=now.getHours(),m=now.getMinutes(),ap='AM';if(h>=12){ap='PM';if(h>12)h-=12;}if(h===0)h=12;wxTime.textContent='as of '+h+':'+(m<10?'0':'')+m+' '+ap+' local';}
   } catch(e) {
     console.error('Weather error:', e);
     el.innerHTML = '<div style="font-size:.58rem;color:var(--ts);text-align:center">Weather unavailable</div>';
