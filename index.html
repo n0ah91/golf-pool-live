@@ -308,6 +308,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 @media(max-width:768px){.cf-facts-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.prev-title{font-size:1.05rem}}
 /* Live Stats Panel */
+.splash-link{display:block;font-size:.68rem;font-family:var(--fb);font-weight:600;color:#fff;border:none;border-radius:6px;padding:.4rem .8rem;text-decoration:none;transition:all .2s;background:linear-gradient(135deg,rgba(224,148,120,.25),rgba(224,148,120,.12));letter-spacing:.03em;text-align:center;margin:0 0 .4rem;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.splash-link:hover{background:linear-gradient(135deg,rgba(224,148,120,.4),rgba(224,148,120,.2));transform:translateY(-1px);box-shadow:0 3px 8px rgba(224,148,120,.2)}
+.splash-link:active{transform:translateY(0)}
 .ls-panel{background:var(--bc);border-radius:10px;padding:0;margin-top:.5rem;overflow:hidden;border:1px solid rgba(244,197,66,.12)}
 .ls-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:linear-gradient(135deg,rgba(244,197,66,.08) 0%,rgba(45,181,160,.06) 100%);border-bottom:1px solid var(--br)}
 .ls-event-name{font-family:var(--fh);font-size:.95rem;color:var(--go);font-weight:700;letter-spacing:.01em}
@@ -402,7 +405,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </section>
 <section id="live" class="pn2 active">
 
-<a href="https://splashsports.com" target="_blank" style="display:block;font-size:.68rem;font-family:var(--fb);font-weight:600;color:#e09478;border:1px solid rgba(224,148,120,.35);border-radius:5px;padding:.3rem .8rem;text-decoration:none;transition:all .2s;background:rgba(224,148,120,.06);letter-spacing:.03em;text-align:center;margin:0 0 .4rem">📊 Pool Standings on Splash Sports</a>
+<a href="https://splashsports.com" target="_blank" class="splash-link">📊 Pool Standings on Splash Sports →</a>
 
 <!-- Hidden leaderboard container (used by rLB/rLBS internally) -->
 <div id="lb-wrap" style="display:none">
