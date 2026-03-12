@@ -354,22 +354,24 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-pool{background:rgba(244,197,66,.08)!important}
 .ls-pool td:nth-child(2){border-left:3px solid var(--go)!important}
 .ls-pool .ls-nm{color:var(--go)!important}
-.ls-hole-wrap{height:240px;position:relative}
+.ls-hole-wrap{height:280px;position:relative;padding:.4rem .2rem}
 .ls-hole-wrap canvas{width:100%!important;height:100%!important}
-.ls-power{padding:.5rem .3rem;text-align:center}
-.ls-power-title{font-family:var(--fd);font-size:1rem;color:var(--tb);font-weight:600;margin-bottom:.15rem}
-.ls-power-sub{font-size:.58rem;color:var(--ts);margin-bottom:.8rem}
-.ls-gauge{margin:0 auto;max-width:340px}
-.ls-gauge-labels{display:flex;justify-content:space-between;font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem;font-family:var(--fb)}
-.ls-gauge-track{height:8px;background:linear-gradient(90deg,var(--gl) 0%,var(--brl) 50%,var(--rd) 100%);border-radius:4px;position:relative;margin-bottom:.4rem}
-.ls-gauge-fill{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;border:2px solid var(--tb);transform:translateX(-50%);transition:left .4s}
-.ls-gauge-val{font-size:.72rem;font-weight:600;margin-top:.3rem;font-family:var(--fb)}
-.ls-power-detail{max-width:300px;margin:.6rem auto 0;text-align:left}
-.ls-pd-row{display:flex;align-items:center;gap:.4rem;font-size:.58rem;color:var(--tp);margin-bottom:.3rem}
-.ls-pd-row span:first-child{min-width:110px;font-family:var(--fb)}
-.ls-pd-bar{flex:1;height:6px;background:var(--bm);border-radius:3px;overflow:hidden;display:inline-flex}
-.ls-pd-bar span{height:100%;border-radius:3px;transition:width .4s}
-.ls-pd-row span:last-child{min-width:28px;text-align:right;font-family:var(--fm);color:var(--ts)}
+.ls-power{padding:.8rem .5rem;text-align:center;background:linear-gradient(180deg,rgba(14,30,50,.3) 0%,rgba(14,30,50,.1) 100%);border-radius:6px;margin:.3rem}
+.ls-power-title{font-family:var(--fh);font-size:1.1rem;color:var(--go);font-weight:700;margin-bottom:.2rem;letter-spacing:.01em}
+.ls-power-sub{font-size:.6rem;color:var(--ts);margin-bottom:1rem}
+.ls-gauge{margin:0 auto;max-width:360px}
+.ls-gauge-labels{display:flex;justify-content:space-between;font-size:.6rem;color:var(--tp);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;font-family:var(--fb);font-weight:600}
+.ls-gauge-labels span:first-child{color:#2db5a0}
+.ls-gauge-labels span:last-child{color:#e09478}
+.ls-gauge-track{height:12px;background:linear-gradient(90deg,#2db5a0 0%,var(--brl) 50%,#d94040 100%);border-radius:6px;position:relative;margin-bottom:.5rem;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.ls-gauge-fill{position:absolute;top:-5px;width:22px;height:22px;border-radius:50%;border:3px solid #fff;transform:translateX(-50%);transition:left .4s;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.ls-gauge-val{font-size:.82rem;font-weight:700;margin-top:.4rem;font-family:var(--fb)}
+.ls-power-detail{max-width:320px;margin:.8rem auto 0;text-align:left}
+.ls-pd-row{display:flex;align-items:center;gap:.4rem;font-size:.62rem;color:var(--tp);margin-bottom:.4rem}
+.ls-pd-row span:first-child{min-width:120px;font-family:var(--fb);font-weight:500}
+.ls-pd-bar{flex:1;height:10px;background:rgba(30,51,82,.5);border-radius:5px;overflow:hidden;display:inline-flex}
+.ls-pd-bar span{height:100%;border-radius:5px;transition:width .4s}
+.ls-pd-row span:last-child{min-width:32px;text-align:right;font-family:var(--fm);color:var(--tb);font-weight:600}
 </style>
 </head>
 <body>
@@ -2691,18 +2693,29 @@ function renderHoleChart(data){
   const holes=round.holes.sort((a,b)=>a.hole-b.hole);
   const labels=holes.map(h=>'H'+h.hole);
   const deltas=holes.map(h=>+(h.total.avg_score-h.par).toFixed(3));
-  const colors=deltas.map(d=>d>0.05?'#b84a3a':d<-0.05?'#2db5a0':'#4e6178');
-  bd.innerHTML='<div class="ls-hole-wrap"><canvas id="ls-hole-cv"></canvas></div>';
+  // Intensity-scaled colors: bigger delta = more vivid
+  const maxD=Math.max(...deltas.map(Math.abs))||0.5;
+  const colors=deltas.map(d=>{
+    const intensity=Math.min(1,Math.abs(d)/maxD);
+    if(d>0.03)return `rgba(217,64,64,${0.35+intensity*0.6})`;
+    if(d<-0.03)return `rgba(45,181,96,${0.35+intensity*0.6})`;
+    return 'rgba(78,97,120,0.4)';
+  });
+  const borderColors=deltas.map(d=>d>0.03?'#ef4444':d<-0.03?'#22c55e':'#4e6178');
+  const courseName=data.courses[0].course_name||'';
+  bd.innerHTML='<div style="text-align:center;padding:.4rem .2rem 0"><span style="font-family:var(--fh);font-size:.85rem;color:var(--go)">Hole Difficulty</span> <span style="font-size:.55rem;color:var(--td)">'+courseName+' \u00B7 '+(_lsRound==='event_avg'?'Event Avg':'Round '+_lsRound)+'</span></div><div class="ls-hole-wrap"><canvas id="ls-hole-cv"></canvas></div>';
   if(_holeChart){_holeChart.destroy();_holeChart=null;}
   const ctx=document.getElementById('ls-hole-cv').getContext('2d');
-  _holeChart=new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[{data:deltas,backgroundColor:colors,borderRadius:2}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{
+  _holeChart=new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[{data:deltas,backgroundColor:colors,borderColor:borderColors,borderWidth:1.5,borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{
+      backgroundColor:'rgba(10,22,40,.92)',titleColor:'#f4c542',bodyColor:'#e0e8f0',borderColor:'rgba(244,197,66,.3)',borderWidth:1,
+      callbacks:{
       title:(items)=>{const i=items[0].dataIndex;const h=holes[i];return 'Hole '+h.hole+' \u00B7 Par '+h.par+' \u00B7 '+h.yardage+' yds';},
       label:(item)=>{const h=holes[item.dataIndex];const d=deltas[item.dataIndex];return 'Avg: '+h.total.avg_score.toFixed(2)+' ('+(d>0?'+':'')+d.toFixed(3)+' vs par)';},
       afterLabel:(item)=>{const h=holes[item.dataIndex];const t=h.total;return '\uD83E\uDD85 '+(t.eagles_or_better||0)+'  \uD83D\uDC26 '+t.birdies+'  \u26F3 '+t.pars+'  \uD83D\uDC80 '+t.bogeys+'  \u274C '+(t.doubles_or_worse||0);}
-    }}},scales:{x:{ticks:{color:'#7a8da0',font:{size:10,family:'DM Sans'}},grid:{display:false}},
-      y:{ticks:{color:'#7a8da0',font:{size:10,family:'DM Mono'},callback:v=>(v>0?'+':'')+v.toFixed(2)},grid:{color:'rgba(30,51,82,.4)'},
-        title:{display:true,text:'Avg Score vs Par',color:'#7a8da0',font:{size:11,family:'DM Sans'}}}}}});
+    }}},scales:{x:{ticks:{color:'#8a9db5',font:{size:10,family:'DM Sans',weight:'600'}},grid:{display:false}},
+      y:{ticks:{color:'#8a9db5',font:{size:10,family:'DM Mono'},callback:v=>(v>0?'+':'')+v.toFixed(2)},grid:{color:'rgba(30,51,82,.35)'},
+        title:{display:true,text:'Avg Score vs Par',color:'#8a9db5',font:{size:11,family:'DM Sans',weight:'600'}}}}}});
 }
 
 function renderPowerProfile(data){
