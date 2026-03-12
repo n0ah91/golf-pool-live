@@ -347,9 +347,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-sc.sb{color:#e09478}
 .ls-thru{color:var(--td);font-family:var(--fm);font-size:.58rem}
 .ls-thru{color:var(--ts);font-family:var(--fm)}
-.ls-stat{font-family:var(--fm);font-weight:600;color:rgba(255,255,255,.85);transition:all .2s;border-radius:3px;font-size:.62rem}
-.sg-g1{background:rgba(13,59,46,.7)}.sg-g2{background:rgba(21,99,78,.75)}.sg-g3{background:#1d8a6e;color:#e0fff5}.sg-g4{background:#25a88a;color:#0a1628;font-weight:700}.sg-g5{background:#2db5a0;color:#0a1628;font-weight:800;box-shadow:inset 0 0 8px rgba(45,181,160,.4)}
-.sg-r1{background:rgba(90,26,26,.6)}.sg-r2{background:rgba(139,48,48,.7)}.sg-r3{background:#b84a3a;color:#fde0d4}.sg-r4{background:#d06850;color:#0a1628;font-weight:700}.sg-r5{background:#e09478;color:#0a1628;font-weight:800;box-shadow:inset 0 0 8px rgba(224,148,120,.4)}
+.ls-stat{font-family:var(--fm);font-weight:600;transition:all .15s;border-radius:2px;font-size:.64rem}
 .ls-pool{background:rgba(244,197,66,.08)!important}
 .ls-pool td:nth-child(2){border-left:3px solid var(--go)!important}
 .ls-pool .ls-nm{color:var(--go)!important}
@@ -2060,48 +2058,70 @@ function openCategoryChart(label){
 
 /* ===== PREVIEW ODDS ===== */
 async function fetchPreviewOdds() {
-
   const btn = document.getElementById('odds-btn');
   const el = document.getElementById('live-odds');
   if (!el) return;
   if (btn) btn.textContent = 'Loading...';
   try {
-    const d = await dgF('betting-tools/outrights', {tour:'pga',market:'win',odds_format:'decimal'});
-
+    // Try live in-play first (updates during tournament), fall back to outrights
     let players = [];
-    if (d.odds) {
-      for (const p of d.odds) {
-        const bookOdds = (d.books_offering||[]).map(b=>p[b]).filter(v=>typeof v==='number'&&v>0);
-        const bestOdds = bookOdds.length ? Math.min(...bookOdds) : Infinity;
-        if (bestOdds < Infinity) {
-          players.push({
-            name: p.player_name ? fmN(p.player_name) : '-',
-            rawName: p.player_name || '-',
-            odds: bestOdds,
-            impliedProb: (1 / bestOdds * 100).toFixed(1),
-            dgProb: p.datagolf?.baseline_history_fit ? ((1/p.datagolf.baseline_history_fit)*100).toFixed(1) : null
-          });
+    let source = '';
+    try {
+      const live = await dgF('preds/in-play', {tour:'pga'});
+      if (live && live.data && live.data.length) {
+        for (const p of live.data) {
+          if (p.win_prob != null && p.win_prob > 0) {
+            players.push({
+              name: p.player_name ? fmN(p.player_name) : '-',
+              rawName: p.player_name || '-',
+              prob: +(p.win_prob * 100).toFixed(1),
+              pos: p.current_pos || '-',
+              score: p.current_score
+            });
+          }
+        }
+        source = 'DataGolf Live Model &middot; Updates every 5 min';
+      }
+    } catch(e2) {}
+
+    // Fallback to outrights if no live data
+    if (!players.length) {
+      const d = await dgF('betting-tools/outrights', {tour:'pga',market:'win',odds_format:'decimal'});
+      if (d.odds) {
+        for (const p of d.odds) {
+          const bookOdds = (d.books_offering||[]).map(b=>p[b]).filter(v=>typeof v==='number'&&v>0);
+          const bestOdds = bookOdds.length ? Math.min(...bookOdds) : Infinity;
+          if (bestOdds < Infinity) {
+            players.push({
+              name: p.player_name ? fmN(p.player_name) : '-',
+              rawName: p.player_name || '-',
+              prob: +(1/bestOdds*100).toFixed(1),
+              pos: '-', score: null
+            });
+          }
         }
       }
+      source = 'DataGolf Outright Odds API &middot; Best available line';
     }
-    players.sort((a, b) => a.odds - b.odds);
-    const top20 = players.slice(0, 20);
 
-    // Gradient: green (#2db5a0) → gold (#f4c542) → white (#f0ece4)
-    const maxP = parseFloat(top20[0]?.impliedProb||1), minP = parseFloat(top20[top20.length-1]?.impliedProb||0);
-    function oddsColor(prob) { return '#2db5a0'; }
+    players.sort((a, b) => b.prob - a.prob);
+    const top20 = players.slice(0, 20);
+    const maxP = top20[0]?.prob||1;
+
     let h = '<div class="odds-grid">';
     top20.forEach((p, i) => {
       const ip = typeof inPool === 'function' && inPool(p.rawName) ? ' in-pool' : '';
-      const rc = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
-      const col = oddsColor(parseFloat(p.impliedProb));
-      h += '<div class="odds-card' + ip + '">';
-      h += '<span class="oc-nm' + (rc ? ' ' + rc : '') + '">' + (i + 1) + '. ' + p.name + '</span>';
-      h += '<span class="oc-odds" style="color:' + col + '">' + p.impliedProb + '%</span>';
+      const barW = Math.max(8, (p.prob / maxP) * 100);
+      const sc = p.score != null ? (p.score > 0 ? '+' + p.score : p.score === 0 ? 'E' : p.score) : '';
+      const posStr = p.pos !== '-' ? '<span style="color:var(--td);font-size:.55rem;margin-left:.2rem">' + p.pos + (sc ? ' (' + sc + ')' : '') + '</span>' : '';
+      h += '<div class="odds-card' + ip + '" style="position:relative;overflow:hidden">';
+      h += '<div style="position:absolute;left:0;top:0;bottom:0;width:' + barW + '%;background:linear-gradient(90deg,rgba(45,181,160,.15),rgba(45,181,160,.04));pointer-events:none"></div>';
+      h += '<span class="oc-nm" style="position:relative">' + (i + 1) + '. ' + p.name + posStr + '</span>';
+      h += '<span class="oc-odds" style="position:relative">' + p.prob + '%</span>';
       h += '</div>';
     });
     h += '</div>';
-    h += '<div class="cf-source" style="margin-top:.3rem">Source: DataGolf Outright Odds API &middot; Best available line across major books &middot; <span style="cursor:pointer;color:#e8983e" onclick="fetchPreviewOdds()">Refresh</span></div>';
+    h += '<div class="cf-source" style="margin-top:.3rem">' + source + ' &middot; <span style="cursor:pointer;color:#e8983e" onclick="fetchPreviewOdds()">Refresh</span></div>';
     el.innerHTML = h;
   } catch (e) {
     console.error('Odds error:', e);
@@ -2566,11 +2586,34 @@ function buildRecapAnalytics(ev, round, data) {
 /* ===== LIVE STATS PANEL ===== */
 let _lsView='hm',_lsRound='event_avg',_lsData=null,_lsHoleData=null,_holeChart=null;
 
-function sgTier(rank,fieldSize){
-  if(rank==null||rank==='-')return '';
-  const r=parseInt(rank);if(isNaN(r))return '';
-  const pct=r/(fieldSize||100);
-  if(pct<=0.15)return 'sg-g5';if(pct<=0.30)return 'sg-g3';if(pct<=0.50)return '';if(pct<=0.70)return 'sg-r3';return 'sg-r5';
+// Continuous color gradient like Excel conditional formatting
+// Green (rank 1) → Yellow/neutral (median) → Red (last)
+function sgColor(rank,fieldSize){
+  if(rank==null||rank==='-')return {bg:'transparent',fg:'var(--td)'};
+  const r=parseInt(rank);if(isNaN(r))return {bg:'transparent',fg:'var(--td)'};
+  const n=fieldSize||100;
+  // Normalize 0 (best) to 1 (worst)
+  const t=Math.max(0,Math.min(1,(r-1)/(n-1)));
+  // Three-stop gradient: green → neutral → red
+  let R,G,B;
+  if(t<=0.5){
+    // Green to neutral: 0→0.5
+    const s=t/0.5;
+    R=Math.round(30+s*120);  // 30→150
+    G=Math.round(180-s*80);  // 180→100
+    B=Math.round(140-s*80);  // 140→60
+  } else {
+    // Neutral to red: 0.5→1
+    const s=(t-0.5)/0.5;
+    R=Math.round(150+s*70);  // 150→220
+    G=Math.round(100-s*55);  // 100→45
+    B=Math.round(60-s*20);   // 60→40
+  }
+  const intensity=Math.abs(t-0.5)*2; // 0 at median, 1 at extremes
+  const alpha=0.25+intensity*0.65; // 0.25 at median, 0.9 at extremes
+  const fg=intensity>0.55?'#fff':'rgba(255,255,255,.8)';
+  const fw=intensity>0.7?'800':intensity>0.4?'700':'600';
+  return {bg:`rgba(${R},${G},${B},${alpha})`,fg,fw};
 }
 
 const LS_COLS=[
@@ -2624,8 +2667,8 @@ function renderSGHeatmap(data){
     h+='<td class="ls-sc '+scc+'">'+sc+'</td>';
     h+='<td class="ls-thru">'+(p.thru||'-')+'</td>';
     LS_COLS.forEach(c=>{
-      const v=p[c.key];const tier=sgTier(v,fieldSize);
-      h+='<td class="ls-stat '+tier+'">'+(v!=null?v:'-')+'</td>';
+      const v=p[c.key];const cl=sgColor(v,fieldSize);
+      h+='<td class="ls-stat" style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+(v!=null?v:'-')+'</td>';
     });
     h+='</tr>';
   });
