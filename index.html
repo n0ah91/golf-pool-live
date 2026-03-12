@@ -189,7 +189,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .odds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.35rem;margin:.5rem 0}
 .odds-card{display:flex;justify-content:space-between;align-items:center;background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.35rem .5rem;font-size:.78rem}
 .odds-card .oc-nm{color:var(--tb);font-family:var(--fb)}
-.odds-card .oc-odds{color:var(--go);font-family:var(--fm);font-weight:600}
+.odds-card .oc-odds{color:var(--go);font-family:var(--fm);font-weight:400;font-size:.72rem}
 .odds-card.in-pool{border-color:var(--gl)}
 /* === Recap / Analytics === */
 .recap-ctrl{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem}
@@ -334,8 +334,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-mode-btn:hover{background:rgba(244,197,66,.2);border-color:var(--go)}
 .ls-helper{font-size:.58rem;color:var(--ts);padding:.25rem .8rem .1rem;font-family:var(--fb);font-style:italic}
 .ls-insights{display:flex;gap:.35rem;padding:.2rem .8rem .3rem;flex-wrap:wrap}
-.ls-chip{font-size:.52rem;font-family:var(--fb);background:rgba(244,197,66,.08);border:1px solid rgba(244,197,66,.2);color:var(--tp);padding:.15rem .45rem;border-radius:10px;white-space:nowrap}
-.ls-chip-lbl{color:var(--go);font-weight:600;margin-right:.15rem}
+.ls-chip{font-size:.56rem;font-family:var(--fb);background:rgba(224,148,120,.08);border:1px solid rgba(224,148,120,.3);color:var(--tp);padding:.15rem .45rem;border-radius:10px;white-space:nowrap}
+.ls-chip-lbl{color:#e09478;font-weight:600;margin-right:.15rem}
 .ls-legend{font-size:.5rem;color:var(--ts);padding:.35rem .5rem .15rem;font-family:var(--fb);display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
 .ls-leg-g{color:#2db5a0;font-size:.6rem}.ls-leg-mid{color:rgba(80,90,100,.5);font-size:.6rem}.ls-leg-r{color:#d94040;font-size:.6rem}
 .ls-leg-note{color:var(--td);font-style:italic}
@@ -1102,7 +1102,7 @@ async function dgLive(){
     DG.lb=d;rLBS(d);mt.textContent='Updated '+new Date().toLocaleTimeString();if(hasPool())calcPL();loadLiveStats();}
     catch(e2){document.getElementById('lb-bd').innerHTML='<div style="color:var(--rd);text-align:center;padding:.5rem;font-size:.75rem">No active tournament: '+e.message+'</div>';mt.textContent='Error';}}}
 function togAR(){const cb=document.getElementById('ar-cb');
-  if(cb.checked){DG.ar=setInterval(dgLive,300000);}else{clearInterval(DG.ar);DG.ar=null;}}
+  if(cb.checked){DG.ar=setInterval(()=>{dgLive();fetchPreviewOdds();},300000);}else{clearInterval(DG.ar);DG.ar=null;}}
 
 /* === NAME MATCHING === */
 function fmN(n){if(!n)return'-';const p=n.split(', ');return p.length===2?p[1]+' '+p[0]:n;}
@@ -2138,7 +2138,7 @@ async function fetchPreviewOdds() {
       h += '<div class="odds-card' + ip + '" style="position:relative;overflow:hidden">';
       h += '<div style="position:absolute;left:0;top:0;bottom:0;width:' + barW + '%;background:linear-gradient(90deg,rgba(45,181,160,.15),rgba(45,181,160,.04));pointer-events:none"></div>';
       h += '<span class="oc-nm" style="position:relative">' + (i + 1) + '. ' + p.name + posStr + '</span>';
-      h += '<span class="oc-odds" style="position:relative">' + p.prob + '%</span>';
+      h += '<span class="oc-odds" style="position:relative">' + p.prob.toFixed(1) + '%</span>';
       h += '</div>';
     });
     h += '</div>';
@@ -2833,11 +2833,68 @@ function lsRender(){
   else if(_lsView==='holes')renderHoleChart(_lsHoleData);
   else if(_lsView==='power'&&_lsData)renderPowerProfile(_lsData);
 }
+/* ===== DATA VALIDATION — quadruple check all incoming data ===== */
+function validateLiveStats(data,label){
+  const issues=[];
+  // Check 1: Top-level structure
+  if(!data){issues.push(label+': null response');return issues;}
+  if(!data.live_stats||!Array.isArray(data.live_stats)){issues.push(label+': missing or invalid live_stats array');return issues;}
+  if(data.live_stats.length<5){issues.push(label+': suspiciously few players ('+data.live_stats.length+')');}
+  // Check 2: Rank integrity — ranks should be integers 1..N, no nulls in core fields
+  const statKeys=['sg_ott','sg_app','sg_arg','sg_putt'];
+  let nullCount=0,outOfRange=0,dupeCheck={};
+  data.live_stats.forEach((p,i)=>{
+    if(!p.player_name)issues.push(label+': player at index '+i+' has no name');
+    statKeys.forEach(k=>{
+      const v=p[k];
+      if(v==null||v==='-')nullCount++;
+      else{const r=parseInt(v);if(isNaN(r)||r<1||r>300)outOfRange++;}
+    });
+    // Check 3: Position sanity
+    const pos=String(p.position||'');
+    if(pos&&pos!=='CUT'&&pos!=='WD'&&pos!=='DQ'){
+      const pn=parseInt(pos.replace(/^T/,''));
+      if(isNaN(pn)||pn<1||pn>300)issues.push(label+': invalid position "'+pos+'" for '+p.player_name);
+    }
+  });
+  if(nullCount>data.live_stats.length*2)issues.push(label+': high null rate in core stats ('+nullCount+' nulls across '+data.live_stats.length+' players)');
+  if(outOfRange>5)issues.push(label+': '+outOfRange+' rank values out of expected range');
+  // Check 4: Cross-reference — if we have leaderboard data, verify player overlap
+  if(DG.lb&&DG.lb.data&&DG.lb.data.length>0){
+    const lbNames=new Set(DG.lb.data.slice(0,20).map(p=>(p.player_name||'').toLowerCase()));
+    const statsNames=new Set(data.live_stats.slice(0,20).map(p=>(p.player_name||'').toLowerCase()));
+    let overlap=0;lbNames.forEach(n=>{if(statsNames.has(n))overlap++;});
+    if(overlap<5&&lbNames.size>10)issues.push(label+': low player overlap with leaderboard ('+overlap+'/'+Math.min(lbNames.size,20)+') — possible stale or mismatched data');
+  }
+  if(issues.length)console.warn('[DATA VALIDATION]',issues);
+  return issues;
+}
+function validateOdds(players,label){
+  const issues=[];
+  if(!players||!players.length){issues.push(label+': no odds data');return issues;}
+  // Check probabilities sum roughly to ~100% (accounting for vig)
+  const totalProb=players.reduce((s,p)=>s+p.prob,0);
+  if(totalProb<50)issues.push(label+': total probability suspiciously low ('+totalProb.toFixed(1)+'%) — may be stale');
+  if(totalProb>250)issues.push(label+': total probability extremely high ('+totalProb.toFixed(1)+'%) — possible data error');
+  // Check for negative or >100% individual probabilities
+  players.forEach(p=>{
+    if(p.prob<0)issues.push(label+': negative probability for '+p.name);
+    if(p.prob>100)issues.push(label+': >100% probability for '+p.name);
+  });
+  if(issues.length)console.warn('[DATA VALIDATION]',issues);
+  return issues;
+}
+
 async function loadLiveStats(){
   const panel=document.getElementById('ls-panel');if(!panel)return;
   try{
     const[stats,holes]=await Promise.all([fetchLiveStats(_lsRound).catch(()=>null),fetchHoleStats().catch(()=>null)]);
-    if(stats&&stats.live_stats&&stats.live_stats.length){_lsData=stats;_lsHoleData=holes;panel.style.display='';lsRender();}
+    if(stats&&stats.live_stats&&stats.live_stats.length){
+      // Validate before rendering
+      const issues=validateLiveStats(stats,'loadLiveStats');
+      if(issues.length>3){console.error('[DATA VALIDATION] Too many issues, skipping render');panel.style.display='none';return;}
+      _lsData=stats;_lsHoleData=holes;panel.style.display='';lsRender();
+    }
     else{panel.style.display='none';}
   }catch(e){panel.style.display='none';}
 }
