@@ -427,7 +427,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
     <div class="ls-header-right">
       <span class="ls-updated" id="ls-updated"></span>
       <button class="ls-refresh-btn" onclick="dgLive()" title="Refresh">&#8635;</button>
-      <label class="ls-auto-label"><input type="checkbox" id="ar-cb" onchange="togAR()"> Auto</label>
+      <label class="ls-auto-label"><input type="checkbox" id="ar-cb" onchange="togAR()"> Auto (15m)</label>
     </div>
   </div>
   <div class="ls-tabs">
@@ -1102,7 +1102,10 @@ async function dgLive(){
     DG.lb=d;rLBS(d);mt.textContent='Updated '+new Date().toLocaleTimeString();if(hasPool())calcPL();loadLiveStats();}
     catch(e2){document.getElementById('lb-bd').innerHTML='<div style="color:var(--rd);text-align:center;padding:.5rem;font-size:.75rem">No active tournament: '+e.message+'</div>';mt.textContent='Error';}}}
 function togAR(){const cb=document.getElementById('ar-cb');
-  if(cb.checked){DG.ar=setInterval(()=>{dgLive();fetchPreviewOdds();},300000);}else{clearInterval(DG.ar);DG.ar=null;}}
+  if(cb.checked){DG.ar=setInterval(()=>{dgLive();fetchPreviewOdds();},900000);}else{clearInterval(DG.ar);DG.ar=null;}}
+// Weather refresh every hour
+let _wxInterval=null;
+function startWxRefresh(course){if(_wxInterval)clearInterval(_wxInterval);_wxInterval=setInterval(()=>fetchLiveWeather(course),2700000);}
 
 /* === NAME MATCHING === */
 function fmN(n){if(!n)return'-';const p=n.split(', ');return p.length===2?p[1]+' '+p[0]:n;}
@@ -1878,7 +1881,7 @@ function renderPreview() {
 
   // Auto-load odds + live weather
   setTimeout(fetchPreviewOdds, 800);
-  setTimeout(function(){ fetchLiveWeather(course); }, 200);
+  setTimeout(function(){ fetchLiveWeather(course); startWxRefresh(course); }, 200);
 }
 
 async function fetchLiveWeather(course) {
@@ -1927,7 +1930,7 @@ async function fetchLiveWeather(course) {
       '<div style="display:flex;justify-content:center;gap:1rem;margin-top:.3rem;font-size:.58rem;color:var(--ts)">' +
         '<span>🌡️ ' + lo + '–' + hi + '°F today</span><span>🌅 ' + rise + '</span><span>🌇 ' + set + '</span>' +
       '</div>' +
-      '<div class="cf-source">Live weather via Open-Meteo</div>';
+      '<div class="cf-source">Live weather via Open-Meteo · Refreshes every 45 min</div>';
     // Show "as of" timestamp
     const wxTime=document.getElementById('wx-time');
     if(wxTime){const now=new Date();let h=now.getHours(),m=now.getMinutes(),ap='AM';if(h>=12){ap='PM';if(h>12)h-=12;}if(h===0)h=12;wxTime.textContent='as of '+h+':'+(m<10?'0':'')+m+' '+ap+' local';}
@@ -2101,7 +2104,7 @@ async function fetchPreviewOdds() {
             });
           }
         }
-        source = 'DataGolf Live Model &middot; Updates every 5 min';
+        source = 'DataGolf Live Model &middot; Auto-refreshes every 15 min';
       }
     } catch(e2) {}
 
