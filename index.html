@@ -1448,6 +1448,7 @@ function renderPreview() {
   var profileStats = [
     {l:'Yardage', v:course.yardageDisplay || course.yardage},
     {l:'Par', v:course.par},
+    {l:'Architect', v:course.designer || '-'},
     {l:'Bunkers', v:course.bunkerCount},
     {l:'Water Holes', v:course.waterHoles != null ? course.waterHoles + '/18' : '-'},
     {l:'Stimpmeter', v:course.greensStimpmeter || course.avgStimpmeter || '-'},
@@ -1515,7 +1516,6 @@ function renderPreview() {
     {l:'Type', v:course.courseType || '-'},
     {l:'Elevation', v:course.elevation ? course.elevation.replace(' feet',' ft') : (course.elevationChange || '-')},
     {l:'Prevailing', v:course.prevailingWind || '-'},
-    {l:'Architect', v:course.designer || '-'},
     {l:'Redesign', v:course.redesign || '-'},
     {l:'Region', v:course.region || '-'},
     {l:'Season', v:course.season || '-'},
