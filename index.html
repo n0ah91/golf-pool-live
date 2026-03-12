@@ -1448,16 +1448,12 @@ function renderPreview() {
   var profileStats = [
     {l:'Yardage', v:course.yardageDisplay || course.yardage},
     {l:'Par', v:course.par},
-    {l:'Type', v:course.courseType},
     {l:'Prevailing', v:course.prevailingWind || '-'},
-    {l:'Elevation', v:course.elevation ? course.elevation.replace(' feet',' ft') : (course.elevationChange || '-')},
     {l:'Bunkers', v:course.bunkerCount},
     {l:'Water Holes', v:course.waterHoles != null ? course.waterHoles + '/18' : '-'},
     {l:'Stimpmeter', v:course.greensStimpmeter || course.avgStimpmeter || '-'},
     {l:'Green Size', v:course.avgGreenSize || '-'},
-    {l:'Greens', v:(course.grassGreens||'').split(' overseeded')[0].split('(')[0].trim()},
     {l:'FW Width', v:course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' yds' : course.avgFairwayWidth || '-'},
-    {l:'Fairways', v:(course.grassFairways||'').split(' overseeded')[0].trim()},
     {l:'Rough', v:course.avgRoughHeight || '-'},
     {l:'Rating', v:course.courseRating || '-'},
     {l:'Slope', v:course.slopeRating || '-'}
@@ -1517,6 +1513,8 @@ function renderPreview() {
 
   // Full course facts (expandable tile grid)
   var extFacts = [
+    {l:'Type', v:course.courseType || '-'},
+    {l:'Elevation', v:course.elevation ? course.elevation.replace(' feet',' ft') : (course.elevationChange || '-')},
     {l:'Architect', v:course.designer || '-'},
     {l:'Redesign', v:course.redesign || '-'},
     {l:'Region', v:course.region || '-'},
@@ -1530,8 +1528,8 @@ function renderPreview() {
     {l:'Water Danger Rank', v:course.waterHolesRank || '-'},
     {l:'FW Width Rank', v:course.avgFairwayWidthRank || '-'},
     {l:'Greens Size Rank', v:course.greensSizeRank || '-'},
-    {l:'Fairways', v:course.grassFairways || '-'},
     {l:'Greens', v:course.grassGreens || '-'},
+    {l:'Fairways', v:course.grassFairways || '-'},
     {l:'Rough Type', v:(course.roughType || '-') + (course.roughLength ? ' (' + course.roughLength + ')' : '')}
   ].filter(function(f) { return f.v && f.v !== '-'; });
 
