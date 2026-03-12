@@ -1583,7 +1583,8 @@ function renderPreview() {
     {l:'FW Width', v:course.avgFairwayWidthFeet ? course.avgFairwayWidthFeet + ' yds' : course.avgFairwayWidth || '-'},
     {l:'Rough', v:course.avgRoughHeight || '-'},
     {l:'Rating', v:course.courseRating || '-'},
-    {l:'Slope', v:course.slopeRating || '-'}
+    {l:'Slope', v:course.slopeRating || '-'},
+    {l:'Elevation', v:course.elevation ? course.elevation.replace(' feet',' ft') : (course.elevationChange || '-')}
   ];
 
   // Score projections under TOUR conditions
@@ -1649,7 +1650,6 @@ function renderPreview() {
   // Full course facts (expandable tile grid)
   var extFacts = [
     {l:'Type', v:course.courseType || '-'},
-    {l:'Elevation', v:course.elevation ? course.elevation.replace(' feet',' ft') : (course.elevationChange || '-')},
     {l:'Prevailing', v:course.prevailingWind || '-'},
     {l:'Redesign', v:course.redesign || '-'},
     {l:'Region', v:course.region || '-'},
