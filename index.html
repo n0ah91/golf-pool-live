@@ -396,6 +396,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   </div>
   <div id="lb-bd"><div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.72rem">Loading live data...</div></div>
 </div>
+<div style="text-align:center;margin:.4rem 0">
+  <a href="https://splashsports.com" target="_blank" style="display:inline-block;font-size:.72rem;font-family:var(--fb);font-weight:600;color:#e09478;border:1px solid rgba(224,148,120,.35);border-radius:6px;padding:.4rem .8rem;text-decoration:none;transition:all .2s;background:rgba(224,148,120,.06);letter-spacing:.03em">📊 Pool Standings on Splash Sports</a>
+</div>
 <div id="ls-panel" class="ls-panel" style="display:none">
   <div class="ls-tabs">
     <button class="ls-tab active" onclick="lsView('hm')">Performance</button>
@@ -1775,9 +1778,6 @@ function renderPreview() {
 
   el.innerHTML =
     // Hero + Course Profile + expandable More Details inside
-    '<div style="text-align:center;margin-bottom:.5rem">' +
-      '<a href="https://splashsports.com" target="_blank" style="display:inline-block;font-size:.72rem;font-family:var(--fb);font-weight:600;color:#e09478;border:1px solid rgba(224,148,120,.35);border-radius:6px;padding:.4rem .8rem;text-decoration:none;transition:all .2s;background:rgba(224,148,120,.06);letter-spacing:.03em">📊 Pool Standings on Splash Sports</a>' +
-    '</div>' +
     '<div class="cf-block">' +
       (window._forceEvent && window._forceEvent !== getDateEvent() ? '<div style="margin-bottom:.3rem"><span onclick="backToCurrent()" style="font-size:.6rem;color:var(--go);cursor:pointer;font-family:var(--fb)">← Back to ' + EV_NAMES[getDateEvent()] + '</span></div>' : '') +
       '<h2 class="prev-title">' + evName + ' &middot; ' + courseName + '</h2>' +
@@ -1799,19 +1799,23 @@ function renderPreview() {
       '</details>' +
     '</div>' +
 
-    // SG Emphasis — separate block
-    '<div class="cf-block cf-sg-block" onclick="openSGCompare()">' +
-      '<div class="cf-section-title">Strokes Gained Emphasis <span style="font-size:.62rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:500">tap to compare ▸</span></div>' +
-      sgBars +
-      '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
-      '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
-    '</div>' +
+    // SG Emphasis — collapsed by default
+    '<details class="cf-details">' +
+      '<summary class="cf-details-sum">Strokes Gained Emphasis <span style="font-size:.55rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:400">tap to compare ▸</span></summary>' +
+      '<div class="cf-details-body" style="padding:.3rem .5rem" onclick="openSGCompare()">' +
+        sgBars +
+        '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
+        '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
+      '</div>' +
+    '</details>' +
 
-    // Course notes as bullets
-    '<div class="cf-notes">' +
-      '<div class="cf-section-title">Course Notes</div>' +
-      notesHTML +
-    '</div>' +
+    // Course notes — collapsed by default
+    '<details class="cf-details">' +
+      '<summary class="cf-details-sum">Course Notes</summary>' +
+      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
+        notesHTML +
+      '</div>' +
+    '</details>' +
 
     // Weather & Conditions — live from Open-Meteo
     '<div class="cf-block">' +
