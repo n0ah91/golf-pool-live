@@ -2621,10 +2621,10 @@ function sgColor(rank,fieldSize){
   if(t<=0.4){
     // Green zone: softer, less saturated
     const s=t/0.4;
-    R=Math.round(30+s*30);    // 30→60
-    G=Math.round(160-s*40);   // 160→120
-    B=Math.round(90-s*30);    // 90→60
-    alpha=0.65-s*0.3;         // 0.65→0.35
+    R=Math.round(25+s*35);    // 25→60
+    G=Math.round(185-s*55);   // 185→130
+    B=Math.round(85-s*30);    // 85→55
+    alpha=0.75-s*0.35;        // 0.75→0.4
   } else if(t<=0.6){
     // Dead zone: nearly invisible
     R=60;G=70;B=80;alpha=0.05;
