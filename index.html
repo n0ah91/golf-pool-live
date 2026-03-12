@@ -345,6 +345,20 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-leg-g{color:#2db5a0;font-size:.55rem}.ls-leg-mid{color:rgba(80,90,100,.4);font-size:.55rem}.ls-leg-r{color:#d94040;font-size:.55rem}
 .ls-leg-note{color:var(--td);font-style:italic}
 .ls-div{border-left:2px solid rgba(244,197,66,.2)!important}
+.ls-fl-btn{background:rgba(100,140,220,.1)!important;border-color:rgba(100,140,220,.35)!important;color:var(--tb)!important}
+.ls-fl-btn:hover{background:rgba(100,140,220,.2)!important;border-color:rgba(100,140,220,.5)!important}
+.ls-fl-btn.active{background:rgba(100,140,220,.2)!important;border-color:rgba(100,140,220,.5)!important}
+.ls-fl-icon{margin-right:.15rem}
+.ls-fl-panel{width:100%;display:flex;gap:.6rem;padding:.3rem 0 .1rem;flex-wrap:wrap}
+.ls-fl-group{display:flex;align-items:center;gap:.25rem;flex-wrap:wrap}
+.ls-fl-title{font-weight:700;font-size:.56rem;font-family:var(--fb)}
+.ls-fl-lean{color:#2db5a0}.ls-fl-fade{color:#e09478}
+.ls-fl-sub{font-size:.46rem;color:var(--td);font-style:italic;margin-right:.2rem}
+.ls-fl-lean-chip{background:rgba(45,181,160,.08)!important;border-color:rgba(45,181,160,.25)!important}
+.ls-fl-lean-chip:hover{background:rgba(45,181,160,.18)!important}
+.ls-fl-fade-chip{background:rgba(224,148,120,.08)!important;border-color:rgba(224,148,120,.25)!important}
+.ls-fl-fade-chip:hover{background:rgba(224,148,120,.18)!important}
+.ls-fl-delta{font-size:.46rem;color:var(--td);margin-left:.2rem;font-family:var(--fm)}
 .ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0;padding:0 .1rem .4rem}
 .ls-hm table{width:100%;border-collapse:separate;border-spacing:2px 1px;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
 .ls-hm th{background:linear-gradient(180deg,rgba(14,30,50,.95) 0%,rgba(10,22,40,.98) 100%);color:var(--go);font-size:.54rem;text-transform:uppercase;letter-spacing:.04em;padding:.35rem .3rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);border-right:2px solid rgba(30,51,82,.5);cursor:pointer;font-weight:700}
@@ -2677,6 +2691,37 @@ function lsChipClick(name){
   if(el){el.value=name;lsFilter();}
 }
 
+function lsFadesLeans(stats){
+  // Compare leaderboard position vs avg core SG rank
+  // Lean = avg stat rank much better (lower) than position → upside
+  // Fade = avg stat rank much worse (higher) than position → downside
+  const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return null;return parseInt(String(s).replace(/^T/,''));};
+  const coreKeys=['sg_ott','sg_app','sg_arg','sg_putt'];
+  const scored=stats.filter(p=>{
+    const pos=pPos(p.position);if(!pos||pos>60)return false;
+    return coreKeys.every(k=>p[k]!=null&&p[k]!=='-');
+  }).map(p=>{
+    const pos=pPos(p.position);
+    const avgRank=coreKeys.reduce((s,k)=>s+parseInt(p[k]),0)/coreKeys.length;
+    return{name:fmNS(p.player_name||''),pos,avgRank,delta:pos-avgRank};
+  });
+  // Lean = biggest positive delta (position worse than stats suggest → due for improvement)
+  // Fade = biggest negative delta (position better than stats suggest → due for regression)
+  scored.sort((a,b)=>b.delta-a.delta);
+  const leans=scored.filter(p=>p.delta>8).slice(0,3);
+  scored.sort((a,b)=>a.delta-b.delta);
+  const fades=scored.filter(p=>p.delta<-8).slice(0,3);
+  return{leans,fades};
+}
+let _flOpen=false;
+function lsToggleFL(){
+  _flOpen=!_flOpen;
+  const panel=document.getElementById('ls-fl-panel');
+  if(panel)panel.style.display=_flOpen?'':'none';
+  const btn=document.getElementById('ls-fl-btn');
+  if(btn)btn.classList.toggle('active',_flOpen);
+}
+
 function lsInsights(stats){
   const el=document.getElementById('ls-insights');if(!el)return;
   if(!stats||!stats.length){el.innerHTML='';return;}
@@ -2686,7 +2731,25 @@ function lsInsights(stats){
   };
   const chips=[best('sg_ott','Best Driver'),best('sg_app','Best Approach'),best('sg_putt','Best Putter'),best('distance','Longest'),best('prox_fw','Closest Prox'),best('great_shots','Most A+ Shots')].filter(Boolean);
   if(!chips.length){el.innerHTML='';return;}
-  el.innerHTML=chips.map(c=>'<span class="ls-chip" onclick="lsChipClick(\''+c.name.replace(/'/g,"\\'")+'\')" title="Click to filter"><span class="ls-chip-lbl">'+c.label+'</span> '+c.name+'</span>').join('');
+  let h=chips.map(c=>'<span class="ls-chip" onclick="lsChipClick(\''+c.name.replace(/'/g,"\\'")+'\')" title="Click to filter"><span class="ls-chip-lbl">'+c.label+'</span> '+c.name+'</span>').join('');
+  // Fades & Leans button
+  const fl=lsFadesLeans(stats);
+  if(fl.leans.length||fl.fades.length){
+    h+='<span class="ls-chip ls-fl-btn" id="ls-fl-btn" onclick="lsToggleFL()" title="Who\'s due for a move?"><span class="ls-fl-icon">📊</span> Fades & Leans</span>';
+    h+='<div id="ls-fl-panel" class="ls-fl-panel" style="display:'+ (_flOpen?'':'none') +'">';
+    if(fl.leans.length){
+      h+='<div class="ls-fl-group"><span class="ls-fl-title ls-fl-lean">▲ Leans</span><span class="ls-fl-sub">Playing better than score shows</span>';
+      fl.leans.forEach(p=>{h+='<span class="ls-chip ls-fl-lean-chip" onclick="lsChipClick(\''+p.name.replace(/'/g,"\\'")+'\')">'+p.name+' <span class="ls-fl-delta">Pos '+p.pos+' · Avg rank '+Math.round(p.avgRank)+'</span></span>';});
+      h+='</div>';
+    }
+    if(fl.fades.length){
+      h+='<div class="ls-fl-group"><span class="ls-fl-title ls-fl-fade">▼ Fades</span><span class="ls-fl-sub">Score flatters the performance</span>';
+      fl.fades.forEach(p=>{h+='<span class="ls-chip ls-fl-fade-chip" onclick="lsChipClick(\''+p.name.replace(/'/g,"\\'")+'\')">'+p.name+' <span class="ls-fl-delta">Pos '+p.pos+' · Avg rank '+Math.round(p.avgRank)+'</span></span>';});
+      h+='</div>';
+    }
+    h+='</div>';
+  }
+  el.innerHTML=h;
 }
 
 function renderSGHeatmap(data){
