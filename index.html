@@ -313,42 +313,48 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .splash-link:active{background:rgba(224,148,120,.2)}
 .ls-panel{background:var(--bc);border-radius:10px;padding:0;margin-top:.5rem;overflow:hidden;border:1px solid rgba(244,197,66,.12)}
 .ls-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:linear-gradient(135deg,rgba(244,197,66,.08) 0%,rgba(45,181,160,.06) 100%);border-bottom:1px solid var(--br)}
-.ls-event-name{font-family:var(--fh);font-size:.95rem;color:var(--go);font-weight:700;letter-spacing:.01em}
-.ls-header-right{display:flex;align-items:center;gap:.5rem}
-.ls-updated{font-size:.5rem;color:var(--td);font-family:var(--fm)}
-.ls-refresh-btn{background:none;border:1px solid rgba(244,197,66,.3);color:var(--go);font-size:.75rem;padding:.15rem .35rem;border-radius:4px;cursor:pointer;transition:all .2s}
+.ls-event-name{font-family:var(--fh);font-size:.95rem;color:var(--go);font-weight:700;letter-spacing:.01em;display:flex;align-items:center;gap:.4rem}
+.ls-live-dot{width:7px;height:7px;border-radius:50%;background:#2db5a0;display:inline-block;box-shadow:0 0 6px rgba(45,181,160,.5);animation:ls-pulse 2s ease-in-out infinite}
+@keyframes ls-pulse{0%,100%{opacity:1;box-shadow:0 0 6px rgba(45,181,160,.5)}50%{opacity:.5;box-shadow:0 0 3px rgba(45,181,160,.3)}}
+.ls-header-right{display:flex;align-items:center;gap:.4rem}
+.ls-updated{font-size:.45rem;color:var(--td);font-family:var(--fm);opacity:.7}
+.ls-refresh-btn{background:none;border:1px solid rgba(244,197,66,.2);color:var(--go);font-size:.65rem;padding:.1rem .3rem;border-radius:4px;cursor:pointer;transition:all .2s}
 .ls-refresh-btn:hover{background:rgba(244,197,66,.12)}
-.ls-auto-label{font-size:.52rem;color:var(--ts);display:flex;align-items:center;gap:.2rem;cursor:pointer}
+.ls-auto-label{font-size:.48rem;color:var(--td);display:flex;align-items:center;gap:.2rem;cursor:pointer}
 .ls-tabs{display:flex;gap:0;border-bottom:1px solid var(--br);padding:0 .6rem}
 .ls-tab{background:none;border:none;color:var(--tb);font-family:var(--fb);font-size:.7rem;padding:.5rem .8rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;position:relative;font-weight:500;opacity:.75}
 .ls-tab.active{color:var(--go);border-bottom-color:var(--go);font-weight:700;opacity:1}
 .ls-tab:hover{color:var(--tp);background:rgba(255,255,255,.04);opacity:1}
-.ls-ctrl{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;flex-wrap:wrap}
+.ls-ctrl{display:flex;align-items:center;gap:.4rem;padding:.3rem .6rem;flex-wrap:wrap}
 .ls-rounds{display:flex;gap:.2rem}
 .ls-rnd{background:var(--bm);border:1px solid var(--br);color:var(--ts);font-family:var(--fb);font-size:.58rem;padding:.25rem .55rem;border-radius:12px;cursor:pointer;transition:all .2s}
 .ls-rnd.active{background:rgba(244,197,66,.15);border-color:var(--go);color:var(--go);font-weight:600;box-shadow:0 0 6px rgba(244,197,66,.15)}
 .ls-rnd:hover{border-color:var(--brl);color:var(--tp)}
-.ls-search{background:var(--bm);border:1px solid var(--br);color:var(--tp);font-family:var(--fb);font-size:.62rem;padding:.28rem .5rem;border-radius:12px;flex:1;min-width:90px;outline:none}
-.ls-search:focus{border-color:var(--go);box-shadow:0 0 6px rgba(244,197,66,.12)}
-.ls-mode-btn{background:rgba(244,197,66,.1);border:1px solid rgba(244,197,66,.3);color:var(--go);font-family:var(--fb);font-size:.56rem;padding:.25rem .6rem;border-radius:12px;cursor:pointer;transition:all .2s;font-weight:600;letter-spacing:.03em}
-.ls-mode-btn:hover{background:rgba(244,197,66,.2);border-color:var(--go)}
-.ls-helper{font-size:.58rem;color:var(--ts);padding:.25rem .8rem .1rem;font-family:var(--fb);font-style:italic}
-.ls-insights{display:flex;gap:.35rem;padding:.2rem .8rem .3rem;flex-wrap:wrap}
-.ls-chip{font-size:.56rem;font-family:var(--fb);background:rgba(224,148,120,.08);border:1px solid rgba(224,148,120,.3);color:var(--tp);padding:.15rem .45rem;border-radius:10px;white-space:nowrap}
-.ls-chip-lbl{color:#e09478;font-weight:600;margin-right:.15rem}
-.ls-legend{font-size:.5rem;color:var(--ts);padding:.35rem .5rem .15rem;font-family:var(--fb);display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
-.ls-leg-g{color:#2db5a0;font-size:.6rem}.ls-leg-mid{color:rgba(80,90,100,.5);font-size:.6rem}.ls-leg-r{color:#d94040;font-size:.6rem}
+.ls-search{background:rgba(10,20,35,.6);border:1px solid rgba(30,51,82,.4);color:var(--ts);font-family:var(--fb);font-size:.56rem;padding:.22rem .45rem;border-radius:10px;width:100px;outline:none}
+.ls-search:focus{border-color:rgba(244,197,66,.3);color:var(--tp)}
+.ls-toggle{display:flex;border:1px solid rgba(244,197,66,.25);border-radius:10px;overflow:hidden}
+.ls-tog{background:none;border:none;color:var(--td);font-family:var(--fb);font-size:.54rem;padding:.2rem .5rem;cursor:pointer;transition:all .2s;font-weight:500}
+.ls-tog.active{background:rgba(244,197,66,.15);color:var(--go);font-weight:600}
+.ls-tog:hover{color:var(--tp)}
+.ls-helper{font-size:.5rem;color:var(--td);padding:.15rem .8rem 0;font-family:var(--fb);font-style:italic}
+.ls-insights{display:flex;gap:.3rem;padding:.3rem .8rem .15rem;flex-wrap:wrap}
+.ls-chip{font-size:.6rem;font-family:var(--fb);background:rgba(224,148,120,.06);border:1px solid rgba(224,148,120,.25);color:var(--tp);padding:.25rem .55rem;border-radius:12px;white-space:nowrap;cursor:pointer;transition:all .2s}
+.ls-chip:hover{background:rgba(224,148,120,.15);border-color:rgba(224,148,120,.5)}
+.ls-chip-lbl{color:#e09478;font-weight:600;margin-right:.2rem}
+.ls-legend{font-size:.46rem;color:var(--td);padding:.1rem .6rem .15rem;font-family:var(--fb);display:flex;align-items:center;gap:.25rem;flex-wrap:wrap;opacity:.8}
+.ls-leg-g{color:#2db5a0;font-size:.55rem}.ls-leg-mid{color:rgba(80,90,100,.4);font-size:.55rem}.ls-leg-r{color:#d94040;font-size:.55rem}
 .ls-leg-note{color:var(--td);font-style:italic}
+.ls-div{border-left:2px solid rgba(244,197,66,.2)!important}
 .ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0;padding:0 .1rem .4rem}
 .ls-hm table{width:100%;border-collapse:separate;border-spacing:2px 1px;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
-.ls-hm th{background:linear-gradient(180deg,rgba(14,30,50,.95) 0%,rgba(10,22,40,.98) 100%);color:var(--go);font-size:.5rem;text-transform:uppercase;letter-spacing:.05em;padding:.35rem .25rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);border-right:2px solid rgba(30,51,82,.5);cursor:pointer;font-weight:700}
+.ls-hm th{background:linear-gradient(180deg,rgba(14,30,50,.95) 0%,rgba(10,22,40,.98) 100%);color:var(--go);font-size:.54rem;text-transform:uppercase;letter-spacing:.04em;padding:.35rem .3rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);border-right:2px solid rgba(30,51,82,.5);cursor:pointer;font-weight:700}
 .ls-hm th:last-child{border-right:none}
 .ls-hm td{padding:.25rem .2rem;text-align:center;border-bottom:2px solid rgba(30,51,82,.4);border-right:2px solid rgba(30,51,82,.3)}
 .ls-hm td:last-child{border-right:none}
 .ls-hm tbody tr{background:rgba(14,30,50,.3)}
 .ls-hm tbody tr:hover{background:rgba(30,60,100,.3)}
 .ls-hm th:nth-child(1),.ls-hm td:nth-child(1){text-align:center;width:1.6rem;padding-left:.15rem;padding-right:.15rem}
-.ls-hm th:nth-child(2),.ls-hm td:nth-child(2){text-align:left;position:sticky;left:0;z-index:1;background:rgba(14,30,50,.97);white-space:nowrap;padding-right:.4rem;border-right:1px solid rgba(244,197,66,.2)}
+.ls-hm th:nth-child(2),.ls-hm td:nth-child(2){text-align:left;position:sticky;left:0;z-index:1;background:rgba(14,30,50,.97);white-space:nowrap;padding-right:.3rem;border-right:1px solid rgba(244,197,66,.2);max-width:75px;overflow:hidden;text-overflow:ellipsis}
 .ls-hm thead th:nth-child(2){z-index:3;border-right:1px solid rgba(244,197,66,.2)}
 .ls-pos{font-family:var(--fm);font-weight:700;font-size:.66rem}
 .ls-pos-1{color:var(--go);text-shadow:0 0 8px rgba(244,197,66,.4)}
@@ -423,7 +429,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 
 <div id="ls-panel" class="ls-panel" style="display:none">
   <div class="ls-header">
-    <div class="ls-event-name" id="ls-event-name">Live Tournament</div>
+    <div class="ls-event-name" id="ls-event-name"><span class="ls-live-dot"></span>Live Tournament</div>
     <div class="ls-header-right">
       <span class="ls-updated" id="ls-updated"></span>
       <button class="ls-refresh-btn" onclick="dgLive()" title="Refresh">&#8635;</button>
@@ -445,7 +451,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
       <button class="ls-rnd" data-r="3" onclick="lsRound('3')">R3</button>
       <button class="ls-rnd" data-r="4" onclick="lsRound('4')">R4</button>
     </div>
-    <button class="ls-mode-btn" id="ls-mode-btn" onclick="lsToggleMode()">Advanced</button>
+    <div class="ls-toggle" id="ls-toggle">
+      <button class="ls-tog active" data-mode="simple" onclick="lsSetMode(false)">Simple</button>
+      <button class="ls-tog" data-mode="advanced" onclick="lsSetMode(true)">Advanced</button>
+    </div>
     <input id="ls-search" class="ls-search" placeholder="Search player..." oninput="lsFilter()">
   </div>
   <div id="ls-body"><div style="text-align:center;color:var(--ts);padding:1.5rem;font-size:.72rem">Loading live data...</div></div>
@@ -2645,7 +2654,7 @@ let _lsAdvanced=false;
 const LS_COLS=[
   {key:'sg_ott',hdr:'Drive',abbr:'DRV',tip:'Strokes gained off the tee — how well they\'re driving',core:true},
   {key:'sg_app',hdr:'Appr.',abbr:'APP',tip:'Strokes gained on approach — iron play into greens',core:true},
-  {key:'sg_arg',hdr:'Wedge',abbr:'ARG',tip:'Strokes gained around the green — chipping & pitching',core:true},
+  {key:'sg_arg',hdr:'Short',abbr:'ARG',tip:'Strokes gained around the green — chipping & pitching',core:true},
   {key:'sg_putt',hdr:'Putt',abbr:'PUTT',tip:'Strokes gained on the greens — how well they\'re rolling it',core:true},
   {key:'distance',hdr:'Dist.',abbr:'DIST',tip:'Average driving distance in yards — rank vs field',core:false},
   {key:'great_shots',hdr:'A+ Shot',abbr:'GRT',tip:'Exceptional shots relative to field average',core:false},
@@ -2657,11 +2666,15 @@ async function fetchLiveStats(round){
 }
 async function fetchHoleStats(){return dgF('preds/live-hole-stats',{tour:'pga'});}
 
-function lsToggleMode(){
-  _lsAdvanced=!_lsAdvanced;
-  const btn=document.getElementById('ls-mode-btn');
-  if(btn)btn.textContent=_lsAdvanced?'Simple':'Advanced';
+function lsSetMode(adv){
+  _lsAdvanced=adv;
+  document.querySelectorAll('.ls-tog').forEach(b=>b.classList.toggle('active',b.getAttribute('data-mode')===(adv?'advanced':'simple')));
   if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);
+}
+
+function lsChipClick(name){
+  const el=document.getElementById('ls-search');
+  if(el){el.value=name;lsFilter();}
 }
 
 function lsInsights(stats){
@@ -2669,11 +2682,11 @@ function lsInsights(stats){
   if(!stats||!stats.length){el.innerHTML='';return;}
   const best=(key,label)=>{
     const top=stats.filter(p=>p[key]!=null&&p[key]!=='-').sort((a,b)=>a[key]-b[key])[0];
-    return top?{label,name:fmNS(top.player_name||''),rank:top[key]}:null;
+    return top?{label,name:fmNS(top.player_name||''),rawName:top.player_name||''}:null;
   };
-  const chips=[best('sg_ott','Best Driver'),best('sg_app','Best Approach'),best('sg_putt','Best Putter'),best('distance','Longest'),best('prox_fw','Closest Proximity'),best('great_shots','Most Great Shots')].filter(Boolean);
+  const chips=[best('sg_ott','Best Driver'),best('sg_app','Best Approach'),best('sg_putt','Best Putter'),best('distance','Longest'),best('prox_fw','Closest Prox'),best('great_shots','Most A+ Shots')].filter(Boolean);
   if(!chips.length){el.innerHTML='';return;}
-  el.innerHTML=chips.map(c=>'<span class="ls-chip"><span class="ls-chip-lbl">'+c.label+'</span> '+c.name+'</span>').join('');
+  el.innerHTML=chips.map(c=>'<span class="ls-chip" onclick="lsChipClick(\''+c.name.replace(/'/g,"\\'")+'\')" title="Click to filter"><span class="ls-chip-lbl">'+c.label+'</span> '+c.name+'</span>').join('');
 }
 
 function renderSGHeatmap(data){
@@ -2681,9 +2694,12 @@ function renderSGHeatmap(data){
   if(!data||!data.live_stats||!data.live_stats.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">No live stats available</div>';return;}
   const fieldSize=data.live_stats.length;
   const evEl=document.getElementById('ls-event-name');
-  if(evEl)evEl.textContent=data.event_name||data.info?.course_name||'Live Tournament';
+  if(evEl)evEl.innerHTML='<span class="ls-live-dot"></span>'+(data.event_name||data.info?.course_name||'Live Tournament');
   const updEl=document.getElementById('ls-updated');
-  if(updEl&&data.last_updated)updEl.textContent=data.last_updated;
+  if(updEl&&data.last_updated){
+    try{const d=new Date(data.last_updated.replace(' ','T')+'Z');updEl.textContent=d.toLocaleString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true})+' ET';}
+    catch(e){updEl.textContent=data.last_updated;}
+  }
   // Insight chips
   lsInsights(data.live_stats);
   const cols=_lsAdvanced?LS_COLS:LS_COLS.filter(c=>c.core);
@@ -2700,7 +2716,11 @@ function renderSGHeatmap(data){
   let h='<div class="ls-legend"><span class="ls-leg-g">■</span> Better than field <span class="ls-leg-mid">■</span> Average <span class="ls-leg-r">■</span> Worse than field <span class="ls-leg-note">· Numbers are ranks (1 = best)</span></div>';
   h+='<div class="ls-hm"><table><thead><tr>';
   h+='<th class="ls-pos">Pos</th><th class="ls-nm">Player</th><th class="ls-sc">Score</th><th class="ls-thru">Thru</th>';
-  cols.forEach(c=>{h+='<th onclick="lsTip(\''+c.hdr+'\',\''+c.tip.replace(/'/g,"\\'")+'\',this)" style="cursor:pointer" title="'+c.tip+'">'+c.hdr+'</th>';});
+  const coreCount=cols.filter(c=>c.core).length;
+  cols.forEach((c,ci)=>{
+    const divCls=(ci===coreCount&&_lsAdvanced)?' class="ls-div"':'';
+    h+='<th'+divCls+' onclick="lsTip(\''+c.hdr+'\',\''+c.tip.replace(/'/g,"\\'")+'\',this)" style="cursor:pointer" title="'+c.tip+'">'+c.hdr+'</th>';
+  });
   h+='</tr></thead><tbody>';
   filtered.forEach((p,i)=>{
     const nm=fmNS(p.player_name||'');
@@ -2716,9 +2736,10 @@ function renderSGHeatmap(data){
     h+='<td class="ls-nm" title="'+fullNm+'">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
     h+='<td class="ls-sc '+scc+'">'+sc+'</td>';
     h+='<td class="ls-thru">'+(p.thru||'-')+'</td>';
-    cols.forEach(c=>{
+    cols.forEach((c,ci)=>{
       const v=p[c.key];const cl=sgColor(v,fieldSize);
-      h+='<td class="ls-stat" style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+(v!=null?v:'-')+'</td>';
+      const divCls=(ci===coreCount&&_lsAdvanced)?' ls-div':'';
+      h+='<td class="ls-stat'+divCls+'" style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+(v!=null?v:'-')+'</td>';
     });
     h+='</tr>';
   });
@@ -2817,8 +2838,8 @@ function lsView(v){
   _lsView=v;
   document.querySelectorAll('.ls-tab').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(v==='hm'?'performance':v==='holes'?'hole':'bomb')));
   lsSetHelper(v);
-  // Show/hide mode button and search (only for heatmap)
-  const mBtn=document.getElementById('ls-mode-btn');if(mBtn)mBtn.style.display=v==='hm'?'':'none';
+  // Show/hide toggle and search (only for heatmap)
+  const tog=document.getElementById('ls-toggle');if(tog)tog.style.display=v==='hm'?'':'none';
   const sEl=document.getElementById('ls-search');if(sEl)sEl.style.display=v==='hm'?'':'none';
   const insEl=document.getElementById('ls-insights');if(insEl)insEl.style.display=v==='hm'?'':'none';
   lsRender();
