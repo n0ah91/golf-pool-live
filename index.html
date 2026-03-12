@@ -2586,30 +2586,34 @@ function buildRecapAnalytics(ev, round, data) {
 /* ===== LIVE STATS PANEL ===== */
 let _lsView='hm',_lsRound='event_avg',_lsData=null,_lsHoleData=null,_holeChart=null;
 
-// Excel-style conditional format: vivid green (#2db57a) → cream (#f5f0e0) → vivid red (#d94040)
+// Vintage Excel conditional format on dark bg
+// Bright green (#22c55e) → transparent middle → vivid red (#ef4444)
 function sgColor(rank,fieldSize){
   if(rank==null||rank==='-')return {bg:'transparent',fg:'var(--td)',fw:'500'};
   const r=parseInt(rank);if(isNaN(r))return {bg:'transparent',fg:'var(--td)',fw:'500'};
   const n=fieldSize||100;
   const t=Math.max(0,Math.min(1,(r-1)/(n-1))); // 0=best, 1=worst
-  // Excel three-stop: green(0) → cream(0.5) → red(1)
-  let R,G,B;
-  if(t<=0.5){
-    const s=t/0.5;
-    R=Math.round(45*(1-s)+245*s);   // 45→245
-    G=Math.round(181*(1-s)+240*s);   // 181→240
-    B=Math.round(122*(1-s)+224*s);   // 122→224
+  let R,G,B,alpha;
+  if(t<=0.45){
+    // Green zone: bright green → faded green
+    const s=t/0.45;
+    R=Math.round(20+s*40);    // 20→60
+    G=Math.round(200-s*80);   // 200→120
+    B=Math.round(80-s*40);    // 80→40
+    alpha=0.95-s*0.6;         // 0.95→0.35
+  } else if(t<=0.55){
+    // Dead zone: near-transparent
+    R=80;G=90;B=100;alpha=0.12;
   } else {
-    const s=(t-0.5)/0.5;
-    R=Math.round(245*(1-s)+217*s);   // 245→217
-    G=Math.round(240*(1-s)+64*s);    // 240→64
-    B=Math.round(224*(1-s)+64*s);    // 224→64
+    // Red zone: faded red → bright red
+    const s=(t-0.55)/0.45;
+    R=Math.round(160+s*60);   // 160→220
+    G=Math.round(80-s*50);    // 80→30
+    B=Math.round(60-s*30);    // 60→30
+    alpha=0.35+s*0.6;         // 0.35→0.95
   }
-  // Strong opacity: extremes near 1.0, median still 0.6
   const dist=Math.abs(t-0.5)*2;
-  const alpha=0.55+dist*0.4;
-  // Dark text on light cells, light text on saturated cells
-  const fg=dist>0.4?'#0a1628':'rgba(10,22,40,.85)';
+  const fg=alpha>0.6?'#fff':alpha>0.35?'rgba(255,255,255,.9)':'rgba(255,255,255,.6)';
   const fw=dist>0.6?'800':dist>0.3?'700':'600';
   return {bg:`rgba(${R},${G},${B},${alpha})`,fg,fw};
 }
