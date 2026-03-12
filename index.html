@@ -2642,12 +2642,12 @@ function sgColor(rank,fieldSize){
 let _lsAdvanced=false;
 const LS_COLS=[
   {key:'sg_ott',hdr:'Drive',abbr:'DRV',tip:'Strokes gained off the tee — how well they\'re driving',core:true},
-  {key:'sg_app',hdr:'Approach',abbr:'APP',tip:'Strokes gained on approach — iron play into greens',core:true},
-  {key:'sg_arg',hdr:'Short Game',abbr:'ARG',tip:'Strokes gained around the green — chipping & pitching',core:true},
-  {key:'sg_putt',hdr:'Putting',abbr:'PUTT',tip:'Strokes gained on the greens — how well they\'re rolling it',core:true},
-  {key:'distance',hdr:'Distance',abbr:'DIST',tip:'Average driving distance in yards — rank vs field',core:false},
-  {key:'great_shots',hdr:'Great Shots',abbr:'GRT',tip:'Exceptional shots relative to field average',core:false},
-  {key:'prox_fw',hdr:'Proximity',abbr:'PROX',tip:'How close approach shots finish to the pin from the fairway',core:false}
+  {key:'sg_app',hdr:'Appr.',abbr:'APP',tip:'Strokes gained on approach — iron play into greens',core:true},
+  {key:'sg_arg',hdr:'Wedge',abbr:'ARG',tip:'Strokes gained around the green — chipping & pitching',core:true},
+  {key:'sg_putt',hdr:'Putt',abbr:'PUTT',tip:'Strokes gained on the greens — how well they\'re rolling it',core:true},
+  {key:'distance',hdr:'Dist.',abbr:'DIST',tip:'Average driving distance in yards — rank vs field',core:false},
+  {key:'great_shots',hdr:'++ Shots',abbr:'GRT',tip:'Exceptional shots relative to field average',core:false},
+  {key:'prox_fw',hdr:'Prox.',abbr:'PROX',tip:'How close approach shots finish to the pin from the fairway',core:false}
 ];
 
 async function fetchLiveStats(round){
