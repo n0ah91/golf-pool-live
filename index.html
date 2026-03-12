@@ -308,36 +308,51 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 @media(max-width:768px){.cf-facts-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.prev-title{font-size:1.05rem}}
 /* Live Stats Panel */
-.ls-panel{background:var(--bc);border-radius:8px;padding:.6rem;margin-top:.5rem}
-.ls-tabs{display:flex;gap:.3rem;margin-bottom:.5rem;border-bottom:1px solid var(--br);padding-bottom:.4rem}
-.ls-tab{background:none;border:none;color:var(--ts);font-family:var(--fb);font-size:.68rem;padding:.3rem .6rem;cursor:pointer;border-radius:4px 4px 0 0;transition:all .2s;border-bottom:2px solid transparent}
+.ls-panel{background:var(--bc);border-radius:10px;padding:0;margin-top:.5rem;overflow:hidden;border:1px solid rgba(244,197,66,.12)}
+.ls-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:linear-gradient(135deg,rgba(244,197,66,.08) 0%,rgba(45,181,160,.06) 100%);border-bottom:1px solid var(--br)}
+.ls-event-name{font-family:var(--fh);font-size:.95rem;color:var(--go);font-weight:700;letter-spacing:.01em}
+.ls-header-right{display:flex;align-items:center;gap:.5rem}
+.ls-updated{font-size:.5rem;color:var(--td);font-family:var(--fm)}
+.ls-refresh-btn{background:none;border:1px solid rgba(244,197,66,.3);color:var(--go);font-size:.75rem;padding:.15rem .35rem;border-radius:4px;cursor:pointer;transition:all .2s}
+.ls-refresh-btn:hover{background:rgba(244,197,66,.12)}
+.ls-auto-label{font-size:.52rem;color:var(--ts);display:flex;align-items:center;gap:.2rem;cursor:pointer}
+.ls-tabs{display:flex;gap:0;border-bottom:1px solid var(--br);padding:0 .6rem}
+.ls-tab{background:none;border:none;color:var(--ts);font-family:var(--fb);font-size:.68rem;padding:.5rem .8rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;position:relative}
 .ls-tab.active{color:var(--go);border-bottom-color:var(--go);font-weight:600}
-.ls-tab:hover{color:var(--tb)}
-.ls-ctrl{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap}
+.ls-tab:hover{color:var(--tb);background:rgba(255,255,255,.03)}
+.ls-ctrl{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;flex-wrap:wrap}
 .ls-rounds{display:flex;gap:.2rem}
-.ls-rnd{background:var(--bm);border:1px solid var(--br);color:var(--ts);font-family:var(--fb);font-size:.58rem;padding:.2rem .45rem;border-radius:4px;cursor:pointer;transition:all .2s}
-.ls-rnd.active{background:rgba(244,197,66,.12);border-color:var(--go);color:var(--go);font-weight:600}
+.ls-rnd{background:var(--bm);border:1px solid var(--br);color:var(--ts);font-family:var(--fb);font-size:.58rem;padding:.25rem .55rem;border-radius:12px;cursor:pointer;transition:all .2s}
+.ls-rnd.active{background:rgba(244,197,66,.15);border-color:var(--go);color:var(--go);font-weight:600;box-shadow:0 0 6px rgba(244,197,66,.15)}
 .ls-rnd:hover{border-color:var(--brl);color:var(--tp)}
-.ls-search{background:var(--bm);border:1px solid var(--br);color:var(--tp);font-family:var(--fb);font-size:.62rem;padding:.25rem .5rem;border-radius:4px;flex:1;min-width:90px;outline:none}
-.ls-search:focus{border-color:var(--go)}
-.ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:4px}
-.ls-hm table{width:100%;border-collapse:collapse;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
-.ls-hm th{background:var(--bm);color:var(--ts);font-size:.52rem;text-transform:uppercase;letter-spacing:.04em;padding:.35rem .4rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--br);cursor:help}
-.ls-hm td{padding:.3rem .4rem;text-align:center;border-bottom:1px solid rgba(30,51,82,.3)}
-.ls-hm th:nth-child(1),.ls-hm td:nth-child(1){text-align:center;width:2rem}
-.ls-hm th:nth-child(2),.ls-hm td:nth-child(2){text-align:left;position:sticky;left:0;z-index:1;background:var(--bc);min-width:100px}
+.ls-search{background:var(--bm);border:1px solid var(--br);color:var(--tp);font-family:var(--fb);font-size:.62rem;padding:.28rem .5rem;border-radius:12px;flex:1;min-width:90px;outline:none}
+.ls-search:focus{border-color:var(--go);box-shadow:0 0 6px rgba(244,197,66,.12)}
+.ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0;padding:0 .2rem .4rem}
+.ls-hm table{width:100%;border-collapse:separate;border-spacing:0 2px;font-size:.64rem;font-family:var(--fb);white-space:nowrap}
+.ls-hm th{background:linear-gradient(180deg,var(--bm) 0%,rgba(14,30,50,.95) 100%);color:var(--td);font-size:.5rem;text-transform:uppercase;letter-spacing:.06em;padding:.45rem .5rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);cursor:help}
+.ls-hm td{padding:.35rem .5rem;text-align:center;transition:all .15s}
+.ls-hm tbody tr{background:rgba(14,30,50,.4);border-radius:4px}
+.ls-hm tbody tr:hover{background:rgba(30,60,100,.35)}
+.ls-hm th:nth-child(1),.ls-hm td:nth-child(1){text-align:center;width:2.2rem}
+.ls-hm th:nth-child(2),.ls-hm td:nth-child(2){text-align:left;position:sticky;left:0;z-index:1;background:rgba(14,30,50,.97);min-width:110px}
 .ls-hm thead th:nth-child(2){z-index:3}
-.ls-pos{font-family:var(--fm);font-weight:600;color:var(--ts)}
-.ls-nm{color:var(--tb);font-weight:500}
-.ls-sc{font-weight:600}
-.ls-sc.sg{color:var(--gl)}
-.ls-sc.sb{color:var(--rd)}
+.ls-pos{font-family:var(--fm);font-weight:700;font-size:.66rem}
+.ls-pos-1{color:var(--go);text-shadow:0 0 8px rgba(244,197,66,.4)}
+.ls-pos-top5{color:#2db5a0}
+.ls-pos-top10{color:var(--tb)}
+.ls-pos-rest{color:var(--ts)}
+.ls-nm{color:var(--tb);font-weight:600;font-size:.66rem}
+.ls-sc{font-weight:700;font-size:.66rem}
+.ls-sc.sg{color:#2db5a0;text-shadow:0 0 6px rgba(45,181,160,.3)}
+.ls-sc.sb{color:#e09478}
+.ls-thru{color:var(--td);font-family:var(--fm);font-size:.58rem}
 .ls-thru{color:var(--ts);font-family:var(--fm)}
-.ls-stat{font-family:var(--fm);font-weight:500;color:var(--tb);transition:background .2s}
-.sg-g1{background:#0d3b2e}.sg-g2{background:#15634e}.sg-g3{background:#1d8a6e}.sg-g4{background:#25a88a}.sg-g5{background:#2db5a0;color:#0a1628;font-weight:700}
-.sg-r1{background:#5a1a1a}.sg-r2{background:#8b3030}.sg-r3{background:#b84a3a}.sg-r4{background:#d06850}.sg-r5{background:#e09478;color:#0a1628;font-weight:700}
-.ls-pool{background:rgba(244,197,66,.06)!important}
-.ls-pool td:nth-child(2){border-left:2px solid var(--go)}
+.ls-stat{font-family:var(--fm);font-weight:600;color:rgba(255,255,255,.85);transition:all .2s;border-radius:3px;font-size:.62rem}
+.sg-g1{background:rgba(13,59,46,.7)}.sg-g2{background:rgba(21,99,78,.75)}.sg-g3{background:#1d8a6e;color:#e0fff5}.sg-g4{background:#25a88a;color:#0a1628;font-weight:700}.sg-g5{background:#2db5a0;color:#0a1628;font-weight:800;box-shadow:inset 0 0 8px rgba(45,181,160,.4)}
+.sg-r1{background:rgba(90,26,26,.6)}.sg-r2{background:rgba(139,48,48,.7)}.sg-r3{background:#b84a3a;color:#fde0d4}.sg-r4{background:#d06850;color:#0a1628;font-weight:700}.sg-r5{background:#e09478;color:#0a1628;font-weight:800;box-shadow:inset 0 0 8px rgba(224,148,120,.4)}
+.ls-pool{background:rgba(244,197,66,.08)!important}
+.ls-pool td:nth-child(2){border-left:3px solid var(--go)!important}
+.ls-pool .ls-nm{color:var(--go)!important}
 .ls-hole-wrap{height:240px;position:relative}
 .ls-hole-wrap canvas{width:100%!important;height:100%!important}
 .ls-power{padding:.5rem .3rem;text-align:center}
@@ -384,22 +399,21 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </section>
 <section id="live" class="pn2 active">
 
-<div class="cd" id="lb-wrap">
-  <div class="lb-hdr">
-    <span class="lb-t" id="lb-tt">Live Leaderboard</span>
-    <span style="display:flex;align-items:center;gap:.4rem">
-      <span class="lb-m" id="lb-mt"></span>
-      <button class="lb-r" id="lb-rb" onclick="dgLive()" style="display:none">&#8635; Refresh</button>
-      <button class="lb-r" onclick="dgConn()">Connect to DG</button>
-      <label style="font-size:.55rem;color:var(--ts);display:flex;align-items:center;gap:.2rem"><input type="checkbox" id="ar-cb" onchange="togAR()"> Auto</label>
-    </span>
-  </div>
-  <div id="lb-bd"><div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.72rem">Loading live data...</div></div>
+<!-- Hidden leaderboard container (used by rLB/rLBS internally) -->
+<div id="lb-wrap" style="display:none">
+  <span id="lb-tt"></span><span id="lb-mt"></span><button id="lb-rb" style="display:none"></button>
+  <div id="lb-bd"></div>
 </div>
-<div style="text-align:center;margin:.4rem 0">
-  <a href="https://splashsports.com" target="_blank" style="display:inline-block;font-size:.72rem;font-family:var(--fb);font-weight:600;color:#e09478;border:1px solid rgba(224,148,120,.35);border-radius:6px;padding:.4rem .8rem;text-decoration:none;transition:all .2s;background:rgba(224,148,120,.06);letter-spacing:.03em">📊 Pool Standings on Splash Sports</a>
-</div>
+
 <div id="ls-panel" class="ls-panel" style="display:none">
+  <div class="ls-header">
+    <div class="ls-event-name" id="ls-event-name">Live Tournament</div>
+    <div class="ls-header-right">
+      <span class="ls-updated" id="ls-updated"></span>
+      <button class="ls-refresh-btn" onclick="dgLive()" title="Refresh">&#8635;</button>
+      <label class="ls-auto-label"><input type="checkbox" id="ar-cb" onchange="togAR()"> Auto</label>
+    </div>
+  </div>
   <div class="ls-tabs">
     <button class="ls-tab active" onclick="lsView('hm')">Performance</button>
     <button class="ls-tab" onclick="lsView('holes')">Hole Difficulty</button>
@@ -415,7 +429,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
     </div>
     <input id="ls-search" class="ls-search" placeholder="Search player..." oninput="lsFilter()">
   </div>
-  <div id="ls-body"></div>
+  <div id="ls-body"><div style="text-align:center;color:var(--ts);padding:1.5rem;font-size:.72rem">Loading live data...</div></div>
+</div>
+<div style="text-align:center;margin:.4rem 0">
+  <a href="https://splashsports.com" target="_blank" style="display:inline-block;font-size:.72rem;font-family:var(--fb);font-weight:600;color:#e09478;border:1px solid rgba(224,148,120,.35);border-radius:6px;padding:.4rem .8rem;text-decoration:none;transition:all .2s;background:rgba(224,148,120,.06);letter-spacing:.03em">📊 Pool Standings on Splash Sports</a>
 </div>
 <div class="cd" id="live-preview"></div>
 
@@ -2575,27 +2592,33 @@ function renderSGHeatmap(data){
   const bd=document.getElementById('ls-body');
   if(!data||!data.live_stats||!data.live_stats.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">No live stats available</div>';return;}
   const fieldSize=data.live_stats.length;
+  // Update header with event name
+  const evEl=document.getElementById('ls-event-name');
+  if(evEl)evEl.textContent=data.event_name||data.info?.course_name||'Live Tournament';
+  const updEl=document.getElementById('ls-updated');
+  if(updEl&&data.last_updated)updEl.textContent=data.last_updated;
   const sorted=[...data.live_stats].sort((a,b)=>{
     const ac=String(a.position)==='CUT',bc=String(b.position)==='CUT';
     if(ac!==bc)return ac?1:-1;
     return(parseInt(a.position)||999)-(parseInt(b.position)||999);
   });
-  const show=sorted.slice(0,25);
   const search=(document.getElementById('ls-search')?.value||'').toLowerCase();
+  const filtered=search?sorted.filter(p=>{const nm=(p.player_name||'').toLowerCase();return nm.includes(search)||fmN(p.player_name||'').toLowerCase().includes(search);}):sorted.slice(0,30);
   let h='<div class="ls-hm"><table><thead><tr>';
   h+='<th class="ls-pos">Pos</th><th class="ls-nm">Player</th><th class="ls-sc">Score</th><th class="ls-thru">Thru</th>';
   LS_COLS.forEach(c=>{h+='<th title="'+c.tip+'">'+c.hdr+'</th>';});
   h+='</tr></thead><tbody>';
-  show.forEach(p=>{
+  filtered.forEach((p,i)=>{
     const nm=fmN(p.player_name||'');
-    if(search&&!nm.toLowerCase().includes(search)&&!(p.player_name||'').toLowerCase().includes(search))return;
     const ip=inPool(p.player_name||'');
     const cut=String(p.position)==='CUT';
+    const pos=parseInt(p.position)||999;
+    const posCls=pos===1?'ls-pos-1':pos<=5?'ls-pos-top5':pos<=10?'ls-pos-top10':'ls-pos-rest';
     const sc=p.total!=null?(p.total>0?'+'+p.total:p.total===0?'E':p.total):'-';
     const scc=p.total<0?'sg':p.total>0?'sb':'';
-    h+='<tr'+(cut?' style="opacity:.4"':'')+(ip?' class="ls-pool"':'')+'>';
-    h+='<td class="ls-pos">'+(p.position||'-')+'</td>';
-    h+='<td class="ls-nm">'+nm+(ip?' <span style="color:var(--go);font-size:.45rem">\u25CF</span>':'')+'</td>';
+    h+='<tr'+(cut?' style="opacity:.35"':'')+(ip?' class="ls-pool"':'')+'>';
+    h+='<td class="ls-pos '+posCls+'">'+(p.position||'-')+'</td>';
+    h+='<td class="ls-nm">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
     h+='<td class="ls-sc '+scc+'">'+sc+'</td>';
     h+='<td class="ls-thru">'+(p.thru||'-')+'</td>';
     LS_COLS.forEach(c=>{
@@ -2605,8 +2628,7 @@ function renderSGHeatmap(data){
     h+='</tr>';
   });
   h+='</tbody></table></div>';
-  if(sorted.length>25)h+='<div style="text-align:center;font-size:.55rem;color:var(--td);padding:.2rem">Showing top 25 of '+sorted.length+'</div>';
-  h+='<div style="font-size:.5rem;color:var(--td);padding:.2rem .4rem;text-align:right">Updated: '+(data.last_updated||'')+' \u00B7 Source: DataGolf</div>';
+  if(!search&&sorted.length>30)h+='<div style="text-align:center;font-size:.52rem;color:var(--td);padding:.3rem">Showing top 30 of '+sorted.length+' \u00B7 Use search for full field</div>';
   bd.innerHTML=h;
 }
 
