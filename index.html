@@ -1102,9 +1102,12 @@ function rLB(d){
   const bd=document.getElementById('lb-bd');
   if(!d||!d.data||!d.data.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.8rem">No live data — tournament may not be in progress</div>';return;}
   const info=d.info||{};document.getElementById('lb-tt').textContent=info.event_name||'Live Leaderboard';
+  const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return 999;return parseInt(String(s).replace(/^T/,''))||999;};
   const all=[...d.data].sort((a,b)=>{
-    if((a.current_pos==='CUT')!==(b.current_pos==='CUT'))return a.current_pos==='CUT'?1:-1;
-    return(parseInt(a.current_pos)||999)-(parseInt(b.current_pos)||999);});
+    const ac=a.current_pos==='CUT'||a.current_pos==='WD',bc=b.current_pos==='CUT'||b.current_pos==='WD';
+    if(ac!==bc)return ac?1:-1;
+    const pa=pPos(a.current_pos),pb=pPos(b.current_pos);if(pa!==pb)return pa-pb;
+    return(a.current_score||0)-(b.current_score||0);});
   const show=all.slice(0,70);
   let h='<div class="tw" style="margin:0"><table><thead><tr><th>Pos</th><th>Player</th><th>Score</th><th>Today</th><th>Thru</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr></thead><tbody>';
   for(const p of show){
@@ -1115,7 +1118,7 @@ function rLB(d){
     const scc=p.current_score<0?'sg':p.current_score>0?'sb':'';
     const tdc=p.today<0?'sg':p.today>0?'sb':'';
     const cut=p.make_cut===0?' style="opacity:.45"':'';
-    const pn2=parseInt(pos)||999,rc=pn2===1?'r1':pn2<=3?'r2':pn2<=5?'r3':'';
+    const pn2=pPos(pos),rc=pn2===1?'r1':pn2<=3?'r2':pn2<=5?'r3':'';
     const ip=inPool(nm);
     h+=`<tr${cut}${ip?' class="me"':''}>
       <td class="rc ${rc}">${pos}</td>
