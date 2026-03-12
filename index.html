@@ -329,9 +329,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-search:focus{border-color:var(--go);box-shadow:0 0 6px rgba(244,197,66,.12)}
 .ls-hm{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:0;padding:0 .1rem .4rem}
 .ls-hm table{width:100%;border-collapse:collapse;font-size:.62rem;font-family:var(--fb);white-space:nowrap}
-.ls-hm th{background:linear-gradient(180deg,var(--bm) 0%,rgba(14,30,50,.95) 100%);color:var(--td);font-size:.48rem;text-transform:uppercase;letter-spacing:.04em;padding:.3rem .25rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);border-right:1px solid rgba(30,51,82,.5);cursor:help}
+.ls-hm th{background:linear-gradient(180deg,var(--bm) 0%,rgba(14,30,50,.95) 100%);color:var(--td);font-size:.48rem;text-transform:uppercase;letter-spacing:.04em;padding:.3rem .25rem;text-align:center;position:sticky;top:0;z-index:2;border-bottom:2px solid var(--go);border-right:2px solid rgba(30,51,82,.5);cursor:pointer}
 .ls-hm th:last-child{border-right:none}
-.ls-hm td{padding:.25rem .2rem;text-align:center;border-bottom:1px solid rgba(30,51,82,.35);border-right:1px solid rgba(30,51,82,.25)}
+.ls-hm td{padding:.25rem .2rem;text-align:center;border-bottom:2px solid rgba(30,51,82,.4);border-right:2px solid rgba(30,51,82,.3)}
 .ls-hm td:last-child{border-right:none}
 .ls-hm tbody tr{background:rgba(14,30,50,.3)}
 .ls-hm tbody tr:hover{background:rgba(30,60,100,.3)}
@@ -1094,6 +1094,7 @@ function togAR(){const cb=document.getElementById('ar-cb');
 
 /* === NAME MATCHING === */
 function fmN(n){if(!n)return'-';const p=n.split(', ');return p.length===2?p[1]+' '+p[0]:n;}
+function fmNS(n){if(!n)return'-';const p=n.split(', ');return p.length===2?p[1].charAt(0)+'. '+p[0]:n;}
 function normN(n){if(!n)return'';let s=n.trim();const p=s.split(', ');if(p.length===2)s=p[1]+' '+p[0];return s.toLowerCase().replace(/[^a-z]/g,'');}
 function levenshtein(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
   const d=Array.from({length:m+1},(_,i)=>i);
@@ -2658,10 +2659,11 @@ function renderSGHeatmap(data){
   const filtered=search?sorted.filter(p=>{const nm=(p.player_name||'').toLowerCase();return nm.includes(search)||fmN(p.player_name||'').toLowerCase().includes(search);}):sorted.slice(0,30);
   let h='<div class="ls-hm"><table><thead><tr>';
   h+='<th class="ls-pos">Pos</th><th class="ls-nm">Player</th><th class="ls-sc">Score</th><th class="ls-thru">Thru</th>';
-  LS_COLS.forEach(c=>{h+='<th title="'+c.tip+'">'+c.hdr+'</th>';});
+  LS_COLS.forEach(c=>{h+='<th onclick="lsTip(\''+c.hdr+'\',\''+c.tip.replace(/'/g,"\\'")+'\',this)" style="cursor:pointer">'+c.hdr+'</th>';});
   h+='</tr></thead><tbody>';
   filtered.forEach((p,i)=>{
-    const nm=fmN(p.player_name||'');
+    const nm=fmNS(p.player_name||'');
+    const fullNm=fmN(p.player_name||'');
     const ip=inPool(p.player_name||'');
     const cut=String(p.position)==='CUT';
     const pos=pPos(p.position);
@@ -2670,7 +2672,7 @@ function renderSGHeatmap(data){
     const scc=p.total<0?'sg':p.total>0?'sb':'';
     h+='<tr'+(cut?' style="opacity:.35"':'')+(ip?' class="ls-pool"':'')+'>';
     h+='<td class="ls-pos '+posCls+'">'+(p.position||'-')+'</td>';
-    h+='<td class="ls-nm">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
+    h+='<td class="ls-nm" title="'+fullNm+'">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
     h+='<td class="ls-sc '+scc+'">'+sc+'</td>';
     h+='<td class="ls-thru">'+(p.thru||'-')+'</td>';
     LS_COLS.forEach(c=>{
@@ -2750,6 +2752,19 @@ function renderPowerProfile(data){
   h+='<div style="font-size:.5rem;color:var(--td);padding:.3rem;text-align:center">Based on top-25 field ranks for distance and proximity \u00B7 Source: DataGolf</div>';
   h+='</div>';
   bd.innerHTML=h;
+}
+
+function lsTip(hdr,tip,el){
+  // Remove any existing tip
+  document.querySelectorAll('.ls-tip').forEach(e=>e.remove());
+  const d=document.createElement('div');
+  d.className='ls-tip';
+  d.innerHTML='<strong style="color:var(--go)">'+hdr+'</strong> — '+tip;
+  d.style.cssText='position:absolute;top:100%;left:50%;transform:translateX(-50%);background:rgba(10,22,40,.95);border:1px solid var(--go);border-radius:6px;padding:.4rem .6rem;font-size:.6rem;color:var(--tp);font-family:var(--fb);white-space:nowrap;z-index:99;box-shadow:0 4px 12px rgba(0,0,0,.4);margin-top:4px';
+  el.style.position='relative';
+  el.appendChild(d);
+  setTimeout(()=>d.remove(),3000);
+  d.onclick=e=>{e.stopPropagation();d.remove();};
 }
 
 function lsView(v){
