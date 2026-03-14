@@ -2755,7 +2755,7 @@ function renderFadesLeans(data){
     const clr=type==='lean'?'#2db5a0':'#e09478';
     const arrow=type==='lean'?'\u25B2':'\u25BC';
     const sc=p.total==null?'':p.total<0?p.total:p.total>0?'+'+p.total:'E';
-    const scClr=p.total==null?'var(--td)':p.total<0?'#2db5a0':p.total>0?'#e09478':'var(--tp)';
+    const scClr=p.total==null?'var(--td)':p.total<0?'#e09478':p.total>0?'#2db5a0':'var(--tp)';
     let h='<div class="ls-fl-card ls-fl-card-'+type+'">';
     h+='<div style="display:flex;justify-content:space-between;align-items:center">';
     h+='<span class="ls-fl-name" onclick="lsChipClick(\''+p.name.replace(/'/g,"\\'")+'\')" title="Click to filter in Performance tab"><span style="color:'+clr+'">'+arrow+'</span> '+p.name+'</span>';
@@ -2844,7 +2844,7 @@ function renderSGHeatmap(data){
     const pos=pPos(p.position);
     const posCls=pos===1?'ls-pos-1':pos<=5?'ls-pos-top5':pos<=10?'ls-pos-top10':'ls-pos-rest';
     const sc=p.total!=null?(p.total>0?'+'+p.total:p.total===0?'E':p.total):'-';
-    const scClr=p.total==null?'var(--ts)':p.total<0?'#2db5a0':p.total>0?'#e09478':'var(--tp)';
+    const scClr=p.total==null?'var(--ts)':p.total<0?'#e09478':p.total>0?'#2db5a0':'var(--tp)';
     h+='<tr'+(cut?' style="opacity:.35"':'')+(ip?' class="ls-pool"':'')+'>';
     h+='<td class="ls-pos '+posCls+'">'+(p.position||'-')+'</td>';
     h+='<td class="ls-nm" title="'+fullNm+'">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
