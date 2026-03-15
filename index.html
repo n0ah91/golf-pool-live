@@ -2162,6 +2162,9 @@ async function fetchPreviewOdds() {
     }
 
     players.sort((a, b) => b.prob - a.prob);
+    // Validate odds data
+    const oddsIssues=validateOdds(players,'fetchPreviewOdds');
+    if(oddsIssues.length>2){console.error('[ODDS VALIDATION] Issues:',oddsIssues);}
     const top20 = players.slice(0, 20);
     const maxP = top20[0]?.prob||1;
 
