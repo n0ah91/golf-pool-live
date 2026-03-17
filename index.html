@@ -3396,8 +3396,8 @@ function _tpcSparkline(ranks,total){
     const y=pad+((rk-1)/(total-1))*(h-2*pad);
     return x.toFixed(1)+','+y.toFixed(1);
   });
-  // Coral if climbed (rank improved), green if fell
-  const clr=ranks[3]<=ranks[0]?'#e09478':'#2db5a0';
+  // Green if steady or improved, red if declined
+  const clr=ranks[3]<=ranks[0]?'#2db5a0':'#e09478';
   let svg='<svg width="'+w+'" height="'+h+'" style="vertical-align:middle" title="R1:#'+ranks[0]+' → R4:#'+ranks[3]+'">';
   svg+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+clr+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
   const last=pts[3].split(',');
