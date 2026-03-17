@@ -3415,7 +3415,7 @@ function _tpcRenderRow(e,me){
   h+='<td style="color:var(--tp)">'+e.rp+'</td>';
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
   h+='<td style="padding:0 2px">'+_tpcSparkline(e._ranks,107)+'</td>';
-  h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td>';
+  h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(2)+'M</td>';
   h+='<td style="color:var(--td)">'+e.td+'</td>';
   h+='</tr>';
   return h;
