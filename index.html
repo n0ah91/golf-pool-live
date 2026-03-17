@@ -3383,7 +3383,7 @@ function _tpcSparkline(rounds){
   // SVG sparkline showing cumulative to-par progression across 4 rounds
   const w=60,h=22,pad=2;
   const cumul=[];let sum=0;
-  rounds.forEach(rd=>{sum+=(rd-72);cumul.push(sum);});
+  rounds.forEach(rd=>{sum+=(rd-288);cumul.push(sum);});
   const mn=Math.min(...cumul),mx=Math.max(...cumul);
   const range=mx-mn||1;
   const pts=cumul.map((v,i)=>{
@@ -3412,7 +3412,7 @@ function _tpcRenderRow(e,me){
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
   h+='<td style="padding:0 2px">'+_tpcSparkline(e.r)+'</td>';
   h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td>';
-  h+='<td style="color:var(--td)">'+e.fed+'</td>';
+  h+='<td style="color:var(--td)">'+e.td+'</td>';
   h+='</tr>';
   return h;
 }
@@ -3436,7 +3436,7 @@ function renderTpcStandings(pr){
     h+='<span style="font-size:.58rem;color:var(--td)">107 entries</span>';
     h+='</div>';
     h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>';
-    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'spark',l:'R1–R4',w:'66px'},{k:'win',l:'Winnings',w:'70px'},{k:'fed',l:'FedEx',w:'50px'}];
+    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'spark',l:'R1–R4',w:'66px'},{k:'win',l:'Winnings',w:'70px'},{k:'td',l:'Tiebreak',w:'55px'}];
     cols.forEach(c=>{
       const active=_sortKey===c.k;
       const sortable=c.k!=='spark';
