@@ -443,22 +443,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </section>
 <section id="players-results" class="pn2">
 <div class="cd" id="tpc-standings"></div>
-<div class="cd" id="tpc-recap"></div>
-<div class="cd" id="tpc-insights"></div>
-</section>
-<section id="upcoming" class="pn2 active">
-
-<a href="https://splashsports.com" target="_blank" class="splash-link">📊 Pool Standings on Splash Sports →</a>
-
-<div class="cd" id="upcoming-sched"></div>
-
-<!-- Hidden leaderboard container (used by rLB/rLBS internally) -->
-<div id="lb-wrap" style="display:none">
-  <span id="lb-tt"></span><span id="lb-mt"></span><button id="lb-rb" style="display:none"></button>
-  <div id="lb-bd"></div>
-</div>
-
-<div id="ls-panel" class="ls-panel" style="display:none">
+<div id="ls-panel" class="ls-panel">
   <div class="ls-header">
     <div class="ls-event-name" id="ls-event-name"><span class="ls-live-dot"></span>Live Tournament</div>
     <div class="ls-header-right">
@@ -491,6 +476,20 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   </div>
   <div id="ls-body"><div style="text-align:center;color:var(--ts);padding:1.5rem;font-size:.72rem">Loading live data...</div></div>
 </div>
+<div class="cd" id="tpc-insights"></div>
+</section>
+<section id="upcoming" class="pn2 active">
+
+<a href="https://splashsports.com" target="_blank" class="splash-link">📊 Pool Standings on Splash Sports →</a>
+
+<div class="cd" id="upcoming-sched"></div>
+
+<!-- Hidden leaderboard container (used by rLB/rLBS internally) -->
+<div id="lb-wrap" style="display:none">
+  <span id="lb-tt"></span><span id="lb-mt"></span><button id="lb-rb" style="display:none"></button>
+  <div id="lb-bd"></div>
+</div>
+
 
 <div class="cd" id="odds-panel" style="margin-top:.4rem">
   <h4 style="font-family:var(--fh);color:var(--go);font-size:.82rem;margin:0 0 .3rem;display:flex;align-items:center;justify-content:space-between">
@@ -3351,13 +3350,11 @@ async function loadLiveStats(){
   try{
     const[stats,holes]=await Promise.all([fetchLiveStats(_lsRound).catch(()=>null),fetchHoleStats().catch(()=>null)]);
     if(stats&&stats.live_stats&&stats.live_stats.length){
-      // Validate before rendering
       const issues=validateLiveStats(stats,'loadLiveStats');
-      if(issues.length>3){console.error('[DATA VALIDATION] Too many issues, skipping render');panel.style.display='none';return;}
-      _lsData=stats;_lsHoleData=holes;panel.style.display='';lsRender();
+      if(issues.length>3){console.error('[DATA VALIDATION] Too many issues, skipping render');return;}
+      _lsData=stats;_lsHoleData=holes;lsRender();
     }
-    else{panel.style.display='none';}
-  }catch(e){panel.style.display='none';}
+  }catch(e){console.warn('loadLiveStats error:',e.message);}
 }
 
 /* ===== OVERRIDE rLive ===== */
