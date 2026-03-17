@@ -3409,13 +3409,13 @@ function _tpcSparkline(ranks,total){
 function _tpcRenderRow(e,me){
   const scClr=e.tp<0?'#e09478':e.tp>0?'#2db5a0':'var(--tp)';
   let h='<tr class="'+(me?'me':'')+'">';
-  h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
-  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+'</td>';
-  h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
-  h+='<td style="color:var(--tp)">'+e.rp+'</td>';
-  h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
+  h+='<td class="rc" style="color:var(--ts);font-size:.62rem">'+e.rk+'</td>';
+  h+='<td class="nc" style="font-size:.65rem">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+'</td>';
+  h+='<td style="font-weight:700;color:'+scClr+';font-size:.62rem">'+e.tp+'</td>';
+  h+='<td style="color:var(--tp);font-size:.62rem">'+e.rp+'</td>';
+  h+='<td style="color:var(--td);font-size:.62rem">'+(e.bn!=null?e.bn:'–')+'</td>';
   h+='<td style="padding:0 2px">'+_tpcSparkline(e._ranks,107)+'</td>';
-  h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(2)+'M</td>';
+  h+='<td style="color:var(--go);font-size:.6rem">$'+(e.win/1e6).toFixed(2)+'M</td>';
   h+='</tr>';
   return h;
 }
@@ -3440,7 +3440,7 @@ function renderTpcStandings(pr){
     h+='<span style="font-size:.58rem;color:var(--td)">107 entries</span>';
     h+='</div>';
     h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>';
-    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'spark',l:'Rank',w:'66px'},{k:'win',l:'Winnings',w:'70px'}];
+    const cols=[{k:'rk',l:'#',w:'24px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'42px'},{k:'rp',l:'Roster',w:'42px'},{k:'bn',l:'Bonus',w:'38px'},{k:'spark',l:'Rank',w:'62px'},{k:'win',l:'Winnings',w:'58px'}];
     cols.forEach(c=>{
       const active=_sortKey===c.k;
       const sortable=c.k!=='spark';
