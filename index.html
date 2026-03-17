@@ -3376,23 +3376,30 @@ function renderPlayersResults(){
   renderTpcInsights(pr);
 }
 
-function _tpcSparkline(rounds){
-  // SVG sparkline showing cumulative to-par progression across 4 rounds
+function _tpcComputeRanks(entries){
+  // Compute rank after each round for all entries
+  const n=entries.length;
+  for(let rd=0;rd<4;rd++){
+    const cumuls=entries.map((e,i)=>({i,cum:e.r.slice(0,rd+1).reduce((a,b)=>a+b,0)}));
+    cumuls.sort((a,b)=>a.cum-b.cum);
+    cumuls.forEach((c,rank)=>{
+      if(!entries[c.i]._ranks)entries[c.i]._ranks=[];
+      entries[c.i]._ranks[rd]=rank+1;
+    });
+  }
+}
+function _tpcSparkline(ranks,total){
+  // SVG sparkline showing rank position across 4 rounds (1=top, total=bottom)
   const w=60,h=22,pad=2;
-  const cumul=[];let sum=0;
-  rounds.forEach(rd=>{sum+=(rd-288);cumul.push(sum);});
-  const mn=Math.min(...cumul),mx=Math.max(...cumul);
-  const range=mx-mn||1;
-  const pts=cumul.map((v,i)=>{
+  const pts=ranks.map((rk,i)=>{
     const x=pad+i*((w-2*pad)/3);
-    const y=pad+(1-(v-mn)/range)*(h-2*pad);
+    const y=pad+((rk-1)/(total-1))*(h-2*pad);
     return x.toFixed(1)+','+y.toFixed(1);
   });
-  // Color: coral if trending down (good), green if trending up (bad)
-  const clr=cumul[3]<=cumul[0]?'#e09478':'#2db5a0';
-  let svg='<svg width="'+w+'" height="'+h+'" style="vertical-align:middle">';
+  // Coral if climbed (rank improved), green if fell
+  const clr=ranks[3]<=ranks[0]?'#e09478':'#2db5a0';
+  let svg='<svg width="'+w+'" height="'+h+'" style="vertical-align:middle" title="R1:#'+ranks[0]+' → R4:#'+ranks[3]+'">';
   svg+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+clr+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
-  // Dot on final point
   const last=pts[3].split(',');
   svg+='<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2" fill="'+clr+'"/>';
   svg+='</svg>';
@@ -3407,7 +3414,7 @@ function _tpcRenderRow(e,me){
   h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
   h+='<td style="color:var(--tp)">'+e.rp+'</td>';
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
-  h+='<td style="padding:0 2px">'+_tpcSparkline(e.r)+'</td>';
+  h+='<td style="padding:0 2px">'+_tpcSparkline(e._ranks,107)+'</td>';
   h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td>';
   h+='<td style="color:var(--td)">'+e.td+'</td>';
   h+='</tr>';
@@ -3417,6 +3424,7 @@ function _tpcRenderRow(e,me){
 function renderTpcStandings(pr){
   const el=document.getElementById('tpc-standings');if(!el)return;
   const entries=pr.entries;
+  _tpcComputeRanks(entries);
   let _showAll=false;
   let _sortKey='rk';let _sortAsc=true;
   function render(){
@@ -3433,7 +3441,7 @@ function renderTpcStandings(pr){
     h+='<span style="font-size:.58rem;color:var(--td)">107 entries</span>';
     h+='</div>';
     h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>';
-    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'spark',l:'R1–R4',w:'66px'},{k:'win',l:'Winnings',w:'70px'},{k:'td',l:'Tiebreak',w:'55px'}];
+    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'spark',l:'Rank',w:'66px'},{k:'win',l:'Winnings',w:'70px'},{k:'td',l:'Tiebreak',w:'55px'}];
     cols.forEach(c=>{
       const active=_sortKey===c.k;
       const sortable=c.k!=='spark';
