@@ -3416,7 +3416,6 @@ function _tpcRenderRow(e,me){
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
   h+='<td style="padding:0 2px">'+_tpcSparkline(e._ranks,107)+'</td>';
   h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(2)+'M</td>';
-  h+='<td style="color:var(--td)">'+e.td+'</td>';
   h+='</tr>';
   return h;
 }
@@ -3441,7 +3440,7 @@ function renderTpcStandings(pr){
     h+='<span style="font-size:.58rem;color:var(--td)">107 entries</span>';
     h+='</div>';
     h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>';
-    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'spark',l:'Rank',w:'66px'},{k:'win',l:'Winnings',w:'70px'},{k:'td',l:'Tiebreak',w:'55px'}];
+    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'spark',l:'Rank',w:'66px'},{k:'win',l:'Winnings',w:'70px'}];
     cols.forEach(c=>{
       const active=_sortKey===c.k;
       const sortable=c.k!=='spark';
@@ -3455,6 +3454,20 @@ function renderTpcStandings(pr){
     h+='</tbody></table></div>';
     if(!_showAll){
       h+='<div style="text-align:center;padding:.4rem"><button onclick="expandTpcStandings()" style="font-family:var(--fb);font-size:.62rem;color:var(--go);background:none;border:1px solid rgba(244,197,66,.3);border-radius:5px;padding:.3rem .8rem;cursor:pointer">Show All 107 Entries</button></div>';
+    }
+    // Tiebreak footnote
+    const tieGroups={};
+    entries.forEach(e=>{if(!tieGroups[e.tp])tieGroups[e.tp]=[];tieGroups[e.tp].push(e);});
+    const ties=Object.entries(tieGroups).filter(([,g])=>g.length>1).sort((a,b)=>Number(a[0])-Number(b[0]));
+    if(ties.length){
+      h+='<details style="margin-top:.3rem"><summary style="font-size:.55rem;color:var(--td);cursor:pointer;font-family:var(--fb)">Tiebreak info ('+ties.length+' ties)</summary>';
+      h+='<div style="font-size:.52rem;color:var(--td);font-family:var(--fm);padding:.3rem .2rem;line-height:1.6">';
+      h+='<div style="margin-bottom:.3rem;color:var(--ts);font-family:var(--fb)">Ties broken by lowest combined score of 5th + 6th rostered golfers (excluded from best-4 scoring).</div>';
+      ties.forEach(([score,group])=>{
+        const names=group.sort((a,b)=>a.td-b.td).map(e=>e.nm+'<span style="color:var(--ts)"> ('+e.td+')</span>').join(', ');
+        h+='<div><span style="color:var(--tp)">'+score+':</span> '+names+'</div>';
+      });
+      h+='</div></details>';
     }
     el.innerHTML=h;
   }
