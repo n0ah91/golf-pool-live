@@ -442,8 +442,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <div id="h-body"></div>
 </section>
 <section id="players-results" class="pn2">
-<div class="cd" id="tpc-recap"></div>
 <div class="cd" id="tpc-standings"></div>
+<div class="cd" id="tpc-progression"></div>
+<div class="cd" id="tpc-recap"></div>
 <div class="cd" id="tpc-insights"></div>
 </section>
 <section id="upcoming" class="pn2 active">
@@ -3299,50 +3300,10 @@ function renderPlayersResults(){
   if(_tpcRendered)return;
   _tpcRendered=true;
   const pr=POOL_RESULTS[11];if(!pr)return;
-  renderTpcRecap(pr);
   renderTpcStandings(pr);
+  renderTpcProgression(pr);
+  renderTpcRecap(pr);
   renderTpcInsights(pr);
-}
-
-function renderTpcRecap(pr){
-  const el=document.getElementById('tpc-recap');if(!el)return;
-  const p=pr.players;
-  const winner=p[0];
-  const madeCut=p.filter(x=>typeof x.sc==='number');
-  const missed=p.filter(x=>x.sc==='CUT'||x.sc==='WD');
-  const totalBirdies=p.reduce((s,x)=>s+x.bi,0);
-  const totalEagles=p.reduce((s,x)=>s+x.ea,0);
-  let h='<h3 style="display:flex;align-items:baseline;gap:.5rem">The Players Championship<span style="font-size:.62rem;color:var(--go);font-weight:500;font-family:var(--fb)">TPC Sawgrass · Mar 12–15, 2026</span></h3>';
-  h+='<div style="margin:.6rem 0">';
-  h+='<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">';
-  h+='<div style="font-size:.58rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em">Champion</div>';
-  h+='</div>';
-  h+='<div style="display:flex;align-items:baseline;gap:.5rem">';
-  h+='<span style="font-family:var(--fd);font-size:1.4rem;color:var(--go);font-weight:700">'+winner.nm+'</span>';
-  h+='<span style="font-family:var(--fm);font-size:1rem;color:#e09478;font-weight:700">'+winner.sc+'</span>';
-  h+='</div>';
-  h+='<div style="font-size:.68rem;color:var(--tp);margin-top:.15rem">$'+winner.sal?.toLocaleString()+' salary · World #'+winner.wr+' · '+winner.pk+' pool picks ('+Math.round((winner.own||0)*100)+'% DFS owned)</div>';
-  h+='</div>';
-  // Quick stats row
-  h+='<div class="sr" style="margin:.5rem 0">';
-  h+='<div class="sc"><div class="v">'+madeCut.length+'</div><div class="l">Made Cut</div></div>';
-  h+='<div class="sc"><div class="v">'+missed.length+'</div><div class="l">Missed/WD</div></div>';
-  h+='<div class="sc"><div class="v go">'+totalBirdies+'</div><div class="l">Total Birdies</div></div>';
-  h+='<div class="sc"><div class="v gl">'+totalEagles+'</div><div class="l">Total Eagles</div></div>';
-  h+='</div>';
-  // Top 10 leaderboard
-  h+='<div style="font-size:.62rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Top 10 Finishers</div>';
-  h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.3rem">';
-  const top10=madeCut.slice(0,10);
-  top10.forEach((pl,i)=>{
-    const clr=i===0?'var(--go)':i<3?'#2db5a0':'var(--tb)';
-    h+='<div style="background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.35rem .5rem;display:flex;justify-content:space-between;align-items:center">';
-    h+='<span style="color:'+clr+';font-size:.7rem;font-weight:600">T'+pl.pos+' '+pl.nm+'</span>';
-    h+='<span style="font-family:var(--fm);font-size:.68rem;color:#e09478;font-weight:700">'+pl.sc+'</span>';
-    h+='</div>';
-  });
-  h+='</div>';
-  el.innerHTML=h;
 }
 
 function renderTpcStandings(pr){
@@ -3357,13 +3318,14 @@ function renderTpcStandings(pr){
       return _sortAsc?av-bv:bv-av;
     });
     const shown=_showAll?sorted:sorted.slice(0,20);
-    let h='<h3>Pool Standings</h3>';
+    let h='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.15rem"><h3 style="margin:0">Pool Standings</h3>';
+    h+='<span style="font-size:.55rem;color:var(--td);font-family:var(--fb)">The Players Championship · TPC Sawgrass · Mar 12–15</span></div>';
     h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">';
     h+='<input id="tpc-search" placeholder="Search entry..." oninput="filterTpcStandings()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:140px">';
     h+='<span style="font-size:.58rem;color:var(--td)">107 entries</span>';
     h+='</div>';
     h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>';
-    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'50px'},{k:'rp',l:'Roster',w:'50px'},{k:'bn',l:'Bonus',w:'45px'},{k:'r1',l:'R1',w:'38px'},{k:'r2',l:'R2',w:'38px'},{k:'r3',l:'R3',w:'38px'},{k:'r4',l:'R4',w:'38px'},{k:'win',l:'Winnings',w:'70px'},{k:'fed',l:'FedEx',w:'50px'}];
+    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'win',l:'Winnings',w:'70px'},{k:'fed',l:'FedEx',w:'50px'}];
     cols.forEach(c=>{
       const active=_sortKey===c.k;
       h+='<th class="'+(active?'s':'')+'" onclick="sortTpcStandings(\''+c.k+'\')" style="'+(c.w?'width:'+c.w:'')+'">'+c.l+(active?'<span class="sa">'+(_sortAsc?'▲':'▼')+'</span>':'')+'</th>';
@@ -3378,10 +3340,6 @@ function renderTpcStandings(pr){
       h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
       h+='<td style="color:var(--tp)">'+e.rp+'</td>';
       h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
-      h+='<td style="color:var(--ts)">'+e.r[0]+'</td>';
-      h+='<td style="color:var(--ts)">'+e.r[1]+'</td>';
-      h+='<td style="color:var(--ts)">'+e.r[2]+'</td>';
-      h+='<td style="color:var(--ts)">'+e.r[3]+'</td>';
       h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td>';
       h+='<td style="color:var(--td)">'+e.fed+'</td>';
       h+='</tr>';
@@ -3401,16 +3359,82 @@ function renderTpcStandings(pr){
     const q=document.getElementById('tpc-search')?.value?.toLowerCase()||'';
     if(!q){render();return;}
     const filtered=entries.filter(e=>e.nm.toLowerCase().includes(q));
-    // Quick inline render of filtered results
     const tbody=el.querySelector('tbody');if(!tbody)return;
     let h='';
     filtered.forEach(e=>{
       const scClr=e.tp<0?'#e09478':e.tp>0?'#2db5a0':'var(--tp)';
-      h+='<tr><td class="rc" style="color:var(--ts)">'+e.rk+'</td><td class="nc">'+e.nm+'</td><td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td><td style="color:var(--tp)">'+e.rp+'</td><td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td><td style="color:var(--ts)">'+e.r[0]+'</td><td style="color:var(--ts)">'+e.r[1]+'</td><td style="color:var(--ts)">'+e.r[2]+'</td><td style="color:var(--ts)">'+e.r[3]+'</td><td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td><td style="color:var(--td)">'+e.fed+'</td></tr>';
+      h+='<tr><td class="rc" style="color:var(--ts)">'+e.rk+'</td><td class="nc">'+e.nm+'</td><td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td><td style="color:var(--tp)">'+e.rp+'</td><td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td><td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td><td style="color:var(--td)">'+e.fed+'</td></tr>';
     });
     tbody.innerHTML=h;
   };
   render();
+}
+
+function renderTpcProgression(pr){
+  const el=document.getElementById('tpc-progression');if(!el)return;
+  const entries=pr.entries;
+  // Build cumulative scores per round for top 10 entries
+  const top10=entries.slice(0,10);
+  let h='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.3rem"><div style="font-size:.62rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em">Tournament Progression — Top 10 Entries</div></div>';
+  h+='<div style="position:relative;height:180px"><canvas id="tpc-prog-cv"></canvas></div>';
+  el.innerHTML=h;
+  const cv=document.getElementById('tpc-prog-cv');if(!cv)return;
+  const colors=['#f4c542','#e09478','#2db5a0','#8bb4d9','#c792ea','#f78c6c','#82aaff','#c3e88d','#ff5370','#ffcb6b'];
+  const datasets=top10.map((e,i)=>{
+    // cumulative: R1, R1+R2, R1+R2+R3, R1+R2+R3+R4 (relative to par 72 each round)
+    const cumul=[];let sum=0;
+    e.r.forEach(rd=>{sum+=(rd-72);cumul.push(sum);});
+    return {
+      label:e.nm,
+      data:cumul,
+      borderColor:colors[i%colors.length],
+      backgroundColor:'transparent',
+      borderWidth:i===0?2.5:1.5,
+      pointRadius:i===0?3:2,
+      pointBackgroundColor:colors[i%colors.length],
+      tension:.3
+    };
+  });
+  new Chart(cv,{type:'line',data:{labels:['R1','R2','R3','R4'],datasets},options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:true,position:'bottom',labels:{font:{size:9,family:'DM Sans'},color:'#8a9a7b',boxWidth:12,padding:6}},tooltip:{mode:'index',intersect:false,bodyFont:{size:10},titleFont:{size:10}}},
+    scales:{x:{ticks:{color:'#8a9a7b',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}},y:{title:{display:true,text:'To Par',color:'#8a9a7b',font:{size:10}},ticks:{color:'#8a9a7b',font:{size:10}},grid:{color:'rgba(255,255,255,.08)'}}}
+  }});
+}
+
+function renderTpcRecap(pr){
+  const el=document.getElementById('tpc-recap');if(!el)return;
+  const p=pr.players;
+  const winner=p[0];
+  const madeCut=p.filter(x=>typeof x.sc==='number');
+  const missed=p.filter(x=>x.sc==='CUT'||x.sc==='WD');
+  const totalBirdies=p.reduce((s,x)=>s+x.bi,0);
+  const totalEagles=p.reduce((s,x)=>s+x.ea,0);
+  let h='<div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.3rem">';
+  h+='<div style="display:flex;align-items:baseline;gap:.4rem">';
+  h+='<span style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em">Champion</span>';
+  h+='<span style="font-family:var(--fd);font-size:.95rem;color:var(--go);font-weight:700">'+winner.nm+'</span>';
+  h+='<span style="font-family:var(--fm);font-size:.82rem;color:#e09478;font-weight:700">'+winner.sc+'</span>';
+  h+='</div>';
+  h+='<div style="display:flex;gap:.6rem;font-size:.6rem;font-family:var(--fm)">';
+  h+='<span style="color:var(--tp)">'+madeCut.length+' made cut</span>';
+  h+='<span style="color:var(--td)">'+missed.length+' missed/WD</span>';
+  h+='<span style="color:#2db5a0">'+totalBirdies+' birdies</span>';
+  h+='<span style="color:var(--gl)">'+totalEagles+' eagles</span>';
+  h+='</div>';
+  h+='</div>';
+  // Top 10 finishers — compact row
+  h+='<div style="display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.4rem">';
+  const top10=madeCut.slice(0,10);
+  top10.forEach((pl,i)=>{
+    const clr=i===0?'var(--go)':i<3?'#2db5a0':'var(--tb)';
+    h+='<div style="background:var(--bca);border:1px solid var(--br);border-radius:4px;padding:.2rem .45rem;display:flex;align-items:center;gap:.3rem;font-size:.62rem">';
+    h+='<span style="color:'+clr+';font-weight:600">'+pl.nm+'</span>';
+    h+='<span style="font-family:var(--fm);color:#e09478;font-weight:700">'+pl.sc+'</span>';
+    h+='</div>';
+  });
+  h+='</div>';
+  el.innerHTML=h;
 }
 
 function renderTpcInsights(pr){
