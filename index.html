@@ -443,7 +443,6 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </section>
 <section id="players-results" class="pn2">
 <div class="cd" id="tpc-standings"></div>
-<div class="cd" id="tpc-progression"></div>
 <div class="cd" id="tpc-recap"></div>
 <div class="cd" id="tpc-insights"></div>
 </section>
@@ -3301,9 +3300,46 @@ function renderPlayersResults(){
   _tpcRendered=true;
   const pr=POOL_RESULTS[11];if(!pr)return;
   renderTpcStandings(pr);
-  renderTpcProgression(pr);
   renderTpcRecap(pr);
   renderTpcInsights(pr);
+}
+
+function _tpcSparkline(rounds){
+  // SVG sparkline showing cumulative to-par progression across 4 rounds
+  const w=60,h=22,pad=2;
+  const cumul=[];let sum=0;
+  rounds.forEach(rd=>{sum+=(rd-72);cumul.push(sum);});
+  const mn=Math.min(...cumul),mx=Math.max(...cumul);
+  const range=mx-mn||1;
+  const pts=cumul.map((v,i)=>{
+    const x=pad+i*((w-2*pad)/3);
+    const y=pad+(1-(v-mn)/range)*(h-2*pad);
+    return x.toFixed(1)+','+y.toFixed(1);
+  });
+  // Color: coral if trending down (good), green if trending up (bad)
+  const clr=cumul[3]<=cumul[0]?'#e09478':'#2db5a0';
+  let svg='<svg width="'+w+'" height="'+h+'" style="vertical-align:middle">';
+  svg+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+clr+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>';
+  // Dot on final point
+  const last=pts[3].split(',');
+  svg+='<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2" fill="'+clr+'"/>';
+  svg+='</svg>';
+  return svg;
+}
+
+function _tpcRenderRow(e,me){
+  const scClr=e.tp<0?'#e09478':e.tp>0?'#2db5a0':'var(--tp)';
+  let h='<tr class="'+(me?'me':'')+'">';
+  h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+'</td>';
+  h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
+  h+='<td style="color:var(--tp)">'+e.rp+'</td>';
+  h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
+  h+='<td style="padding:0 2px">'+_tpcSparkline(e.r)+'</td>';
+  h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td>';
+  h+='<td style="color:var(--td)">'+e.fed+'</td>';
+  h+='</tr>';
+  return h;
 }
 
 function renderTpcStandings(pr){
@@ -3325,24 +3361,16 @@ function renderTpcStandings(pr){
     h+='<span style="font-size:.58rem;color:var(--td)">107 entries</span>';
     h+='</div>';
     h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>';
-    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'win',l:'Winnings',w:'70px'},{k:'fed',l:'FedEx',w:'50px'}];
+    const cols=[{k:'rk',l:'#',w:'32px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'55px'},{k:'rp',l:'Roster',w:'55px'},{k:'bn',l:'Bonus',w:'50px'},{k:'spark',l:'R1–R4',w:'66px'},{k:'win',l:'Winnings',w:'70px'},{k:'fed',l:'FedEx',w:'50px'}];
     cols.forEach(c=>{
       const active=_sortKey===c.k;
-      h+='<th class="'+(active?'s':'')+'" onclick="sortTpcStandings(\''+c.k+'\')" style="'+(c.w?'width:'+c.w:'')+'">'+c.l+(active?'<span class="sa">'+(_sortAsc?'▲':'▼')+'</span>':'')+'</th>';
+      const sortable=c.k!=='spark';
+      h+='<th class="'+(active?'s':'')+'" '+(sortable?'onclick="sortTpcStandings(\''+c.k+'\')"':'')+' style="'+(c.w?'width:'+c.w:'')+';'+(sortable?'cursor:pointer':'cursor:default')+'">'+c.l+(active?'<span class="sa">'+(_sortAsc?'▲':'▼')+'</span>':'')+'</th>';
     });
     h+='</tr></thead><tbody>';
     shown.forEach(e=>{
       const me=S.me&&e.nm.toLowerCase()===S.me.toLowerCase();
-      const scClr=e.tp<0?'#e09478':e.tp>0?'#2db5a0':'var(--tp)';
-      h+='<tr class="'+(me?'me':'')+'">';
-      h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
-      h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+'</td>';
-      h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
-      h+='<td style="color:var(--tp)">'+e.rp+'</td>';
-      h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
-      h+='<td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td>';
-      h+='<td style="color:var(--td)">'+e.fed+'</td>';
-      h+='</tr>';
+      h+=_tpcRenderRow(e,me);
     });
     h+='</tbody></table></div>';
     if(!_showAll){
@@ -3351,6 +3379,7 @@ function renderTpcStandings(pr){
     el.innerHTML=h;
   }
   window.sortTpcStandings=function(key){
+    if(key==='spark')return;
     if(_sortKey===key)_sortAsc=!_sortAsc;else{_sortKey=key;_sortAsc=key==='rk'||key==='nm';}
     render();
   };
@@ -3361,80 +3390,75 @@ function renderTpcStandings(pr){
     const filtered=entries.filter(e=>e.nm.toLowerCase().includes(q));
     const tbody=el.querySelector('tbody');if(!tbody)return;
     let h='';
-    filtered.forEach(e=>{
-      const scClr=e.tp<0?'#e09478':e.tp>0?'#2db5a0':'var(--tp)';
-      h+='<tr><td class="rc" style="color:var(--ts)">'+e.rk+'</td><td class="nc">'+e.nm+'</td><td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td><td style="color:var(--tp)">'+e.rp+'</td><td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td><td style="color:var(--go);font-size:.68rem">$'+(e.win/1e6).toFixed(1)+'M</td><td style="color:var(--td)">'+e.fed+'</td></tr>';
-    });
+    filtered.forEach(e=>{h+=_tpcRenderRow(e,false);});
     tbody.innerHTML=h;
   };
   render();
 }
 
-function renderTpcProgression(pr){
-  const el=document.getElementById('tpc-progression');if(!el)return;
-  const entries=pr.entries;
-  // Build cumulative scores per round for top 10 entries
-  const top10=entries.slice(0,10);
-  let h='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.3rem"><div style="font-size:.62rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em">Tournament Progression — Top 10 Entries</div></div>';
-  h+='<div style="position:relative;height:180px"><canvas id="tpc-prog-cv"></canvas></div>';
-  el.innerHTML=h;
-  const cv=document.getElementById('tpc-prog-cv');if(!cv)return;
-  const colors=['#f4c542','#e09478','#2db5a0','#8bb4d9','#c792ea','#f78c6c','#82aaff','#c3e88d','#ff5370','#ffcb6b'];
-  const datasets=top10.map((e,i)=>{
-    // cumulative: R1, R1+R2, R1+R2+R3, R1+R2+R3+R4 (relative to par 72 each round)
-    const cumul=[];let sum=0;
-    e.r.forEach(rd=>{sum+=(rd-72);cumul.push(sum);});
-    return {
-      label:e.nm,
-      data:cumul,
-      borderColor:colors[i%colors.length],
-      backgroundColor:'transparent',
-      borderWidth:i===0?2.5:1.5,
-      pointRadius:i===0?3:2,
-      pointBackgroundColor:colors[i%colors.length],
-      tension:.3
-    };
-  });
-  new Chart(cv,{type:'line',data:{labels:['R1','R2','R3','R4'],datasets},options:{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:true,position:'bottom',labels:{font:{size:9,family:'DM Sans'},color:'#8a9a7b',boxWidth:12,padding:6}},tooltip:{mode:'index',intersect:false,bodyFont:{size:10},titleFont:{size:10}}},
-    scales:{x:{ticks:{color:'#8a9a7b',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'}},y:{title:{display:true,text:'To Par',color:'#8a9a7b',font:{size:10}},ticks:{color:'#8a9a7b',font:{size:10}},grid:{color:'rgba(255,255,255,.08)'}}}
-  }});
-}
-
 function renderTpcRecap(pr){
   const el=document.getElementById('tpc-recap');if(!el)return;
   const p=pr.players;
-  const winner=p[0];
   const madeCut=p.filter(x=>typeof x.sc==='number');
-  const missed=p.filter(x=>x.sc==='CUT'||x.sc==='WD');
-  const totalBirdies=p.reduce((s,x)=>s+x.bi,0);
-  const totalEagles=p.reduce((s,x)=>s+x.ea,0);
-  let h='<div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.3rem">';
-  h+='<div style="display:flex;align-items:baseline;gap:.4rem">';
-  h+='<span style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em">Champion</span>';
-  h+='<span style="font-family:var(--fd);font-size:.95rem;color:var(--go);font-weight:700">'+winner.nm+'</span>';
-  h+='<span style="font-family:var(--fm);font-size:.82rem;color:#e09478;font-weight:700">'+winner.sc+'</span>';
-  h+='</div>';
-  h+='<div style="display:flex;gap:.6rem;font-size:.6rem;font-family:var(--fm)">';
-  h+='<span style="color:var(--tp)">'+madeCut.length+' made cut</span>';
-  h+='<span style="color:var(--td)">'+missed.length+' missed/WD</span>';
-  h+='<span style="color:#2db5a0">'+totalBirdies+' birdies</span>';
-  h+='<span style="color:var(--gl)">'+totalEagles+' eagles</span>';
-  h+='</div>';
-  h+='</div>';
-  // Top 10 finishers — compact row
-  h+='<div style="display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.4rem">';
-  const top10=madeCut.slice(0,10);
-  top10.forEach((pl,i)=>{
-    const clr=i===0?'var(--go)':i<3?'#2db5a0':'var(--tb)';
-    h+='<div style="background:var(--bca);border:1px solid var(--br);border-radius:4px;padding:.2rem .45rem;display:flex;align-items:center;gap:.3rem;font-size:.62rem">';
-    h+='<span style="color:'+clr+';font-weight:600">'+pl.nm+'</span>';
-    h+='<span style="font-family:var(--fm);color:#e09478;font-weight:700">'+pl.sc+'</span>';
-    h+='</div>';
+  // Rank players in each category (1=best)
+  const cats=[
+    {k:'bi',l:'Birdies',hi:true},{k:'ea',l:'Eagles',hi:true},{k:'pa',l:'Pars',hi:true},
+    {k:'bo',l:'Bogeys',hi:false},{k:'db',l:'Doubles',hi:false},{k:'dkv',l:'DK Value',hi:true}
+  ];
+  const ranks={};
+  cats.forEach(cat=>{
+    const sorted=[...madeCut].sort((a,b)=>cat.hi?(b[cat.k]||0)-(a[cat.k]||0):(a[cat.k]||0)-(b[cat.k]||0));
+    sorted.forEach((pl,i)=>{if(!ranks[pl.nm])ranks[pl.nm]={};ranks[pl.nm][cat.k]=i+1;});
   });
+  const n=madeCut.length;
+  function heatClr(rank,total){
+    const pct=rank/total;
+    if(pct<=.15)return 'background:rgba(45,181,160,.45)';
+    if(pct<=.35)return 'background:rgba(45,181,160,.2)';
+    if(pct<=.65)return '';
+    if(pct<=.85)return 'background:rgba(224,148,120,.15)';
+    return 'background:rgba(224,148,120,.35)';
+  }
+  let h='<div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="document.getElementById(\'tpc-heatmap\').style.display=document.getElementById(\'tpc-heatmap\').style.display===\'none\'?\'block\':\'none\';this.querySelector(\'.tpc-chev\').textContent=document.getElementById(\'tpc-heatmap\').style.display===\'none\'?\'▸\':\'▾\'">';
+  h+='<div style="display:flex;align-items:baseline;gap:.4rem">';
+  h+='<span class="tpc-chev" style="color:var(--go);font-size:.7rem">▾</span>';
+  h+='<span style="font-size:.68rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em">Golfer Results</span>';
+  h+='<span style="font-size:.55rem;color:var(--td);font-family:var(--fm)">'+madeCut.length+' made cut · Rankings by category</span>';
   h+='</div>';
+  h+='<div style="display:flex;gap:.5rem;font-size:.52rem;color:var(--td)">';
+  h+='<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(45,181,160,.45);vertical-align:middle;margin-right:2px"></span>Top 15%</span>';
+  h+='<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(45,181,160,.2);vertical-align:middle;margin-right:2px"></span>Above avg</span>';
+  h+='<span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(224,148,120,.35);vertical-align:middle;margin-right:2px"></span>Bottom 15%</span>';
+  h+='</div></div>';
+  h+='<div id="tpc-heatmap">';
+  h+='<input id="tpc-golfer-search" placeholder="Search golfer..." oninput="filterTpcGolfers()" style="font-family:var(--fb);font-size:.6rem;padding:.2rem .4rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:4px;outline:0;width:120px;margin:.3rem 0">';
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>';
+  h+='<th style="width:28px">POS</th><th>PLAYER</th><th style="width:48px">SCORE</th>';
+  cats.forEach(c=>{h+='<th style="width:52px">'+c.l.toUpperCase()+'</th>';});
+  h+='</tr></thead><tbody id="tpc-golfer-tbody">';
+  madeCut.forEach(pl=>{
+    const scClr=pl.sc<0?'#e09478':pl.sc>0?'#2db5a0':'var(--tp)';
+    const r=ranks[pl.nm]||{};
+    h+='<tr><td class="rc" style="color:var(--ts)">'+pl.pos+'</td>';
+    h+='<td class="nc" style="font-size:.68rem">'+pl.nm+'</td>';
+    h+='<td style="font-weight:700;color:'+scClr+';font-family:var(--fm)">'+pl.sc+'</td>';
+    cats.forEach(c=>{
+      const val=pl[c.k]!=null?pl[c.k]:'–';
+      const rk=r[c.k]||n;
+      h+='<td style="text-align:center;font-family:var(--fm);font-size:.65rem;'+heatClr(rk,n)+'">'+val+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table></div></div>';
   el.innerHTML=h;
+  window.filterTpcGolfers=function(){
+    const q=document.getElementById('tpc-golfer-search')?.value?.toLowerCase()||'';
+    const rows=document.querySelectorAll('#tpc-golfer-tbody tr');
+    rows.forEach(r=>{
+      const name=r.querySelector('.nc')?.textContent?.toLowerCase()||'';
+      r.style.display=(!q||name.includes(q))?'':'none';
+    });
+  };
 }
 
 function renderTpcInsights(pr){
