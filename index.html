@@ -47,10 +47,10 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .ctrl select:focus,.ctrl input:focus{border-color:var(--gn)}.ctrl input{flex:1;min-width:100px}
 .ctrl select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%238a9a8f' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;padding-right:24px}
 .cnt{font-size:.72rem;color:var(--td);white-space:nowrap}
-.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.45rem;margin:0 .85rem .6rem}
-.sc{background:var(--bc);border:1px solid var(--br);border-radius:7px;padding:.6rem;text-align:center}
-.sc .v{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--tb)}.sc .v.go{color:var(--go)}.sc .v.gl{color:var(--gl)}
-.sc .l{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ts);margin-top:.1rem}
+.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:.35rem;margin:0 .6rem .5rem}
+.sc{background:var(--bc);border:1px solid var(--br);border-radius:6px;padding:.4rem;text-align:center}
+.sc .v{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--tb)}.sc .v.go{color:var(--go)}.sc .v.gl{color:var(--gl)}
+.sc .l{font-size:.52rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ts);margin-top:.05rem}
 .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 .6rem .85rem;border-radius:7px;border:1px solid var(--br)}
 table{width:100%;border-collapse:collapse;font-size:.82rem}
 thead th{position:sticky;top:0;z-index:2;background:var(--bc);color:var(--ts);font-family:var(--fb);font-weight:600;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:.55rem .4rem;text-align:left;border-bottom:1px solid var(--brl);cursor:pointer;user-select:none;white-space:nowrap}
@@ -81,22 +81,22 @@ table.tc{font-size:.68rem}table.tc thead th{font-size:.6rem;padding:.35rem .3rem
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .ft{text-align:center;padding:1rem;color:var(--go);font-size:.68rem;border-top:1px solid var(--br);margin-top:1rem;background:var(--bca)}
 .ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.4rem;margin:0 .85rem .6rem}
-.ev-card{background:var(--bc);border:1px solid var(--br);border-radius:7px;padding:.55rem;cursor:pointer;transition:all .2s;text-align:center}
+.ev-card{background:var(--bc);border:1px solid var(--br);border-radius:6px;padding:.4rem;cursor:pointer;transition:all .2s;text-align:center}
 .ev-card:hover,.ev-card.active{border-color:var(--go);background:var(--bca)}
-.ev-card .ev-n{font-family:var(--fd);font-size:.88rem;color:var(--tb);font-weight:600}
-.ev-card .ev-w{font-size:.68rem;color:var(--go);margin-top:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ev-card .ev-r{font-size:.58rem;color:var(--ts);margin-top:.08rem}
+.ev-card .ev-n{font-family:var(--fd);font-size:.72rem;color:var(--tb);font-weight:600}
+.ev-card .ev-w{font-size:.58rem;color:var(--go);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-card .ev-r{font-size:.5rem;color:var(--ts);margin-top:.05rem}
 .stabs{display:flex;gap:0;margin:0 .85rem .4rem;border-radius:7px;overflow:hidden;border:1px solid var(--br)}
 .stabs button{flex:1;padding:.5rem .4rem;font-family:var(--fb);font-size:.68rem;font-weight:500;color:var(--ts);background:var(--bc);border:none;cursor:pointer;transition:all .2s;letter-spacing:.04em;text-transform:uppercase}
 .stabs button:hover{color:var(--tb)}.stabs button.active{background:var(--gn);color:var(--tb)}
 /* Awards */
-.aw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.4rem;margin-bottom:.5rem}
-.aw{background:var(--bca);border:1px solid var(--br);border-radius:7px;padding:.6rem;text-align:center;transition:border-color .2s}
+.aw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.3rem;margin-bottom:.4rem}
+.aw{background:var(--bca);border:1px solid var(--br);border-radius:6px;padding:.35rem;text-align:center;transition:border-color .2s}
 .aw:hover{border-color:var(--brl)}
 .aw.gold{border-color:var(--go);background:rgba(196,160,53,.05)}
-.aw .at{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ts)}
-.aw .an{font-family:var(--fd);font-size:.95rem;color:var(--tb);font-weight:600;margin-top:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.aw .ad{font-size:.6rem;color:var(--go);margin-top:.1rem}
+.aw .at{font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ts)}
+.aw .an{font-family:var(--fd);font-size:.75rem;color:var(--tb);font-weight:600;margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aw .ad{font-size:.52rem;color:var(--go);margin-top:.05rem}
 /* H2H */
 .h2h{display:grid;grid-template-columns:1fr auto 1fr;gap:.4rem;align-items:start}
 .h2h-vs{font-family:var(--fd);font-size:1.4rem;color:var(--go);padding-top:1.2rem;text-align:center}
@@ -3608,7 +3608,7 @@ function renderTpcStandings(pr){
     if(ties.length){
       h+='<details style="margin-top:.3rem"><summary style="font-size:.55rem;color:var(--td);cursor:pointer;font-family:var(--fb)">Tiebreak info ('+ties.length+' ties)</summary>';
       h+='<div style="font-size:.52rem;color:var(--td);font-family:var(--fm);padding:.3rem .2rem;line-height:1.6">';
-      h+='<div style="margin-bottom:.3rem;color:var(--ts);font-family:var(--fb)">Ties broken by lowest combined score of 5th + 6th rostered golfers (excluded from best-4 scoring).</div>';
+      h+='<div style="margin-bottom:.3rem;color:var(--ts);font-family:var(--fb)">Ranked by total score (under par), then tiebreak.</div>';
       ties.forEach(([score,group])=>{
         const names=group.sort((a,b)=>a.td-b.td).map(e=>e.nm+'<span style="color:var(--ts)"> ('+e.td+')</span>').join(', ');
         h+='<div><span style="color:var(--tp)">'+score+':</span> '+names+'</div>';
