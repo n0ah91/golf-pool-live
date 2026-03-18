@@ -27,6 +27,8 @@ html{font-size:16px;-webkit-font-smoothing:antialiased}
 body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bd)}
 ::-webkit-scrollbar-thumb{background:var(--brl);border-radius:3px}
+.logo-banner{padding:.8rem 1rem .4rem;text-align:center}
+.logo-banner img{max-width:min(500px,90%);height:auto;opacity:.92;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
 .hdr{background:linear-gradient(180deg,var(--bc) 0%,var(--bd) 100%);border-bottom:1px solid var(--br);padding:1rem 1rem 0;text-align:center}
 .hdr h1{font-family:var(--fd);font-weight:700;font-size:2rem;color:var(--tb);letter-spacing:.04em}
 .hdr h1::after{content:'';display:block;width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--go),transparent);margin:.35rem auto 0}
@@ -416,6 +418,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </head>
 <body>
 <header class="hdr">
+<div class="logo-banner"><img src="tournament-logos.png" alt="2026 Tournament Logos"></div>
 <h1>The Majors Pool</h1>
 <p class="sub">Est. 2017</p>
 </header>
@@ -2188,7 +2191,12 @@ async function fetchPreviewOdds() {
     let source = '';
     try {
       const live = await dgF('preds/in-play', {tour:'pga'});
-      if (live && live.data && live.data.length) {
+      // Only use in-play if tournament is actively running (not finished)
+      // A finished event has the leader at ~1.0 win prob or all rounds complete
+      const isLive = live && live.data && live.data.length &&
+        !live.data.some(p => p.win > 0.99) && // no winner declared
+        live.data.filter(p => p.win > 0).length > 3; // multiple contenders
+      if (isLive) {
         for (const p of live.data) {
           if (p.win != null && p.win > 0) {
             players.push({
@@ -2221,7 +2229,7 @@ async function fetchPreviewOdds() {
           }
         }
       }
-      source = 'DataGolf Outright Odds API &middot; Best available line';
+      source = 'DataGolf Outrights &middot; Pre-tournament odds · Best available line';
     }
 
     players.sort((a, b) => b.prob - a.prob);
