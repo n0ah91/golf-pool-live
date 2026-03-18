@@ -479,7 +479,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   <div id="lb-bd"></div>
 </div>
 
-<div class="cd" id="live-preview"></div>
+<div class="cd" id="live-preview" style="display:none"></div>
 
 <div class="cd" id="odds-panel" style="margin-top:.4rem">
   <h4 style="font-family:var(--fh);color:var(--go);font-size:.82rem;margin:0 0 .3rem;display:flex;align-items:center;justify-content:space-between">
@@ -1638,6 +1638,18 @@ const STAT_CHART_MAP={
 };
 
 const PAST_WINNERS = {
+  valspar: [
+    {yr:2025,nm:'Denny McCarthy',sc:'-14',r2:'Justin Thomas'},
+    {yr:2024,nm:'Peter Malnati',sc:'-13',r2:'Danny Lee'},
+    {yr:2023,nm:'Taylor Moore',sc:'-11',r2:'Adam Schenk'},
+    {yr:2022,nm:'Sam Burns',sc:'-17',r2:'Davis Riley'},
+    {yr:2021,nm:'Sam Burns',sc:'-17 (PO)',r2:'Keegan Bradley'},
+    {yr:2020,nm:'Cancelled (COVID)',sc:'-',r2:'-'},
+    {yr:2019,nm:'Paul Casey',sc:'-8',r2:'Jason Kokrak/Louis Oosthuizen'},
+    {yr:2018,nm:'Paul Casey',sc:'-10',r2:'Tiger Woods/Patrick Reed'},
+    {yr:2017,nm:'Adam Hadwin',sc:'-14',r2:'Patrick Cantlay'},
+    {yr:2016,nm:'Charl Schwartzel',sc:'-12',r2:'Bill Haas'}
+  ],
   players: [
     {yr:2025,nm:'Rory McIlroy',sc:'-12 (PO)',r2:'J.J. Spaun'},
     {yr:2024,nm:'Scottie Scheffler',sc:'-20',r2:'Xander Schauffele'},
@@ -1738,7 +1750,8 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
   }
   const evName = overrideEvName || EV_NAMES[ev] || ev || courseName;
   const evDate = ev ? (EV_DATES[ev] || '') : '';
-  const pw = ev ? (PAST_WINNERS[ev] || []) : [];
+  const pwKey = ev || (overrideCourseName && overrideCourseName.includes('Innisbrook') ? 'valspar' : null);
+  const pw = pwKey ? (PAST_WINNERS[pwKey] || []) : [];
 
   // SG emphasis bars (horizontal)
   const sg = course.sgEmphasis || {};
@@ -1946,21 +1959,26 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
       '</details>' +
     '</div>' +
 
-    // Course notes — collapsed by default
-    '<details class="cf-details">' +
-      '<summary class="cf-details-sum">Course Notes</summary>' +
-      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
-        notesHTML +
-      '</div>' +
-    '</details>' +
+    // Course notes — preview + expandable
+    '<div class="cf-block">' +
+      '<div class="cf-section-title">Course Notes</div>' +
+      (course.whatMakesItUnique ? '<div style="font-size:.65rem;color:var(--tp);line-height:1.5;margin-bottom:.3rem">' + course.whatMakesItUnique.split('. ').slice(0,2).join('. ') + '.</div>' : '') +
+      (course.notesBullets && course.notesBullets.length > 2 ?
+        '<details style="margin-top:.2rem"><summary style="font-size:.55rem;color:var(--go);cursor:pointer;font-family:var(--fb)">Show all ' + course.notesBullets.length + ' notes ▸</summary>' +
+        '<div style="padding-top:.3rem">' + notesHTML + '</div></details>' :
+        notesHTML) +
+    '</div>' +
 
-    // Past winners (collapsed by default) — last 10 of this tournament
-    '<details class="cf-details">' +
-      '<summary class="cf-details-sum">Past Winners <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Last 10)</span></summary>' +
-      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
-        '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:left;padding:.1rem .2rem">Score</th>' + (isRotating ? '<th style="text-align:left;padding:.1rem .2rem">Course</th>' : '') + '<th style="text-align:left;padding:.1rem .2rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' + venueHTML +
-      '</div>' +
-    '</details>' +
+    // Past winners — preview (last 3) + expandable
+    '<div class="cf-block">' +
+      '<div class="cf-section-title">Past Winners</div>' +
+      (pw.length ? '<div style="font-size:.65rem;margin-bottom:.3rem">' +
+        pw.slice(0,3).map(function(w){ return '<div style="display:flex;gap:.4rem;padding:.12rem 0;border-bottom:1px solid var(--br)"><span style="color:var(--ts);font-family:var(--fm);width:2rem">' + w.yr + '</span><span style="color:var(--tb);flex:1">' + w.nm + '</span><span style="color:var(--gl);font-family:var(--fm)">' + w.sc + '</span></div>'; }).join('') +
+        '</div>' : '<div style="font-size:.6rem;color:var(--ts)">No historical data available</div>') +
+      (pw.length > 3 ?
+        '<details style="margin-top:.1rem"><summary style="font-size:.55rem;color:var(--go);cursor:pointer;font-family:var(--fb)">Show all ' + pw.length + ' winners ▸</summary>' +
+        '<div style="padding-top:.3rem"><table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:left;padding:.1rem .2rem">Score</th>' + (isRotating ? '<th style="text-align:left;padding:.1rem .2rem">Course</th>' : '') + '<th style="text-align:left;padding:.1rem .2rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' + venueHTML + '</div></details>' : '') +
+    '</div>' +
 
     // Weather & Conditions — collapsed by default
     '<details class="cf-details">' +
