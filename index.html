@@ -110,7 +110,7 @@ td.rc{font-weight:600;min-width:38px}
 /* Insight blocks */
 .ig{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.4rem;margin-bottom:.6rem}
 .ib{background:var(--bca);border:1px solid var(--br);border-radius:7px;padding:.65rem}
-.ib .it{font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ts);margin-bottom:.2rem}
+.ib .it{font-family:var(--fd);font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ts);margin-bottom:.2rem;font-weight:600}
 .ib .iv{font-family:var(--fd);font-size:1.2rem;color:var(--tb);font-weight:600}
 .ib .is{font-size:.62rem;color:var(--go);margin-top:.1rem}
 /* Pool economics */
@@ -313,7 +313,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .splash-link:active{background:rgba(224,148,120,.2)}
 .ls-panel{background:var(--bc);border-radius:10px;padding:0;margin-top:.5rem;overflow:hidden;border:1px solid rgba(244,197,66,.12)}
 .ls-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:linear-gradient(135deg,rgba(244,197,66,.08) 0%,rgba(45,181,160,.06) 100%);border-bottom:1px solid var(--br)}
-.ls-event-name{font-family:var(--fh);font-size:.95rem;color:var(--go);font-weight:700;letter-spacing:.01em;display:flex;align-items:center;gap:.4rem}
+.ls-event-name{font-family:var(--fd);font-size:1.15rem;color:var(--tb);font-weight:600;letter-spacing:.01em;display:flex;align-items:center;gap:.4rem}
 .ls-live-dot{width:7px;height:7px;border-radius:50%;background:#2db5a0;display:inline-block;box-shadow:0 0 6px rgba(45,181,160,.5);animation:ls-pulse 2s ease-in-out infinite}
 @keyframes ls-pulse{0%,100%{opacity:1;box-shadow:0 0 6px rgba(45,181,160,.5)}50%{opacity:.5;box-shadow:0 0 3px rgba(45,181,160,.3)}}
 .ls-header-right{display:flex;align-items:center;gap:.4rem}
@@ -428,7 +428,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <button onclick="go('players-results')">The Players</button>
 <button class="active" onclick="go('upcoming')">Upcoming</button>
 <button onclick="go('history')">History</button>
-<button onclick="go('rules')">Rules</button>
+<button onclick="go('rules')">Rules/Pay</button>
 </nav>
 <main>
 <section id="history" class="pn2">
@@ -443,6 +443,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </section>
 <section id="players-results" class="pn2">
 <div class="cd" id="tpc-standings"></div>
+<div class="cd" id="tpc-insights"></div>
 <div id="ls-panel" class="ls-panel">
   <div class="ls-header">
     <div class="ls-event-name" id="ls-event-name"><span class="ls-live-dot"></span>Live Tournament</div>
@@ -456,27 +457,13 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
     <button class="ls-tab active" onclick="lsView('hm')">Performance</button>
     <button class="ls-tab" onclick="lsView('holes')">Toughest Holes</button>
     <button class="ls-tab" onclick="lsView('power')">Bomb vs. Control</button>
-    <button class="ls-tab ls-tab-fl" onclick="lsView('fl')">Fades &amp; Leans</button>
   </div>
   <div id="ls-helper" class="ls-helper"></div>
   <div id="ls-insights" class="ls-insights"></div>
-  <div class="ls-ctrl">
-    <div class="ls-rounds">
-      <button class="ls-rnd active" data-r="event_avg" onclick="lsRound('event_avg')">Event</button>
-      <button class="ls-rnd" data-r="1" onclick="lsRound('1')">R1</button>
-      <button class="ls-rnd" data-r="2" onclick="lsRound('2')">R2</button>
-      <button class="ls-rnd" data-r="3" onclick="lsRound('3')">R3</button>
-      <button class="ls-rnd" data-r="4" onclick="lsRound('4')">R4</button>
-    </div>
-    <div class="ls-toggle" id="ls-toggle">
-      <button class="ls-tog active" data-mode="simple" onclick="lsSetMode(false)">Simple</button>
-      <button class="ls-tog" data-mode="advanced" onclick="lsSetMode(true)">Advanced</button>
-    </div>
-    <input id="ls-search" class="ls-search" placeholder="Search player..." oninput="lsFilter()">
+  <div class="ls-ctrl" style="display:none">
   </div>
   <div id="ls-body"><div style="text-align:center;color:var(--ts);padding:1.5rem;font-size:.72rem">Loading live data...</div></div>
 </div>
-<div class="cd" id="tpc-insights"></div>
 </section>
 <section id="upcoming" class="pn2 active">
 
@@ -571,7 +558,75 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 </div>
 
-<div style="font-size:.65rem;color:var(--td);font-style:italic;text-align:center;border-top:1px solid var(--br);padding-top:.5rem">⚠️ All winnings are fake internet money — bragging rights only</div>
+<div style="font-size:.65rem;color:var(--td);font-style:italic;text-align:center;border-top:1px solid var(--br);padding-top:.5rem">All winnings are fake internet money — bragging rights only</div>
+</div>
+
+<div class="cd" style="max-width:640px;margin-left:auto;margin-right:auto;margin-top:.8rem">
+<h3>Payouts</h3>
+<div style="font-size:.68rem;color:var(--td);margin-bottom:.5rem">106 entries × $125 = <strong style="color:var(--tb)">$13,250</strong> gross · $250 house · <strong style="color:var(--tb)">$13,000</strong> net pot</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem">
+
+<div>
+<div style="font-size:.72rem;color:var(--go);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Season Standings</div>
+<div style="font-size:.58rem;color:var(--td);margin-bottom:.25rem">50.96% of net pot · $6,625</div>
+<table style="width:100%;font-size:.68rem;border-collapse:collapse">
+<thead><tr style="border-bottom:1px solid var(--br)"><th style="text-align:left;color:var(--td);font-weight:500;padding:.2rem 0">Place</th><th style="text-align:right;color:var(--td);font-weight:500;padding:.2rem 0">Payout</th></tr></thead>
+<tbody>
+<tr><td style="color:var(--tp);padding:.15rem 0">1st</td><td style="text-align:right;color:var(--gl);font-family:var(--fm);font-weight:600">$1,652</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">2nd</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$1,244</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">3rd</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$942</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">4th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$714</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">5th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$541</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">6th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$410</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">7th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$310</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">8th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$235</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">9th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$178</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">10th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$125</td></tr>
+<tr style="border-top:1px solid var(--br)"><td style="color:var(--tp);padding:.15rem 0">DFL</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$100</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">BB</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$100</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">ML$</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$75</td></tr>
+<tr style="border-top:1px solid var(--br);font-weight:700"><td style="color:var(--tb);padding:.2rem 0">Total</td><td style="text-align:right;color:var(--go);font-family:var(--fm)">$6,625</td></tr>
+</tbody>
+</table>
+</div>
+
+<div>
+<div style="font-size:.72rem;color:var(--go);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Per Event</div>
+<div style="font-size:.58rem;color:var(--td);margin-bottom:.25rem">49.04% of net pot · $1,275 × 5 events</div>
+<table style="width:100%;font-size:.68rem;border-collapse:collapse">
+<thead><tr style="border-bottom:1px solid var(--br)"><th style="text-align:left;color:var(--td);font-weight:500;padding:.2rem 0">Place</th><th style="text-align:right;color:var(--td);font-weight:500;padding:.2rem 0">Payout</th></tr></thead>
+<tbody>
+<tr><td style="color:var(--tp);padding:.15rem 0">1st</td><td style="text-align:right;color:var(--gl);font-family:var(--fm);font-weight:600">$500</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">2nd</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$325</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">3rd</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$200</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">4th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$125</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">5th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$75</td></tr>
+<tr><td style="color:var(--tp);padding:.15rem 0">DH</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$50</td></tr>
+<tr style="border-top:1px solid var(--br);font-weight:700"><td style="color:var(--tb);padding:.2rem 0">Total</td><td style="text-align:right;color:var(--go);font-family:var(--fm)">$1,275</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+
+<div style="margin-top:.5rem">
+<div style="font-size:.72rem;color:var(--go);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Audit</div>
+<div style="display:grid;gap:.2rem;font-size:.62rem">
+<div style="display:flex;justify-content:space-between;padding:.2rem .4rem;background:var(--bca);border-radius:4px"><span style="color:var(--tp)">Gross Pot = 106 × $125</span><span style="color:var(--gl);font-family:var(--fm)">$13,250</span></div>
+<div style="display:flex;justify-content:space-between;padding:.2rem .4rem;background:var(--bca);border-radius:4px"><span style="color:var(--tp)">Net Pot = $13,250 − $250 house</span><span style="color:var(--gl);font-family:var(--fm)">$13,000</span></div>
+<div style="display:flex;justify-content:space-between;padding:.2rem .4rem;background:var(--bca);border-radius:4px"><span style="color:var(--tp)">Season Total</span><span style="color:var(--gl);font-family:var(--fm)">$6,625</span></div>
+<div style="display:flex;justify-content:space-between;padding:.2rem .4rem;background:var(--bca);border-radius:4px"><span style="color:var(--tp)">Event Total × 5</span><span style="color:var(--gl);font-family:var(--fm)">$6,375</span></div>
+<div style="display:flex;justify-content:space-between;padding:.2rem .4rem;background:rgba(45,181,160,.08);border:1px solid rgba(45,181,160,.2);border-radius:4px"><span style="color:var(--tb);font-weight:600">Season + Events + House</span><span style="color:var(--gl);font-family:var(--fm);font-weight:700">$13,250 ✓</span></div>
+</div>
+</div>
+
+<div style="margin-top:.5rem;font-size:.58rem;color:var(--td)">
+<span style="margin-right:.8rem"><strong>BB</strong> = Bounce Back</span>
+<span style="margin-right:.8rem"><strong>ML$</strong> = Money List</span>
+<span style="margin-right:.8rem"><strong>DFL</strong> = Dead F'n Last</span>
+<span><strong>DH</strong> = Dark Horse</span>
+</div>
 </div>
 </div>
 </section>
@@ -2972,23 +3027,29 @@ function sgColor(rank,fieldSize){
   const n=fieldSize||100;
   const t=Math.max(0,Math.min(1,(r-1)/(n-1))); // 0=best, 1=worst
   let R,G,B,alpha;
-  if(t<=0.4){
-    // Green zone: softer, less saturated
-    const s=t/0.4;
-    R=Math.round(25+s*35);    // 25→60
-    G=Math.round(185-s*55);   // 185→130
-    B=Math.round(85-s*30);    // 85→55
-    alpha=0.75-s*0.35;        // 0.75→0.4
-  } else if(t<=0.6){
-    // Dead zone: nearly invisible
-    R=60;G=70;B=80;alpha=0.05;
+  if(t<=0.15){
+    // Top 15%: deep teal-green
+    const s=t/0.15;
+    R=Math.round(20+s*15);G=Math.round(190-s*30);B=Math.round(90-s*20);
+    alpha=0.80-s*0.15;
+  } else if(t<=0.35){
+    // Above avg: lighter green
+    const s=(t-0.15)/0.20;
+    R=Math.round(35+s*30);G=Math.round(160-s*40);B=Math.round(70-s*15);
+    alpha=0.55-s*0.25;
+  } else if(t<=0.45){
+    // Dead zone: very narrow
+    R=60;G=70;B=80;alpha=0.06;
+  } else if(t<=0.70){
+    // Below avg: amber-coral
+    const s=(t-0.45)/0.25;
+    R=Math.round(195+s*20);G=Math.round(130-s*55);B=Math.round(60-s*15);
+    alpha=0.20+s*0.25;
   } else {
-    // Red zone: softer, less saturated
-    const s=(t-0.6)/0.4;
-    R=Math.round(140+s*40);   // 140→180
-    G=Math.round(70-s*30);    // 70→40
-    B=Math.round(60-s*20);    // 60→40
-    alpha=0.3+s*0.4;          // 0.3→0.7
+    // Bottom 25%: coral-red
+    const s=(t-0.75)/0.25;
+    R=Math.round(215+s*20);G=Math.round(65-s*30);B=Math.round(40-s*10);
+    alpha=0.50+s*0.30;
   }
   const fg=alpha>0.35?'rgba(255,255,255,.92)':alpha>0.15?'rgba(255,255,255,.75)':'rgba(255,255,255,.5)';
   const fw='400';
@@ -3115,14 +3176,18 @@ function lsInsights(stats){
   if(!stats||!stats.length){el.innerHTML='';return;}
   const best=(key,label)=>{
     const top=stats.filter(p=>p[key]!=null&&p[key]!=='-').sort((a,b)=>a[key]-b[key])[0];
-    return top?{label,name:fmNS(top.player_name||''),rawName:top.player_name||''}:null;
+    if(!top)return null;
+    const sc=top.total!=null?(top.total>0?'+'+top.total:top.total===0?'E':top.total):'';
+    return {label,name:fmNS(top.player_name||''),rawName:top.player_name||'',score:sc};
   };
   const chips=[best('sg_ott','Best Driver'),best('sg_app','Best Approach'),best('sg_putt','Best Putter'),best('distance','Longest'),best('prox_fw','Closest Prox'),best('great_shots','Most A+ Shots')].filter(Boolean);
   if(!chips.length){el.innerHTML='';return;}
-  let h=chips.map(c=>'<span class="ls-chip" onclick="lsChipClick(\''+c.name.replace(/'/g,"\\'")+'\')" title="Click to filter"><span class="ls-chip-lbl">'+c.label+'</span> '+c.name+'</span>').join('');
+  let h=chips.map(c=>'<span class="ls-chip" onclick="lsChipClick(\''+c.name.replace(/'/g,"\\'")+'\')" title="Click to filter"><span class="ls-chip-lbl">'+c.label+'</span> '+c.name+(c.score?' <span style="color:#2db5a0;font-weight:700;font-family:var(--fm)">'+c.score+'</span>':'')+'</span>').join('');
   el.innerHTML=h;
 }
 
+let _tpcLsCols=null;
+let _lsShowAll=false;
 function renderSGHeatmap(data){
   const bd=document.getElementById('ls-body');
   if(!data||!data.live_stats||!data.live_stats.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">No live stats available</div>';return;}
@@ -3131,12 +3196,12 @@ function renderSGHeatmap(data){
   if(evEl)evEl.innerHTML='<span class="ls-live-dot"></span>'+(data.event_name||data.info?.course_name||'Live Tournament');
   const updEl=document.getElementById('ls-updated');
   if(updEl&&data.last_updated){
-    try{const d=new Date(data.last_updated.replace(' ','T')+'Z');updEl.textContent=d.toLocaleString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true})+' ET';}
+    try{const raw=data.last_updated.replace(' UTC','').replace(' ','T')+'Z';const d=new Date(raw);updEl.textContent=d.toLocaleString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true})+' ET';}
     catch(e){updEl.textContent=data.last_updated;}
   }
   // Insight chips
   lsInsights(data.live_stats);
-  const cols=_lsAdvanced?LS_COLS:LS_COLS.filter(c=>c.core);
+  const cols=_tpcLsCols||(_lsAdvanced?LS_COLS:LS_COLS.filter(c=>c.core));
   const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return 999;return parseInt(String(s).replace(/^T/,''))||999;};
   const sorted=[...data.live_stats].sort((a,b)=>{
     const ac=String(a.position)==='CUT'||String(a.position)==='WD',bc=String(b.position)==='CUT'||String(b.position)==='WD';
@@ -3144,13 +3209,24 @@ function renderSGHeatmap(data){
     const pa=pPos(a.position),pb=pPos(b.position);if(pa!==pb)return pa-pb;
     return(a.total||0)-(b.total||0);
   });
-  const search=(document.getElementById('ls-search')?.value||'').toLowerCase();
-  const top25pct=Math.max(10,Math.ceil(fieldSize*0.33));
-  const filtered=search?sorted.filter(p=>{const nm=(p.player_name||'').toLowerCase();return nm.includes(search)||fmN(p.player_name||'').toLowerCase().includes(search);}):sorted.slice(0,top25pct);
-  // Legend line
-  let h='<div class="ls-legend"><span class="ls-leg-g">■</span> Better than field <span class="ls-leg-mid">■</span> Average <span class="ls-leg-r">■</span> Worse than field <span class="ls-leg-note">· Numbers are ranks (1 = best)</span></div>';
+  const search=(document.getElementById('ls-search-inline')?.value||document.getElementById('ls-search')?.value||'').toLowerCase();
+  const defaultShow=20;
+  const filtered=search?sorted.filter(p=>{const nm=(p.player_name||'').toLowerCase();return nm.includes(search)||fmN(p.player_name||'').toLowerCase().includes(search);}):(_lsShowAll?sorted:sorted.slice(0,defaultShow));
+  // 5-tier legend + controls inline
+  const sAct=_lsAdvanced?'':'active',aAct=_lsAdvanced?'active':'';
+  const srchVal=(document.getElementById('ls-search-inline')?.value||search);
+  let h='<div class="ls-legend" style="display:flex;align-items:center;flex-wrap:wrap;gap:.3rem">';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(20,190,90,.80);vertical-align:middle"></span><span style="font-size:.5rem;color:var(--td)">Top 15%</span>';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(50,140,60,.45);vertical-align:middle;margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Above avg</span>';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(60,70,80,.15);vertical-align:middle;margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Avg</span>';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(208,105,50,.35);vertical-align:middle;margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Below avg</span>';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(225,50,35,.65);vertical-align:middle;margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Bottom 25%</span>';
+  h+='<span style="flex:1"></span>';
+  h+='<span class="ls-toggle" style="display:inline-flex;gap:0"><button class="ls-tog '+sAct+'" onclick="lsSetMode(false)">Simple</button><button class="ls-tog '+aAct+'" onclick="lsSetMode(true)">Advanced</button></span>';
+  h+='<input id="ls-search-inline" class="ls-search" placeholder="Search..." oninput="lsFilterInline()" value="'+srchVal+'" style="width:100px;font-size:.55rem;padding:.15rem .3rem">';
+  h+='</div>';
   h+='<div class="ls-hm"><table><thead><tr>';
-  h+='<th class="ls-pos">Pos</th><th class="ls-nm">Player</th><th class="ls-sc">Score</th><th class="ls-thru">Thru</th>';
+  h+='<th class="ls-pos">Pos</th><th class="ls-nm">Player</th><th class="ls-sc">Score</th>';
   const coreCount=cols.filter(c=>c.core).length;
   cols.forEach((c,ci)=>{
     const divCls=(ci===coreCount&&_lsAdvanced)?' class="ls-div"':'';
@@ -3170,7 +3246,6 @@ function renderSGHeatmap(data){
     h+='<td class="ls-pos '+posCls+'">'+(p.position||'-')+'</td>';
     h+='<td class="ls-nm" title="'+fullNm+'">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
     h+='<td class="ls-sc" style="color:'+scClr+'">'+sc+'</td>';
-    h+='<td class="ls-thru">'+(p.thru||'-')+'</td>';
     cols.forEach((c,ci)=>{
       const v=p[c.key];const cl=sgColor(v,fieldSize);
       const divCls=(ci===coreCount&&_lsAdvanced)?' ls-div':'';
@@ -3179,7 +3254,11 @@ function renderSGHeatmap(data){
     h+='</tr>';
   });
   h+='</tbody></table></div>';
-  if(!search&&sorted.length>top25pct)h+='<div style="text-align:center;font-size:.52rem;color:var(--td);padding:.3rem">Showing top 33% ('+top25pct+' of '+sorted.length+') · Use search for full field</div>';
+  if(!search&&!_lsShowAll&&sorted.length>defaultShow){
+    h+='<div style="text-align:center;padding:.4rem"><button onclick="_lsShowAll=true;lsRender()" style="font-family:var(--fb);font-size:.58rem;padding:.25rem .8rem;background:var(--bc);color:var(--go);border:1px solid var(--br);border-radius:4px;cursor:pointer">Show All '+sorted.length+' Players ▾</button></div>';
+  }else if(!search&&_lsShowAll&&sorted.length>defaultShow){
+    h+='<div style="text-align:center;padding:.4rem"><button onclick="_lsShowAll=false;lsRender()" style="font-family:var(--fb);font-size:.58rem;padding:.25rem .8rem;background:var(--bc);color:var(--td);border:1px solid var(--br);border-radius:4px;cursor:pointer">Show Top 20 ▴</button></div>';
+  }
   bd.innerHTML=h;
 }
 
@@ -3287,6 +3366,7 @@ function lsRound(r){
   else if(_lsView==='holes'){lsRender();}
 }
 function lsFilter(){if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);}
+function lsFilterInline(){if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);}
 function lsRender(){
   if(_lsView==='hm'&&_lsData)renderSGHeatmap(_lsData);
   else if(_lsView==='holes')renderHoleChart(_lsHoleData);
@@ -3372,7 +3452,23 @@ function renderPlayersResults(){
   _tpcRendered=true;
   const pr=POOL_RESULTS[11];if(!pr)return;
   renderTpcStandings(pr);
-  renderTpcRecap();
+  // Populate ls-panel with TPC_LIVE_STATS (tournament is over, no live data)
+  if(!_lsData&&TPC_LIVE_STATS&&TPC_LIVE_STATS.length){
+    _lsData={event_name:'The Players Championship',last_updated:'2026-03-15',live_stats:TPC_LIVE_STATS.map(p=>({
+      player_name:p.nm.split(', ').reverse().join(' '),position:p.pos,total:p.sc,thru:'F',
+      sg_ott:p.ott,sg_app:null,sg_arg:null,sg_putt:p.putt,distance:p.dist,great_shots:p.gs,prox_fw:p.prox
+    }))};
+    // Override LS_COLS for TPC results (only 5 cats available)
+    _tpcLsCols=[
+      {key:'sg_ott',hdr:'Drive',abbr:'DRV',tip:'Strokes gained off the tee',core:true},
+      {key:'sg_putt',hdr:'Putt',abbr:'PUTT',tip:'Strokes gained putting',core:true},
+      {key:'distance',hdr:'Dist.',abbr:'DIST',tip:'Average driving distance',core:true},
+      {key:'great_shots',hdr:'A+ Shot',abbr:'GRT',tip:'Great shots relative to field',core:true},
+      {key:'prox_fw',hdr:'Prox.',abbr:'PROX',tip:'Proximity to pin from fairway',core:true}
+    ];
+    _lsView='hm';
+    lsRender();
+  }
   renderTpcInsights(pr);
 }
 
@@ -3552,68 +3648,113 @@ function renderTpcRecap(){
 
 function renderTpcInsights(pr){
   const el=document.getElementById('tpc-insights');if(!el)return;
-  const p=pr.players;const e=pr.entries;
-  let h='<h3>Tournament Insights</h3>';
+  const p=pr.players;const totalEntries=107;
+  // Short name: "First Last" → "F. Last"
+  const sn=(nm)=>{if(!nm)return'-';const pts=nm.split(' ');return pts.length>=2?pts[0].charAt(0)+'. '+pts.slice(1).join(' '):nm;};
+  // Helper: bar row — barVal/barMax drive bar width, defaults to picks
+  const barRow=(v,barMax,clr,barVal)=>{
+    const bv=barVal!=null?barVal:v.pk;
+    const pct=Math.max(3,Math.round((bv/barMax)*100));
+    const scTxt=typeof v.sc==='number'?(v.sc>0?'+'+v.sc:v.sc===0?'E':v.sc):v.sc;
+    const scClr=typeof v.sc==='number'?(v.sc<0?'#e09478':v.sc>0?'#2db5a0':'var(--tp)'):'var(--td)';
+    return '<div style="display:flex;align-items:center;gap:.4rem;margin:.22rem 0;font-size:.6rem">'
+      +'<span style="width:82px;flex-shrink:0;color:var(--tp);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sn(v.nm)+'</span>'
+      +'<span style="flex:1;height:13px;background:var(--bc);border-radius:3px;overflow:hidden;position:relative">'
+      +'<span style="display:block;height:100%;width:'+pct+'%;background:'+clr+';border-radius:3px;min-width:4px"></span></span>'
+      +'<span style="width:24px;flex-shrink:0;text-align:right;color:var(--go);font-family:var(--fm)">'+v.pk+'</span>'
+      +'<span style="width:24px;flex-shrink:0;text-align:right;color:'+scClr+';font-family:var(--fm);font-weight:700">'+scTxt+'</span>'
+      +'</div>';
+  };
+  // Unique card counter for toggle ids
+  let _cardN=0;
+  // Helper: expandable card — barKey optionally sets which field drives bar width (default: 'pk')
+  const card=(id,title,sub,items,clr,barKey)=>{
+    const bk=barKey||'pk';
+    const cardMax=Math.max(...items.map(x=>Math.abs(x[bk]||0)),1);
+    const cid='ppa-'+(++_cardN);
+    let c='<div class="ib" style="padding:.5rem .6rem">';
+    c+='<div class="it" style="margin-bottom:.1rem">'+title+'</div>';
+    if(sub)c+='<div style="font-size:.5rem;color:var(--td);margin-bottom:.3rem">'+sub+'</div>';
+    c+='<div style="display:flex;gap:.4rem;font-size:.46rem;color:var(--td);margin-bottom:.2rem;padding:0 0 .15rem;border-bottom:1px solid var(--br)">'
+      +'<span style="width:82px;flex-shrink:0">Player</span><span style="flex:1">'+(bk==='val'?'Value':'Roster %')+'</span>'
+      +'<span style="width:24px;flex-shrink:0;text-align:right">Picks</span><span style="width:24px;flex-shrink:0;text-align:right">Score</span></div>';
+    items.slice(0,5).forEach(v=>{c+=barRow(v,cardMax,clr,Math.abs(v[bk]||0));});
+    if(items.length>5){
+      c+='<div id="'+cid+'" style="display:none">';
+      items.slice(5).forEach(v=>{c+=barRow(v,cardMax,clr,Math.abs(v[bk]||0));});
+      c+='</div>';
+      c+='<button onclick="var e=document.getElementById(\''+cid+'\');if(e.style.display===\'none\'){e.style.display=\'block\';this.textContent=\'Collapse\'}else{e.style.display=\'none\';this.textContent=\'+'+
+        (items.length-5)+' more\'}" style="font-size:.5rem;color:var(--td);cursor:pointer;font-family:var(--fb);background:none;border:none;padding:.2rem 0;margin-top:.1rem">+'+(items.length-5)+' more</button>';
+    }
+    c+='</div>';
+    return c;
+  };
+  const rostered=p.filter(x=>x.pk>0);
+
+  let h='<h3 style="margin-bottom:.3rem">Pool Pick Analysis</h3>';
+  h+='<div style="font-size:.55rem;color:var(--td);margin-bottom:.5rem">How the pool\'s picks performed · '+totalEntries+' entries · 6 golfers each</div>';
   h+='<div class="ig">';
-  // 1. Salary Value Leaders
-  const valued=p.filter(x=>x.dkv&&typeof x.sc==='number').sort((a,b)=>b.dkv-a.dkv);
-  h+='<div class="ib"><div class="it">Best DK Value</div>';
-  valued.slice(0,5).forEach(v=>{
-    h+='<div style="font-size:.68rem;color:var(--tb);margin-top:.15rem"><b style="color:var(--go)">'+v.nm+'</b> <span style="color:var(--td)">$'+v.sal+'</span> → <span style="color:#e09478">'+v.sc+'</span> <span style="color:var(--ts)">('+v.dkv.toFixed(1)+' DKV)</span></div>';
+
+  // 1. Most Rostered — who did the pool rely on?
+  const mostPicked=[...rostered].sort((a,b)=>b.pk-a.pk);
+  h+=card('most-picked','Most Rostered','Who the pool relied on most',mostPicked.slice(0,15),'#2db5a0');
+
+  // 2. Best Value Picks — rostered players who outperformed their salary
+  const valueRostered=rostered.filter(x=>typeof x.sc==='number'&&x.sc<0).map(x=>({...x,val:Math.round((-x.sc/x.sal)*10000)})).sort((a,b)=>b.val-a.val);
+  h+=card('best-value','Best Value Picks','Most score per salary dollar',valueRostered.slice(0,12),'var(--go)','val');
+
+  // 3. Pool Busts — highly rostered players who hurt entries
+  const poolBusts=rostered.filter(x=>x.pk>=5&&(x.sc==='CUT'||x.sc==='WD'||(typeof x.sc==='number'&&x.sc>=0))).sort((a,b)=>b.pk-a.pk);
+  h+=card('pool-busts','Pool Busts','Heavily rostered, bad result',poolBusts.slice(0,12),'#e09478');
+
+  // 4. Roster Differentiators — low-picked players who crushed it
+  const diffs=rostered.filter(x=>typeof x.sc==='number'&&x.sc<=-6&&x.pk<=5).sort((a,b)=>a.sc-b.sc);
+  h+=card('differentiators','Roster Differentiators','Low-picked players that separated the top entries',diffs.slice(0,12),'rgba(100,180,235,.7)');
+
+  // 5. Unpicked Gems — 0 picks but finished well
+  const unpicked=p.filter(x=>x.pk===0&&typeof x.sc==='number'&&x.sc<0).sort((a,b)=>a.sc-b.sc);
+  if(unpicked.length){
+    const gemMax=Math.max(...unpicked.map(x=>Math.abs(x.sc)),1);
+    let c='<div class="ib" style="padding:.5rem .6rem"><div class="it">Unpicked Gems</div>';
+    c+='<div style="font-size:.5rem;color:var(--td);margin-bottom:.3rem">Nobody rostered these — and they delivered</div>';
+    unpicked.slice(0,10).forEach(v=>{
+      const scClr=v.sc<0?'#e09478':'var(--tp)';
+      const pct=Math.max(5,Math.round((Math.abs(v.sc)/gemMax)*100));
+      c+='<div style="display:flex;align-items:center;gap:.4rem;margin:.22rem 0;font-size:.6rem">'
+        +'<span style="width:82px;flex-shrink:0;color:var(--tp);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sn(v.nm)+'</span>'
+        +'<span style="flex:1;height:13px;background:var(--bc);border-radius:3px;overflow:hidden;position:relative">'
+        +'<span style="display:block;height:100%;width:'+pct+'%;background:#2db5a0;border-radius:3px;min-width:4px"></span></span>'
+        +'<span style="width:42px;flex-shrink:0;text-align:right;color:var(--td);font-family:var(--fm);font-size:.52rem">$'+v.sal.toLocaleString()+'</span>'
+        +'<span style="width:24px;flex-shrink:0;text-align:right;color:'+scClr+';font-family:var(--fm);font-weight:700">'+v.sc+'</span>'
+        +'</div>';
+    });
+    c+='</div>';
+    h+=c;
+  }
+
+  // 6. Chalk Report — ownership vs result scatter summary
+  const chalkHits=rostered.filter(x=>x.pk>=15&&typeof x.sc==='number'&&x.sc<=-5);
+  const chalkMisses=rostered.filter(x=>x.pk>=15&&(x.sc==='CUT'||x.sc==='WD'||(typeof x.sc==='number'&&x.sc>-2)));
+  const allChalk=[...chalkHits.map(x=>({...x,hit:true})),...chalkMisses.map(x=>({...x,hit:false}))].sort((a,b)=>b.pk-a.pk);
+  let c='<div class="ib" style="padding:.5rem .6rem"><div class="it">Chalk Report</div>';
+  c+='<div style="font-size:.5rem;color:var(--td);margin-bottom:.3rem">Players rostered by 15+ entries</div>';
+  const chalkMax=Math.max(...allChalk.map(x=>x.pk),1);
+  allChalk.slice(0,15).forEach(v=>{
+    const scTxt=typeof v.sc==='number'?(v.sc>0?'+'+v.sc:v.sc===0?'E':v.sc):v.sc;
+    const scClr=v.hit?'#e09478':'var(--td)';
+    const barClr=v.hit?'#2db5a0':'#e09478';
+    const pct=Math.max(3,Math.round((v.pk/chalkMax)*100));
+    c+='<div style="display:flex;align-items:center;gap:.4rem;margin:.22rem 0;font-size:.6rem">'
+      +'<span style="width:82px;flex-shrink:0;color:var(--tp);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+sn(v.nm)+'</span>'
+      +'<span style="flex:1;height:13px;background:var(--bc);border-radius:3px;overflow:hidden;position:relative">'
+      +'<span style="display:block;height:100%;width:'+pct+'%;background:'+barClr+';border-radius:3px;min-width:4px"></span></span>'
+      +'<span style="width:24px;flex-shrink:0;text-align:right;color:var(--go);font-family:var(--fm)">'+v.pk+'</span>'
+      +'<span style="width:24px;flex-shrink:0;text-align:right;color:'+scClr+';font-family:var(--fm);font-weight:700">'+scTxt+'</span>'
+      +'</div>';
   });
-  h+='</div>';
-  // 2. Biggest Busts
-  const busts=p.filter(x=>x.dkv&&x.sal&&x.sal>=7000).sort((a,b)=>(a.dkv||999)-(b.dkv||999));
-  h+='<div class="ib"><div class="it">Biggest Busts ($7K+ salary)</div>';
-  busts.slice(0,5).forEach(v=>{
-    const sc=typeof v.sc==='number'?v.sc:v.sc;
-    h+='<div style="font-size:.68rem;color:var(--tb);margin-top:.15rem"><b style="color:#e09478">'+v.nm+'</b> <span style="color:var(--td)">$'+v.sal+'</span> → <span style="color:var(--ts)">'+sc+'</span></div>';
-  });
-  h+='</div>';
-  // 3. Chalk vs Contrarian
-  h+='<div class="ib"><div class="it">Chalk Fails (High Own%, Bad Result)</div>';
-  const chalk=p.filter(x=>x.own&&x.own>=0.10&&(x.sc==='CUT'||x.sc==='WD'||(typeof x.sc==='number'&&x.sc>0))).sort((a,b)=>(b.own||0)-(a.own||0));
-  chalk.slice(0,5).forEach(v=>{
-    h+='<div style="font-size:.68rem;color:var(--tb);margin-top:.15rem"><b style="color:#e09478">'+v.nm+'</b> <span style="color:var(--td)">'+Math.round((v.own||0)*100)+'% owned</span> → <span style="color:var(--ts)">'+v.sc+'</span></div>';
-  });
-  h+='</div>';
-  // 4. Contrarian Winners
-  h+='<div class="ib"><div class="it">Low-Owned Gems (≤5% own, Top 20)</div>';
-  const contra=p.filter(x=>typeof x.sc==='number'&&x.sc<0&&(x.own==null||x.own<=0.05)).sort((a,b)=>a.sc-b.sc);
-  contra.slice(0,5).forEach(v=>{
-    h+='<div style="font-size:.68rem;color:var(--tb);margin-top:.15rem"><b style="color:#2db5a0">'+v.nm+'</b> <span style="color:var(--td)">'+(v.own?Math.round(v.own*100)+'%':'0%')+' owned</span> → <span style="color:#e09478">'+v.sc+'</span></div>';
-  });
-  h+='</div>';
-  // 5. Scoring Breakdown
-  const birdieKings=p.filter(x=>typeof x.sc==='number').sort((a,b)=>b.bi-a.bi);
-  h+='<div class="ib"><div class="it">Birdie Machines</div>';
-  birdieKings.slice(0,5).forEach(v=>{
-    h+='<div style="font-size:.68rem;color:var(--tb);margin-top:.15rem"><b style="color:var(--go)">'+v.nm+'</b> <span style="color:#2db5a0">'+v.bi+' birdies</span>'+(v.ea?' + '+v.ea+' eagles':'')+' <span style="color:var(--ts)">('+v.bo+' bogeys)</span></div>';
-  });
-  h+='</div>';
-  // 6. Pool Impact — Most Picked
-  const mostPicked=p.filter(x=>x.pk>0).sort((a,b)=>b.pk-a.pk);
-  h+='<div class="ib"><div class="it">Most Rostered (Pool Impact)</div>';
-  mostPicked.slice(0,5).forEach(v=>{
-    const scClr=typeof v.sc==='number'?(v.sc<0?'#e09478':'#2db5a0'):'var(--ts)';
-    h+='<div style="font-size:.68rem;color:var(--tb);margin-top:.15rem"><b>'+v.nm+'</b> <span style="color:var(--go)">'+v.pk+' picks</span> → <span style="color:'+scClr+'">'+v.sc+'</span></div>';
-  });
-  h+='</div>';
-  // 7. Roster Differentiators
-  h+='<div class="ib"><div class="it">Roster Differentiators</div>';
-  h+='<div style="font-size:.62rem;color:var(--td);margin-bottom:.2rem">Low-owned players that separated top entries</div>';
-  const diff=p.filter(x=>typeof x.sc==='number'&&x.sc<=-6&&x.pk<=5&&x.pk>0).sort((a,b)=>a.sc-b.sc);
-  diff.slice(0,5).forEach(v=>{
-    h+='<div style="font-size:.68rem;color:var(--tb);margin-top:.15rem"><b style="color:#2db5a0">'+v.nm+'</b> <span style="color:var(--td)">only '+v.pk+' picks</span> → <span style="color:#e09478">'+v.sc+'</span></div>';
-  });
-  h+='</div>';
-  // 8. Double Bogey Disasters
-  const dbKings=p.filter(x=>x.db>=3).sort((a,b)=>b.db-a.db);
-  h+='<div class="ib"><div class="it">Double Bogey Disasters</div>';
-  dbKings.slice(0,5).forEach(v=>{
-    h+='<div style="font-size:.68rem;color:var(--tb);margin-top:.15rem"><b style="color:#e09478">'+v.nm+'</b> <span style="color:var(--rd)">'+v.db+' doubles</span>'+(v.tr?' + '+v.tr+' triples+':'')+' → '+v.sc+'</div>';
-  });
-  h+='</div>';
+  c+='</div>';
+  h+=c;
+
   h+='</div>';
   el.innerHTML=h;
 }
