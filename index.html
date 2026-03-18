@@ -18,7 +18,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
 <style>
 :root{--bd:#f5f4f0;--bm:#ffffff;--bc:#ffffff;--bca:#f0efeb;--bh:#e8e7e2;--br:#d4d2ca;--brl:#bfbdb5;
---gn:#006747;--gl:#2a7d52;--gm:#004f2d;--go:#9a7e28;--gol:#d4b44a;--god:#9a7e28;
+--gn:#006747;--gl:#2a7d52;--go:#9a7e28;
 --tb:#1a1f3a;--tp:#2a3350;--ts:#586882;--td:#8895a8;--rd:#8b2332;
 --r1:#c4a035;--r2:#8895a8;--r3:#6b4c2a;
 --fd:'DM Sans',-apple-system,sans-serif;--fb:'DM Sans',-apple-system,sans-serif;--fm:'DM Mono',Consolas,monospace;--fh:'DM Sans',-apple-system,sans-serif;}
@@ -1209,6 +1209,7 @@ function startWxRefresh(course){if(_wxInterval)clearInterval(_wxInterval);_wxInt
 /* === NAME MATCHING === */
 function fmN(n){if(!n)return'-';const p=n.split(', ');return p.length===2?p[1]+' '+p[0]:n;}
 function fmNS(n){if(!n)return'-';const p=n.split(', ');return p.length===2?p[1].charAt(0)+'. '+p[0]:n;}
+function sn(nm){if(!nm)return'-';const pts=nm.split(' ');return pts.length>=2?pts[0].charAt(0)+'. '+pts.slice(1).join(' '):nm;}
 function normN(n){if(!n)return'';let s=n.trim();const p=s.split(', ');if(p.length===2)s=p[1]+' '+p[0];return s.toLowerCase().replace(/[^a-z]/g,'');}
 function levenshtein(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;
   const d=Array.from({length:m+1},(_,i)=>i);
@@ -1738,6 +1739,9 @@ function getDateEvent() {
   return 'open';
 }
 
+/** Renders the course profile preview panel (SG bars, past winners, stats).
+ *  When overrideCourseName/overrideEvName are set, renders for that course
+ *  instead of the current live event (used by upcoming-event cards). */
 function renderPreview(targetEl, overrideCourseName, overrideEvName) {
   const el = targetEl || document.getElementById('live-preview');
   if (!el) return;
@@ -1754,22 +1758,7 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
   const pwKey = ev || (overrideCourseName && overrideCourseName.includes('Innisbrook') ? 'valspar' : null);
   const pw = pwKey ? (PAST_WINNERS[pwKey] || []) : [];
 
-  // SG emphasis bars (horizontal)
   const sg = course.sgEmphasis || {};
-  const sgLabels = {ott:'Off the Tee', app:'Approach', arg:'Around Green', putt:'Putting'};
-  const sgColors = {ott:'var(--gl)', app:'var(--go)', arg:'#00205b', putt:'#002855'};
-  const maxSg = Math.max(...Object.values(sg));
-
-  let sgBars = '';
-  for (const [key, label] of Object.entries(sgLabels)) {
-    const pct = ((sg[key] || 0) / maxSg * 100).toFixed(0);
-    const raw = ((sg[key] || 0) * 100).toFixed(0);
-    sgBars += '<div class="cf-sg-row">' +
-      '<span class="cf-sg-lbl">' + label + '</span>' +
-      '<div class="cf-sg-track"><div class="cf-sg-fill" style="width:' + pct + '%;background:' + sgColors[key] + '"></div></div>' +
-      '<span class="cf-sg-val">' + raw + '%</span>' +
-      '</div>';
-  }
 
   // Past winners table (last 10 of this tournament)
   var isRotating = (ev === 'pga' || ev === 'uso' || ev === 'open');
@@ -3102,6 +3091,8 @@ let _lsView='hm',_lsRound='event_avg',_lsData=null,_lsHoleData=null,_holeChart=n
 
 // Vintage Excel conditional format on dark bg
 // Bright green (#22c55e) → transparent middle → vivid red (#ef4444)
+/** Returns {bg, fg, fw} style object for a strokes-gained rank cell.
+ *  5-tier heatmap: teal-green (top 15%) → light green → neutral → salmon → red (bottom 15%). */
 function sgColor(rank,fieldSize){
   if(rank==null||rank==='-')return {bg:'transparent',fg:'var(--td)',fw:'400'};
   const r=parseInt(rank);if(isNaN(r))return {bg:'transparent',fg:'var(--td)',fw:'400'};
@@ -3598,6 +3589,8 @@ function _tpcRenderRow(e,me){
   return h;
 }
 
+/** Renders the pool standings table: entry rankings with stroke totals,
+ *  best-ball scores, and expandable per-golfer detail rows. */
 function renderTpcStandings(pr){
   const el=document.getElementById('tpc-standings');if(!el)return;
   const entries=pr.entries;
@@ -3731,8 +3724,6 @@ function renderTpcRecap(){
 function renderTpcInsights(pr){
   const el=document.getElementById('tpc-insights');if(!el)return;
   const p=pr.players;const totalEntries=107;
-  // Short name: "First Last" → "F. Last"
-  const sn=(nm)=>{if(!nm)return'-';const pts=nm.split(' ');return pts.length>=2?pts[0].charAt(0)+'. '+pts.slice(1).join(' '):nm;};
   // Helper: bar row — barVal/barMax drive bar width, defaults to picks
   const barRow=(v,barMax,clr,barVal)=>{
     const bv=barVal!=null?barVal:v.pk;
@@ -3904,6 +3895,8 @@ function setPreviewMode(mode){
 }
 
 let _selectedUpcoming=-1;
+/** Handles click on an upcoming-event card: highlights it, looks up course data,
+ *  and renders the course preview + field/betting panels into the detail area. */
 function selectUpcoming(idx){
   _selectedUpcoming=idx;
   // Highlight card
@@ -4000,11 +3993,12 @@ function selectUpcoming(idx){
   el.innerHTML=h;
 }
 
+/** Renders the Valspar Championship field preview: course-fit analysis,
+ *  betting-edge movers, and the full field table with DG predictions. */
 function renderValsparField(el){
   if(!el||typeof VALSPAR_PREVIEW==='undefined')return;
   const vp=VALSPAR_PREVIEW.field;
   const cf=VALSPAR_PREVIEW.courseFit||[];
-  const sn=(nm)=>{if(!nm)return'-';const pts=nm.split(' ');return pts.length>=2?pts[0].charAt(0)+'. '+pts.slice(1).join(' '):nm;};
   let h='<div class="cd" style="margin-top:.4rem">';
   // Course Fit Analysis
   if(cf.length){

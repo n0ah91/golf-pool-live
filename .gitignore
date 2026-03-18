@@ -1,0 +1,6 @@
+*.bak
+*.tmp
+_test*.js
+commitmsg.txt
+*.log
+node_modules/
