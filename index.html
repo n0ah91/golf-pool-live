@@ -479,6 +479,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   <div id="lb-bd"></div>
 </div>
 
+<div class="cd" id="live-preview"></div>
 
 <div class="cd" id="odds-panel" style="margin-top:.4rem">
   <h4 style="font-family:var(--fh);color:var(--go);font-size:.82rem;margin:0 0 .3rem;display:flex;align-items:center;justify-content:space-between">
@@ -486,12 +487,12 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   </h4>
   <div id="live-odds"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading odds...</div></div>
 </div>
-<div class="cd" id="live-preview"></div>
 
-<div class="cd"><h3 style="display:flex;align-items:baseline;gap:.4rem">2026 Majors <span style="font-size:.62rem;color:var(--gl);font-weight:500;letter-spacing:.03em;font-family:var(--fb)">tap for preview →</span></h3>
-<div id="mjr-sch" class="mjr-sched"></div></div>
+<div class="cd"><details class="cf-details"><summary class="cf-details-sum">2026 Majors Schedule</summary><div class="cf-details-body">
+<div id="mjr-sch" class="mjr-sched"></div>
+</div></details></div>
 <div class="cd">
-<details class="cf-details" open>
+<details class="cf-details">
 <summary class="cf-details-sum">Previous Tournaments</summary>
 <div class="cf-details-body" style="padding:.3rem .5rem">
 <div style="margin-bottom:.4rem">
@@ -1945,23 +1946,6 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
       '</details>' +
     '</div>' +
 
-    // Weather & Conditions — live from Open-Meteo (moved above SG for visibility)
-    '<div class="cf-block">' +
-      '<div class="cf-section-title" style="display:flex;align-items:baseline;justify-content:space-between">Conditions <span id="wx-time" style="font-size:.48rem;color:var(--td);font-family:var(--fm);font-weight:400;text-transform:none;letter-spacing:0"></span></div>' +
-      '<div id="wx-live" style="text-align:center;font-size:.6rem;color:var(--ts);padding:.5rem">Loading live weather...</div>' +
-      '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:#00205b">📡 10-Day Forecast →</a>' +
-    '</div>' +
-
-    // SG Emphasis — collapsed by default
-    '<details class="cf-details">' +
-      '<summary class="cf-details-sum">Strokes Gained Emphasis <span style="font-size:.55rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:400">tap to compare ▸</span></summary>' +
-      '<div class="cf-details-body" style="padding:.3rem .5rem" onclick="openSGCompare()">' +
-        sgBars +
-        '<div class="cf-strategy"><span class="cf-strat-lbl">Key:</span> ' + (course.distanceVsAccuracy || '-') + '</div>' +
-        '<div class="cf-source">Source: DataGolf Strokes Gained Decomposition</div>' +
-      '</div>' +
-    '</details>' +
-
     // Course notes — collapsed by default
     '<details class="cf-details">' +
       '<summary class="cf-details-sum">Course Notes</summary>' +
@@ -1970,11 +1954,20 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
       '</div>' +
     '</details>' +
 
-    // Past winners (open by default, collapsible) — last 10 of this tournament
-    '<details class="cf-details" open>' +
+    // Past winners (collapsed by default) — last 10 of this tournament
+    '<details class="cf-details">' +
       '<summary class="cf-details-sum">Past Winners <span style="font-size:.55rem;color:var(--ts);text-transform:none;font-family:var(--fb)">(Last 10)</span></summary>' +
       '<div class="cf-details-body" style="padding:.3rem .5rem">' +
         '<table class="cf-pw-table"><thead><tr style="font-size:.55rem;color:var(--ts);text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:.1rem .3rem">Yr</th><th style="text-align:left;padding:.1rem .3rem">Winner</th><th style="text-align:left;padding:.1rem .2rem">Score</th>' + (isRotating ? '<th style="text-align:left;padding:.1rem .2rem">Course</th>' : '') + '<th style="text-align:left;padding:.1rem .2rem">Runner-Up</th></tr></thead><tbody>' + pwHTML + '</tbody></table>' + venueHTML +
+      '</div>' +
+    '</details>' +
+
+    // Weather & Conditions — collapsed by default
+    '<details class="cf-details">' +
+      '<summary class="cf-details-sum">Conditions <span id="wx-time" style="font-size:.48rem;color:var(--td);font-family:var(--fm);font-weight:400;text-transform:none;letter-spacing:0"></span></summary>' +
+      '<div class="cf-details-body" style="padding:.3rem .5rem">' +
+        '<div id="wx-live" style="text-align:center;font-size:.6rem;color:var(--ts);padding:.5rem">Loading live weather...</div>' +
+        '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:#00205b">📡 10-Day Forecast →</a>' +
       '</div>' +
     '</details>';
 
@@ -2311,6 +2304,23 @@ const VALSPAR_PREVIEW = {
     {nm:'Rasmus Hojgaard',wr:47,win:.0187,t10:.1569,dk:null,fd:null,skill:null},
     {nm:'Wyndham Clark',wr:76,win:.0137,t10:.1295,dk:null,fd:null,skill:null},
     {nm:'Brooks Koepka',wr:null,win:.0165,t10:.1410,dk:null,fd:null,skill:null}
+  ],
+  courseFit:[
+    {nm:'Xander Schauffele',base:1.739,final:1.839,dd:-0.112,da:-0.006,sg:0.057,ch:0.019,timing:0.116},
+    {nm:'Matt Fitzpatrick',base:1.637,final:1.778,dd:-0.026,da:0.048,sg:0.059,ch:0.005,timing:0.061},
+    {nm:'Akshay Bhatia',base:1.411,final:1.515,dd:-0.014,da:0.012,sg:-0.165,ch:0.005,timing:0.145},
+    {nm:'Viktor Hovland',base:1.313,final:1.404,dd:-0.006,da:0.031,sg:-0.143,ch:0.019,timing:0.124},
+    {nm:'Jacob Bridgeman',base:1.299,final:1.399,dd:-0.030,da:0.005,sg:-0.138,ch:-0.002,timing:0.177},
+    {nm:'Patrick Cantlay',base:1.203,final:1.371,dd:-0.050,da:0.014,sg:0.136,ch:-0.002,timing:0.037},
+    {nm:'J.J. Spaun',base:1.158,final:1.181,dd:-0.026,da:0.038,sg:0.094,ch:0.012,timing:-0.059},
+    {nm:'Ben Griffin',base:1.205,final:1.097,dd:-0.001,da:0.007,sg:-0.031,ch:0.012,timing:-0.121},
+    {nm:'Ryo Hisatsune',base:0.592,final:1.053,dd:-0.003,da:0.040,sg:0.153,ch:0.005,timing:0.141},
+    {nm:'Justin Thomas',base:0.949,final:1.052,dd:-0.055,da:-0.058,sg:0.092,ch:0.085,timing:-0.022},
+    {nm:'Jordan Spieth',base:1.012,final:1.050,dd:-0.060,da:-0.022,sg:-0.058,ch:0.077,timing:0.112},
+    {nm:'Corey Conners',base:0.854,final:1.045,dd:0.015,da:0.083,sg:0.067,ch:0.019,timing:0.054},
+    {nm:'Nick Taylor',base:0.947,final:1.024,dd:0.049,da:0.037,sg:-0.034,ch:0.085,timing:0.071},
+    {nm:'Nicolai Hojgaard',base:1.061,final:0.980,dd:-0.140,da:-0.036,sg:-0.029,ch:-0.017,timing:0.099},
+    {nm:'Sahith Theegala',base:0.875,final:0.939,dd:-0.038,da:-0.026,sg:-0.134,ch:0.005,timing:0.216}
   ]
 };
 // Static results data for 2025-26 PGA Tour season (DG historical endpoints are paywalled)
@@ -3903,7 +3913,7 @@ function selectUpcoming(idx){
     }
     el.innerHTML=h;
     const target=document.getElementById('uc-preview-target');
-    renderPreview(target, ev.course, ev.name+' · '+ev.course);
+    renderPreview(target, ev.course, ev.name);
     // Render Valspar field data into separate container
     if(ev.name==='Valspar Championship'&&typeof VALSPAR_PREVIEW!=='undefined'){
       const fieldTarget=document.getElementById('uc-field-target');
@@ -3952,8 +3962,56 @@ function selectUpcoming(idx){
 function renderValsparField(el){
   if(!el||typeof VALSPAR_PREVIEW==='undefined')return;
   const vp=VALSPAR_PREVIEW.field;
+  const cf=VALSPAR_PREVIEW.courseFit||[];
   const sn=(nm)=>{if(!nm)return'-';const pts=nm.split(' ');return pts.length>=2?pts[0].charAt(0)+'. '+pts.slice(1).join(' '):nm;};
   let h='<div class="cd" style="margin-top:.4rem">';
+  // Course Fit Analysis
+  if(cf.length){
+    h+='<div class="cf-section-title">Course Fit Analysis — Copperhead (Innisbrook)</div>';
+    // Course DNA badge
+    h+='<div style="display:flex;align-items:center;gap:.4rem;margin:.3rem 0 .5rem">';
+    h+='<span style="display:inline-block;padding:.15rem .5rem;background:var(--gl);color:var(--bca);font-family:var(--fb);font-weight:700;font-size:.52rem;border-radius:4px;letter-spacing:.04rem;text-transform:uppercase">Accuracy Course</span>';
+    h+='<span style="font-size:.46rem;color:var(--td)">Driving accuracy heavily rewarded · Long hitters penalized</span>';
+    h+='</div>';
+    // Chips row
+    h+='<div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem">';
+    // Course Specialists (top course_history_adj)
+    const specialists=[...cf].sort((a,b)=>b.ch-a.ch).filter(x=>x.ch>0).slice(0,3);
+    h+='<div style="flex:1;min-width:200px"><div style="font-size:.5rem;color:var(--ts);font-weight:600;margin-bottom:.2rem;font-family:var(--fb)">Course Specialists</div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:.2rem">';
+    specialists.forEach(p=>{
+      h+='<span style="display:inline-flex;align-items:center;gap:.15rem;padding:.12rem .35rem;background:rgba(0,103,71,.12);border:1px solid rgba(0,103,71,.25);border-radius:12px;font-size:.48rem;color:var(--gl);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+' <span style="color:var(--gl);font-size:.42rem">+'+p.ch.toFixed(3)+'</span></span>';
+    });
+    h+='</div></div>';
+    // Hot Hands (top timing_adj)
+    const hotHands=[...cf].sort((a,b)=>b.timing-a.timing).filter(x=>x.timing>0).slice(0,5);
+    h+='<div style="flex:1;min-width:200px"><div style="font-size:.5rem;color:var(--ts);font-weight:600;margin-bottom:.2rem;font-family:var(--fb)">Hot Hands (Recent Form)</div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:.2rem">';
+    hotHands.forEach(p=>{
+      h+='<span style="display:inline-flex;align-items:center;gap:.15rem;padding:.12rem .35rem;background:rgba(183,135,38,.12);border:1px solid rgba(183,135,38,.25);border-radius:12px;font-size:.48rem;color:var(--go);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+' <span style="font-size:.42rem">+'+p.timing.toFixed(3)+'</span></span>';
+    });
+    h+='</div></div>';
+    h+='</div>';
+    // Best Overall Fit (top 5 by final_pred)
+    const bestFit=[...cf].sort((a,b)=>b.final-a.final).slice(0,5);
+    const maxFinal=bestFit[0].final;
+    h+='<div style="margin-bottom:.5rem"><div style="font-size:.5rem;color:var(--ts);font-weight:600;margin-bottom:.25rem;font-family:var(--fb)">Best Overall Fit</div>';
+    bestFit.forEach((p,i)=>{
+      const barW=Math.max(8,Math.round((p.final/maxFinal)*100));
+      const boost=p.final-p.base;
+      const boostTxt=boost>=0?'+'+boost.toFixed(3):boost.toFixed(3);
+      const boostClr=boost>=0?'var(--gl)':'var(--rd)';
+      h+='<div style="display:flex;align-items:center;gap:.3rem;margin-bottom:.15rem">';
+      h+='<span style="width:1rem;text-align:right;font-size:.46rem;color:var(--td);font-weight:600">'+(i+1)+'.</span>';
+      h+='<span style="width:5rem;font-size:.48rem;color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+'</span>';
+      h+='<span style="flex:1;height:10px;background:var(--br);border-radius:3px;overflow:hidden;position:relative"><span style="position:absolute;left:0;top:0;height:100%;width:'+barW+'%;background:linear-gradient(90deg,var(--gl),rgba(0,103,71,.5));border-radius:3px"></span></span>';
+      h+='<span style="width:2rem;text-align:right;font-size:.48rem;color:var(--gl);font-weight:700">'+p.final.toFixed(3)+'</span>';
+      h+='<span style="width:2.5rem;text-align:right;font-size:.42rem;color:'+boostClr+'">'+boostTxt+'</span>';
+      h+='</div>';
+    });
+    h+='<div style="font-size:.42rem;color:var(--td);margin-top:.15rem;font-style:italic">Final pred = baseline + course adjustments · Right column shows course fit boost</div>';
+    h+='</div>';
+  }
   h+='<div class="cf-section-title">Field Preview — DG Model Predictions</div>';
   h+='<div class="tw" style="margin:0"><table class="tc" style="min-width:420px">';
   h+='<thead><tr><th>Player</th><th style="text-align:center">WR</th><th style="text-align:right">Win %</th><th style="text-align:right">Top 10</th><th style="text-align:right">DK</th><th style="text-align:right">FD</th></tr></thead><tbody>';
