@@ -135,14 +135,14 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .api-bar .ab{font-family:var(--fb);font-size:.68rem;padding:.35rem .8rem;background:var(--gn);color:var(--tb);border:none;border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;font-weight:500;transition:background .2s;white-space:nowrap}
 .api-bar .ab:hover{background:var(--gl)}.api-bar .ab.sec{background:var(--bc);color:var(--ts);border:1px solid var(--br)}.api-bar .ab.sec:hover{border-color:var(--gn);color:var(--tb)}
 .dgs{font-size:.65rem;font-family:var(--fm)}.dgs.ok{color:var(--gl)}.dgs.err{color:var(--rd)}.dgs.ld{color:var(--go)}
-.mjr-sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.45rem;margin-bottom:.3rem}
-.mjr-card{background:var(--bc);border:1px solid var(--br);border-radius:7px;padding:.55rem .45rem;text-align:center;transition:all .2s;cursor:pointer}
+.mjr-sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.35rem;margin-bottom:.3rem}
+.mjr-card{background:var(--bc);border:1px solid var(--br);border-radius:6px;padding:.3rem .4rem;text-align:center;transition:all .2s;cursor:pointer}
 .mjr-card:hover{background:var(--bca);border-color:var(--go);transform:translateY(-1px);box-shadow:0 2px 8px rgba(196,160,53,.1)}
 .mjr-card.done{border-color:var(--gn);opacity:.65}.mjr-card.live{border-color:var(--go);background:rgba(196,160,53,.06);animation:pulse 2s infinite}
 .mjr-card.next{border-color:var(--rd)}
-.mjr-card .mn{font-family:var(--fd);font-size:.88rem;color:var(--tb);font-weight:600}
-.mjr-card .md{font-size:.6rem;color:var(--ts);margin-top:.1rem}
-.mjr-card .ms{font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem;padding:.12rem .35rem;border-radius:3px;display:inline-block}
+.mjr-card .mn{font-family:var(--fd);font-size:.7rem;color:var(--tb);font-weight:600;line-height:1.1}
+.mjr-card .md{font-size:.5rem;color:var(--ts);margin-top:.05rem}
+.mjr-card .ms{font-size:.48rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.12rem;padding:.08rem .25rem;border-radius:3px;display:inline-block}
 .ms.s-d{color:var(--gl);background:rgba(82,183,136,.1)}.ms.s-l{color:var(--go);background:rgba(196,160,53,.15)}.ms.s-n{color:var(--gl);background:rgba(82,183,136,.08)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(196,160,53,0)}50%{box-shadow:0 0 12px 2px rgba(196,160,53,.15)}}
 .lb-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
@@ -1741,6 +1741,7 @@ function getDateEvent() {
 function renderPreview(targetEl, overrideCourseName, overrideEvName) {
   const el = targetEl || document.getElementById('live-preview');
   if (!el) return;
+  _overrideCourse = overrideCourseName || null;
   const ev = overrideCourseName ? null : getCurrentEvent();
   const courseName = overrideCourseName || COURSE_MAP[ev];
   const course = COURSES_DATA[courseName];
@@ -1951,9 +1952,7 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
           factsHTML +
           (course.signatureHoles ? '<div class="cf-sig" style="margin-top:.5rem"><span class="cf-fact-lbl">Signature Holes:</span> ' + course.signatureHoles + '</div>' : '') +
           uniqueHTML +
-          (corrHTML ? '<div style="margin-top:.5rem"><span style="font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;color:var(--go);font-weight:600;font-family:var(--fd)">Correlated Courses</span>' +
-            '<div class="cf-source" style="margin-bottom:.3rem">Courses with similar SG profiles per DataGolf</div>' +
-            corrHTML + '</div>' : '') +
+
           '<div class="cf-source" style="margin-top:.5rem">Sources: DataGolf, PGA Tour Course Database, USGA/R&A Records</div>' +
         '</div>' +
       '</details>' +
@@ -2053,10 +2052,11 @@ async function fetchLiveWeather(course) {
 
 /* ===== TOUR COMPARISON CHARTS ===== */
 const POOL_NAMES=['Augusta National','TPC Sawgrass','Bay Hill','Aronimink','Shinnecock Hills','Royal Birkdale'];
+let _overrideCourse=null;
 
 function openTourChart(label){
   const info=STAT_CHART_MAP[label];if(!info)return;
-  const ev=getCurrentEvent(),curCourse=COURSE_MAP[ev];
+  const ev=getCurrentEvent(),curCourse=_overrideCourse||COURSE_MAP[ev];
   const courseData=COURSES_DATA[curCourse]||{};
   const corrNames=(courseData.correlatedCourses||[]).map(c=>c.toLowerCase());
   // Build exact match set for current course
@@ -2098,7 +2098,7 @@ function openSGCompare(){
   const cats=['Off Tee','Approach','Around Green','Putting'];
   const keys=['ott','app','arg','putt'];
   const barCols=['var(--gl)','var(--go)','#00205b','#002855','#3a86a8','#9b72cf'];
-  const ev=getCurrentEvent(),curCourse=COURSE_MAP[ev];
+  const ev=getCurrentEvent(),curCourse=_overrideCourse||COURSE_MAP[ev];
   const datasets=POOL_NAMES.map((name,i)=>{
     const tc=TOUR_COURSES.find(c=>name.includes(c.n.split(' ')[0])||c.n.includes(name.split(' ')[0]));
     return{label:name.split(' ')[0]+(name.includes('TPC')?' '+name.split(' ')[1]:''),
@@ -2132,7 +2132,7 @@ const CAT_CHART_MAP={
 };
 function openCategoryChart(label){
   const info=CAT_CHART_MAP[label];if(!info)return;
-  const ev=getCurrentEvent(),curCourse=COURSE_MAP[ev];
+  const ev=getCurrentEvent(),curCourse=_overrideCourse||COURSE_MAP[ev];
   const courseData=COURSES_DATA[curCourse]||{};
   const corrNames=(courseData.correlatedCourses||[]).map(c=>c.toLowerCase());
   const curShort=curCourse.replace(/ Golf Club| Club & Lodge| CC| Golf Course/g,'').trim();
@@ -2305,26 +2305,26 @@ const UPCOMING_EVENTS = [
 // Valspar Championship preview data (from DG API, Mar 17 2026)
 const VALSPAR_PREVIEW = {
   field:[
-    {nm:'Xander Schauffele',wr:7,win:.0779,t10:.3726,dk:11.5,fd:12.0,skill:1.839},
-    {nm:'Matt Fitzpatrick',wr:8,win:.0632,t10:.3458,dk:16.0,fd:14.0,skill:1.778},
-    {nm:'Akshay Bhatia',wr:14,win:.0452,t10:.2827,dk:20.0,fd:18.0,skill:1.515},
-    {nm:'Viktor Hovland',wr:16,win:.0308,t10:.2291,dk:20.0,fd:20.0,skill:1.404},
-    {nm:'Jacob Bridgeman',wr:17,win:.0412,t10:.2675,dk:23.0,fd:20.0,skill:1.399},
-    {nm:'Patrick Cantlay',wr:24,win:.0343,t10:.2368,dk:22.5,fd:23.0,skill:1.371},
-    {nm:'J.J. Spaun',wr:27,win:.0237,t10:.1944,dk:31.0,fd:28.0,skill:1.181},
-    {nm:'Ben Griffin',wr:25,win:.0206,t10:.1862,dk:30.0,fd:36.0,skill:1.097},
-    {nm:'Nicolai Hojgaard',wr:31,win:.0295,t10:.2160,dk:37.0,fd:34.0,skill:0.980},
-    {nm:'Jordan Spieth',wr:35,win:.0216,t10:.1863,dk:28.0,fd:28.0,skill:1.050},
-    {nm:'Justin Thomas',wr:38,win:.0260,t10:.1995,dk:23.0,fd:21.0,skill:1.052},
-    {nm:'Sahith Theegala',wr:40,win:.0224,t10:.1775,dk:37.0,fd:31.0,skill:0.939},
-    {nm:'Ryo Hisatsune',wr:63,win:.0181,t10:.1707,dk:40.0,fd:31.0,skill:1.053},
-    {nm:'Corey Conners',wr:42,win:.0153,t10:.1498,dk:34.0,fd:31.0,skill:1.045},
-    {nm:'Nick Taylor',wr:39,win:.0123,t10:.1024,dk:38.0,fd:41.0,skill:1.024},
-    {nm:'Keegan Bradley',wr:41,win:.0136,t10:.1355,dk:null,fd:null,skill:null},
-    {nm:'Taylor Pendrith',wr:44,win:.0205,t10:.1800,dk:null,fd:null,skill:null},
-    {nm:'Rasmus Hojgaard',wr:47,win:.0187,t10:.1569,dk:null,fd:null,skill:null},
-    {nm:'Wyndham Clark',wr:76,win:.0137,t10:.1295,dk:null,fd:null,skill:null},
-    {nm:'Brooks Koepka',wr:null,win:.0165,t10:.1410,dk:null,fd:null,skill:null}
+    {nm:'Xander Schauffele',wr:7,win:.0779,t10:.3726,dk:11.5,fd:12.0,skill:1.839,type:'ALL-AROUND'},
+    {nm:'Matt Fitzpatrick',wr:8,win:.0632,t10:.3458,dk:16.0,fd:14.0,skill:1.778,type:'IRON PLAYER'},
+    {nm:'Akshay Bhatia',wr:14,win:.0452,t10:.2827,dk:20.0,fd:18.0,skill:1.515,type:'SHOT-MAKER'},
+    {nm:'Viktor Hovland',wr:16,win:.0308,t10:.2291,dk:20.0,fd:20.0,skill:1.404,type:'BALL-STRIKER'},
+    {nm:'Jacob Bridgeman',wr:17,win:.0412,t10:.2675,dk:23.0,fd:20.0,skill:1.399,type:'RISING STAR'},
+    {nm:'Patrick Cantlay',wr:24,win:.0343,t10:.2368,dk:22.5,fd:23.0,skill:1.371,type:'IRON PLAYER'},
+    {nm:'J.J. Spaun',wr:27,win:.0237,t10:.1944,dk:31.0,fd:28.0,skill:1.181,type:'ACCURATE'},
+    {nm:'Ben Griffin',wr:25,win:.0206,t10:.1862,dk:30.0,fd:36.0,skill:1.097,type:'ACCURATE'},
+    {nm:'Nicolai Hojgaard',wr:31,win:.0295,t10:.2160,dk:37.0,fd:34.0,skill:0.980,type:'LONG'},
+    {nm:'Jordan Spieth',wr:35,win:.0216,t10:.1863,dk:28.0,fd:28.0,skill:1.050,type:'SHORT GAME'},
+    {nm:'Justin Thomas',wr:38,win:.0260,t10:.1995,dk:23.0,fd:21.0,skill:1.052,type:'ALL-AROUND'},
+    {nm:'Sahith Theegala',wr:40,win:.0224,t10:.1775,dk:37.0,fd:31.0,skill:0.939,type:'SHOT-MAKER'},
+    {nm:'Ryo Hisatsune',wr:63,win:.0181,t10:.1707,dk:40.0,fd:31.0,skill:1.053,type:'HOT FORM'},
+    {nm:'Corey Conners',wr:42,win:.0153,t10:.1498,dk:34.0,fd:31.0,skill:1.045,type:'ACCURATE'},
+    {nm:'Nick Taylor',wr:39,win:.0123,t10:.1024,dk:38.0,fd:41.0,skill:1.024,type:'ACCURATE'},
+    {nm:'Keegan Bradley',wr:41,win:.0136,t10:.1355,dk:null,fd:null,skill:null,type:'BALANCED'},
+    {nm:'Taylor Pendrith',wr:44,win:.0205,t10:.1800,dk:null,fd:null,skill:null,type:'LONG'},
+    {nm:'Rasmus Hojgaard',wr:47,win:.0187,t10:.1569,dk:null,fd:null,skill:null,type:'LONG'},
+    {nm:'Wyndham Clark',wr:76,win:.0137,t10:.1295,dk:null,fd:null,skill:null,type:'LONG'},
+    {nm:'Brooks Koepka',wr:null,win:.0165,t10:.1410,dk:null,fd:null,skill:null,type:'BOMBER'}
   ],
   courseFit:[
     {nm:'Xander Schauffele',base:1.739,final:1.839,dd:-0.112,da:-0.006,sg:0.057,ch:0.019,timing:0.116},
@@ -2342,7 +2342,8 @@ const VALSPAR_PREVIEW = {
     {nm:'Nick Taylor',base:0.947,final:1.024,dd:0.049,da:0.037,sg:-0.034,ch:0.085,timing:0.071},
     {nm:'Nicolai Hojgaard',base:1.061,final:0.980,dd:-0.140,da:-0.036,sg:-0.029,ch:-0.017,timing:0.099},
     {nm:'Sahith Theegala',base:0.875,final:0.939,dd:-0.038,da:-0.026,sg:-0.134,ch:0.005,timing:0.216}
-  ]
+  ],
+  correlatedCourses: ['Bay Hill','Harbour Town','TPC Sawgrass','Sedgefield','Quail Hollow']
 };
 // Static results data for 2025-26 PGA Tour season (DG historical endpoints are paywalled)
 const PREV_RESULTS = {
@@ -3861,12 +3862,7 @@ function renderUpcomingSchedule(){
   if(currentIdx<0)currentIdx=0;
   // Find next major
   const nextMajorIdx=UPCOMING_EVENTS.findIndex(ev=>ev.major);
-  let h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;flex-wrap:wrap;gap:.3rem">';
-  h+='<h3 style="margin:0">Upcoming Events</h3>';
-  if(nextMajorIdx>=0){
-    h+='<button onclick="skipToMasters()" style="font-family:var(--fb);font-size:.62rem;color:var(--go);background:rgba(196,160,53,.08);border:1px solid rgba(196,160,53,.3);border-radius:5px;padding:.3rem .7rem;cursor:pointer;font-weight:600;letter-spacing:.03em;transition:all .2s" onmouseover="this.style.background=\'rgba(196,160,53,.18)\'" onmouseout="this.style.background=\'rgba(196,160,53,.08)\'">Skip to Masters →</button>';
-  }
-  h+='</div>';
+  let h='';
   h+='<div class="mjr-sched" id="upcoming-cards">';
   UPCOMING_EVENTS.forEach((ev,i)=>{
     const isCurrent=i===currentIdx;
@@ -3875,10 +3871,10 @@ function renderUpcomingSchedule(){
     const statusLabel=isCurrent?'THIS WEEK':isMajor?'MAJOR':'';
     const statusCls=isCurrent?'s-l':isMajor?'s-n':'';
     h+='<div class="mjr-card '+cls+'" id="uc-'+i+'" onclick="selectUpcoming('+i+')" style="cursor:pointer">';
-    h+='<div class="mn" style="font-size:.82rem">'+ev.name+'</div>';
-    h+='<div style="font-size:.58rem;color:var(--tp);margin-top:.1rem;font-family:var(--fm)">'+ev.dates+'</div>';
-    h+='<div style="font-size:.55rem;color:var(--go);margin-top:.05rem">'+ev.course.split('(')[0].trim()+'</div>';
-    if(statusLabel)h+='<div class="ms '+statusCls+'" style="margin-top:.2rem">'+statusLabel+'</div>';
+    h+='<div class="mn">'+ev.name+'</div>';
+    h+='<div style="font-size:.5rem;color:var(--tp);margin-top:.05rem;font-family:var(--fm)">'+ev.dates+'</div>';
+    h+='<div style="font-size:.48rem;color:var(--go);margin-top:.03rem">'+ev.course.split('(')[0].trim()+'</div>';
+    if(statusLabel)h+='<div class="ms '+statusCls+'">'+statusLabel+'</div>';
     h+='</div>';
   });
   h+='</div>';
@@ -3895,11 +3891,11 @@ function setPreviewMode(mode){
   const adv=document.getElementById('uc-adv-btn');
   if(basic&&adv){
     if(mode==='basic'){
-      basic.style.background='var(--gn)';basic.style.color='#fff';basic.style.fontWeight='600';
-      adv.style.background='var(--bca)';adv.style.color='var(--tp)';adv.style.fontWeight='500';
+      basic.style.background='var(--gn)';basic.style.color='#fff';basic.style.fontWeight='700';basic.style.boxShadow='0 1px 4px rgba(82,183,136,.3)';
+      adv.style.background='transparent';adv.style.color='var(--ts)';adv.style.fontWeight='500';adv.style.boxShadow='none';
     }else{
-      adv.style.background='var(--gn)';adv.style.color='#fff';adv.style.fontWeight='600';
-      basic.style.background='var(--bca)';basic.style.color='var(--tp)';basic.style.fontWeight='500';
+      adv.style.background='var(--gn)';adv.style.color='#fff';adv.style.fontWeight='700';adv.style.boxShadow='0 1px 4px rgba(82,183,136,.3)';
+      basic.style.background='transparent';basic.style.color='var(--ts)';basic.style.fontWeight='500';basic.style.boxShadow='none';
     }
   }
   document.querySelectorAll('.uc-advanced').forEach(el=>{
@@ -3946,15 +3942,16 @@ function selectUpcoming(idx){
   }
   // If COURSES_DATA has this course, use the full renderPreview system (same as Masters)
   if(courseData){
-    let h='<div style="display:flex;justify-content:center;gap:.3rem;margin:.4rem 0">';
-    h+='<button id="uc-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.6rem;padding:.25rem .8rem;border-radius:5px;cursor:pointer;border:1px solid var(--br);background:var(--gn);color:#fff;font-weight:600;transition:all .2s">Basic</button>';
-    h+='<button id="uc-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.6rem;padding:.25rem .8rem;border-radius:5px;cursor:pointer;border:1px solid var(--br);background:var(--bca);color:var(--tp);font-weight:500;transition:all .2s">Advanced</button>';
-    h+='</div>';
-    h+='<div id="uc-preview-target"></div>';
+    let h='<div style="display:flex;justify-content:center;margin:.5rem 0">';
+    h+='<div style="background:var(--bca);border:1px solid var(--br);border-radius:8px;padding:.3rem;display:inline-flex;gap:.2rem">';
+    h+='<button id="uc-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;transition:all .2s;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>';
+    h+='<button id="uc-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500;transition:all .2s">Advanced</button>';
+    h+='</div></div>';
     // Valspar field preview + betting edge rendered after
     if(ev.name==='Valspar Championship'&&typeof VALSPAR_PREVIEW!=='undefined'){
       h+='<div id="uc-field-target"></div>';
     }
+    h+='<div id="uc-preview-target"></div>';
     el.innerHTML=h;
     const target=document.getElementById('uc-preview-target');
     renderPreview(target, ev.course, ev.name);
@@ -4036,6 +4033,14 @@ function renderValsparField(el){
     });
     h+='</div></div>';
     h+='</div>';
+    if(VALSPAR_PREVIEW.correlatedCourses){
+      h+='<div style="margin-top:.4rem"><div style="font-size:.5rem;color:var(--ts);font-weight:600;margin-bottom:.2rem">Similar Course Profiles</div>';
+      h+='<div style="display:flex;flex-wrap:wrap;gap:.2rem">';
+      VALSPAR_PREVIEW.correlatedCourses.forEach(c=>{
+        h+='<span style="font-size:.52rem;padding:.15rem .4rem;background:rgba(0,40,85,.08);border:1px solid rgba(0,40,85,.2);border-radius:4px;color:#002855;cursor:pointer" onclick="alert(\'Similar SG profile to Copperhead: approach-heavy, accuracy-first, small greens\')">'+c+'</span>';
+      });
+      h+='</div></div>';
+    }
   }
   h+='<div class="cf-section-title">Field Preview — DG Model Predictions</div>';
   h+='<div class="tw" style="margin:0"><table class="tc" style="min-width:420px">';
@@ -4047,7 +4052,8 @@ function renderValsparField(el){
     const t10Pct=(p.t10*100).toFixed(0)+'%';
     const dkTxt=p.dk?'+'+Math.round((p.dk-1)*100):'—';
     const fdTxt=p.fd?'+'+Math.round((p.fd-1)*100):'—';
-    h+='<tr><td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+'</td>'
+    const typePill=p.type?'<span style="font-size:.42rem;padding:.05rem .2rem;border-radius:3px;margin-left:.2rem;background:var(--bca);color:var(--ts)">'+p.type+'</span>':'';
+    h+='<tr><td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+typePill+'</td>'
       +'<td style="text-align:center;color:var(--td)">'+(p.wr||'—')+'</td>'
       +((function(){const cfMatch=cf.find(c=>c.nm===p.nm);if(!cfMatch)return '<td style="text-align:center;color:var(--td)">—</td>';const fv=cfMatch.final;const fc=fv>1.0?'var(--gl)':fv<0.5?'var(--td)':'var(--tp)';return '<td style="text-align:center;color:'+fc+';font-weight:600">'+fv.toFixed(3)+'</td>';})())
       +'<td style="text-align:right;position:relative"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.15);border-radius:2px"></span><span style="position:relative;color:var(--gl);font-weight:600">'+winPct+'</span></td>'

@@ -57,6 +57,24 @@ Check if the course exists in the COURSES_DATA object in index.html. If not, add
 
 Also ensure the courseMap in selectUpcoming() maps the UPCOMING_EVENTS course name to the COURSES_DATA key.
 
+## Step 3B: Expert Sentiment Collection
+
+Every week before the tournament:
+1. Search for golf betting blogs, podcasts, and journalist commentary about the upcoming event
+2. Key sources to check:
+   - Golf betting Twitter/X accounts
+   - The Ringer golf podcast
+   - No Laying Up
+   - Golf Digest betting previews
+   - Action Network golf
+   - RotoGrinders golf
+   - Fantasy National golf
+3. Collect: who experts are picking and WHY
+4. Compare expert picks to DG model predictions
+5. Note discrepancies: players experts love that DG doesn't rate highly (and vice versa)
+6. Surface 3-5 "smart money" picks with reasoning
+7. Add source attribution for every expert opinion
+
 ## Step 4: Build Preview Data Object
 
 Create a preview data constant (like VALSPAR_PREVIEW):
@@ -77,6 +95,26 @@ From the decompositions data, determine:
 - **Course specialists**: Players with positive course_history_adjustment
 - **Hot hands**: Players with large negative timing_adjustment (playing well above baseline)
 - **Best course fit**: Players with largest positive total_fit_adjustment
+
+## Step 5B: Player Type Classification
+
+For every player in the field preview, assign a type label based on DG skill ratings:
+- **ALL-AROUND**: elite in multiple SG categories
+- **IRON PLAYER**: approach game is primary weapon
+- **SHOT-MAKER**: creative, varied shot selection
+- **BALL-STRIKER**: tee-to-green excellence
+- **BOMBER**: driving distance is primary weapon
+- **ACCURATE**: driving accuracy + precision
+- **SHORT GAME**: around-green + putting specialist
+- **HOT FORM**: timing_adjustment significantly positive (recent surge)
+- **RISING STAR**: young player with rapidly improving baseline
+
+Show as small pill tags next to player names in field preview.
+
+Classification logic:
+- Pull sg_ott, sg_app, sg_arg, sg_putt from skill-ratings endpoint
+- Pull timing_adjustment from decompositions endpoint
+- Apply thresholds to assign primary type (player can have 1-2 labels max)
 
 ## Step 6: Verify Rendering
 
@@ -111,10 +149,85 @@ git push origin master
 - Everything in Basic, plus:
 - More Course Details expandable (all rankings, grass types, etc.)
 - Full Course Notes (all 10+ bullet points with historical nuggets)
-- Full Past Winners table (last 10 years with runner-ups)
+- Full Past Winners table (last 10 years with runner-ups, storylines — see Past Winners Enrichment)
 - Betting Edge table (DG model vs books)
 - Conditions / Live Weather
-- Correlated Courses
+- Correlated Courses (shown in Course Fit Analysis section — see Correlated Courses Display)
+- Historical Course Fit Trending (where data available)
+
+---
+
+## Correlated Courses Display
+
+- Show correlated courses in the **Course Fit Analysis** section (not More Course Details)
+- Each course tag should be clickable — opens a tooltip/popover explaining WHY it's similar
+- Use navy blue (`#002855`) accent for correlated course tag backgrounds
+- Similarity reasoning should reference shared traits: grass type, course length, SG emphasis, layout style, scoring profile
+
+---
+
+## Past Winners Enrichment (Advanced Mode)
+
+For each past winner in the full Past Winners table, include an expandable storyline row:
+- Who was the runner-up and margin of victory
+- Key storyline from that year (comeback, playoff, weather delay, controversy, wire-to-wire, etc.)
+- Whether the winner's profile matches the course DNA (accuracy type vs bomber type)
+- Notable players who missed the cut or withdrew that year
+
+All storyline facts must be verified against PGA Tour official records or reputable tournament archives. Never fabricate storylines.
+
+---
+
+## Historical Course Fit Trending
+
+If available, show how the course's accuracy/bomber preference has shifted over years:
+- Plot or table showing driving_accuracy_adjustment vs driving_distance_adjustment across recent editions
+- Helps identify if a course is trending toward rewarding bombers vs accuracy
+- Limited by API access — derive from available decomposition data where possible
+- Note: historical raw data requires DG subscription upgrade; use current-year decomposition as baseline and note limitation
+
+---
+
+## Clickable Course Comparisons
+
+Every stat tile in Course Profile should be clickable:
+- Opens a 54-course comparison chart (bar or dot chart)
+- Current course highlighted in **gold**
+- Pool event courses (Players, Masters, PGA, US Open, Open) highlighted in **green**
+- Most comparable courses highlighted in **blue**
+- All other courses in muted gray
+- Chart title must name the stat being compared
+- MUST reference the correct course based on the selected tournament — never default to Augusta or any hardcoded course
+
+---
+
+## Bold Formatting in Course Notes
+
+- Bold only key phrases that draw the reader's eye — selective emphasis only
+- Use `<strong>` on: course records, famous player names, dramatic stats, notable years
+- Don't over-bold — if more than ~20% of a bullet is bold, reduce it
+- Example: "In 2019, **Justin Thomas** set the course record with a **61** in Round 3"
+- Avoid bolding generic words like "the course" or "this tournament"
+
+---
+
+## Expert Sentiment Display
+
+When expert sentiment data is collected (Step 3B), display it in the Advanced View:
+- "Smart Money Picks" section with 3-5 expert-backed selections
+- Each pick shows: player name, expert source, brief reasoning, DG model agreement (agree/disagree/neutral)
+- Discrepancy callouts: flag players where expert consensus and DG model diverge significantly
+- Source attribution required on every opinion (e.g., "via Action Network", "No Laying Up pod ep. 312")
+
+---
+
+## Player Type Display
+
+When player types are classified (Step 5B), display as pill tags:
+- Small colored pill next to each player name in the Field Preview table
+- Color coding by type category (use muted, accessible colors that work on dark background)
+- Hoverable — tooltip shows the SG ratings that drove the classification
+- Players can have up to 2 type pills (e.g., BOMBER + HOT FORM)
 
 ---
 
