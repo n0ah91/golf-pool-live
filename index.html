@@ -64,6 +64,7 @@ tbody tr.me:hover{background:rgba(196,160,53,.12)!important}
 td{padding:.42rem .4rem;font-family:var(--fm);font-size:.8rem;white-space:nowrap}
 td.nc{font-family:var(--fb);font-weight:500;position:sticky;left:0;z-index:1;background:inherit;min-width:110px}
 td.rc{font-weight:600;min-width:38px}
+table.tc{font-size:.68rem}table.tc thead th{font-size:.6rem;padding:.35rem .3rem}table.tc td{padding:.28rem .3rem;font-size:.66rem}
 .r1{color:var(--r1)}.r2{color:var(--r2)}.r3{color:var(--r3)}
 .sg{color:var(--gl)}.sb{color:var(--rd)}.sn{color:var(--td)}
 .tp{display:inline-block;padding:.08rem .35rem;border-radius:9px;font-weight:500;font-size:.7rem}
@@ -570,23 +571,23 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <div>
 <div style="font-size:.72rem;color:#002855;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Season Standings</div>
 <div style="font-size:.58rem;color:var(--td);margin-bottom:.25rem">51% of net pot · $6,750</div>
-<table style="width:100%;font-size:.68rem;border-collapse:collapse">
-<thead><tr style="border-bottom:1px solid var(--br)"><th style="text-align:left;color:var(--td);font-weight:500;padding:.2rem 0">Place</th><th style="text-align:right;color:var(--td);font-weight:500;padding:.2rem 0">Payout</th></tr></thead>
+<table class="tc">
+<thead><tr><th>Place</th><th style="text-align:right">Payout</th></tr></thead>
 <tbody>
-<tr><td style="color:var(--tb);padding:.15rem 0;font-weight:600">1st</td><td style="text-align:right;color:var(--gl);font-family:var(--fm);font-weight:600">$1,687</td></tr>
-<tr><td style="color:var(--tb);padding:.15rem 0">2nd</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$1,268</td></tr>
-<tr><td style="color:var(--tb);padding:.15rem 0">3rd</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$961</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">4th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$728</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">5th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$551</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">6th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$418</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">7th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$316</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">8th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$240</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">9th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$182</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">10th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$125</td></tr>
-<tr style="border-top:1px solid var(--br)"><td style="color:#8b2332;padding:.15rem 0;font-weight:600">DFL</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$100</td></tr>
-<tr><td style="color:#006747;padding:.15rem 0;font-weight:600">BB</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$100</td></tr>
-<tr><td style="color:var(--go);padding:.15rem 0;font-weight:600">ML$</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$75</td></tr>
-<tr style="border-top:1px solid var(--br);font-weight:700"><td style="color:var(--tb);padding:.2rem 0">Total</td><td style="text-align:right;color:var(--go);font-family:var(--fm)">$6,750</td></tr>
+<tr><td style="color:var(--tb);font-weight:600">1st</td><td style="text-align:right;color:var(--gl);font-weight:600">$1,687</td></tr>
+<tr><td style="color:var(--tb)">2nd</td><td style="text-align:right;color:var(--gl)">$1,268</td></tr>
+<tr><td style="color:var(--tb)">3rd</td><td style="text-align:right;color:var(--gl)">$961</td></tr>
+<tr><td>4th</td><td style="text-align:right;color:var(--gl)">$728</td></tr>
+<tr><td>5th</td><td style="text-align:right;color:var(--gl)">$551</td></tr>
+<tr><td>6th</td><td style="text-align:right;color:var(--gl)">$418</td></tr>
+<tr><td>7th</td><td style="text-align:right;color:var(--gl)">$316</td></tr>
+<tr><td>8th</td><td style="text-align:right;color:var(--gl)">$240</td></tr>
+<tr><td>9th</td><td style="text-align:right;color:var(--gl)">$182</td></tr>
+<tr><td>10th</td><td style="text-align:right;color:var(--gl)">$125</td></tr>
+<tr style="border-top:1px solid var(--br)"><td style="color:#8b2332;font-weight:600">DFL</td><td style="text-align:right;color:var(--gl)">$100</td></tr>
+<tr><td style="color:#006747;font-weight:600">BB</td><td style="text-align:right;color:var(--gl)">$100</td></tr>
+<tr><td style="color:var(--go);font-weight:600">ML$</td><td style="text-align:right;color:var(--gl)">$75</td></tr>
+<tr style="border-top:1px solid var(--br);font-weight:700"><td style="color:var(--tb)">Total</td><td style="text-align:right;color:var(--go)">$6,750</td></tr>
 </tbody>
 </table>
 </div>
@@ -594,16 +595,16 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <div>
 <div style="font-size:.72rem;color:#006747;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem">Per Event</div>
 <div style="font-size:.58rem;color:var(--td);margin-bottom:.25rem">49% of net pot · $1,275 × 5 events</div>
-<table style="width:100%;font-size:.68rem;border-collapse:collapse">
-<thead><tr style="border-bottom:1px solid var(--br)"><th style="text-align:left;color:var(--td);font-weight:500;padding:.2rem 0">Place</th><th style="text-align:right;color:var(--td);font-weight:500;padding:.2rem 0">Payout</th></tr></thead>
+<table class="tc">
+<thead><tr><th>Place</th><th style="text-align:right">Payout</th></tr></thead>
 <tbody>
-<tr><td style="color:var(--tb);padding:.15rem 0;font-weight:600">1st</td><td style="text-align:right;color:var(--gl);font-family:var(--fm);font-weight:600">$500</td></tr>
-<tr><td style="color:var(--tb);padding:.15rem 0">2nd</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$325</td></tr>
-<tr><td style="color:var(--tb);padding:.15rem 0">3rd</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$200</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">4th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$125</td></tr>
-<tr><td style="color:var(--tp);padding:.15rem 0">5th</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$75</td></tr>
-<tr><td style="color:#00205b;padding:.15rem 0;font-weight:600">DH</td><td style="text-align:right;color:var(--gl);font-family:var(--fm)">$50</td></tr>
-<tr style="border-top:1px solid var(--br);font-weight:700"><td style="color:var(--tb);padding:.2rem 0">Total</td><td style="text-align:right;color:var(--go);font-family:var(--fm)">$1,275</td></tr>
+<tr><td style="color:var(--tb);font-weight:600">1st</td><td style="text-align:right;color:var(--gl);font-weight:600">$500</td></tr>
+<tr><td style="color:var(--tb)">2nd</td><td style="text-align:right;color:var(--gl)">$325</td></tr>
+<tr><td style="color:var(--tb)">3rd</td><td style="text-align:right;color:var(--gl)">$200</td></tr>
+<tr><td>4th</td><td style="text-align:right;color:var(--gl)">$125</td></tr>
+<tr><td>5th</td><td style="text-align:right;color:var(--gl)">$75</td></tr>
+<tr><td style="color:#00205b;font-weight:600">DH</td><td style="text-align:right;color:var(--gl)">$50</td></tr>
+<tr style="border-top:1px solid var(--br);font-weight:700"><td style="color:var(--tb)">Total</td><td style="text-align:right;color:var(--go)">$1,275</td></tr>
 </tbody>
 </table>
 </div>
@@ -3553,14 +3554,14 @@ function _tpcSparkline(ranks,total){
 function _tpcRenderRow(e,me){
   const scClr=e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
   let h='<tr class="'+(me?'me':'')+'">';
-  h+='<td class="rc" style="color:var(--ts);font-size:.62rem">'+e.rk+'</td>';
-  h+='<td class="nc" style="font-size:.65rem">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+'</td>';
-  h+='<td style="font-weight:700;color:'+scClr+';font-size:.62rem">'+e.tp+'</td>';
-  h+='<td style="color:var(--tp);font-size:.62rem">'+e.rp+'</td>';
-  h+='<td style="color:var(--td);font-size:.62rem">'+(e.bn!=null?e.bn:'–')+'</td>';
-  h+='<td style="color:var(--td);font-size:.58rem;font-family:var(--fm)">'+(e.td!=null&&e.td!==''?e.td:'–')+'</td>';
+  h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+'</td>';
+  h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
+  h+='<td style="color:var(--tp)">'+e.rp+'</td>';
+  h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
+  h+='<td style="color:var(--td)">'+(e.td!=null&&e.td!==''?e.td:'–')+'</td>';
   h+='<td style="padding:0 2px">'+_tpcSparkline(e._ranks,107)+'</td>';
-  h+='<td style="color:var(--go);font-size:.6rem">$'+(e.win/1e6).toFixed(2)+'M</td>';
+  h+='<td style="color:var(--go)">$'+(e.win/1e6).toFixed(2)+'M</td>';
   h+='</tr>';
   return h;
 }
@@ -3959,14 +3960,14 @@ function selectUpcoming(idx){
     const sn=(nm)=>{if(!nm)return'-';const pts=nm.split(' ');return pts.length>=2?pts[0].charAt(0)+'. '+pts.slice(1).join(' '):nm;};
     h+='<div style="margin-top:.5rem">';
     h+='<div class="cf-section-title">Field Preview — DG Model Predictions</div>';
-    h+='<div style="overflow-x:auto"><table style="width:100%;font-size:.62rem;border-collapse:collapse;min-width:420px">';
-    h+='<thead><tr style="border-bottom:1px solid var(--br)">'
-      +'<th style="text-align:left;color:var(--td);font-weight:500;padding:.25rem .2rem">Player</th>'
-      +'<th style="text-align:center;color:var(--td);font-weight:500;padding:.25rem .2rem">WR</th>'
-      +'<th style="text-align:right;color:var(--td);font-weight:500;padding:.25rem .2rem">Win %</th>'
-      +'<th style="text-align:right;color:var(--td);font-weight:500;padding:.25rem .2rem">Top 10</th>'
-      +'<th style="text-align:right;color:var(--td);font-weight:500;padding:.25rem .2rem">DK</th>'
-      +'<th style="text-align:right;color:var(--td);font-weight:500;padding:.25rem .2rem">FD</th>'
+    h+='<div class="tw" style="margin:0"><table class="tc" style="min-width:420px">';
+    h+='<thead><tr>'
+      +'<th>Player</th>'
+      +'<th style="text-align:center">WR</th>'
+      +'<th style="text-align:right">Win %</th>'
+      +'<th style="text-align:right">Top 10</th>'
+      +'<th style="text-align:right">DK</th>'
+      +'<th style="text-align:right">FD</th>'
       +'</tr></thead><tbody>';
     const maxWin=Math.max(...vp.map(x=>x.win));
     vp.forEach((p,i)=>{
@@ -3975,15 +3976,15 @@ function selectUpcoming(idx){
       const t10Pct=(p.t10*100).toFixed(0)+'%';
       const dkTxt=p.dk?'+'+Math.round((p.dk-1)*100):'—';
       const fdTxt=p.fd?'+'+Math.round((p.fd-1)*100):'—';
-      h+='<tr style="border-bottom:1px solid rgba(255,255,255,.03)">'
-        +'<td style="padding:.2rem .2rem;color:var(--tp);font-weight:600;white-space:nowrap">'+sn(p.nm)+'</td>'
-        +'<td style="text-align:center;padding:.2rem;color:var(--td);font-family:var(--fm)">'+(p.wr||'—')+'</td>'
-        +'<td style="text-align:right;padding:.2rem;position:relative">'
-        +'<span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.2);border-radius:2px"></span>'
-        +'<span style="position:relative;color:var(--gl);font-family:var(--fm);font-weight:600">'+winPct+'</span></td>'
-        +'<td style="text-align:right;padding:.2rem;color:var(--tp);font-family:var(--fm)">'+t10Pct+'</td>'
-        +'<td style="text-align:right;padding:.2rem;color:var(--go);font-family:var(--fm);font-size:.58rem">'+dkTxt+'</td>'
-        +'<td style="text-align:right;padding:.2rem;color:var(--go);font-family:var(--fm);font-size:.58rem">'+fdTxt+'</td>'
+      h+='<tr>'
+        +'<td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+'</td>'
+        +'<td style="text-align:center;color:var(--td)">'+(p.wr||'—')+'</td>'
+        +'<td style="text-align:right;position:relative">'
+        +'<span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.15);border-radius:2px"></span>'
+        +'<span style="position:relative;color:var(--gl);font-weight:600">'+winPct+'</span></td>'
+        +'<td style="text-align:right;color:var(--tp)">'+t10Pct+'</td>'
+        +'<td style="text-align:right;color:var(--go)">'+dkTxt+'</td>'
+        +'<td style="text-align:right;color:var(--go)">'+fdTxt+'</td>'
         +'</tr>';
     });
     h+='</tbody></table></div>';
@@ -4005,28 +4006,28 @@ function selectUpcoming(idx){
       h+='<div style="margin-top:.6rem">';
       h+='<div class="cf-section-title">Betting Edge — DG Model vs Books</div>';
       h+='<div style="font-size:.52rem;color:var(--td);margin-bottom:.3rem">Positive edge = DG model thinks player is more likely to win than the book\'s odds imply</div>';
-      h+='<div style="overflow-x:auto"><table style="width:100%;font-size:.62rem;border-collapse:collapse">';
-      h+='<thead><tr style="border-bottom:1px solid var(--br)">'
-        +'<th style="text-align:left;color:var(--td);font-weight:500;padding:.25rem .2rem">Player</th>'
-        +'<th style="text-align:center;color:var(--td);font-weight:500;padding:.25rem .2rem">Book</th>'
-        +'<th style="text-align:right;color:var(--td);font-weight:500;padding:.25rem .2rem">Odds</th>'
-        +'<th style="text-align:right;color:var(--td);font-weight:500;padding:.25rem .2rem">Book %</th>'
-        +'<th style="text-align:right;color:var(--td);font-weight:500;padding:.25rem .2rem">DG %</th>'
-        +'<th style="text-align:right;color:var(--td);font-weight:500;padding:.25rem .2rem">Edge</th>'
+      h+='<div class="tw" style="margin:0"><table class="tc">';
+      h+='<thead><tr>'
+        +'<th>Player</th>'
+        +'<th style="text-align:center">Book</th>'
+        +'<th style="text-align:right">Odds</th>'
+        +'<th style="text-align:right">Book %</th>'
+        +'<th style="text-align:right">DG %</th>'
+        +'<th style="text-align:right">Edge</th>'
         +'</tr></thead><tbody>';
       edges.slice(0,15).forEach(e=>{
         const amerOdds='+'+Math.round((e.odds-1)*100);
-        const edgeClr=parseFloat(e.edge)>=1.0?'var(--gl)':parseFloat(e.edge)>=0.5?'var(--gl)':'var(--tp)';
+        const edgeClr=parseFloat(e.edge)>=1.0?'var(--gl)':'var(--tp)';
         const barW=Math.max(4,Math.round((e.edgeRaw/edges[0].edgeRaw)*100));
-        h+='<tr style="border-bottom:1px solid rgba(255,255,255,.03)">'
-          +'<td style="padding:.2rem;color:var(--tp);font-weight:600;white-space:nowrap">'+sn(e.nm)+'</td>'
-          +'<td style="text-align:center;padding:.2rem;color:var(--go);font-family:var(--fm);font-size:.55rem">'+e.book+'</td>'
-          +'<td style="text-align:right;padding:.2rem;color:var(--go);font-family:var(--fm)">'+amerOdds+'</td>'
-          +'<td style="text-align:right;padding:.2rem;color:var(--td);font-family:var(--fm)">'+e.impl+'%</td>'
-          +'<td style="text-align:right;padding:.2rem;color:var(--gl);font-family:var(--fm)">'+e.dgPct+'%</td>'
-          +'<td style="text-align:right;padding:.2rem;position:relative">'
-          +'<span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.15);border-radius:2px"></span>'
-          +'<span style="position:relative;color:'+edgeClr+';font-family:var(--fm);font-weight:700">+'+e.edge+'%</span></td>'
+        h+='<tr>'
+          +'<td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(e.nm)+'</td>'
+          +'<td style="text-align:center;color:var(--go)">'+e.book+'</td>'
+          +'<td style="text-align:right;color:var(--go)">'+amerOdds+'</td>'
+          +'<td style="text-align:right;color:var(--td)">'+e.impl+'%</td>'
+          +'<td style="text-align:right;color:var(--gl)">'+e.dgPct+'%</td>'
+          +'<td style="text-align:right;position:relative">'
+          +'<span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.12);border-radius:2px"></span>'
+          +'<span style="position:relative;color:'+edgeClr+';font-weight:700">+'+e.edge+'%</span></td>'
           +'</tr>';
       });
       h+='</tbody></table></div>';
