@@ -17,9 +17,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Playfair+Display:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
 <style>
-:root{--bd:#f5f5f0;--bm:#ffffff;--bc:#ffffff;--bca:#f0f0eb;--bh:#e8e8e3;--br:#d4d4cc;--brl:#c0c0b8;
---gn:#1a7a6d;--gl:#1a9e8a;--gm:#0e4f47;--go:#c9a227;--gol:#ffd966;--god:#b8922e;
---tb:#1a1a18;--tp:#3a3a35;--ts:#6b6b63;--td:#9a9a90;--rd:#c45a3c;
+:root{--bd:#f5f4f0;--bm:#ffffff;--bc:#ffffff;--bca:#f0efeb;--bh:#e8e7e2;--br:#d4d2ca;--brl:#bfbdb5;
+--gn:#006747;--gl:#2a7d52;--gm:#004f2d;--go:#c4a035;--gol:#d4b44a;--god:#9a7e28;
+--tb:#1a1f3a;--tp:#2a3350;--ts:#586882;--td:#8895a8;--rd:#8b2332;
 --r1:#ffd700;--r2:#c0c0c0;--r3:#cd7f32;
 --fd:'DM Sans',-apple-system,sans-serif;--fb:'DM Sans',-apple-system,sans-serif;--fm:'DM Mono',Consolas,monospace;--fh:'DM Sans',-apple-system,sans-serif;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -28,7 +28,7 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bd)}
 ::-webkit-scrollbar-thumb{background:var(--brl);border-radius:3px}
 .logo-banner{padding:.8rem 1rem .4rem;text-align:center}
-.logo-banner img{max-width:min(500px,90%);height:auto;opacity:.92;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))}
+.logo-banner img{max-width:min(500px,90%);height:auto;mix-blend-mode:multiply}
 .hdr{background:linear-gradient(180deg,var(--bc) 0%,var(--bd) 100%);border-bottom:1px solid var(--br);padding:1rem 1rem 0;text-align:center}
 .hdr h1{font-family:var(--fd);font-weight:700;font-size:2rem;color:var(--tb);letter-spacing:.04em}
 .hdr h1::after{content:'';display:block;width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--go),transparent);margin:.35rem auto 0}
@@ -41,7 +41,7 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .nav{display:flex;background:var(--bm);border-bottom:1px solid var(--br);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:.25rem .4rem;gap:.15rem}
 .nav::-webkit-scrollbar{display:none}
 .nav button{flex:1;min-width:max-content;padding:.55rem .75rem;font-family:var(--fb);font-weight:500;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ts);background:0 0;border:none;border-radius:6px;cursor:pointer;transition:all .25s;white-space:nowrap;position:relative}
-.nav button:hover{color:var(--tb);background:var(--bca)}.nav button.active{color:var(--gn);background:rgba(26,122,109,.08);font-weight:600;box-shadow:inset 0 -2px 0 var(--gn)}
+.nav button:hover{color:var(--tb);background:var(--bca)}.nav button.active{color:var(--gn);background:rgba(0,103,71,.06);font-weight:600;box-shadow:inset 0 -2px 0 var(--gn)}
 .ctrl{display:flex;gap:.6rem;align-items:center;padding:.75rem 1rem;flex-wrap:wrap}
 .ctrl select,.ctrl input{font-family:var(--fb);font-size:.8rem;padding:.4rem .6rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;transition:border-color .2s}
 .ctrl select:focus,.ctrl input:focus{border-color:var(--gn)}.ctrl input{flex:1;min-width:100px}
@@ -419,10 +419,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <body>
 <header class="hdr">
 <div class="logo-banner"><img src="tournament-logos.png" alt="2026 Tournament Logos"></div>
-<h1>The Majors Pool</h1>
-<p class="sub">Est. 2017</p>
+<h1 style="display:none">The Majors Pool</h1>
 </header>
-<div class="me-bar">
+<div class="me-bar" style="display:none">
 <label>My Entry:</label>
 <select id="me" onchange="saveMe()"><option value="">Choose your entry…</option></select>
 <span id="me-badge" class="me-badge"></span>
@@ -442,6 +441,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <input type="text" id="hs" placeholder="Search..." oninput="rHistory()" style="flex:1;min-width:100px">
 <span id="hc" class="cnt"></span>
 </div>
+<a href="https://splashsports.com" target="_blank" class="splash-link">📊 Pool Standings on Splash Sports →</a>
 <div id="h-body"></div>
 </section>
 <section id="players-results" class="pn2">
@@ -469,8 +469,6 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 </section>
 <section id="upcoming" class="pn2 active">
-
-<a href="https://splashsports.com" target="_blank" class="splash-link">📊 Pool Standings on Splash Sports →</a>
 
 <div class="cd" id="upcoming-sched"></div>
 
@@ -755,7 +753,7 @@ function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
   ['players-results','upcoming','history','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
-  var meb=document.querySelector('.me-bar');if(meb)meb.style.display=(t==='upcoming'||t==='rules')?'none':'flex';
+  var meb=document.querySelector('.me-bar');if(meb)meb.style.display='none';
   if(t==='history'){populateHFilters();rHistory();}
   else if(t==='upcoming')rLive();
   else if(t==='players-results')renderPlayersResults();}
@@ -966,7 +964,7 @@ function hDistC(y){
   charts.dist=new Chart(cx,{type:'bar',data:{labels:bins.map(function(b){return''+b.lo;}),datasets:[{data:bins.map(function(b){return b.count;}),
     backgroundColor:bins.map(function(b){return b.lo<0?'rgba(45,181,160,.45)':'rgba(232,152,62,.35)';}),borderColor:bins.map(function(b){return b.lo<0?'#2db5a0':'#e8983e';}),borderWidth:1,borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f',font:{size:9}}}}}});
+      scales:{y:{beginAtZero:true,grid:{color:'rgba(0,32,91,.08)'},ticks:{color:'#586882'}},x:{grid:{display:false},ticks:{color:'#586882',font:{size:9}}}}}});
 }
 
 /* --- Insight helper: growth chart --- */
@@ -975,7 +973,7 @@ function hGC(){
   var yrs=DB.metadata.years_covered.map(String),cts=yrs.map(function(y){return e4y(y).length;});
   charts.growth=new Chart(cx,{type:'bar',data:{labels:yrs,datasets:[{data:cts,backgroundColor:'rgba(45,106,79,.45)',borderColor:'#2d6a4f',borderWidth:1,borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f'}}}}});
+      scales:{y:{beginAtZero:true,grid:{color:'rgba(0,32,91,.08)'},ticks:{color:'#586882'}},x:{grid:{display:false},ticks:{color:'#586882'}}}}});
 }
 
 /* --- Event View --- */
@@ -1156,7 +1154,7 @@ function hDrawPg(pid){
   var cx=document.getElementById('pg-c')?.getContext('2d');if(!cx)return;if(charts.prog)charts.prog.destroy();
   charts.prog=new Chart(cx,{type:'line',data:{labels:yrs,datasets:[{data:ranks,borderColor:'#52b788',backgroundColor:'rgba(82,183,136,.06)',fill:true,tension:.3,pointRadius:5,pointBackgroundColor:'#52b788'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{reverse:true,title:{display:true,text:'Rank',color:'#8a9a8f',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f'}},x:{grid:{display:false},ticks:{color:'#8a9a8f'}}}}});
+      scales:{y:{reverse:true,title:{display:true,text:'Rank',color:'#586882',font:{size:10}},grid:{color:'rgba(0,32,91,.08)'},ticks:{color:'#586882'}},x:{grid:{display:false},ticks:{color:'#586882'}}}}});
 }
 
 /* ===== LIVE TAB ===== */
@@ -2076,7 +2074,7 @@ function openTourChart(label){
     data:{labels:data.map(d=>d.n),datasets:[{data:data.map(d=>d.v),backgroundColor:colors,borderColor:borders,borderWidth:1,borderRadius:2}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.x.toFixed(info.dec)+(info.unit?' '+info.unit:'')}}},
-      scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f',font:{size:9}}},
+      scales:{x:{grid:{color:'rgba(0,32,91,.08)'},ticks:{color:'#586882',font:{size:9}}},
         y:{grid:{display:false},ticks:{color:function(ctx){const d=data[ctx.index];return d?.cur?'#c9a227':d?.pool?'#52b788':d?.corr?'#3a86a8':'#8a9a8f';},
           font:function(ctx){const d=data[ctx.index];return{size:9,weight:(d?.cur||d?.pool||d?.corr)?'600':'400'};}}}}}});
   document.getElementById('tour-overlay').classList.add('active');
@@ -2100,9 +2098,9 @@ function openSGCompare(){
   const cx=document.getElementById('tour-cv').getContext('2d');
   charts.tourCmp=new Chart(cx,{type:'bar',data:{labels:cats,datasets:datasets},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:'#8a9a8f',font:{size:8},boxWidth:10}}},
-      scales:{y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#8a9a8f',callback:v=>v+'%'}},
-        x:{grid:{display:false},ticks:{color:'#8a9a8f'}}}}});
+      plugins:{legend:{labels:{color:'#586882',font:{size:8},boxWidth:10}}},
+      scales:{y:{grid:{color:'rgba(0,32,91,.08)'},ticks:{color:'#586882',callback:v=>v+'%'}},
+        x:{grid:{display:false},ticks:{color:'#586882'}}}}});
   document.getElementById('tour-overlay').classList.add('active');
   document.body.style.overflow='hidden';
 }
@@ -3100,8 +3098,8 @@ function sgColor(rank,fieldSize){
     R=Math.round(215+s*20);G=Math.round(65-s*30);B=Math.round(40-s*10);
     alpha=0.50+s*0.30;
   }
-  const fg=alpha>0.35?'rgba(255,255,255,.92)':alpha>0.15?'rgba(255,255,255,.75)':'rgba(255,255,255,.5)';
-  const fw='400';
+  const fg='#1a1a18';
+  const fw=r<=5?'700':'400';
   return {bg:`rgba(${R},${G},${B},${alpha})`,fg,fw};
 }
 
@@ -3340,9 +3338,9 @@ function renderHoleChart(data){
       title:(items)=>{const i=items[0].dataIndex;const h=holes[i];return 'Hole '+h.hole+' \u00B7 Par '+h.par+' \u00B7 '+h.yardage+' yds';},
       label:(item)=>{const h=holes[item.dataIndex];const d=deltas[item.dataIndex];return 'Avg: '+h.total.avg_score.toFixed(2)+' ('+(d>0?'+':'')+d.toFixed(3)+' vs par)';},
       afterLabel:(item)=>{const h=holes[item.dataIndex];const t=h.total;return '\uD83E\uDD85 '+(t.eagles_or_better||0)+'  \uD83D\uDC26 '+t.birdies+'  \u26F3 '+t.pars+'  \uD83D\uDC80 '+t.bogeys+'  \u274C '+(t.doubles_or_worse||0);}
-    }}},scales:{x:{ticks:{color:'#8a9db5',font:{size:10,family:'DM Sans',weight:'600'}},grid:{display:false}},
+    }}},scales:{x:{ticks:{color:'#586882',font:{size:10,family:'DM Sans',weight:'600'}},grid:{display:false}},
       y:{ticks:{color:'#6b6b63',font:{size:10,family:'DM Mono'},callback:v=>(v>0?'+':'')+v.toFixed(2)},grid:{color:'rgba(0,0,0,.06)'},
-        title:{display:true,text:'Avg Score vs Par',color:'#8a9db5',font:{size:11,family:'DM Sans',weight:'600'}}}}}});
+        title:{display:true,text:'Avg Score vs Par',color:'#586882',font:{size:11,family:'DM Sans',weight:'600'}}}}}});
 }
 
 function renderPowerProfile(data){
