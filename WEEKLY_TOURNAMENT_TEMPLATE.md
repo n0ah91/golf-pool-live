@@ -94,6 +94,71 @@ git commit -m "feat: [tournament name] week preview — field predictions + cour
 git push origin master
 ```
 
+---
+
+## Content Tiers (Basic vs Advanced)
+
+### Basic View (default)
+- Course Profile stat grid (always visible)
+- 2-sentence course description from whatMakesItUnique
+- Top 3 past winners
+- Course DNA badge (Accuracy/Bomber/Balanced)
+- Course Specialists + Hot Hands chips
+- Field Preview table with Win %, Top 10, DK/FD odds, Course Fit rating
+- Live Win Odds (top 20)
+
+### Advanced View (toggled)
+- Everything in Basic, plus:
+- More Course Details expandable (all rankings, grass types, etc.)
+- Full Course Notes (all 10+ bullet points with historical nuggets)
+- Full Past Winners table (last 10 years with runner-ups)
+- Betting Edge table (DG model vs books)
+- Conditions / Live Weather
+- Correlated Courses
+
+---
+
+## Historical Content Requirements
+
+Every course MUST have 8-10 notesBullets that go beyond basic facts:
+- Famous shots or moments at the venue
+- Records (lowest score, most birdies, etc.)
+- Course changes or renovations over time
+- Notable collapses or comebacks
+- Historical oddities or lesser-known facts
+- Previous tournament names or sponsors
+- Weather events that impacted the tournament
+- Celebrity or notable amateur connections
+
+All facts MUST be:
+- 100% verified from PGA Tour records, course archives, or reputable sources
+- Sourced — include source attribution on sections
+- Never fabricated or guessed
+
+---
+
+## Data Accuracy Protocol
+
+- Every number comes from a specific DG API endpoint or verified source
+- Past winners cross-checked against PGA Tour official records
+- Odds verified against DraftKings/FanDuel at time of data pull
+- Win probabilities from DG pre-tournament model, not derived
+- "Last refreshed" timestamp shown on live data sections
+
+---
+
+## Source Attribution
+
+Each section should note its source:
+- **Course Profile**: "Source: DataGolf Course Fit Model, PGA Tour Media Guide"
+- **Field Preview**: "Source: DataGolf Pre-Tournament Model"
+- **Odds**: "Source: DraftKings & FanDuel via DataGolf"
+- **Weather**: "Source: Open-Meteo API"
+- **Past Winners**: "Source: PGA Tour Official Records"
+- **Course Notes**: "Sources: PGA Tour Archives, Course History, Tournament Records"
+
+---
+
 ## Data Accuracy Rules
 - NEVER guess player names, scores, odds, or probabilities
 - Player names must match DG API exactly (watch for diacritics)
