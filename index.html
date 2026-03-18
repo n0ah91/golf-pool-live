@@ -1725,19 +1725,19 @@ function getDateEvent() {
   return 'open';
 }
 
-function renderPreview() {
-  const el = document.getElementById('live-preview');
+function renderPreview(targetEl, overrideCourseName, overrideEvName) {
+  const el = targetEl || document.getElementById('live-preview');
   if (!el) return;
-  const ev = getCurrentEvent();
-  const courseName = COURSE_MAP[ev];
+  const ev = overrideCourseName ? null : getCurrentEvent();
+  const courseName = overrideCourseName || COURSE_MAP[ev];
   const course = COURSES_DATA[courseName];
   if (!course) {
     el.innerHTML = '<div style="text-align:center;color:var(--ts);padding:1rem">No course data for current event</div>';
     return;
   }
-  const evName = EV_NAMES[ev] || ev;
-  const evDate = EV_DATES[ev] || '';
-  const pw = PAST_WINNERS[ev] || [];
+  const evName = overrideEvName || EV_NAMES[ev] || ev || courseName;
+  const evDate = ev ? (EV_DATES[ev] || '') : '';
+  const pw = ev ? (PAST_WINNERS[ev] || []) : [];
 
   // SG emphasis bars (horizontal)
   const sg = course.sgEmphasis || {};
@@ -3894,6 +3894,23 @@ function selectUpcoming(idx){
     const searchName=courseName.toLowerCase();
     tourCourse=TOUR_COURSES.find(c=>searchName.includes(c.n.toLowerCase().split(' ')[0]));
   }
+  // If COURSES_DATA has this course, use the full renderPreview system (same as Masters)
+  if(courseData){
+    let h='<div id="uc-preview-target"></div>';
+    // Valspar field preview + betting edge rendered after
+    if(ev.name==='Valspar Championship'&&typeof VALSPAR_PREVIEW!=='undefined'){
+      h+='<div id="uc-field-target"></div>';
+    }
+    el.innerHTML=h;
+    const target=document.getElementById('uc-preview-target');
+    renderPreview(target, ev.course, ev.name+' · '+ev.course);
+    // Render Valspar field data into separate container
+    if(ev.name==='Valspar Championship'&&typeof VALSPAR_PREVIEW!=='undefined'){
+      const fieldTarget=document.getElementById('uc-field-target');
+      renderValsparField(fieldTarget);
+    }
+    return;
+  }
   let h='<div class="cd" style="margin:0">';
   h+='<div class="prev-hero-v2">';
   h+='<div class="prev-title">'+ev.name+'</div>';
@@ -3902,52 +3919,7 @@ function selectUpcoming(idx){
   h+='<div style="font-size:.72rem;color:var(--tp);margin:.4rem 0;padding:.4rem .6rem;background:rgba(0,103,71,.06);border-radius:5px;border:1px solid var(--br);line-height:1.45">';
   h+=ev.teaser;
   h+='</div>';
-  if(courseData){
-    const cd=courseData;
-    h+='<div style="margin-top:.5rem">';
-    // Designer + established
-    if(cd.designer)h+='<div style="font-size:.62rem;color:var(--ts);margin-bottom:.3rem">Designed by '+cd.designer+(cd.established?' · '+cd.established:'')+'</div>';
-    h+='<div class="cf-section-title">Course Profile</div>';
-    h+='<div class="cf-profile-grid">';
-    if(cd.yardage)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+cd.yardage.toLocaleString()+'</div><div class="cf-pstat-l">Yards</div></div>';
-    if(cd.par)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+cd.par+'</div><div class="cf-pstat-l">Par</div></div>';
-    if(cd.bunkerCount)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+cd.bunkerCount+'</div><div class="cf-pstat-l">Bunkers</div></div>';
-    if(cd.waterHoles!=null)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+cd.waterHoles+'</div><div class="cf-pstat-l">Water Holes</div></div>';
-    if(cd.avgStimpmeter)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+cd.avgStimpmeter+'</div><div class="cf-pstat-l">Stimpmeter</div></div>';
-    if(cd.avgGreenSize)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+cd.avgGreenSize+'</div><div class="cf-pstat-l">Avg Green</div></div>';
-    h+='</div>';
-    // Course details row
-    h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin:.3rem 0;font-size:.58rem">';
-    if(cd.courseType)h+='<span style="color:var(--ts);background:var(--bca);padding:.15rem .4rem;border-radius:4px">'+cd.courseType+'</span>';
-    if(cd.grassGreens)h+='<span style="color:var(--ts);background:var(--bca);padding:.15rem .4rem;border-radius:4px">Greens: '+cd.grassGreens+'</span>';
-    if(cd.windExposure)h+='<span style="color:var(--ts);background:var(--bca);padding:.15rem .4rem;border-radius:4px">Wind: '+cd.windExposure+'</span>';
-    if(cd.distanceVsAccuracy)h+='<span style="color:var(--ts);background:var(--bca);padding:.15rem .4rem;border-radius:4px">'+cd.distanceVsAccuracy+'</span>';
-    h+='</div>';
-    // Signature holes
-    if(cd.signatureHoles)h+='<div style="font-size:.6rem;color:var(--tp);margin:.3rem 0"><strong style="color:var(--go)">Signature Holes:</strong> '+cd.signatureHoles+'</div>';
-    // SG emphasis bars
-    if(cd.sgEmphasis){
-      h+='<div class="cf-section-title" style="margin-top:.4rem">Strokes Gained Emphasis</div>';
-      h+='<div style="max-width:320px">';
-      const sgLabels={ott:'Off the Tee',app:'Approach',arg:'Around Green',putt:'Putting'};
-      const sgColors={ott:'var(--rd)',app:'var(--go)',arg:'var(--gl)',putt:'#002855'};
-      for(const k in cd.sgEmphasis){
-        const pct=Math.round(cd.sgEmphasis[k]*100);
-        h+='<div class="cf-sg-row"><span class="cf-sg-lbl">'+(sgLabels[k]||k)+'</span>';
-        h+='<span class="cf-sg-track"><span class="cf-sg-fill" style="width:'+pct+'%;background:'+(sgColors[k]||'var(--go)')+'"></span></span>';
-        h+='<span class="cf-sg-val">'+pct+'%</span></div>';
-      }
-      h+='</div>';
-    }
-    // Key notes bullets
-    if(cd.notesBullets&&cd.notesBullets.length){
-      h+='<div class="cf-section-title" style="margin-top:.4rem">Key Notes</div>';
-      h+='<ul style="font-size:.6rem;color:var(--tp);padding-left:1rem;margin:0;line-height:1.5">';
-      cd.notesBullets.forEach(b=>{h+='<li>'+b+'</li>';});
-      h+='</ul>';
-    }
-    h+='</div>';
-  } else if(tourCourse){
+  if(tourCourse){
     // Render course profile from TOUR_COURSES data
     h+='<div style="margin-top:.5rem">';
     h+='<div class="cf-section-title">Course Profile</div>';
@@ -3973,87 +3945,57 @@ function selectUpcoming(idx){
     }
     h+='</div>';
   }
-  // Render field preview if available (Valspar)
-  if(ev.name==='Valspar Championship'&&typeof VALSPAR_PREVIEW!=='undefined'){
-    const vp=VALSPAR_PREVIEW.field;
-    const sn=(nm)=>{if(!nm)return'-';const pts=nm.split(' ');return pts.length>=2?pts[0].charAt(0)+'. '+pts.slice(1).join(' '):nm;};
-    h+='<div style="margin-top:.5rem">';
-    h+='<div class="cf-section-title">Field Preview — DG Model Predictions</div>';
-    h+='<div class="tw" style="margin:0"><table class="tc" style="min-width:420px">';
-    h+='<thead><tr>'
-      +'<th>Player</th>'
-      +'<th style="text-align:center">WR</th>'
-      +'<th style="text-align:right">Win %</th>'
-      +'<th style="text-align:right">Top 10</th>'
-      +'<th style="text-align:right">DK</th>'
-      +'<th style="text-align:right">FD</th>'
-      +'</tr></thead><tbody>';
-    const maxWin=Math.max(...vp.map(x=>x.win));
-    vp.forEach((p,i)=>{
-      const barW=Math.max(4,Math.round((p.win/maxWin)*100));
-      const winPct=(p.win*100).toFixed(1)+'%';
-      const t10Pct=(p.t10*100).toFixed(0)+'%';
-      const dkTxt=p.dk?'+'+Math.round((p.dk-1)*100):'—';
-      const fdTxt=p.fd?'+'+Math.round((p.fd-1)*100):'—';
-      h+='<tr>'
-        +'<td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+'</td>'
-        +'<td style="text-align:center;color:var(--td)">'+(p.wr||'—')+'</td>'
-        +'<td style="text-align:right;position:relative">'
-        +'<span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.15);border-radius:2px"></span>'
-        +'<span style="position:relative;color:var(--gl);font-weight:600">'+winPct+'</span></td>'
-        +'<td style="text-align:right;color:var(--tp)">'+t10Pct+'</td>'
-        +'<td style="text-align:right;color:var(--go)">'+dkTxt+'</td>'
-        +'<td style="text-align:right;color:var(--go)">'+fdTxt+'</td>'
-        +'</tr>';
+  h+='</div>';
+  el.innerHTML=h;
+}
+
+function renderValsparField(el){
+  if(!el||typeof VALSPAR_PREVIEW==='undefined')return;
+  const vp=VALSPAR_PREVIEW.field;
+  const sn=(nm)=>{if(!nm)return'-';const pts=nm.split(' ');return pts.length>=2?pts[0].charAt(0)+'. '+pts.slice(1).join(' '):nm;};
+  let h='<div class="cd" style="margin-top:.4rem">';
+  h+='<div class="cf-section-title">Field Preview — DG Model Predictions</div>';
+  h+='<div class="tw" style="margin:0"><table class="tc" style="min-width:420px">';
+  h+='<thead><tr><th>Player</th><th style="text-align:center">WR</th><th style="text-align:right">Win %</th><th style="text-align:right">Top 10</th><th style="text-align:right">DK</th><th style="text-align:right">FD</th></tr></thead><tbody>';
+  const maxWin=Math.max(...vp.map(x=>x.win));
+  vp.forEach(p=>{
+    const barW=Math.max(4,Math.round((p.win/maxWin)*100));
+    const winPct=(p.win*100).toFixed(1)+'%';
+    const t10Pct=(p.t10*100).toFixed(0)+'%';
+    const dkTxt=p.dk?'+'+Math.round((p.dk-1)*100):'—';
+    const fdTxt=p.fd?'+'+Math.round((p.fd-1)*100):'—';
+    h+='<tr><td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+'</td>'
+      +'<td style="text-align:center;color:var(--td)">'+(p.wr||'—')+'</td>'
+      +'<td style="text-align:right;position:relative"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.15);border-radius:2px"></span><span style="position:relative;color:var(--gl);font-weight:600">'+winPct+'</span></td>'
+      +'<td style="text-align:right;color:var(--tp)">'+t10Pct+'</td>'
+      +'<td style="text-align:right;color:var(--go)">'+dkTxt+'</td>'
+      +'<td style="text-align:right;color:var(--go)">'+fdTxt+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<div style="font-size:.48rem;color:var(--td);margin-top:.2rem;font-style:italic">Win % and Top 10 from DG pre-tournament model · Odds in American format from DraftKings & FanDuel</div>';
+  // Betting Edge
+  const edges=[];
+  vp.forEach(p=>{
+    if(p.dk){const ip=1/p.dk;const e=p.win-ip;if(e>0.002)edges.push({nm:p.nm,book:'DK',odds:p.dk,impl:(ip*100).toFixed(1),dgPct:(p.win*100).toFixed(1),edge:(e*100).toFixed(1),edgeRaw:e});}
+    if(p.fd){const ip=1/p.fd;const e=p.win-ip;if(e>0.002)edges.push({nm:p.nm,book:'FD',odds:p.fd,impl:(ip*100).toFixed(1),dgPct:(p.win*100).toFixed(1),edge:(e*100).toFixed(1),edgeRaw:e});}
+  });
+  edges.sort((a,b)=>b.edgeRaw-a.edgeRaw);
+  if(edges.length){
+    h+='<div style="margin-top:.6rem"><div class="cf-section-title">Betting Edge — DG Model vs Books</div>';
+    h+='<div style="font-size:.52rem;color:var(--td);margin-bottom:.3rem">Positive edge = DG model thinks player is more likely to win than the book\'s odds imply</div>';
+    h+='<div class="tw" style="margin:0"><table class="tc"><thead><tr><th>Player</th><th style="text-align:center">Book</th><th style="text-align:right">Odds</th><th style="text-align:right">Book %</th><th style="text-align:right">DG %</th><th style="text-align:right">Edge</th></tr></thead><tbody>';
+    edges.slice(0,15).forEach(e=>{
+      const amerOdds='+'+Math.round((e.odds-1)*100);
+      const edgeClr=parseFloat(e.edge)>=1.0?'var(--gl)':'var(--tp)';
+      h+='<tr><td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(e.nm)+'</td>'
+        +'<td style="text-align:center;color:var(--go)">'+e.book+'</td>'
+        +'<td style="text-align:right;color:var(--go)">'+amerOdds+'</td>'
+        +'<td style="text-align:right;color:var(--td)">'+e.impl+'%</td>'
+        +'<td style="text-align:right;color:var(--gl)">'+e.dgPct+'%</td>'
+        +'<td style="text-align:right;color:'+edgeClr+';font-weight:700">+'+e.edge+'%</td></tr>';
     });
     h+='</tbody></table></div>';
-    h+='<div style="font-size:.48rem;color:var(--td);margin-top:.2rem;font-style:italic">Win % and Top 10 from DG pre-tournament model · Odds in American format from DraftKings & FanDuel</div>';
-    // Betting Edge section
-    const edges=[];
-    vp.forEach(p=>{
-      if(p.dk){
-        const implProb=1/p.dk;const edge=p.win-implProb;
-        if(edge>0.002)edges.push({nm:p.nm,book:'DK',odds:p.dk,impl:(implProb*100).toFixed(1),dgPct:(p.win*100).toFixed(1),edge:(edge*100).toFixed(1),edgeRaw:edge});
-      }
-      if(p.fd){
-        const implProb=1/p.fd;const edge=p.win-implProb;
-        if(edge>0.002)edges.push({nm:p.nm,book:'FD',odds:p.fd,impl:(implProb*100).toFixed(1),dgPct:(p.win*100).toFixed(1),edge:(edge*100).toFixed(1),edgeRaw:edge});
-      }
-    });
-    edges.sort((a,b)=>b.edgeRaw-a.edgeRaw);
-    if(edges.length){
-      h+='<div style="margin-top:.6rem">';
-      h+='<div class="cf-section-title">Betting Edge — DG Model vs Books</div>';
-      h+='<div style="font-size:.52rem;color:var(--td);margin-bottom:.3rem">Positive edge = DG model thinks player is more likely to win than the book\'s odds imply</div>';
-      h+='<div class="tw" style="margin:0"><table class="tc">';
-      h+='<thead><tr>'
-        +'<th>Player</th>'
-        +'<th style="text-align:center">Book</th>'
-        +'<th style="text-align:right">Odds</th>'
-        +'<th style="text-align:right">Book %</th>'
-        +'<th style="text-align:right">DG %</th>'
-        +'<th style="text-align:right">Edge</th>'
-        +'</tr></thead><tbody>';
-      edges.slice(0,15).forEach(e=>{
-        const amerOdds='+'+Math.round((e.odds-1)*100);
-        const edgeClr=parseFloat(e.edge)>=1.0?'var(--gl)':'var(--tp)';
-        const barW=Math.max(4,Math.round((e.edgeRaw/edges[0].edgeRaw)*100));
-        h+='<tr>'
-          +'<td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(e.nm)+'</td>'
-          +'<td style="text-align:center;color:var(--go)">'+e.book+'</td>'
-          +'<td style="text-align:right;color:var(--go)">'+amerOdds+'</td>'
-          +'<td style="text-align:right;color:var(--td)">'+e.impl+'%</td>'
-          +'<td style="text-align:right;color:var(--gl)">'+e.dgPct+'%</td>'
-          +'<td style="text-align:right;position:relative">'
-          +'<span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.12);border-radius:2px"></span>'
-          +'<span style="position:relative;color:'+edgeClr+';font-weight:700">+'+e.edge+'%</span></td>'
-          +'</tr>';
-      });
-      h+='</tbody></table></div>';
-      h+='<div style="font-size:.48rem;color:var(--td);margin-top:.2rem;font-style:italic">Edge = DG win probability minus book implied probability · Only showing +EV spots</div>';
-      h+='</div>';
-    }
-    h+='</div>';
+    h+='<div style="font-size:.48rem;color:var(--td);margin-top:.2rem;font-style:italic">Edge = DG win probability minus book implied probability · Only showing +EV spots</div></div>';
   }
   h+='</div>';
   el.innerHTML=h;
