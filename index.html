@@ -2266,6 +2266,7 @@ function getDateEvent() {
   return 'open';
 }
 
+let _overrideCourse=null;
 /** Renders the course profile preview panel (SG bars, past winners, stats).
  *  When overrideCourseName/overrideEvName are set, renders for that course
  *  instead of the current live event (used by upcoming-event cards). */
@@ -2568,7 +2569,6 @@ async function fetchLiveWeather(course) {
 
 /* ===== TOUR COMPARISON CHARTS ===== */
 const POOL_NAMES=['Augusta National','TPC Sawgrass','Bay Hill','Aronimink','Shinnecock Hills','Royal Birkdale'];
-let _overrideCourse=null;
 
 function openTourChart(label){
   const info=STAT_CHART_MAP[label];if(!info)return;
