@@ -2155,10 +2155,11 @@ function _buildPlayerTypes(){
     });
   }catch(e){}
 }
+var PT_SKIP={'BALANCED':1,'ALL-AROUND':1,'LONG':1};
 function playerIcons(name){
   _buildPlayerTypes();
   var t=PLAYER_TYPES[normN(name)];
-  if(!t)return'';
+  if(!t||PT_SKIP[t])return'';
   var m=PT_MAP[t];
   if(!m)return'';
   return ' <span class="p-type '+m.cls+'" title="'+t+'">'+m.ab+'</span>';
