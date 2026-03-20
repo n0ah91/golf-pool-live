@@ -135,14 +135,14 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .api-bar .ab{font-family:var(--fb);font-size:.68rem;padding:.35rem .8rem;background:var(--gn);color:var(--tb);border:none;border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;font-weight:500;transition:background .2s;white-space:nowrap}
 .api-bar .ab:hover{background:var(--gl)}.api-bar .ab.sec{background:var(--bc);color:var(--ts);border:1px solid var(--br)}.api-bar .ab.sec:hover{border-color:var(--gn);color:var(--tb)}
 .dgs{font-size:.65rem;font-family:var(--fm)}.dgs.ok{color:var(--gl)}.dgs.err{color:var(--rd)}.dgs.ld{color:var(--go)}
-.mjr-sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.35rem;margin-bottom:.3rem}
-.mjr-card{background:var(--bc);border:1px solid var(--br);border-radius:6px;padding:.3rem .4rem;text-align:center;transition:all .2s;cursor:pointer}
+.mjr-sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:.25rem;margin-bottom:.3rem}
+.mjr-card{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.15rem .3rem;text-align:center;transition:all .2s;cursor:pointer;min-width:0}
 .mjr-card:hover{background:var(--bca);border-color:var(--go);transform:translateY(-1px);box-shadow:0 2px 8px rgba(196,160,53,.1)}
 .mjr-card.done{border-color:var(--gn);opacity:.65}.mjr-card.live{border-color:var(--go);background:rgba(196,160,53,.06);animation:pulse 2s infinite}
 .mjr-card.next{border-color:var(--rd)}
-.mjr-card .mn{font-family:var(--fd);font-size:.7rem;color:var(--tb);font-weight:600;line-height:1.1}
-.mjr-card .md{font-size:.5rem;color:var(--ts);margin-top:.05rem}
-.mjr-card .ms{font-size:.48rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.12rem;padding:.08rem .25rem;border-radius:3px;display:inline-block}
+.mjr-card .mn{font-family:var(--fd);font-size:.55rem;color:var(--tb);font-weight:600;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mjr-card .md{font-size:.42rem;color:var(--ts);margin-top:.02rem}
+.mjr-card .ms{font-size:.38rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.04rem;padding:.04rem .2rem;border-radius:3px;display:inline-block}
 .ms.s-d{color:var(--gl);background:rgba(82,183,136,.1)}.ms.s-l{color:var(--go);background:rgba(196,160,53,.15)}.ms.s-n{color:var(--gl);background:rgba(82,183,136,.08)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(196,160,53,0)}50%{box-shadow:0 0 12px 2px rgba(196,160,53,.15)}}
 .lb-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
@@ -3223,6 +3223,10 @@ const UPCOMING_EVENTS = [
   {name:'Texas Children\'s Houston Open',course:'Memorial Park Golf Course',dates:'Mar 26–29',dgId:20,major:false,teaser:'Tom Doak redesign · 7,412 yds · Dense tree-lined fairways'},
   {name:'Valero Texas Open',course:'TPC San Antonio (Oaks Course)',dates:'Apr 2–5',dgId:41,major:false,teaser:'Last chance to qualify for Masters · 7,494 yds · 80 bunkers'},
   {name:'Masters Tournament',course:'Augusta National Golf Club',dates:'Apr 9–12',dgId:14,major:true,teaser:'Amen Corner · Fastest greens in golf · First major of 2026'},
+  {name:'RBC Heritage',course:'Harbour Town Golf Links',dates:'Apr 16–19',dgId:15,major:false,teaser:'Pete Dye classic · Tiny greens · 7,099 yds · Accuracy course'},
+  {name:'Zurich Classic',course:'TPC Louisiana',dates:'Apr 23–26',dgId:28,major:false,teaser:'Team event · Four-ball & foursomes · 7,425 yds'},
+  {name:'CJ Cup Byron Nelson',course:'TPC Craig Ranch',dates:'Apr 30–May 3',dgId:480,major:false,teaser:'Scoreable track · 7,468 yds · Wide fairways'},
+  {name:'Wells Fargo Championship',course:'Quail Hollow Club',dates:'May 8–11',dgId:42,major:false,teaser:'Green Mile finish · 7,554 yds · PGA preview'},
   {name:'PGA Championship',course:'Aronimink Golf Club',dates:'May 14–17',dgId:33,major:true,teaser:'176 bunkers · Donald Ross masterpiece'},
   {name:'U.S. Open',course:'Shinnecock Hills Golf Club',dates:'Jun 18–21',dgId:26,major:true,teaser:'Links-style · Brutal fescue rough'},
   {name:'The Open Championship',course:'Royal Birkdale Golf Club',dates:'Jul 16–19',dgId:100,major:true,teaser:'60-ft sand dunes · Classic links test'}
@@ -4799,8 +4803,8 @@ function renderUpcomingSchedule(){
     const statusCls=isCurrent?'s-l':isMajor?'s-n':'';
     h+='<div class="mjr-card '+cls+'" id="uc-'+i+'" onclick="selectUpcoming('+i+')" style="cursor:pointer">';
     h+='<div class="mn">'+ev.name+'</div>';
-    h+='<div style="font-size:.5rem;color:var(--tp);margin-top:.05rem;font-family:var(--fm)">'+ev.dates+'</div>';
-    h+='<div style="font-size:.48rem;color:var(--go);margin-top:.03rem">'+ev.course.split('(')[0].trim()+'</div>';
+    h+='<div style="font-size:.42rem;color:var(--tp);margin-top:.02rem;font-family:var(--fm)">'+ev.dates+'</div>';
+    h+='<div style="font-size:.4rem;color:var(--go);margin-top:.01rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+ev.course.split('(')[0].trim()+'</div>';
     if(statusLabel)h+='<div class="ms '+statusCls+'">'+statusLabel+'</div>';
     h+='</div>';
   });
