@@ -2063,7 +2063,7 @@ const TYPE_TO_ICONS={
 };
 const PLAYER_TAGS={};
 (function(){
-  if(typeof VALSPAR_PREVIEW==='undefined')return;
+  try { if(typeof VALSPAR_PREVIEW==='undefined')return; } catch(e){ return; }
   const vp=VALSPAR_PREVIEW.field||[];
   const cf=VALSPAR_PREVIEW.courseFit||[];
   const cfMap={};cf.forEach(function(c){cfMap[c.nm]=c;});
