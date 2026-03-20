@@ -543,7 +543,15 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ih-tab{font-family:var(--fb);font-size:.62rem;font-weight:500;padding:.2rem .7rem;border:none;border-radius:4px;cursor:pointer;background:transparent;color:var(--ts);transition:all .2s;letter-spacing:.02em}
 .ih-tab.active{background:var(--gn);color:#fff;font-weight:600;box-shadow:0 1px 4px rgba(0,103,71,.2)}
 .ih-tab:hover:not(.active){background:var(--bh);color:var(--tb)}
-.p-type{display:inline-block;font-family:var(--fm);font-size:.42rem;font-weight:500;color:var(--ts);background:var(--bca);border:1px solid var(--br);border-radius:3px;padding:.06rem .25rem;margin-left:.25rem;vertical-align:middle;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.p-type{display:inline-block;font-family:var(--fm);font-size:.42rem;font-weight:700;border-radius:3px;padding:.05rem .18rem;margin-left:.15rem;vertical-align:middle;letter-spacing:.01em;white-space:nowrap;line-height:1}
+.pt-AC{color:#1a6b3c;background:rgba(26,107,60,.12)}.pt-AR{color:#2e7d32;background:rgba(46,125,50,.12)}
+.pt-BL{color:#607d8b;background:rgba(96,125,139,.12)}.pt-BS{color:#c62828;background:rgba(198,40,40,.12)}
+.pt-BM{color:#e65100;background:rgba(230,81,0,.12)}.pt-HF{color:#f57f17;background:rgba(245,127,23,.12)}
+.pt-IP{color:#1565c0;background:rgba(21,101,192,.12)}.pt-LG{color:#ad1457;background:rgba(173,20,87,.12)}
+.pt-RS{color:#6a1b9a;background:rgba(106,27,154,.12)}.pt-SG{color:#00838f;background:rgba(0,131,143,.12)}
+.pt-SM{color:#4527a0;background:rgba(69,39,160,.12)}
+.pt-key{display:flex;flex-wrap:wrap;gap:.3rem .6rem;padding:.35rem .5rem;background:var(--bca);border:1px solid var(--br);border-radius:5px;margin-top:.4rem;font-size:.48rem;color:var(--ts);font-family:var(--fb)}
+.pt-key-item{display:flex;align-items:center;gap:.2rem}
 </style>
 </head>
 <body>
@@ -2126,8 +2134,16 @@ Object.keys(COURSE_FUN_FACTS).forEach(function(k) {
 });
 
 /* === PLAYER ICON SYSTEM === */
-/* Player type labels from DG model (replaces old emoji icon system) */
+/* Player type badges from DG model — single-letter colored pills */
 var PLAYER_TYPES=null;
+var PT_MAP={
+  'ACCURATE':{ab:'AC',cls:'pt-AC'},'ALL-AROUND':{ab:'AR',cls:'pt-AR'},
+  'BALANCED':{ab:'BL',cls:'pt-BL'},'BALL-STRIKER':{ab:'BS',cls:'pt-BS'},
+  'BOMBER':{ab:'BM',cls:'pt-BM'},'HOT FORM':{ab:'HF',cls:'pt-HF'},
+  'IRON PLAYER':{ab:'IP',cls:'pt-IP'},'LONG':{ab:'LG',cls:'pt-LG'},
+  'RISING STAR':{ab:'RS',cls:'pt-RS'},'SHORT GAME':{ab:'SG',cls:'pt-SG'},
+  'SHOT-MAKER':{ab:'SM',cls:'pt-SM'}
+};
 function _buildPlayerTypes(){
   if(PLAYER_TYPES)return;
   PLAYER_TYPES={};
@@ -2143,7 +2159,20 @@ function playerIcons(name){
   _buildPlayerTypes();
   var t=PLAYER_TYPES[normN(name)];
   if(!t)return'';
-  return ' <span class="p-type">'+t+'</span>';
+  var m=PT_MAP[t];
+  if(!m)return'';
+  return ' <span class="p-type '+m.cls+'" title="'+t+'">'+m.ab+'</span>';
+}
+function renderTypeKey(){
+  var h='<div class="pt-key">';
+  var order=['AC','AR','BL','BS','BM','HF','IP','LG','RS','SG','SM'];
+  var labels={'AC':'Accurate','AR':'All-Around','BL':'Balanced','BS':'Ball-Striker','BM':'Bomber','HF':'Hot Form','IP':'Iron Player','LG':'Long','RS':'Rising Star','SG':'Short Game','SM':'Shot-Maker'};
+  order.forEach(function(ab){
+    var cls='pt-'+ab;
+    h+='<span class="pt-key-item"><span class="p-type '+cls+'">'+ab+'</span> '+labels[ab]+'</span>';
+  });
+  h+='</div>';
+  return h;
 }
 
 const TOUR_COURSES=[
@@ -3014,6 +3043,9 @@ async function fetchPredictionMarkets() {
     h += '<div><span class="pm-align SPLIT" style="margin-right:.3rem">SPLIT</span> Mild disagreement 1&ndash;3% &mdash; on the radar</div>';
     h += '<div><span class="pm-align ALIGNED" style="margin-right:.3rem">ALIGNED</span> Markets agree with books &mdash; no clear edge</div>';
     h += '</div>';
+
+    // Player type key
+    h += renderTypeKey();
 
     body.innerHTML = h;
 
@@ -4994,6 +5026,7 @@ function renderValsparField(el){
   });
   h+='</tbody></table>';
   h+='<div style="font-size:.48rem;color:var(--td);margin-top:.2rem;font-style:italic">Win % and Top 10 from DG pre-tournament model · Odds in American format from DraftKings & FanDuel</div>';
+  h+=renderTypeKey();
   h+='</div>';
   el.innerHTML=h;
 }
