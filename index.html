@@ -543,6 +543,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ih-tab{font-family:var(--fb);font-size:.62rem;font-weight:500;padding:.2rem .7rem;border:none;border-radius:4px;cursor:pointer;background:transparent;color:var(--ts);transition:all .2s;letter-spacing:.02em}
 .ih-tab.active{background:var(--gn);color:#fff;font-weight:600;box-shadow:0 1px 4px rgba(0,103,71,.2)}
 .ih-tab:hover:not(.active){background:var(--bh);color:var(--tb)}
+.p-type{display:inline-block;font-family:var(--fm);font-size:.42rem;font-weight:500;color:var(--ts);background:var(--bca);border:1px solid var(--br);border-radius:3px;padding:.06rem .25rem;margin-left:.25rem;vertical-align:middle;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -2125,64 +2126,24 @@ Object.keys(COURSE_FUN_FACTS).forEach(function(k) {
 });
 
 /* === PLAYER ICON SYSTEM === */
-const ICON_DEFS={
-  bomber:{icon:'\u26A1',tip:'Bomber \u2014 Long off the tee'},
-  accurate:{icon:'\uD83C\uDFAF',tip:'Accurate \u2014 Elite accuracy'},
-  iron:{icon:'\uD83D\uDD25',tip:'Iron Pure \u2014 Elite approach play'},
-  scrambler:{icon:'\uD83E\uDE84',tip:'Scrambler \u2014 Elite short game'},
-  putter:{icon:'\uD83E\uDDCA',tip:'Putter \u2014 Elite putting'},
-  hot:{icon:'\uD83D\uDCC8',tip:'Hot Form \u2014 Strong recent form'},
-  course:{icon:'\u2B50',tip:'Course Fit \u2014 Course specialist'},
-  value:{icon:'\uD83D\uDCB0',tip:'Value \u2014 DG model likes more than books'},
-  rising:{icon:'\uD83D\uDE80',tip:'Rising \u2014 Ranked outside top 50 but DG model higher'}
-};
-const TYPE_TO_ICONS={
-  'ALL-AROUND':['iron','putter'],
-  'IRON PLAYER':['iron','accurate'],
-  'SHOT-MAKER':['iron','accurate'],
-  'BALL-STRIKER':['bomber','iron'],
-  'RISING STAR':['rising','hot'],
-  'ACCURATE':['accurate'],
-  'HOT FORM':['hot'],
-  'LONG':['bomber'],
-  'SHORT GAME':['scrambler','putter'],
-  'BOMBER':['bomber'],
-  'BALANCED':['iron']
-};
-var PLAYER_TAGS=null;
-function _buildPlayerTags(){
-  if(PLAYER_TAGS)return;
-  PLAYER_TAGS={};
+/* Player type labels from DG model (replaces old emoji icon system) */
+var PLAYER_TYPES=null;
+function _buildPlayerTypes(){
+  if(PLAYER_TYPES)return;
+  PLAYER_TYPES={};
   try{
     if(typeof VALSPAR_PREVIEW==='undefined')return;
     var vp=VALSPAR_PREVIEW.field||[];
-    var cf=VALSPAR_PREVIEW.courseFit||[];
-    var cfMap={};cf.forEach(function(c){cfMap[c.nm]=c;});
     vp.forEach(function(p){
-      var tags=[];
-      if(p.type&&TYPE_TO_ICONS[p.type])tags=tags.concat(TYPE_TO_ICONS[p.type]);
-      var cfP=cfMap[p.nm];
-      if(cfP&&cfP.ch>0.01)tags.push('course');
-      if(cfP&&cfP.timing>0.1)tags.push('hot');
-      if(p.dk&&p.win>(1/p.dk)*1.15)tags.push('value');
-      else if(p.fd&&p.win>(1/p.fd)*1.15)tags.push('value');
-      if(p.wr&&p.wr>50&&p.win>0.01)tags.push('rising');
-      var seen={};var unique=[];
-      tags.forEach(function(t){if(!seen[t]){seen[t]=1;unique.push(t);}});
-      PLAYER_TAGS[normN(p.nm)]=unique.slice(0,4);
+      if(p.type)PLAYER_TYPES[normN(p.nm)]=p.type;
     });
-  }catch(e){console.warn('buildPlayerTags:',e);}
+  }catch(e){}
 }
 function playerIcons(name){
-  _buildPlayerTags();
-  var tags=PLAYER_TAGS[normN(name)];
-  if(!tags||!tags.length)return'';
-  var h='';
-  tags.forEach(function(t){
-    var d=ICON_DEFS[t];if(!d)return;
-    h+=' <span title="'+d.tip+'" style="font-size:.5rem;cursor:help">'+d.icon+'</span>';
-  });
-  return h;
+  _buildPlayerTypes();
+  var t=PLAYER_TYPES[normN(name)];
+  if(!t)return'';
+  return ' <span class="p-type">'+t+'</span>';
 }
 
 const TOUR_COURSES=[
