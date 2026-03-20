@@ -415,6 +415,48 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .ls-pd-bar{flex:1;height:10px;background:var(--br);border-radius:5px;overflow:hidden;display:inline-flex}
 .ls-pd-bar span{height:100%;border-radius:5px;transition:width .4s}
 .ls-pd-row span:last-child{min-width:32px;text-align:right;font-family:var(--fm);color:var(--td);font-weight:400;font-size:.56rem}
+/* View Mode Toggle */
+.vm-bar{display:flex;justify-content:flex-end;margin-bottom:.3rem}
+.vm-toggle{display:flex;border:1px solid rgba(196,160,53,.25);border-radius:10px;overflow:hidden}
+.vm-btn{background:none;border:none;color:var(--td);font-family:var(--fb);font-size:.54rem;padding:.2rem .5rem;cursor:pointer;transition:all .2s;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.vm-btn.active{background:rgba(196,160,53,.15);color:var(--go);font-weight:600}
+.vm-btn:hover{color:var(--tp)}
+/* Leaderboard enhancements */
+.lb-table{font-size:.68rem}
+.lb-row:hover{background:var(--bh)!important}
+/* Player Card */
+.pc-row td{padding:0!important;border:none!important}
+.pc-cell{background:var(--bca)!important}
+.pc-inner{padding:.6rem .8rem;border-left:3px solid var(--go);animation:pc-slide .2s ease-out}
+@keyframes pc-slide{from{opacity:0;max-height:0}to{opacity:1;max-height:500px}}
+.pc-loading{text-align:center;color:var(--ts);padding:.5rem;font-size:.65rem}
+.pc-summary{margin-bottom:.4rem}
+.pc-name{font-family:var(--fh);font-size:.9rem;color:var(--go);font-weight:700;margin-bottom:.3rem}
+.pc-stats-row{display:flex;gap:.6rem;flex-wrap:wrap}
+.pc-stat{text-align:center}
+.pc-stat-v{font-family:var(--fm);font-size:.8rem;font-weight:700;color:var(--tb)}
+.pc-stat-l{font-size:.48rem;color:var(--td);text-transform:uppercase;letter-spacing:.04em;font-family:var(--fb)}
+.pc-section-title{font-family:var(--fb);font-size:.6rem;color:var(--go);text-transform:uppercase;letter-spacing:.06em;margin:.4rem 0 .2rem;font-weight:600}
+.pc-sg{margin-bottom:.4rem}
+.pc-sg-row{display:flex;align-items:center;gap:.3rem;margin-bottom:.2rem}
+.pc-sg-label{min-width:80px;font-size:.6rem;font-family:var(--fb);color:var(--tp)}
+.pc-sg-bar{flex:1;height:8px;background:var(--br);border-radius:4px;overflow:hidden}
+.pc-sg-fill{height:100%;border-radius:4px;transition:width .3s}
+.pc-sg-val{min-width:36px;text-align:right;font-family:var(--fm);font-size:.62rem;font-weight:600}
+.pc-edge-detail{margin-bottom:.4rem}
+.pc-edge-row{display:flex;justify-content:space-between;font-size:.6rem;font-family:var(--fb);color:var(--tp);padding:.1rem 0}
+.pc-conf{font-weight:700;font-size:.55rem;padding:.1rem .3rem;border-radius:3px}
+.pc-conf-high{background:rgba(0,103,71,.15);color:var(--gl)}
+.pc-conf-med{background:rgba(196,160,53,.12);color:var(--go)}
+.pc-conf-low{background:rgba(255,255,255,.05);color:var(--td)}
+.pc-pool{margin-bottom:.3rem}
+.pc-pool-owners{font-size:.6rem;color:var(--tp);font-family:var(--fb)}
+/* Edge Summary */
+.edge-summary{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.4rem;padding:.4rem;background:var(--bca);border-radius:6px;border:1px solid var(--br)}
+.edge-col-title{font-family:var(--fb);font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem}
+.edge-item{display:flex;justify-content:space-between;font-size:.58rem;font-family:var(--fb);color:var(--tp);padding:.1rem 0}
+.edge-nm{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:480px){.pc-stats-row{gap:.3rem}.pc-stat-v{font-size:.7rem}.edge-summary{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1175,7 +1217,8 @@ const EV_DETAIL={
 const EV_DETECT={players:/players/i,masters:/masters/i,pga:/pga champ/i,uso:/u\.?s\.?\s*open/i,open:/^the open|british open|open champ/i};
 
 /* State */
-let DG={ok:false,lb:null,pl:null,plLookup:null,ar:null,prev:null};
+let DG={ok:false,lb:null,pl:null,plLookup:null,ar:null,prev:null,edgeMap:null};
+let _viewMode=localStorage.getItem('lb_view_mode')||'bettor';
 let POOL={entries:[],completedEvents:[],activeEvent:null,nameCache:{}};
 const NTF={enabled:false,types:{lead:true,inMoney:true,outMoney:true,eagle:true,top5:true,missedCut:true,roundEnd:true,payoutChange:true,leadChange:true,bigMove:true},history:[]};
 const NTF_META={lead:{icon:'🏆',lbl:'Your entry takes the lead'},inMoney:{icon:'📈',lbl:'Move into the money'},outMoney:{icon:'📉',lbl:'Drop out of the money'},
@@ -1195,7 +1238,10 @@ async function dgConn(){
 async function dgLive(){
   if(!DG.ok)return;const mt=document.getElementById('lb-mt');mt.textContent='Loading...';
   const prevSnap=DG.lb?captureSnap():null;
-  try{const d=await dgF('preds/in-play',{tour:'pga'});DG.lb=d;rLB(d);mt.textContent='Updated '+new Date().toLocaleTimeString();
+  try{const[d,odds]=await Promise.all([
+    dgF('preds/in-play',{tour:'pga'}),
+    dgF('betting-tools/outrights',{tour:'pga',market:'win',odds_format:'decimal'}).catch(()=>null)]);
+    DG.lb=d;if(odds)DG.edgeMap=buildEdgeMap(odds,d);rLB(d);mt.textContent='Updated '+new Date().toLocaleTimeString();
     detectEvent(d.info?.event_name);if(hasPool())calcPL();if(prevSnap)diffAndNotify(prevSnap);loadLiveStats();}
   catch(e){try{const d=await dgF('preds/live-tournament-stats',{stats:'sg_total,sg_putt,sg_app,sg_ott',round:'event_avg',display:'value'});
     DG.lb=d;rLBS(d);mt.textContent='Updated '+new Date().toLocaleTimeString();if(hasPool())calcPL();loadLiveStats();}
@@ -1205,6 +1251,131 @@ function togAR(){const cb=document.getElementById('ar-cb');
 // Weather refresh every hour
 let _wxInterval=null;
 function startWxRefresh(course){if(_wxInterval)clearInterval(_wxInterval);_wxInterval=setInterval(()=>fetchLiveWeather(course),2700000);}
+
+/* === EDGE ENGINE — DG vs Vegas === */
+function buildEdgeMap(odds,inPlayData){
+  const BOOKS=['draftkings','fanduel','betmgm','caesars','pointsbet','bet365'];
+  let players=[];
+  if(Array.isArray(odds))players=odds;
+  else if(odds?.odds&&Array.isArray(odds.odds))players=odds.odds;
+  else{for(const k of Object.keys(odds||{})){if(Array.isArray(odds[k])){players=odds[k];break;}}}
+  if(!players.length)return null;
+  // Build DG prob from in-play win field
+  const inPlayMap={};
+  if(inPlayData?.data){for(const p of inPlayData.data){inPlayMap[normN(p.player_name)]={win:p.win??p.win_prob??null};}}
+  // Get best book odds per player + DG model odds
+  const edgeData=[];
+  for(const p of players){
+    const nm=normN(p.player_name);
+    // DG model probability from datagolf odds field
+    const dgDec=p.datagolf_base_history_fit||p.baseline_history_fit||null;
+    // Also check in-play win probability (more current during live)
+    const liveWin=inPlayMap[nm]?.win;
+    const dgProb=liveWin!=null?liveWin:(dgDec?1/dgDec:null);
+    if(dgProb==null)continue;
+    // Find best (lowest) book decimal odds
+    let bestBook=null,bestOdds=Infinity;
+    for(const bk of BOOKS){const o=typeof p[bk]==='number'?p[bk]:(p[bk]?.odds||null);
+      if(o&&o>1&&o<bestOdds){bestOdds=o;bestBook=bk;}}
+    if(!bestBook)continue;
+    const rawVegasProb=1/bestOdds;
+    edgeData.push({nm:p.player_name,normNm:nm,dgProb,rawVegasProb,bestBook,bestOdds});}
+  // Remove vig
+  const vigSum=edgeData.reduce((s,p)=>s+p.rawVegasProb,0);
+  const map={};
+  for(const p of edgeData){
+    const fairVegas=vigSum>0?p.rawVegasProb/vigSum:p.rawVegasProb;
+    const edge=p.dgProb-fairVegas;
+    const conf=Math.abs(edge)>.03?'HIGH':Math.abs(edge)>.015?'MED':'LOW';
+    map[p.normNm]={dgProb:p.dgProb,vegasProb:fairVegas,edge,conf,bestBook:p.bestBook,bestOdds:p.bestOdds};}
+  // Snapshot for trend tracking
+  const snap={ts:Date.now(),data:Object.fromEntries(Object.entries(map).slice(0,30).map(([k,v])=>[k,{e:+(v.edge*100).toFixed(1)}]))};
+  try{const hist=JSON.parse(localStorage.getItem('edge_trend')||'[]');hist.push(snap);if(hist.length>48)hist.splice(0,hist.length-48);
+    localStorage.setItem('edge_trend',JSON.stringify(hist));}catch(e){}
+  return map;}
+function getEdgeTrend(normNm){
+  try{const hist=JSON.parse(localStorage.getItem('edge_trend')||'[]');
+    if(hist.length<2)return null;
+    const latest=hist[hist.length-1]?.data?.[normNm]?.e;
+    const prev=hist[hist.length-2]?.data?.[normNm]?.e;
+    if(latest==null||prev==null)return null;
+    const diff=latest-prev;
+    return diff>0.3?'+':diff<-0.3?'-':'=';}catch(e){return null;}}
+
+/* === VIEW MODE TOGGLE === */
+function setViewMode(m){_viewMode=m;localStorage.setItem('lb_view_mode',m);
+  document.querySelectorAll('.vm-btn').forEach(b=>{b.classList.toggle('active',b.dataset.mode===m);});
+  // Re-render leaderboard if data exists
+  if(DG.lb&&DG.lb.data)rLB(DG.lb);
+  else if(DG.lb&&DG.lb.live_stats)rLBS(DG.lb);}
+
+/* === PLAYER CARD (expand on row click) === */
+let _openCard=null;
+async function togglePlayerCard(row,nm,dgId){
+  const existing=row.nextElementSibling;
+  if(existing&&existing.classList.contains('pc-row')){existing.remove();_openCard=null;return;}
+  // Close any open card
+  document.querySelectorAll('.pc-row').forEach(r=>r.remove());
+  _openCard=nm;
+  const tr=document.createElement('tr');tr.className='pc-row';
+  const td=document.createElement('td');td.colSpan=20;td.className='pc-cell';
+  td.innerHTML='<div class="pc-loading">Loading player data...</div>';
+  tr.appendChild(td);row.after(tr);
+  // Gather data from what we already have
+  const p=(DG.lb?.data||[]).find(x=>normN(x.player_name)===normN(nm));
+  const edge=DG.edgeMap?.[normN(nm)];
+  const trend=getEdgeTrend(normN(nm));
+  // Try to fetch live SG stats
+  let sgData=null;
+  if(_lsData?.live_stats){sgData=_lsData.live_stats.find(x=>normN(x.player_name)===normN(nm));}
+  td.innerHTML=renderPlayerCard(p,edge,trend,sgData,nm);}
+function renderPlayerCard(p,edge,trend,sg,nm){
+  let h='<div class="pc-inner">';
+  // Above the fold: position movement, score, win%, edge
+  const winP=p?.win??p?.win_prob??null;
+  const wp=winP!=null?(winP*100).toFixed(1)+'%':'-';
+  const pos=p?.current_pos||'-';
+  const sc=p?.current_score!=null?(p.current_score>0?'+'+p.current_score:p.current_score===0?'E':p.current_score):'-';
+  const today=p?.today!=null?(p.today>0?'+'+p.today:p.today===0?'E':p.today):'-';
+  const thru=p?.thru||p?.end_hole||'-';
+  h+='<div class="pc-summary">';
+  h+='<div class="pc-name">'+fmN(nm)+'</div>';
+  h+='<div class="pc-stats-row">';
+  h+='<div class="pc-stat"><div class="pc-stat-v">'+pos+'</div><div class="pc-stat-l">Pos</div></div>';
+  h+='<div class="pc-stat"><div class="pc-stat-v '+(p?.current_score<0?'sg':p?.current_score>0?'sb':'')+'">'+sc+'</div><div class="pc-stat-l">Total</div></div>';
+  h+='<div class="pc-stat"><div class="pc-stat-v">'+today+'</div><div class="pc-stat-l">Today</div></div>';
+  h+='<div class="pc-stat"><div class="pc-stat-v">'+thru+'</div><div class="pc-stat-l">Thru</div></div>';
+  h+='<div class="pc-stat"><div class="pc-stat-v" style="color:var(--go)">'+wp+'</div><div class="pc-stat-l">Win %</div></div>';
+  if(edge){
+    const ec=edge.edge>0?'var(--gl)':edge.edge<0?'var(--rd)':'var(--ts)';
+    const ev=(edge.edge*100).toFixed(1);
+    const tArrow=trend==='+'?'<span style="color:var(--gl)"> ↑</span>':trend==='-'?'<span style="color:var(--rd)"> ↓</span>':'';
+    h+='<div class="pc-stat"><div class="pc-stat-v" style="color:'+ec+'">'+(edge.edge>0?'+':'')+ev+'%'+tArrow+'</div><div class="pc-stat-l">Edge</div></div>';}
+  h+='</div></div>';
+  // SG detail section
+  if(sg){
+    const cats=[{k:'sg_ott',l:'Off the Tee'},{k:'sg_app',l:'Approach'},{k:'sg_arg',l:'Around Green'},{k:'sg_putt',l:'Putting'}];
+    h+='<div class="pc-sg"><div class="pc-section-title">Strokes Gained</div>';
+    for(const c of cats){
+      const v=sg[c.k];if(v==null)continue;
+      const pct=Math.min(Math.max((v+3)/6*100,5),95);
+      const clr=v>0?'var(--gl)':v<0?'var(--rd)':'var(--ts)';
+      h+='<div class="pc-sg-row"><span class="pc-sg-label">'+c.l+'</span><div class="pc-sg-bar"><div class="pc-sg-fill" style="width:'+pct+'%;background:'+clr+'"></div></div><span class="pc-sg-val" style="color:'+clr+'">'+v.toFixed(2)+'</span></div>';}
+    h+='</div>';}
+  // Edge detail
+  if(edge){
+    h+='<div class="pc-edge-detail"><div class="pc-section-title">DG vs Vegas</div>';
+    h+='<div class="pc-edge-row"><span>DG Model</span><span style="color:var(--go)">'+(edge.dgProb*100).toFixed(1)+'%</span></div>';
+    h+='<div class="pc-edge-row"><span>Vegas (vig-removed)</span><span>'+(edge.vegasProb*100).toFixed(1)+'%</span></div>';
+    h+='<div class="pc-edge-row"><span>Best Book</span><span style="text-transform:capitalize">'+edge.bestBook+'</span></div>';
+    h+='<div class="pc-edge-row"><span>Confidence</span><span class="pc-conf pc-conf-'+edge.conf.toLowerCase()+'">'+edge.conf+'</span></div>';
+    h+='</div>';}
+  // Pool context
+  if(inPool(nm)){
+    const ev2=POOL.activeEvent||'masters';
+    const owners=POOL.entries.filter(e=>(e.rosters[ev2]||[]).some(g=>normN(g)===normN(nm)));
+    if(owners.length){h+='<div class="pc-pool"><div class="pc-section-title">Pool</div><div class="pc-pool-owners">Rostered by: '+owners.map(o=>'<strong>'+o.name+'</strong>').join(', ')+'</div></div>';}}
+  h+='</div>';return h;}
 
 /* === NAME MATCHING === */
 function fmN(n){if(!n)return'-';const p=n.split(', ');return p.length===2?p[1]+' '+p[0]:n;}
@@ -1253,7 +1424,20 @@ function rLB(d){
     const pa=pPos(a.current_pos),pb=pPos(b.current_pos);if(pa!==pb)return pa-pb;
     return(a.current_score||0)-(b.current_score||0);});
   const show=all.slice(0,70);
-  let h='<div class="tw" style="margin:0"><table><thead><tr><th>Pos</th><th>Player</th><th>Score</th><th>Today</th><th>Thru</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr></thead><tbody>';
+  const vm=_viewMode;
+  const showEdge=vm==='bettor'||vm==='nerd';
+  const showWin=vm!=='casual'||true; // always show win%
+  const showRounds=vm==='nerd';
+  // View mode toggle
+  let h='<div class="vm-bar"><div class="vm-toggle">';
+  h+=['casual','bettor','nerd'].map(m=>'<button class="vm-btn'+(vm===m?' active':'')+'" data-mode="'+m+'" onclick="setViewMode(\''+m+'\')">'+m.charAt(0).toUpperCase()+m.slice(1)+'</button>').join('');
+  h+='</div></div>';
+  // Table
+  h+='<div class="tw" style="margin:0"><table class="lb-table"><thead><tr><th>Pos</th><th>Player</th><th>Score</th><th>Today</th><th>Thru</th>';
+  if(showWin)h+='<th>Win %</th>';
+  if(showEdge)h+='<th>Edge</th>';
+  if(showRounds)h+='<th>R1</th><th>R2</th><th>R3</th><th>R4</th>';
+  h+='</tr></thead><tbody>';
   for(const p of show){
     const pos=p.current_pos||'-',nm=p.player_name||'-';
     const sc=p.current_score!=null?(p.current_score>0?'+'+p.current_score:p.current_score===0?'E':p.current_score):'-';
@@ -1264,13 +1448,42 @@ function rLB(d){
     const cut=p.make_cut===0?' style="opacity:.45"':'';
     const pn2=pPos(pos),rc=pn2===1?'r1':pn2<=3?'r2':pn2<=5?'r3':'';
     const ip=inPool(nm);
-    h+=`<tr${cut}${ip?' class="me"':''}>
+    // Win probability
+    const winP=p.win??p.win_prob??null;
+    const wp=winP!=null?(winP*100).toFixed(1)+'%':'-';
+    const wpC=winP!=null&&winP>.1?' style="color:var(--go);font-weight:700"':(winP!=null&&winP>.03?' style="color:var(--gl)"':'');
+    // Edge badge
+    const edgeD=DG.edgeMap?.[normN(nm)];
+    let edgeHtml='-';
+    if(edgeD){
+      const ev=(edgeD.edge*100).toFixed(1);
+      const ec=edgeD.edge>0.01?'var(--gl)':edgeD.edge<-0.01?'var(--rd)':'var(--ts)';
+      const tA=getEdgeTrend(normN(nm));
+      const arrow=tA==='+'?' ↑':tA==='-'?' ↓':'';
+      edgeHtml='<span style="color:'+ec+';font-weight:'+(edgeD.conf==='HIGH'?'700':'400')+'">'+(edgeD.edge>0?'+':'')+ev+'%'+arrow+'</span>';}
+    h+=`<tr${cut} class="${ip?'me':''} lb-row" onclick="togglePlayerCard(this,'${nm.replace(/'/g,"\\'")}','${p.dg_id||''}')" style="cursor:pointer">
       <td class="rc ${rc}">${pos}</td>
       <td class="nc">${fmN(nm)}${ip?' <span style="color:var(--go);font-size:.5rem">●</span>':''}</td>
-      <td class="${scc}" style="font-weight:600">${sc}</td><td class="${tdc}">${td2}</td><td>${thru}</td>
-      <td>${p.R1||p.r1||'-'}</td><td>${p.R2||p.r2||'-'}</td><td>${p.R3||p.r3||'-'}</td><td>${p.R4||p.r4||'-'}</td></tr>`;}
+      <td class="${scc}" style="font-weight:600">${sc}</td><td class="${tdc}">${td2}</td><td>${thru}</td>`;
+    if(showWin)h+=`<td${wpC}>${wp}</td>`;
+    if(showEdge)h+=`<td>${edgeHtml}</td>`;
+    if(showRounds)h+=`<td>${p.R1||p.r1||'-'}</td><td>${p.R2||p.r2||'-'}</td><td>${p.R3||p.r3||'-'}</td><td>${p.R4||p.r4||'-'}</td>`;
+    h+='</tr>';}
   h+='</tbody></table></div>';
   if(all.length>70)h+=`<div style="text-align:center;font-size:.6rem;color:var(--td);padding:.25rem">Showing 70 of ${all.length}</div>`;
+  // Top DG leans summary (bettor/nerd mode)
+  if(showEdge&&DG.edgeMap){
+    const leans=Object.entries(DG.edgeMap).filter(([,v])=>v.edge>0.01).sort((a,b)=>b[1].edge-a[1].edge).slice(0,5);
+    const fades=Object.entries(DG.edgeMap).filter(([,v])=>v.edge<-0.01).sort((a,b)=>a[1].edge-b[1].edge).slice(0,5);
+    if(leans.length||fades.length){
+      h+='<div class="edge-summary">';
+      if(leans.length){h+='<div class="edge-col"><div class="edge-col-title" style="color:var(--gl)">DG Leans</div>';
+        leans.forEach(([k,v])=>{const n=DG.plLookup?.[k]?.display||k;h+='<div class="edge-item"><span class="edge-nm">'+n+'</span><span style="color:var(--gl)">+'+(v.edge*100).toFixed(1)+'%</span></div>';});
+        h+='</div>';}
+      if(fades.length){h+='<div class="edge-col"><div class="edge-col-title" style="color:var(--rd)">Vegas Leans</div>';
+        fades.forEach(([k,v])=>{const n=DG.plLookup?.[k]?.display||k;h+='<div class="edge-item"><span class="edge-nm">'+n+'</span><span style="color:var(--rd)">'+(v.edge*100).toFixed(1)+'%</span></div>';});
+        h+='</div>';}
+      h+='</div>';}}
   bd.innerHTML=h;}
 function rLBS(d){
   const bd=document.getElementById('lb-bd');
