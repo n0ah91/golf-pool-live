@@ -569,6 +569,19 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 
 <div class="cd" id="upcoming-sched"></div>
 
+<!-- Prediction Market vs Model vs Sportsbook Panel -->
+<div class="cd" id="pred-market-panel" style="margin-top:.4rem">
+  <h4 style="font-family:var(--fh);color:var(--go);font-size:.82rem;margin:0 0 .1rem;display:flex;align-items:center;justify-content:space-between">
+    Prediction Markets <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">3-Way Comparison</span>
+  </h4>
+  <div style="font-size:.55rem;color:var(--ts);margin-bottom:.4rem;line-height:1.3">
+    Where prediction markets, the DG model, and sportsbooks disagree &mdash; the strongest edges live in the gaps.
+  </div>
+  <div id="pred-market-meta" style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.4rem"></div>
+  <div id="pred-market-body"><div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading prediction market data...</div></div>
+  <div id="pred-market-footer" style="margin-top:.3rem"></div>
+</div>
+
 <!-- Hidden leaderboard container (used by rLB/rLBS internally) -->
 <div id="lb-wrap" style="display:none">
   <span id="lb-tt"></span><span id="lb-mt"></span><button id="lb-rb" style="display:none"></button>
@@ -582,19 +595,6 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
     Live Win Odds <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20</span>
   </h4>
   <div id="live-odds"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading odds...</div></div>
-</div>
-
-<!-- Prediction Market vs Model vs Sportsbook Panel -->
-<div class="cd" id="pred-market-panel" style="margin-top:.4rem">
-  <h4 style="font-family:var(--fh);color:var(--go);font-size:.82rem;margin:0 0 .1rem;display:flex;align-items:center;justify-content:space-between">
-    Prediction Markets <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">3-Way Comparison</span>
-  </h4>
-  <div style="font-size:.55rem;color:var(--ts);margin-bottom:.4rem;line-height:1.3">
-    Where prediction markets, the DG model, and sportsbooks disagree &mdash; the strongest edges live in the gaps.
-  </div>
-  <div id="pred-market-meta" style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.4rem"></div>
-  <div id="pred-market-body"><div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading prediction market data...</div></div>
-  <div id="pred-market-footer" style="margin-top:.3rem"></div>
 </div>
 
 <div class="cd"><details class="cf-details"><summary class="cf-details-sum">2026 Majors Schedule</summary><div class="cf-details-body">
