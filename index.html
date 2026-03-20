@@ -539,6 +539,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .fs-btn{font-family:var(--fb);font-size:.65rem;color:var(--ts);background:var(--bca);border:1px solid var(--br);border-radius:4px;padding:.15rem .4rem;cursor:pointer;transition:all .2s;min-width:24px;text-align:center}
 .fs-btn:hover{background:var(--bh);color:var(--tb)}
 .fs-btn.fs-reset{font-weight:600;color:var(--go)}
+.fs-tourney{font-family:var(--fh);font-weight:600;font-size:.75rem;color:var(--gn);letter-spacing:.02em}
 </style>
 </head>
 <body>
@@ -558,6 +559,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <button onclick="go('rules')">Rules/Pay</button>
 </nav>
 <div class="fs-bar">
+<span id="fs-tourney" class="fs-tourney"></span>
+<span style="flex:1"></span>
 <span class="fs-label">Text Size</span>
 <button class="fs-btn" onclick="chgFS(-1)">A−</button>
 <button class="fs-btn fs-reset" onclick="chgFS(0)">A</button>
@@ -2004,7 +2007,7 @@ if('serviceWorker' in navigator){
 }
 
 /* ===== INIT ===== */
-document.addEventListener('DOMContentLoaded',()=>{try{populateMe();}catch(e){console.warn('populateMe:',e);}try{rLive();}catch(e){console.warn('rLive:',e);}dgConn();setTimeout(fetchPreviewOdds,1000);setTimeout(fetchPredictionMarkets,2500);});
+document.addEventListener('DOMContentLoaded',()=>{try{var _ev=getCurrentEvent();var _el=document.getElementById('fs-tourney');if(_el&&EV_NAMES[_ev])_el.textContent=EV_NAMES[_ev];}catch(e){}try{populateMe();}catch(e){console.warn('populateMe:',e);}try{rLive();}catch(e){console.warn('rLive:',e);}dgConn();setTimeout(fetchPreviewOdds,1000);setTimeout(fetchPredictionMarkets,2500);});
 
 
 /* ===== COURSE DATA ===== */
