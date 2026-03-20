@@ -838,17 +838,17 @@ function populateModelTab(){
   if(em&&Object.keys(em).length){
     var h='<div class="cf-section-title">DG Model Edges</div>';
     h+='<div style="font-size:.55rem;color:var(--ts);margin-bottom:.4rem">Where the DataGolf model disagrees with sportsbooks — sorted by edge magnitude.</div>';
-    h+='<div class="tw"><table class="tc" style="min-width:360px"><thead><tr><th>Player</th><th style="text-align:right">DG Win %</th><th style="text-align:right">Vegas %</th><th style="text-align:right">Edge</th></tr></thead><tbody>';
+    h+='<table class="pm-table"><thead><tr><th style="text-align:left">Player</th><th>DG Win %</th><th>Vegas %</th><th>Edge</th></tr></thead><tbody>';
     var edges=Object.entries(em).sort((a,b)=>Math.abs(b[1].edge)-Math.abs(a[1].edge)).slice(0,30);
     edges.forEach(function(e){
       var nm=e[0],d=e[1];
       var edgeCol=d.edge>0?'var(--gl)':d.edge<-1?'var(--rd)':'var(--ts)';
-      h+='<tr><td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+nm+'</td>';
-      h+='<td style="text-align:right;color:var(--gl);font-family:var(--fm)">'+(d.dgProb*100).toFixed(1)+'%</td>';
-      h+='<td style="text-align:right;color:var(--td);font-family:var(--fm)">'+(d.vegasProb*100).toFixed(1)+'%</td>';
-      h+='<td style="text-align:right;color:'+edgeCol+';font-weight:600;font-family:var(--fm)">'+(d.edge>0?'+':'')+(d.edge*100).toFixed(1)+'%</td></tr>';
+      h+='<tr><td style="text-align:left;font-family:var(--fb);font-weight:500">'+nm+playerIcons(nm)+'</td>';
+      h+='<td style="color:var(--gl)">'+(d.dgProb*100).toFixed(1)+'%</td>';
+      h+='<td>'+(d.vegasProb*100).toFixed(1)+'%</td>';
+      h+='<td style="color:'+edgeCol+';font-weight:600">'+(d.edge>0?'+':'')+(d.edge*100).toFixed(1)+'%</td></tr>';
     });
-    h+='</tbody></table></div>';
+    h+='</tbody></table>';
     bd.innerHTML=h;
     _modelTabPopulated=true;
   } else {
@@ -2149,27 +2149,32 @@ const TYPE_TO_ICONS={
   'BOMBER':['bomber'],
   'BALANCED':['iron']
 };
-const PLAYER_TAGS={};
-(function(){
-  try { if(typeof VALSPAR_PREVIEW==='undefined')return; } catch(e){ return; }
-  const vp=VALSPAR_PREVIEW.field||[];
-  const cf=VALSPAR_PREVIEW.courseFit||[];
-  const cfMap={};cf.forEach(function(c){cfMap[c.nm]=c;});
-  vp.forEach(function(p){
-    var tags=[];
-    if(p.type&&TYPE_TO_ICONS[p.type])tags=tags.concat(TYPE_TO_ICONS[p.type]);
-    var cfP=cfMap[p.nm];
-    if(cfP&&cfP.ch>0.01)tags.push('course');
-    if(cfP&&cfP.timing>0.1)tags.push('hot');
-    if(p.dk&&p.win>(1/p.dk)*1.15)tags.push('value');
-    else if(p.fd&&p.win>(1/p.fd)*1.15)tags.push('value');
-    if(p.wr&&p.wr>50&&p.win>0.01)tags.push('rising');
-    var seen={};var unique=[];
-    tags.forEach(function(t){if(!seen[t]){seen[t]=1;unique.push(t);}});
-    PLAYER_TAGS[normN(p.nm)]=unique.slice(0,4);
-  });
-})();
+var PLAYER_TAGS=null;
+function _buildPlayerTags(){
+  if(PLAYER_TAGS)return;
+  PLAYER_TAGS={};
+  try{
+    if(typeof VALSPAR_PREVIEW==='undefined')return;
+    var vp=VALSPAR_PREVIEW.field||[];
+    var cf=VALSPAR_PREVIEW.courseFit||[];
+    var cfMap={};cf.forEach(function(c){cfMap[c.nm]=c;});
+    vp.forEach(function(p){
+      var tags=[];
+      if(p.type&&TYPE_TO_ICONS[p.type])tags=tags.concat(TYPE_TO_ICONS[p.type]);
+      var cfP=cfMap[p.nm];
+      if(cfP&&cfP.ch>0.01)tags.push('course');
+      if(cfP&&cfP.timing>0.1)tags.push('hot');
+      if(p.dk&&p.win>(1/p.dk)*1.15)tags.push('value');
+      else if(p.fd&&p.win>(1/p.fd)*1.15)tags.push('value');
+      if(p.wr&&p.wr>50&&p.win>0.01)tags.push('rising');
+      var seen={};var unique=[];
+      tags.forEach(function(t){if(!seen[t]){seen[t]=1;unique.push(t);}});
+      PLAYER_TAGS[normN(p.nm)]=unique.slice(0,4);
+    });
+  }catch(e){console.warn('buildPlayerTags:',e);}
+}
 function playerIcons(name){
+  _buildPlayerTags();
   var tags=PLAYER_TAGS[normN(name)];
   if(!tags||!tags.length)return'';
   var h='';
@@ -4905,6 +4910,7 @@ let _selectedUpcoming=-1;
  *  and renders the course preview + field/betting panels into the detail area. */
 function selectUpcoming(idx){
   _selectedUpcoming=idx;
+  _modelTabPopulated=false; // Reset so model tab re-renders for new event
   // Highlight card
   document.querySelectorAll('#upcoming-cards .mjr-card').forEach((c,i)=>{
     c.style.boxShadow=i===idx?'0 0 12px rgba(196,160,53,.3)':'';
@@ -5043,8 +5049,8 @@ function renderValsparField(el){
     }
   }
   h+='<div class="cf-section-title">Field Preview — DG Model Predictions</div>';
-  h+='<div class="tw" style="margin:0"><table class="tc" style="min-width:420px">';
-  h+='<thead><tr><th>Player</th><th style="text-align:center">WR</th><th style="text-align:center">FIT</th><th style="text-align:right">Win %</th><th style="text-align:right">Top 10</th><th style="text-align:right">DK</th><th style="text-align:right">FD</th></tr></thead><tbody>';
+  h+='<table class="pm-table">';
+  h+='<thead><tr><th style="text-align:left">Player</th><th>WR</th><th>FIT</th><th>Win %</th><th>Top 10</th><th>DK</th><th>FD</th></tr></thead><tbody>';
   const maxWin=Math.max(...vp.map(x=>x.win));
   vp.forEach(p=>{
     const barW=Math.max(4,Math.round((p.win/maxWin)*100));
@@ -5053,15 +5059,15 @@ function renderValsparField(el){
     const dkTxt=p.dk?'+'+Math.round((p.dk-1)*100):'—';
     const fdTxt=p.fd?'+'+Math.round((p.fd-1)*100):'—';
     const typePill=playerIcons(p.nm);
-    h+='<tr><td style="color:var(--tp);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+typePill+'</td>'
-      +'<td style="text-align:center;color:var(--td)">'+(p.wr||'—')+'</td>'
-      +((function(){const cfMatch=cf.find(c=>c.nm===p.nm);if(!cfMatch)return '<td style="text-align:center;color:var(--td)">—</td>';const fv=cfMatch.final;const fc=fv>1.0?'var(--gl)':fv<0.5?'var(--td)':'var(--tp)';return '<td style="text-align:center;color:'+fc+';font-weight:600">'+fv.toFixed(3)+'</td>';})())
-      +'<td style="text-align:right;position:relative"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.15);border-radius:2px"></span><span style="position:relative;color:var(--gl);font-weight:600">'+winPct+'</span></td>'
-      +'<td style="text-align:right;color:var(--tp)">'+t10Pct+'</td>'
-      +'<td style="text-align:right;color:var(--go)">'+dkTxt+'</td>'
-      +'<td style="text-align:right;color:var(--go)">'+fdTxt+'</td></tr>';
+    h+='<tr><td style="text-align:left;font-family:var(--fb);font-weight:500">'+sn(p.nm)+typePill+'</td>'
+      +'<td>'+(p.wr||'—')+'</td>'
+      +((function(){const cfMatch=cf.find(c=>c.nm===p.nm);if(!cfMatch)return '<td>—</td>';const fv=cfMatch.final;const fc=fv>1.0?'var(--gl)':fv<0.5?'var(--td)':'var(--tp)';return '<td style="color:'+fc+';font-weight:600">'+fv.toFixed(3)+'</td>';})())
+      +'<td style="position:relative"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:'+barW+'%;background:rgba(0,103,71,.15);border-radius:2px"></span><span style="position:relative;color:var(--gl);font-weight:600">'+winPct+'</span></td>'
+      +'<td>'+t10Pct+'</td>'
+      +'<td style="color:var(--go)">'+dkTxt+'</td>'
+      +'<td style="color:var(--go)">'+fdTxt+'</td></tr>';
   });
-  h+='</tbody></table></div>';
+  h+='</tbody></table>';
   h+='<div style="font-size:.48rem;color:var(--td);margin-top:.2rem;font-style:italic">Win % and Top 10 from DG pre-tournament model · Odds in American format from DraftKings & FanDuel</div>';
   h+='</div>';
   el.innerHTML=h;
