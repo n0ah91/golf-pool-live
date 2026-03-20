@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "golf-pool-live",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["http-server", "/c/tmp/golf-pool-live-repo", "-p", "8095", "-c-1"],
+      "name": "golf-pool-live-repo",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8095", "--directory", "C:\\tmp\\golf-pool-live-repo"],
       "port": 8095
     }
   ]
