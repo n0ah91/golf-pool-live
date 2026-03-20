@@ -4973,42 +4973,6 @@ function renderValsparField(el){
   const vp=VALSPAR_PREVIEW.field;
   const cf=VALSPAR_PREVIEW.courseFit||[];
   let h='<div class="cd" style="margin-top:.4rem">';
-  // Course Fit Analysis
-  if(cf.length){
-    h+='<div class="cf-section-title">Course Fit Analysis — Copperhead (Innisbrook)</div>';
-    // Course DNA badge
-    h+='<div style="display:flex;align-items:center;gap:.4rem;margin:.3rem 0 .5rem">';
-    h+='<span style="display:inline-block;padding:.15rem .5rem;background:var(--gl);color:var(--bca);font-family:var(--fb);font-weight:700;font-size:.52rem;border-radius:4px;letter-spacing:.04rem;text-transform:uppercase">Accuracy Course</span>';
-    h+='<span style="font-size:.46rem;color:var(--td)">Driving accuracy heavily rewarded · Long hitters penalized</span>';
-    h+='</div>';
-    // Chips row
-    h+='<div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem">';
-    // Course Specialists (top course_history_adj)
-    const specialists=[...cf].sort((a,b)=>b.ch-a.ch).filter(x=>x.ch>0).slice(0,3);
-    h+='<div style="flex:1;min-width:200px"><div style="font-size:.5rem;color:var(--ts);font-weight:600;margin-bottom:.2rem;font-family:var(--fb)">Course Specialists</div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:.2rem">';
-    specialists.forEach(p=>{
-      h+='<span style="display:inline-flex;align-items:center;gap:.15rem;padding:.12rem .35rem;background:rgba(0,103,71,.12);border:1px solid rgba(0,103,71,.25);border-radius:12px;font-size:.48rem;color:var(--gl);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+' <span style="color:var(--gl);font-size:.42rem">+'+p.ch.toFixed(3)+'</span></span>';
-    });
-    h+='</div></div>';
-    // Hot Hands (top timing_adj)
-    const hotHands=[...cf].sort((a,b)=>b.timing-a.timing).filter(x=>x.timing>0).slice(0,5);
-    h+='<div style="flex:1;min-width:200px"><div style="font-size:.5rem;color:var(--ts);font-weight:600;margin-bottom:.2rem;font-family:var(--fb)">Hot Hands (Recent Form)</div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:.2rem">';
-    hotHands.forEach(p=>{
-      h+='<span style="display:inline-flex;align-items:center;gap:.15rem;padding:.12rem .35rem;background:rgba(183,135,38,.12);border:1px solid rgba(183,135,38,.25);border-radius:12px;font-size:.48rem;color:var(--go);font-weight:600;font-family:var(--fb)">'+sn(p.nm)+' <span style="font-size:.42rem">+'+p.timing.toFixed(3)+'</span></span>';
-    });
-    h+='</div></div>';
-    h+='</div>';
-    if(VALSPAR_PREVIEW.correlatedCourses){
-      h+='<div style="margin-top:.4rem"><div style="font-size:.5rem;color:var(--ts);font-weight:600;margin-bottom:.2rem">Similar Course Profiles</div>';
-      h+='<div style="display:flex;flex-wrap:wrap;gap:.2rem">';
-      VALSPAR_PREVIEW.correlatedCourses.forEach(c=>{
-        h+='<span style="font-size:.52rem;padding:.15rem .4rem;background:rgba(0,40,85,.08);border:1px solid rgba(0,40,85,.2);border-radius:4px;color:#002855;cursor:pointer" onclick="alert(\'Similar SG profile to Copperhead: approach-heavy, accuracy-first, small greens\')">'+c+'</span>';
-      });
-      h+='</div></div>';
-    }
-  }
   h+='<div class="cf-section-title">Field Preview — DG Model Predictions</div>';
   h+='<table class="pm-table">';
   h+='<thead><tr><th style="text-align:left">Player</th><th>WR</th><th>FIT</th><th>Win %</th><th>Top 10</th><th>DK</th><th>FD</th></tr></thead><tbody>';
