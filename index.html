@@ -213,7 +213,30 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .pm-legend .pml-model::before{background:var(--gn)}.pm-legend .pml-vegas::before{background:var(--go)}.pm-legend .pml-market::before{background:#5b8def}
 .pm-na{color:var(--td);font-size:.55rem;font-style:italic}
 .pm-divergent-row{background:rgba(0,180,80,.03)!important}.pm-strong-row{background:rgba(0,180,80,.06)!important}
-@media(max-width:600px){.pm-table{font-size:.6rem}.pm-table thead th{font-size:.5rem;padding:.25rem .15rem}.pm-table td{padding:.2rem .15rem}}
+.pm-name-click{color:var(--go);text-decoration:underline;text-decoration-color:rgba(201,162,39,.3);text-underline-offset:2px;cursor:pointer;transition:color .15s}
+.pm-name-click:hover{color:#c9a227}
+.pm-row-active{background:rgba(201,162,39,.06)!important}
+.pm-row-active td:first-child .pm-name-click{color:#c9a227}
+.pm-why-row td{padding:0!important;border-bottom:1px solid var(--br)}
+.pm-why-panel{padding:.6rem .7rem;background:rgba(8,12,10,.7);border-left:3px solid var(--go);margin:.15rem 0;font-size:.62rem;line-height:1.65;color:var(--tp)}
+.pm-why-header{font-family:var(--fh);font-size:.78rem;font-weight:600;color:#c9a227;margin-bottom:.4rem}
+.pm-why-probs{display:flex;gap:.7rem;margin-bottom:.5rem;flex-wrap:wrap}
+.pm-why-prob{display:flex;flex-direction:column;align-items:center;background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.3rem .5rem;min-width:80px}
+.pm-why-label{font-size:.48rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ts);font-weight:600}
+.pm-why-val{font-family:var(--fm);font-size:.82rem;font-weight:700;margin-top:.1rem}
+.pm-why-model{color:#00b4d8}.pm-why-vegas{color:#ff6b6b}.pm-why-market{color:#c9a227}
+.pm-why-text{color:var(--ts);font-size:.6rem;line-height:1.7}
+.pm-why-text p{margin:.25rem 0}
+.pm-why-text b{color:var(--tp);font-weight:600}
+.pm-why-signals{margin:.15rem 0 .3rem .8rem;padding:0;list-style:none}
+.pm-why-signals li{position:relative;padding-left:.6rem;margin:.1rem 0;font-size:.55rem;color:var(--ts)}
+.pm-why-signals li::before{content:'→';position:absolute;left:0;color:var(--go)}
+.pm-why-lean{margin-top:.4rem;padding:.3rem .45rem;background:var(--bca);border:1px solid var(--br);border-radius:4px;font-size:.58rem}
+.pm-why-lean-badge{display:inline-block;padding:.06rem .3rem;border-radius:3px;font-size:.5rem;font-weight:700;letter-spacing:.04em;margin-right:.2rem}
+.pm-why-lean-badge.bull{background:rgba(0,180,80,.15);color:#00b050}
+.pm-why-lean-badge.bear{background:rgba(255,60,60,.12);color:#ff6b6b}
+.pm-why-lean-badge.neu{background:rgba(120,120,120,.1);color:#888}
+@media(max-width:600px){.pm-table{font-size:.6rem}.pm-table thead th{font-size:.5rem;padding:.25rem .15rem}.pm-table td{padding:.2rem .15rem}.pm-why-probs{gap:.3rem}.pm-why-prob{min-width:60px;padding:.2rem .3rem}.pm-why-panel{padding:.4rem .5rem}}
 /* === Odds Grid === */
 .odds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.35rem;margin:.5rem 0}
 .odds-card{display:flex;justify-content:space-between;align-items:center;background:var(--bca);border:1px solid var(--br);border-radius:5px;padding:.35rem .5rem;font-size:.7rem}
@@ -2835,6 +2858,9 @@ async function fetchPredictionMarkets() {
         sources: pm.market_sources || [],
         composite: pdata.composite_lean || 0,
         confidence: pdata.confidence || 'LOW',
+        signals: pdata.signals || [],
+        reddit: pdata.reddit_sentiment || {},
+        expert: pdata.expert_sentiment || {},
       });
     }
 
@@ -2873,13 +2899,17 @@ async function fetchPredictionMarkets() {
     h += '<th title="STRONG (>5%), DIVERGENT (3-5%), SPLIT (1-3%), ALIGNED (<1%)">Signal</th>';
     h += '</tr></thead><tbody>';
 
-    for (const r of top) {
-      const divCls = r.alignment === 'STRONG' ? ' pm-strong-row' : r.alignment === 'DIVERGENT' ? ' pm-divergent-row' : '';
-      h += '<tr class="' + divCls + '">';
+    // Store row data globally so click handler can access it
+    window._pmRows = top;
 
-      // Player name
+    for (let ri = 0; ri < top.length; ri++) {
+      const r = top[ri];
+      const divCls = r.alignment === 'STRONG' ? ' pm-strong-row' : r.alignment === 'DIVERGENT' ? ' pm-divergent-row' : '';
+      h += '<tr class="pm-player-row' + divCls + '" data-pm-idx="' + ri + '" style="cursor:pointer">';
+
+      // Player name (clickable)
       const shortName = fmN ? fmN(r.name) : r.name;
-      h += '<td>' + shortName + playerIcons(r.name) + '</td>';
+      h += '<td><span class="pm-name-click">' + shortName + '</span>' + playerIcons(r.name) + '</td>';
 
       // Model prob
       h += '<td>' + fmtProb(r.model, 'model') + '</td>';
@@ -2908,6 +2938,8 @@ async function fetchPredictionMarkets() {
       h += '<td><span class="pm-align ' + r.alignment + '">' + r.alignment + '</span></td>';
 
       h += '</tr>';
+      // Placeholder for expandable explanation row
+      h += '<tr class="pm-why-row" id="pm-why-' + ri + '" style="display:none"><td colspan="7"></td></tr>';
     }
 
     h += '</tbody></table>';
@@ -2929,6 +2961,14 @@ async function fetchPredictionMarkets() {
     h += '</div>';
 
     body.innerHTML = h;
+
+    // Attach click handlers to player rows
+    body.querySelectorAll('.pm-player-row').forEach(tr => {
+      tr.addEventListener('click', function() {
+        const idx = parseInt(this.getAttribute('data-pm-idx'));
+        togglePmWhy(idx);
+      });
+    });
 
     // Footer with timestamp and source info
     const now = new Date();
@@ -2959,6 +2999,134 @@ async function fetchPredictionMarkets() {
     console.error('Prediction market panel error:', e);
     body.innerHTML = '<div style="color:var(--rd);font-size:.68rem;text-align:center;padding:.5rem">Could not load prediction markets: ' + e.message + ' <span style="cursor:pointer;color:#00205b;margin-left:.3rem" onclick="refreshPredMarkets()">Retry</span></div>';
   }
+}
+
+function togglePmWhy(idx) {
+  const row = document.getElementById('pm-why-' + idx);
+  if (!row) return;
+  const isOpen = row.style.display !== 'none';
+  // Close all open why-rows first
+  document.querySelectorAll('.pm-why-row').forEach(r => r.style.display = 'none');
+  document.querySelectorAll('.pm-player-row').forEach(r => r.classList.remove('pm-row-active'));
+  if (!isOpen) {
+    const r = window._pmRows[idx];
+    row.querySelector('td').innerHTML = buildWhyExplanation(r);
+    row.style.display = '';
+    // Highlight the parent row
+    const parent = document.querySelector('.pm-player-row[data-pm-idx="' + idx + '"]');
+    if (parent) parent.classList.add('pm-row-active');
+  }
+}
+
+function buildWhyExplanation(r) {
+  const pf = v => v != null ? (v * 100).toFixed(1) + '%' : 'N/A';
+  const name = fmN ? fmN(r.name) : r.name;
+  let h = '<div class="pm-why-panel">';
+
+  // Header
+  h += '<div class="pm-why-header">' + name + ' — Why the Divergence?</div>';
+
+  // Three-way probability comparison
+  h += '<div class="pm-why-probs">';
+  h += '<div class="pm-why-prob"><span class="pm-why-label">DG Model</span><span class="pm-why-val pm-why-model">' + pf(r.model) + '</span></div>';
+  h += '<div class="pm-why-prob"><span class="pm-why-label">Sportsbooks</span><span class="pm-why-val pm-why-vegas">' + pf(r.vegas) + '</span></div>';
+  h += '<div class="pm-why-prob"><span class="pm-why-label">Pred Markets</span><span class="pm-why-val pm-why-market">' + pf(r.market) + '</span></div>';
+  h += '</div>';
+
+  // Plain English explanation
+  h += '<div class="pm-why-text">';
+
+  // Model vs Vegas
+  if (r.model != null && r.vegas != null) {
+    const diff = (r.model - r.vegas) * 100;
+    const absDiff = Math.abs(diff);
+    if (absDiff > 0.5) {
+      const who = diff > 0 ? 'DG\'s model' : 'Sportsbooks';
+      const other = diff > 0 ? 'sportsbooks' : 'DG\'s model';
+      const verb = diff > 0 ? 'higher' : 'lower';
+      h += '<p><b>Model vs Books:</b> ' + who + ' prices ' + name + ' at <b>' + pf(diff > 0 ? r.model : r.vegas) + '</b>, ';
+      h += absDiff.toFixed(1) + '% ' + verb + ' than ' + other + ' (' + pf(diff > 0 ? r.vegas : r.model) + '). ';
+      if (diff > 3) h += 'The statistical model sees something the market hasn\'t priced in — a potential value play.';
+      else if (diff > 1) h += 'The model is mildly bullish relative to books.';
+      else if (diff < -3) h += 'Books are significantly more bullish than the model — could be public money inflating the line.';
+      else if (diff < -1) h += 'Books lean slightly more optimistic than the data suggests.';
+      h += '</p>';
+    }
+  }
+
+  // Market vs Vegas
+  if (r.vsVegas != null) {
+    const absMv = Math.abs(r.vsVegas * 100);
+    if (absMv > 0.5) {
+      const mkDir = r.vsVegas > 0 ? 'above' : 'below';
+      h += '<p><b>Markets vs Books:</b> Prediction market bettors price ' + name + ' <b>' + absMv.toFixed(1) + '% ' + mkDir + '</b> sportsbooks. ';
+      if (r.vsVegas > 0.03) h += 'Sharp money in prediction markets is significantly more bullish — this is a notable signal.';
+      else if (r.vsVegas > 0.01) h += 'Markets see slightly more upside than books.';
+      else if (r.vsVegas < -0.03) h += 'Prediction markets are fading this player hard relative to sportsbooks — potential overvalued by books.';
+      else if (r.vsVegas < -0.01) h += 'Markets are modestly below sportsbook pricing.';
+      h += '</p>';
+    }
+  }
+
+  // Market vs Model
+  if (r.vsModel != null) {
+    const absMm = Math.abs(r.vsModel * 100);
+    if (absMm > 0.5) {
+      const mmDir = r.vsModel > 0 ? 'higher' : 'lower';
+      h += '<p><b>Markets vs Model:</b> Prediction markets are <b>' + absMm.toFixed(1) + '% ' + mmDir + '</b> than the DG model. ';
+      if (r.vsModel > 0.02) h += 'Market wisdom sees something the model might be missing.';
+      else if (r.vsModel < -0.02) h += 'The model is more optimistic than collective market opinion.';
+      h += '</p>';
+    }
+  }
+
+  // Individual market breakdown
+  const mkts = [];
+  if (r.kalshi != null) mkts.push({ name: 'Kalshi', prob: r.kalshi, type: 'real money (CFTC-regulated)' });
+  if (r.poly != null) mkts.push({ name: 'Polymarket', prob: r.poly, type: 'crypto prediction market' });
+  if (r.manifold != null) mkts.push({ name: 'Manifold', prob: r.manifold, type: 'play money' });
+  if (mkts.length > 1) {
+    h += '<p><b>Market Breakdown:</b> ';
+    h += mkts.map(m => m.name + ' = ' + pf(m.prob) + ' <span style="opacity:.5;font-size:.5rem">(' + m.type + ')</span>').join(' · ');
+    const mProbs = mkts.map(m => m.prob);
+    const spread = (Math.max(...mProbs) - Math.min(...mProbs)) * 100;
+    if (spread > 2) h += '. Even the markets disagree amongst themselves (' + spread.toFixed(1) + '% spread).';
+    h += '</p>';
+  }
+
+  // Signals from sentiment engine
+  if (r.signals && r.signals.length > 0) {
+    h += '<p><b>Signals:</b></p><ul class="pm-why-signals">';
+    for (const s of r.signals) h += '<li>' + s + '</li>';
+    h += '</ul>';
+  }
+
+  // Reddit mentions
+  if (r.reddit && r.reddit.mentions > 0) {
+    const sent = r.reddit.score > 0.1 ? 'bullish' : r.reddit.score < -0.1 ? 'bearish' : 'neutral';
+    h += '<p><b>Reddit:</b> ' + r.reddit.mentions + ' mention' + (r.reddit.mentions > 1 ? 's' : '') + ', sentiment is <b>' + sent + '</b>';
+    if (r.reddit.threads && r.reddit.threads.length > 0) {
+      h += ' across ' + r.reddit.threads.length + ' thread' + (r.reddit.threads.length > 1 ? 's' : '');
+    }
+    h += '.</p>';
+  }
+
+  // Expert feeds
+  if (r.expert && r.expert.sources && r.expert.sources.length > 0) {
+    const eSent = r.expert.score > 0.1 ? 'bullish' : r.expert.score < -0.1 ? 'bearish' : 'neutral';
+    h += '<p><b>Expert Feeds:</b> ' + eSent + ' — mentioned by ' + r.expert.sources.join(', ') + '.</p>';
+  }
+
+  // Composite lean
+  h += '<div class="pm-why-lean">';
+  const leanDir = r.composite > 0.01 ? 'BULLISH' : r.composite < -0.01 ? 'BEARISH' : 'NEUTRAL';
+  const leanCls = leanDir === 'BULLISH' ? 'bull' : leanDir === 'BEARISH' ? 'bear' : 'neu';
+  h += '<span class="pm-why-lean-badge ' + leanCls + '">' + leanDir + '</span> ';
+  h += 'Composite lean: ' + (r.composite > 0 ? '+' : '') + (r.composite * 100).toFixed(2) + '% · Confidence: <b>' + r.confidence + '</b>';
+  h += '</div>';
+
+  h += '</div></div>';
+  return h;
 }
 
 function fmtProb(prob, type) {
