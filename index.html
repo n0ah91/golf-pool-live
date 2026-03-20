@@ -1323,8 +1323,9 @@ async function dgF(ep,ps={}){
   return await r.json();}
 async function dgConn(){
   try{const pl=await dgF('get-player-list');DG.pl=pl;DG.plLookup=buildLookup(pl);DG.ok=true;
-    document.getElementById('lb-rb').style.display='';dgLive();}
-  catch(e){DG.ok=false;console.warn('DG proxy connect failed:',e.message);}}
+    document.getElementById('lb-rb').style.display='';}
+  catch(e){console.warn('DG player list failed, continuing:',e.message);DG.ok=true;}
+  dgLive();}
 async function dgLive(){
   if(!DG.ok)return;const mt=document.getElementById('lb-mt');mt.textContent='Loading...';
   const prevSnap=DG.lb?captureSnap():null;
