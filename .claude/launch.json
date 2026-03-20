@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "dashboard",
+      "name": "golf-pool-live",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["http-server", "/tmp/golf-pool-live", "-p", "8090", "-c-1"],
-      "port": 8090
+      "runtimeArgs": ["http-server", "/c/tmp/golf-pool-live-repo", "-p", "8095", "-c-1"],
+      "port": 8095
     }
   ]
 }
