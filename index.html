@@ -203,8 +203,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .pm-table td:first-child{text-align:left;font-family:var(--fb);font-weight:500;min-width:100px}
 .pm-prob{font-weight:500}.pm-prob.hi{color:var(--go)}.pm-prob.md{color:var(--tp)}.pm-prob.lo{color:var(--td)}
 .pm-div{font-weight:600;font-size:.62rem}.pm-div.pos{color:var(--gl)}.pm-div.neg{color:var(--rd)}.pm-div.neu{color:var(--td)}
-.pm-align{display:inline-block;padding:.06rem .25rem;border-radius:3px;font-size:.5rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
-.pm-align.STRONG{background:rgba(0,180,80,.18);color:#00b050;font-weight:700}.pm-align.DIVERGENT{background:rgba(0,180,80,.10);color:#00a048}.pm-align.SPLIT{background:rgba(196,160,53,.1);color:var(--go)}.pm-align.ALIGNED{background:rgba(120,120,120,.08);color:#888}
+.pm-align{display:inline-block;padding:.04rem .2rem;border-radius:3px;font-size:.42rem;font-weight:500;letter-spacing:.03em;text-transform:uppercase}
+.pm-align.STRONG{color:#2a7d52;font-weight:600}.pm-align.DIVERGENT{color:#4a8a5c}.pm-align.SPLIT{color:var(--go)}.pm-align.ALIGNED{color:#aaa}
 .pm-bar-wrap{display:flex;align-items:center;gap:1px;height:12px;min-width:80px;max-width:120px;margin:0 auto}
 .pm-bar-seg{height:100%;border-radius:1px;min-width:1px;transition:width .3s}
 .pm-bar-seg.model{background:var(--gn)}.pm-bar-seg.vegas{background:var(--go)}.pm-bar-seg.market{background:#5b8def}
@@ -3014,7 +3014,7 @@ async function fetchPredictionMarkets() {
     h += '<th>Player</th>';
     h += '<th title="Current tournament score">Score</th>';
     h += '<th title="Current position">Pos</th>';
-    h += '<th title="DG live model win probability" style="min-width:80px">Win %</th>';
+    h += '<th title="DG live model win odds (American)" style="min-width:70px">Win</th>';
     h += '<th title="Top 5 finish odds (American)">Top 5</th>';
     h += '<th title="Top 10 finish odds (American)">Top 10</th>';
     h += '<th title="DG model edge vs sportsbooks (positive = DG likes more)">Edge</th>';
@@ -3036,10 +3036,10 @@ async function fetchPredictionMarkets() {
       // Position
       h += '<td>' + r.pos + '</td>';
 
-      // Win % with background bar
-      const winPct = (r.win * 100).toFixed(1);
+      // Win odds (American) with background bar showing relative probability
       const barW = Math.max(3, Math.round((r.win / (maxWin || 0.01)) * 100));
-      h += '<td style="position:relative;min-width:80px"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:' + barW + '%;background:rgba(0,103,71,.12);border-radius:2px"></span><span style="position:relative;color:var(--gl);font-weight:600">' + winPct + '%</span></td>';
+      const winOdds = probToAmerican(r.win);
+      h += '<td style="position:relative;min-width:70px"><span style="position:absolute;left:0;top:50%;transform:translateY(-50%);height:12px;width:' + barW + '%;background:rgba(0,103,71,.12);border-radius:2px"></span><span style="position:relative;color:var(--gl);font-weight:600">' + winOdds + '</span></td>';
 
       // Top 5 (American odds)
       h += '<td>' + probToAmerican(r.top5) + '</td>';
