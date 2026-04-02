@@ -2381,7 +2381,7 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
   }
   const evName = overrideEvName || EV_NAMES[ev] || ev || courseName;
   const evDate = ev ? (EV_DATES[ev] || '') : '';
-  const pwKey = ev || (overrideCourseName && overrideCourseName.includes('Innisbrook') ? 'valspar' : null);
+  const pwKey = ev || (overrideCourseName && (overrideCourseName.includes('Innisbrook') ? 'valspar' : overrideCourseName.includes('TPC San Antonio') ? 'valero' : null));
   const pw = pwKey ? (PAST_WINNERS[pwKey] || []) : [];
 
   const sg = course.sgEmphasis || {};
@@ -3410,7 +3410,7 @@ const VALERO_PREVIEW = {
     {nm:'Spieth, Jordan',wr:63,win:.0236,t10:.1850,dk:19.5,fd:19.0,skill:1.363,type:'SHORT GAME'},
     {nm:'Mitchell, Keith',wr:105,win:.0215,t10:.1753,dk:35.0,fd:31.0,skill:0.988,type:'HOT FORM'},
     {nm:'Penge, Marco',wr:37,win:.0182,t10:.1516,dk:64.0,fd:56.0,skill:null,type:'RISING STAR'},
-    {nm:'Hisatsune, Ryo',wr:null,win:.0174,t10:.1539,dk:38.0,fd:36.0,skill:0.802,type:'HOT FORM'},
+    {nm:'Hisatsune, Ryo',wr:null,win:.0174,t10:.1539,dk:38.0,fd:36.0,skill:0.802,type:'IRON PLAYER'},
     {nm:'Spaun, J.J.',wr:13,win:.0173,t10:.1544,dk:42.0,fd:41.0,skill:0.938,type:'ACCURATE'},
     {nm:'Noren, Alex',wr:19,win:.0158,t10:.1525,dk:40.0,fd:34.0,skill:0.981,type:'ACCURATE'},
     {nm:'Smalley, Alex',wr:113,win:.0156,t10:.1434,dk:64.0,fd:66.0,skill:0.629,type:'ACCURATE'},
@@ -5163,7 +5163,7 @@ function renderValeroField(el){
   h+='</tbody></table>';
   h+='<div style="margin-top:.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.3rem">';
   h+='<div style="background:rgba(82,183,136,.06);border:1px solid rgba(82,183,136,.15);border-radius:5px;padding:.4rem"><div style="font-size:.56rem;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem">Course History</div><div style="font-size:.6rem;color:var(--tp);line-height:1.4">Spieth +0.143 · McCarthy +0.130 · Si Woo +0.064 · Fowler +0.029</div></div>';
-  h+='<div style="background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.15);border-radius:5px;padding:.4rem"><div style="font-size:.56rem;font-weight:700;color:var(--go);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem">Hottest Form</div><div style="font-size:.6rem;color:var(--tp);line-height:1.4">Spaun -0.260 · Fleetwood -0.196 · MacIntyre -0.165 · McNealy -0.146</div></div>';
+  h+='<div style="background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.15);border-radius:5px;padding:.4rem"><div style="font-size:.56rem;font-weight:700;color:var(--go);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem">Hottest Form</div><div style="font-size:.6rem;color:var(--tp);line-height:1.4">Mitchell +0.105 · Thorbjornsen +0.039 · McCarthy +0.030 · Fowler +0.022</div></div>';
   h+='<div style="background:rgba(231,111,81,.06);border:1px solid rgba(231,111,81,.15);border-radius:5px;padding:.4rem"><div style="font-size:.56rem;font-weight:700;color:var(--rd);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem">Accuracy Rewarded</div><div style="font-size:.6rem;color:var(--tp);line-height:1.4">Si Woo -0.184 · Henley -0.174 · Fleetwood -0.118 · Fowler -0.089</div></div>';
   h+='</div>';
   h+='<div style="font-size:.48rem;color:var(--td);margin-top:.2rem;font-style:italic">DG pre-tournament model · Apr 1 2026 · DraftKings & FanDuel (American format)</div>';
