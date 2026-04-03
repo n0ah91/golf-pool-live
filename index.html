@@ -3527,30 +3527,29 @@ function renderSGRanksTab(){
     const scClr=p.total==null?'var(--ts)':p.total<0?'var(--rd)':p.total>0?'var(--gl)':'var(--tp)';
     const ip=typeof inPool==='function'&&inPool(p.player_name||'');
     const ins=insights[p.player_name||''];
-    // Build inline insight badges (like playerIcons — small tags next to name)
+    // Build inline insight badges next to player name
+    // Model: compare avg SG core rank (OTT/APP/ARG/PUTT) vs leaderboard position
+    // gap > 0 = position is worse than SG says → playing better than scoring
+    // gap < 0 = position is better than SG says → getting lucky
     let sgBadges='';
     if(ins&&!cut){
-      // 1. Score vs SG divergence badge
+      // 1. Score vs SG divergence — golf-native labels
       if(ins.gap>0.15){
-        sgBadges+=' <span class="pm-align STRONG" title="SG rank avg #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — playing much better than score suggests">UNDERVAL</span>';
+        sgBadges+=' <span class="p-type" style="background:rgba(16,185,85,.18);color:#0a6e30;font-weight:600" title="Avg SG rank #'+Math.round(ins.avgRk)+' but sitting '+pPos(p.position)+'th — game is sharper than scorecard shows">DUE</span>';
       }else if(ins.gap>0.08){
-        sgBadges+=' <span class="pm-align DIVERGENT" title="SG rank avg #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — due for a move up">RISING</span>';
+        sgBadges+=' <span class="p-type" style="background:rgba(30,160,70,.12);color:#1a7a35" title="Avg SG rank #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — quietly playing well">LURKING</span>';
       }else if(ins.gap<-0.15){
-        sgBadges+=' <span class="pm-align" style="background:rgba(210,60,40,.1);color:#c62828" title="SG rank avg #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — scoring above their play">OVERPERF</span>';
+        sgBadges+=' <span class="p-type" style="background:rgba(210,60,40,.12);color:#c62828;font-weight:600" title="Avg SG rank #'+Math.round(ins.avgRk)+' but sitting '+pPos(p.position)+'th — scorecard flatters the game">FORTUNATE</span>';
       }else if(ins.gap<-0.08){
-        sgBadges+=' <span class="pm-align" style="background:rgba(210,60,40,.06);color:#b84020" title="SG rank avg #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — scoring above underlying level">FADING</span>';
+        sgBadges+=' <span class="p-type" style="background:rgba(210,110,45,.10);color:#b84020" title="Avg SG rank #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — scoring above play level">FRAGILE</span>';
       }
       // 2. Hot weapon — top 10% in any SG category (e.g. "APP #3")
       if(ins.bestPct<=0.10){
-        sgBadges+=' <span class="p-type" style="background:rgba(16,185,85,.15);color:#0a6e30;font-size:.42rem;padding:.02rem .15rem;border-radius:3px;font-family:var(--fb);font-weight:600" title="Top 10% in '+ins.best+'">'+ins.best+' #'+ins.bestRk+'</span>';
+        sgBadges+=' <span class="p-type" style="background:rgba(16,185,85,.15);color:#0a6e30" title="Ranked #'+ins.bestRk+' in '+ins.best+' — top 10% of field">'+ins.best+' #'+ins.bestRk+'</span>';
       }
-      // 3. Cold weapon — bottom 20% AND top 30% elsewhere (imbalance, e.g. "PUTT #98")
+      // 3. Cold weapon — bottom 20% in a category AND top 30% in another (shows imbalance)
       if(ins.worstPct>=0.80&&ins.bestPct<=0.30){
-        sgBadges+=' <span class="p-type" style="background:rgba(210,50,30,.1);color:#c62828;font-size:.42rem;padding:.02rem .15rem;border-radius:3px;font-family:var(--fb)" title="Bottom 20% in '+ins.worst+'">'+ins.worst+' #'+ins.worstRk+'</span>';
-      }
-      // 4. Steady fallback — no divergence, no standout
-      if(!sgBadges.trim()){
-        sgBadges+=' <span style="font-size:.42rem;color:var(--td);font-family:var(--fb)">steady</span>';
+        sgBadges+=' <span class="p-type" style="background:rgba(210,50,30,.10);color:#c62828" title="Ranked #'+ins.worstRk+' in '+ins.worst+' — bottom 20% of field">'+ins.worst+' #'+ins.worstRk+'</span>';
       }
     }
     h+='<tr'+(cut?' style="opacity:.3"':'')+'>';
