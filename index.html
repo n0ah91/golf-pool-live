@@ -3487,28 +3487,31 @@ function renderSGRanksTab(){
   const defaultShow=30;
   const filtered=search?sorted.filter(p=>(p.player_name||'').toLowerCase().includes(search)||fmN(p.player_name||'').toLowerCase().includes(search)):(_sgRanksShowAll?sorted:sorted.slice(0,defaultShow));
 
-  // Compute SG insights per player
+  // Compute SG insights — only tag the handful of biggest outliers
   const coreKeys=coreCols.map(c=>c.key);
   const catLabel={sg_ott:'OTT',sg_app:'APP',sg_arg:'ARG',sg_putt:'PUTT'};
-  const insights={};
+  const allIns=[];
   sorted.forEach(p=>{
     const pos=pPos(p.position);if(pos>=999)return;
     const ranks=coreKeys.map(k=>({k,r:parseInt(p[k])})).filter(x=>!isNaN(x.r));
     if(ranks.length<2)return;
     const avgRk=ranks.reduce((s,x)=>s+x.r,0)/ranks.length;
-    const avgPct=avgRk/fieldSize;// 0=best, 1=worst
-    const posPct=pos/fieldSize;
-    const gap=posPct-avgPct;// positive = scoring worse than SG, negative = scoring better than SG
-    // Best and worst category
+    const gap=(pos-avgRk)/fieldSize;// positive=scoring worse than SG, negative=scoring better
     const byRank=[...ranks].sort((a,b)=>a.r-b.r);
-    const best=byRank[0];
-    const worst=byRank[byRank.length-1];
-    // Spread: biggest gap between best and worst category
-    const spread=worst.r-best.r;
-    insights[p.player_name||'']={avgRk,avgPct,posPct,gap,spread,
+    const best=byRank[0],worst=byRank[byRank.length-1];
+    allIns.push({nm:p.player_name||'',pos,avgRk,gap,
       best:catLabel[best.k],bestRk:best.r,bestPct:best.r/fieldSize,
-      worst:catLabel[worst.k],worstRk:worst.r,worstPct:worst.r/fieldSize};
+      worst:catLabel[worst.k],worstRk:worst.r,worstPct:worst.r/fieldSize});
   });
+  // Only tag top 5 "due" (playing better than scoring) and top 5 "fortunate" (score flatters)
+  const dueList=[...allIns].filter(x=>x.gap>0.10).sort((a,b)=>b.gap-a.gap).slice(0,5);
+  const fortList=[...allIns].filter(x=>x.gap<-0.10).sort((a,b)=>a.gap-b.gap).slice(0,5);
+  const dueSet=new Set(dueList.map(x=>x.nm));
+  const fortSet=new Set(fortList.map(x=>x.nm));
+  // Hot weapon: top 5% in any core SG cat (very elite)
+  const hotThresh=Math.max(Math.ceil(fieldSize*0.05),3);
+  const insights={};
+  allIns.forEach(x=>{insights[x.nm]=x;});
 
   let h='<table class="pm-table sg-table"><thead><tr>';
   h+='<th style="text-align:left">Player</th>';
@@ -3527,29 +3530,21 @@ function renderSGRanksTab(){
     const scClr=p.total==null?'var(--ts)':p.total<0?'var(--rd)':p.total>0?'var(--gl)':'var(--tp)';
     const ip=typeof inPool==='function'&&inPool(p.player_name||'');
     const ins=insights[p.player_name||''];
-    // Build inline insight badges next to player name
-    // Model: compare avg SG core rank (OTT/APP/ARG/PUTT) vs leaderboard position
-    // gap > 0 = position is worse than SG says → playing better than scoring
-    // gap < 0 = position is better than SG says → getting lucky
+    // Inline insight badges — only on the handful of real outliers
     let sgBadges='';
+    const pName=p.player_name||'';
     if(ins&&!cut){
-      // 1. Score vs SG divergence — golf-native labels
-      if(ins.gap>0.15){
-        sgBadges+=' <span class="p-type" style="background:rgba(16,185,85,.18);color:#0a6e30;font-weight:600" title="Avg SG rank #'+Math.round(ins.avgRk)+' but sitting '+pPos(p.position)+'th — game is sharper than scorecard shows">DUE</span>';
-      }else if(ins.gap>0.08){
-        sgBadges+=' <span class="p-type" style="background:rgba(30,160,70,.12);color:#1a7a35" title="Avg SG rank #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — quietly playing well">LURKING</span>';
-      }else if(ins.gap<-0.15){
-        sgBadges+=' <span class="p-type" style="background:rgba(210,60,40,.12);color:#c62828;font-weight:600" title="Avg SG rank #'+Math.round(ins.avgRk)+' but sitting '+pPos(p.position)+'th — scorecard flatters the game">FORTUNATE</span>';
-      }else if(ins.gap<-0.08){
-        sgBadges+=' <span class="p-type" style="background:rgba(210,110,45,.10);color:#b84020" title="Avg SG rank #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — scoring above play level">FRAGILE</span>';
+      // DUE — game is better than score (top 5 only)
+      if(dueSet.has(pName)){
+        sgBadges+=' <span class="p-type" style="background:rgba(16,185,85,.18);color:#0a6e30;font-weight:600" title="SG avg rank #'+Math.round(ins.avgRk)+' but sitting '+ins.pos+'th — game is better than the scorecard">DUE</span>';
       }
-      // 2. Hot weapon — top 10% in any SG category (e.g. "APP #3")
-      if(ins.bestPct<=0.10){
-        sgBadges+=' <span class="p-type" style="background:rgba(16,185,85,.15);color:#0a6e30" title="Ranked #'+ins.bestRk+' in '+ins.best+' — top 10% of field">'+ins.best+' #'+ins.bestRk+'</span>';
+      // FORTUNATE — score flatters the game (top 5 only, amber not red)
+      if(fortSet.has(pName)){
+        sgBadges+=' <span class="p-type" style="background:rgba(196,160,53,.12);color:#8a7020" title="SG avg rank #'+Math.round(ins.avgRk)+' but sitting '+ins.pos+'th — scorecard flatters the game">FORTUNATE</span>';
       }
-      // 3. Cold weapon — bottom 20% in a category AND top 30% in another (shows imbalance)
-      if(ins.worstPct>=0.80&&ins.bestPct<=0.30){
-        sgBadges+=' <span class="p-type" style="background:rgba(210,50,30,.10);color:#c62828" title="Ranked #'+ins.worstRk+' in '+ins.worst+' — bottom 20% of field">'+ins.worst+' #'+ins.worstRk+'</span>';
+      // Hot weapon — top 5% in a core SG category
+      if(ins.bestRk<=hotThresh){
+        sgBadges+=' <span class="p-type" style="background:rgba(16,185,85,.12);color:#0a6e30" title="Ranked #'+ins.bestRk+' of '+fieldSize+' in '+ins.best+'">'+ins.best+' #'+ins.bestRk+'</span>';
       }
     }
     h+='<tr'+(cut?' style="opacity:.3"':'')+'>';
