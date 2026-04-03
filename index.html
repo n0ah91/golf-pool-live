@@ -236,6 +236,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .pm-why-lean-badge.bull{background:rgba(0,180,80,.15);color:#00b050}
 .pm-why-lean-badge.bear{background:rgba(255,60,60,.12);color:#ff6b6b}
 .pm-why-lean-badge.neu{background:rgba(120,120,120,.1);color:#888}
+.sg-div{border-left:2px solid var(--br)!important}
+.sg-table .sg-rk{font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 @media(max-width:600px){.pm-table{font-size:.6rem}.pm-table thead th{font-size:.5rem;padding:.25rem .15rem}.pm-table td{padding:.2rem .15rem}.pm-why-probs{gap:.3rem}.pm-why-prob{min-width:60px;padding:.2rem .3rem}.pm-why-panel{padding:.4rem .5rem}}
 /* === Odds Grid === */
 .odds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.35rem;margin:.5rem 0}
@@ -3358,7 +3360,7 @@ async function fetchSGRanks(){
   if(!el)return;
   el.innerHTML='<div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading SG ranks from DataGolf...</div>';
   try{
-    const data=await dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_total,sg_ott,sg_app,sg_arg,sg_putt,sg_t2g,distance,great_shots,prox_fw',round:'event_avg',display:'rank'});
+    const data=await dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt,sg_t2g,distance,great_shots,prox_fw',round:'event_avg',display:'rank'});
     if(data&&data.live_stats&&data.live_stats.length){
       _sgRanksData=data;
       renderSGRanksTab();
@@ -3370,10 +3372,19 @@ async function fetchSGRanks(){
   }
 }
 
-function _sgRankCell(rank,fieldSize){
-  if(rank==null||rank==='-')return'<td style="color:var(--td)">–</td>';
-  const r=parseInt(rank);const cl=sgColor(r,fieldSize);
-  return'<td style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+r+'</td>';
+function _sgCell(rank,fieldSize,divider){
+  if(rank==null||rank==='-')return'<td class="sg-rk'+(divider?' sg-div':'')+'" style="color:var(--td)">–</td>';
+  const r=parseInt(rank);const pct=r/fieldSize;
+  let bg,fg,fw;
+  // Softer, more refined tints than the full heatmap
+  if(pct<=0.08){bg='rgba(16,185,85,.22)';fg='#0a6e30';fw='700';}
+  else if(pct<=0.20){bg='rgba(30,160,70,.14)';fg='#1a7a35';fw='600';}
+  else if(pct<=0.40){bg='rgba(45,130,55,.07)';fg='var(--tp)';fw='500';}
+  else if(pct<=0.60){bg='transparent';fg='var(--ts)';fw='400';}
+  else if(pct<=0.80){bg='rgba(210,110,45,.07)';fg='#a05a28';fw='400';}
+  else if(pct<=0.90){bg='rgba(215,75,40,.12)';fg='#b84020';fw='500';}
+  else{bg='rgba(210,50,30,.18)';fg='#c62828';fw='600';}
+  return'<td class="sg-rk'+(divider?' sg-div':'')+'" style="background:'+bg+';color:'+fg+';font-weight:'+fw+'">'+r+'</td>';
 }
 
 function renderSGRanksTab(){
@@ -3381,15 +3392,16 @@ function renderSGRanksTab(){
   if(!el||!_sgRanksData)return;
   const stats=_sgRanksData.live_stats;
   const fieldSize=stats.length;
-  const sgCols=[
-    {key:'sg_total',hdr:'SG Tot',tip:'Overall strokes gained vs field'},
-    {key:'sg_ott',hdr:'OTT',tip:'Strokes gained off the tee'},
-    {key:'sg_app',hdr:'APP',tip:'Strokes gained on approach'},
-    {key:'sg_arg',hdr:'ARG',tip:'Strokes gained around the green'},
-    {key:'sg_putt',hdr:'PUTT',tip:'Strokes gained putting'},
-    {key:'sg_t2g',hdr:'T2G',tip:'Strokes gained tee to green'},
-    {key:'distance',hdr:'Dist',tip:'Driving distance rank'},
-    {key:'great_shots',hdr:'A+',tip:'Great shots vs field'},
+  const coreCols=[
+    {key:'sg_ott',hdr:'OTT',tip:'Off the tee'},
+    {key:'sg_app',hdr:'APP',tip:'Approach'},
+    {key:'sg_arg',hdr:'ARG',tip:'Around the green'},
+    {key:'sg_putt',hdr:'PUTT',tip:'Putting'}
+  ];
+  const bonusCols=[
+    {key:'sg_t2g',hdr:'T2G',tip:'Tee to green (OTT+APP+ARG)'},
+    {key:'distance',hdr:'Dist',tip:'Driving distance'},
+    {key:'great_shots',hdr:'A+',tip:'Great shots'},
     {key:'prox_fw',hdr:'Prox',tip:'Proximity from fairway'}
   ];
   const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return 999;return parseInt(String(s).replace(/^T/,''))||999;};
@@ -3402,11 +3414,13 @@ function renderSGRanksTab(){
   const defaultShow=30;
   const filtered=search?sorted.filter(p=>(p.player_name||'').toLowerCase().includes(search)||fmN(p.player_name||'').toLowerCase().includes(search)):(_sgRanksShowAll?sorted:sorted.slice(0,defaultShow));
 
-  let h='<table class="pm-table"><thead><tr>';
+  let h='<table class="pm-table sg-table"><thead><tr>';
   h+='<th style="text-align:left">Player</th>';
-  h+='<th title="Current tournament score">Score</th>';
-  h+='<th title="Current position">Pos</th>';
-  sgCols.forEach(c=>{h+='<th title="'+c.tip+'">'+c.hdr+'</th>';});
+  h+='<th title="Current score">Score</th>';
+  h+='<th title="Position">Pos</th>';
+  coreCols.forEach(c=>{h+='<th title="'+c.tip+'">'+c.hdr+'</th>';});
+  h+='<th class="sg-div" title="'+bonusCols[0].tip+'">'+bonusCols[0].hdr+'</th>';
+  for(let i=1;i<bonusCols.length;i++){h+='<th title="'+bonusCols[i].tip+'">'+bonusCols[i].hdr+'</th>';}
   h+='</tr></thead><tbody>';
 
   filtered.forEach(p=>{
@@ -3416,13 +3430,13 @@ function renderSGRanksTab(){
     const sc=p.total!=null?(p.total>0?'+'+p.total:p.total===0?'E':''+p.total):'-';
     const scClr=p.total==null?'var(--ts)':p.total<0?'var(--rd)':p.total>0?'var(--gl)':'var(--tp)';
     const ip=typeof inPool==='function'&&inPool(p.player_name||'');
-    h+='<tr'+(cut?' style="opacity:.35"':'')+'>';
+    h+='<tr'+(cut?' style="opacity:.3"':'')+'>';
     h+='<td style="text-align:left;font-family:var(--fb);font-weight:500">'+(ip?'<span style="color:var(--go)">'+nm+'</span>':nm)+playerIcons(p.player_name||'')+'</td>';
     h+='<td style="color:'+scClr+';font-weight:600">'+sc+'</td>';
     h+='<td>'+(p.position||'-')+'</td>';
-    sgCols.forEach(c=>{
-      h+=_sgRankCell(p[c.key],fieldSize);
-    });
+    coreCols.forEach(c=>{h+=_sgCell(p[c.key],fieldSize,false);});
+    h+=_sgCell(p[bonusCols[0].key],fieldSize,true);
+    for(let i=1;i<bonusCols.length;i++){h+=_sgCell(p[bonusCols[i].key],fieldSize,false);}
     h+='</tr>';
   });
   h+='</tbody></table>';
