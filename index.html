@@ -619,8 +619,13 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
       <button class="fs-btn" onclick="chgFS(1)">A+</button>
     </div>
   </div>
+  <div class="ih-tabs" style="margin-bottom:.3rem">
+    <button class="ih-tab active" onclick="switchFieldTab('odds')">Odds & Signals</button>
+    <button class="ih-tab" onclick="switchFieldTab('sg')">SG Ranks</button>
+  </div>
   <div id="pred-market-meta" style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.3rem"></div>
   <div id="pred-market-body"><div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading live field...</div></div>
+  <div id="sg-ranks-body" style="display:none"><div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading SG data...</div></div>
   <div id="pred-market-footer" style="margin-top:.3rem"></div>
 </div>
 
@@ -3319,6 +3324,121 @@ async function refreshPredMarkets() {
   fetchPredictionMarkets();
 }
 
+
+/* ===== LIVE FIELD TAB SWITCHER ===== */
+let _fieldTab='odds';
+let _sgRanksData=null;
+let _sgRanksShowAll=false;
+function switchFieldTab(tab){
+  _fieldTab=tab;
+  const tabs=document.querySelectorAll('#pred-market-panel .ih-tab');
+  tabs.forEach(b=>b.classList.remove('active'));
+  tabs[tab==='odds'?0:1]?.classList.add('active');
+  const oddsEl=document.getElementById('pred-market-body');
+  const sgEl=document.getElementById('sg-ranks-body');
+  const metaEl=document.getElementById('pred-market-meta');
+  const footerEl=document.getElementById('pred-market-footer');
+  if(tab==='odds'){
+    if(oddsEl)oddsEl.style.display='';
+    if(sgEl)sgEl.style.display='none';
+    if(metaEl)metaEl.style.display='';
+    if(footerEl)footerEl.style.display='';
+  }else{
+    if(oddsEl)oddsEl.style.display='none';
+    if(sgEl)sgEl.style.display='';
+    if(metaEl)metaEl.style.display='none';
+    if(footerEl)footerEl.style.display='none';
+    if(!_sgRanksData)fetchSGRanks();
+    else renderSGRanksTab();
+  }
+}
+
+async function fetchSGRanks(){
+  const el=document.getElementById('sg-ranks-body');
+  if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading SG ranks from DataGolf...</div>';
+  try{
+    const data=await dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_total,sg_ott,sg_app,sg_arg,sg_putt,sg_t2g',round:'event_avg',display:'rank'});
+    if(data&&data.live_stats&&data.live_stats.length){
+      _sgRanksData=data;
+      renderSGRanksTab();
+    }else{
+      el.innerHTML='<div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">No SG data available. Tournament may not be active.</div>';
+    }
+  }catch(e){
+    el.innerHTML='<div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--rd)">Failed to load SG data: '+e.message+'</div>';
+  }
+}
+
+function renderSGRanksTab(){
+  const el=document.getElementById('sg-ranks-body');
+  if(!el||!_sgRanksData)return;
+  const stats=_sgRanksData.live_stats;
+  const fieldSize=stats.length;
+  const sgCols=[
+    {key:'sg_total',hdr:'Total',tip:'Overall strokes gained vs field'},
+    {key:'sg_ott',hdr:'OTT',tip:'Strokes gained off the tee'},
+    {key:'sg_app',hdr:'APP',tip:'Strokes gained on approach'},
+    {key:'sg_arg',hdr:'ARG',tip:'Strokes gained around the green'},
+    {key:'sg_putt',hdr:'PUTT',tip:'Strokes gained putting'},
+    {key:'sg_t2g',hdr:'T2G',tip:'Strokes gained tee to green'}
+  ];
+  const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return 999;return parseInt(String(s).replace(/^T/,''))||999;};
+  const sorted=[...stats].sort((a,b)=>{
+    const ac=String(a.position)==='CUT'||String(a.position)==='WD',bc=String(b.position)==='CUT'||String(b.position)==='WD';
+    if(ac!==bc)return ac?1:-1;
+    return pPos(a.position)-pPos(b.position);
+  });
+  const search=(document.getElementById('sg-search')?.value||'').toLowerCase();
+  const defaultShow=30;
+  const filtered=search?sorted.filter(p=>(p.player_name||'').toLowerCase().includes(search)||fmN(p.player_name||'').toLowerCase().includes(search)):(_sgRanksShowAll?sorted:sorted.slice(0,defaultShow));
+  // Legend
+  let h='<div style="display:flex;align-items:center;flex-wrap:wrap;gap:.3rem;margin-bottom:.25rem">';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(20,190,90,.80)"></span><span style="font-size:.5rem;color:var(--td)">Top 15%</span>';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(50,140,60,.45);margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Above avg</span>';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(60,70,80,.15);margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Avg</span>';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(208,105,50,.35);margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Below avg</span>';
+  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(225,50,35,.65);margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Bottom 25%</span>';
+  h+='<span style="flex:1"></span>';
+  h+='<input id="sg-search" placeholder="Search..." oninput="renderSGRanksTab()" value="'+search+'" style="width:100px;font-size:.55rem;padding:.15rem .3rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:4px;outline:0;font-family:var(--fb)">';
+  h+='</div>';
+  // Table
+  h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table class="pm-table"><thead><tr>';
+  h+='<th style="width:24px">Pos</th><th style="text-align:left">Player</th><th>Score</th>';
+  sgCols.forEach(c=>{h+='<th title="'+c.tip+'" style="min-width:38px">'+c.hdr+'</th>';});
+  h+='</tr></thead><tbody>';
+  filtered.forEach(p=>{
+    const nm=fmNS?fmNS(p.player_name||''):sn(p.player_name||'');
+    const fullNm=fmN?fmN(p.player_name||''):p.player_name||'';
+    const cut=String(p.position)==='CUT';
+    const sc=p.total!=null?(p.total>0?'+'+p.total:p.total===0?'E':''+p.total):'-';
+    const scClr=p.total==null?'var(--ts)':p.total<0?'var(--rd)':p.total>0?'var(--gl)':'var(--tp)';
+    const ip=typeof inPool==='function'&&inPool(p.player_name||'');
+    h+='<tr'+(cut?' style="opacity:.35"':'')+'>';
+    h+='<td style="font-size:.6rem;color:var(--ts)">'+(p.position||'-')+'</td>';
+    h+='<td style="text-align:left;font-family:var(--fb);font-weight:500;font-size:.65rem" title="'+fullNm+'">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
+    h+='<td style="color:'+scClr+';font-weight:600;font-size:.65rem">'+sc+'</td>';
+    sgCols.forEach(c=>{
+      const v=p[c.key];
+      const cl=sgColor(v,fieldSize);
+      h+='<td style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+';font-size:.65rem;text-align:center">'+(v!=null?v:'-')+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  if(!search&&!_sgRanksShowAll&&sorted.length>defaultShow){
+    h+='<div style="text-align:center;padding:.4rem"><button onclick="_sgRanksShowAll=true;renderSGRanksTab()" style="font-family:var(--fb);font-size:.58rem;padding:.25rem .8rem;background:var(--bc);color:var(--go);border:1px solid var(--br);border-radius:4px;cursor:pointer">Show All '+sorted.length+' Players ▾</button></div>';
+  }else if(!search&&_sgRanksShowAll&&sorted.length>defaultShow){
+    h+='<div style="text-align:center;padding:.4rem"><button onclick="_sgRanksShowAll=false;renderSGRanksTab()" style="font-family:var(--fb);font-size:.58rem;padding:.25rem .8rem;background:var(--bc);color:var(--td);border:1px solid var(--br);border-radius:4px;cursor:pointer">Show Top 30 ▴</button></div>';
+  }
+  // Last updated
+  if(_sgRanksData.last_updated){
+    try{const raw=_sgRanksData.last_updated.replace(' UTC','').replace(' ','T')+'Z';const d=new Date(raw);
+    h+='<div style="text-align:right;font-size:.48rem;color:var(--td);margin-top:.15rem">Updated '+d.toLocaleString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true})+' ET</div>';}
+    catch(e){}
+  }
+  el.innerHTML=h;
+}
 
 /* ===== PREVIOUS TOURNAMENT RESULTS ===== */
 /* 2025-26 PGA Tour season events (most recent first) — dgId=numeric event_id, yr=calendar_year */
