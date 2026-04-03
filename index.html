@@ -1476,11 +1476,12 @@ function buildEdgeMap(odds,inPlayData){
     if(dgProb==null)continue;
     // Find best (lowest) book decimal odds
     let bestBook=null,bestOdds=Infinity;
+    const books={};
     for(const bk of BOOKS){const o=typeof p[bk]==='number'?p[bk]:(p[bk]?.odds||null);
-      if(o&&o>1&&o<bestOdds){bestOdds=o;bestBook=bk;}}
+      if(o&&o>1){books[bk]=o;if(o<bestOdds){bestOdds=o;bestBook=bk;}}}
     if(!bestBook)continue;
     const rawVegasProb=1/bestOdds;
-    edgeData.push({nm:p.player_name,normNm:nm,dgProb,rawVegasProb,bestBook,bestOdds});}
+    edgeData.push({nm:p.player_name,normNm:nm,dgProb,rawVegasProb,bestBook,bestOdds,books});}
   // Remove vig
   const vigSum=edgeData.reduce((s,p)=>s+p.rawVegasProb,0);
   const map={};
@@ -1488,7 +1489,7 @@ function buildEdgeMap(odds,inPlayData){
     const fairVegas=vigSum>0?p.rawVegasProb/vigSum:p.rawVegasProb;
     const edge=p.dgProb-fairVegas;
     const conf=Math.abs(edge)>.03?'HIGH':Math.abs(edge)>.015?'MED':'LOW';
-    map[p.normNm]={dgProb:p.dgProb,vegasProb:fairVegas,edge,conf,bestBook:p.bestBook,bestOdds:p.bestOdds};}
+    map[p.normNm]={dgProb:p.dgProb,vegasProb:fairVegas,edge,conf,bestBook:p.bestBook,bestOdds:p.bestOdds,books:p.books||{}};}
   // Snapshot for trend tracking
   const snap={ts:Date.now(),data:Object.fromEntries(Object.entries(map).slice(0,30).map(([k,v])=>[k,{e:+(v.edge*100).toFixed(1)}]))};
   try{const hist=JSON.parse(localStorage.getItem('edge_trend')||'[]');hist.push(snap);if(hist.length>48)hist.splice(0,hist.length-48);
@@ -3006,6 +3007,13 @@ async function fetchPredictionMarkets() {
         else alignment = 'ALIGNED';
       }
 
+      // Convert decimal odds to American
+      const bks=edgeData.books||{};
+      const dkDec=bks.draftkings;
+      const fdDec=bks.fanduel;
+      const mgmDec=bks.betmgm;
+      const decToAm=d=>{if(!d)return null;return d>=2?'+'+(Math.round((d-1)*100)):'-'+Math.round(100/(d-1));};
+
       rows.push({
         name: rawName,
         displayName: displayName,
@@ -3025,6 +3033,9 @@ async function fetchPredictionMarkets() {
         signals: lean.signals || [],
         composite: lean.composite_lean || 0,
         confidence: lean.confidence || 'LOW',
+        dk: decToAm(dkDec),
+        fd: decToAm(fdDec),
+        mgm: decToAm(mgmDec),
       });
     }
 
@@ -3044,7 +3055,10 @@ async function fetchPredictionMarkets() {
     h += '<th title="DG live model win odds (American)" style="min-width:70px">Win</th>';
     h += '<th title="Top 5 finish odds (American)">Top 5</th>';
     h += '<th title="Top 10 finish odds (American)">Top 10</th>';
-    h += '<th title="DG model edge vs sportsbooks (positive = DG likes more)">Edge</th>';
+    h += '<th class="sg-div" title="DraftKings outright win odds">DK</th>';
+    h += '<th title="FanDuel outright win odds">FD</th>';
+    h += '<th title="BetMGM outright win odds">MGM</th>';
+    h += '<th title="DG model edge vs best sportsbook line (positive = DG likes more)">Edge</th>';
     h += '<th title="Prediction market consensus probability">Mkt</th>';
     h += '<th title="Three-way alignment signal: STRONG/DIVERGENT/SPLIT/ALIGNED">Signal</th>';
     h += '</tr></thead><tbody>';
@@ -3074,6 +3088,11 @@ async function fetchPredictionMarkets() {
       // Top 10 (American odds)
       h += '<td>' + probToAmerican(r.top10) + '</td>';
 
+      // Sportsbook odds
+      h += '<td class="sg-div" style="color:var(--tp);font-size:.62rem">' + (r.dk || '\u2014') + '</td>';
+      h += '<td style="color:var(--tp);font-size:.62rem">' + (r.fd || '\u2014') + '</td>';
+      h += '<td style="color:var(--tp);font-size:.62rem">' + (r.mgm || '\u2014') + '</td>';
+
       // Edge
       if (r.edge != null) {
         const edgePct = (r.edge * 100).toFixed(1);
@@ -3097,7 +3116,7 @@ async function fetchPredictionMarkets() {
 
       h += '</tr>';
       // Placeholder for expandable explanation row
-      h += '<tr class="pm-why-row" id="pm-why-' + ri + '" style="display:none"><td colspan="9"></td></tr>';
+      h += '<tr class="pm-why-row" id="pm-why-' + ri + '" style="display:none"><td colspan="12"></td></tr>';
     }
 
     h += '</tbody></table>';
