@@ -3370,14 +3370,10 @@ async function fetchSGRanks(){
   }
 }
 
-function _sgRankFmt(rank,fieldSize){
-  if(rank==null||rank==='-')return{txt:'–',clr:'var(--td)',fw:'400'};
-  const r=parseInt(rank);const pct=r/fieldSize;
-  if(pct<=0.10)return{txt:r,clr:'var(--gl)',fw:'700'};
-  if(pct<=0.30)return{txt:r,clr:'#2d7d32',fw:'600'};
-  if(pct<=0.70)return{txt:r,clr:'var(--tp)',fw:'400'};
-  if(pct<=0.85)return{txt:r,clr:'#b86230',fw:'500'};
-  return{txt:r,clr:'var(--rd)',fw:'600'};
+function _sgRankCell(rank,fieldSize){
+  if(rank==null||rank==='-')return'<td style="color:var(--td)">–</td>';
+  const r=parseInt(rank);const cl=sgColor(r,fieldSize);
+  return'<td style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+r+'</td>';
 }
 
 function renderSGRanksTab(){
@@ -3425,9 +3421,7 @@ function renderSGRanksTab(){
     h+='<td style="color:'+scClr+';font-weight:600">'+sc+'</td>';
     h+='<td>'+(p.position||'-')+'</td>';
     sgCols.forEach(c=>{
-      const v=p[c.key];
-      const fmt=_sgRankFmt(v,fieldSize);
-      h+='<td style="color:'+fmt.clr+';font-weight:'+fmt.fw+'">'+fmt.txt+'</td>';
+      h+=_sgRankCell(p[c.key],fieldSize);
     });
     h+='</tr>';
   });
