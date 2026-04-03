@@ -3358,7 +3358,7 @@ async function fetchSGRanks(){
   if(!el)return;
   el.innerHTML='<div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading SG ranks from DataGolf...</div>';
   try{
-    const data=await dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_total,sg_ott,sg_app,sg_arg,sg_putt,sg_t2g',round:'event_avg',display:'rank'});
+    const data=await dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt',round:'event_avg',display:'rank'});
     if(data&&data.live_stats&&data.live_stats.length){
       _sgRanksData=data;
       renderSGRanksTab();
@@ -3370,18 +3370,29 @@ async function fetchSGRanks(){
   }
 }
 
+function _sgPill(rank,fieldSize){
+  if(rank==null||rank==='-')return'<span style="color:var(--td);font-size:.55rem">–</span>';
+  const r=parseInt(rank);
+  const pct=r/fieldSize;
+  let bg,fg,fw;
+  if(pct<=0.10){bg='rgba(20,190,90,.18)';fg='#0d7a3a';fw='700';}
+  else if(pct<=0.30){bg='rgba(50,140,60,.10)';fg='#2d7d32';fw='600';}
+  else if(pct<=0.60){bg='transparent';fg='var(--ts)';fw='400';}
+  else if(pct<=0.80){bg='rgba(208,105,50,.10)';fg='#b86230';fw='500';}
+  else{bg='rgba(225,50,35,.12)';fg='#c62828';fw='600';}
+  return'<span style="display:inline-block;min-width:26px;text-align:center;font-family:var(--fm);font-size:.58rem;font-weight:'+fw+';color:'+fg+';background:'+bg+';border-radius:3px;padding:.1rem .2rem;line-height:1.2">'+r+'</span>';
+}
+
 function renderSGRanksTab(){
   const el=document.getElementById('sg-ranks-body');
   if(!el||!_sgRanksData)return;
   const stats=_sgRanksData.live_stats;
   const fieldSize=stats.length;
   const sgCols=[
-    {key:'sg_total',hdr:'Total',tip:'Overall strokes gained vs field'},
-    {key:'sg_ott',hdr:'OTT',tip:'Strokes gained off the tee'},
-    {key:'sg_app',hdr:'APP',tip:'Strokes gained on approach'},
-    {key:'sg_arg',hdr:'ARG',tip:'Strokes gained around the green'},
-    {key:'sg_putt',hdr:'PUTT',tip:'Strokes gained putting'},
-    {key:'sg_t2g',hdr:'T2G',tip:'Strokes gained tee to green'}
+    {key:'sg_ott',hdr:'Drive',full:'Off the Tee',icon:'🏌️'},
+    {key:'sg_app',hdr:'Approach',full:'Approach the Green',icon:'🎯'},
+    {key:'sg_arg',hdr:'Short Game',full:'Around the Green',icon:'⛳'},
+    {key:'sg_putt',hdr:'Putting',full:'On the Greens',icon:'🕳️'}
   ];
   const pPos=s=>{if(!s||s==='CUT'||s==='WD'||s==='DQ')return 999;return parseInt(String(s).replace(/^T/,''))||999;};
   const sorted=[...stats].sort((a,b)=>{
@@ -3392,49 +3403,61 @@ function renderSGRanksTab(){
   const search=(document.getElementById('sg-search')?.value||'').toLowerCase();
   const defaultShow=30;
   const filtered=search?sorted.filter(p=>(p.player_name||'').toLowerCase().includes(search)||fmN(p.player_name||'').toLowerCase().includes(search)):(_sgRanksShowAll?sorted:sorted.slice(0,defaultShow));
-  // Legend
-  let h='<div style="display:flex;align-items:center;flex-wrap:wrap;gap:.3rem;margin-bottom:.25rem">';
-  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(20,190,90,.80)"></span><span style="font-size:.5rem;color:var(--td)">Top 15%</span>';
-  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(50,140,60,.45);margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Above avg</span>';
-  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(60,70,80,.15);margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Avg</span>';
-  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(208,105,50,.35);margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Below avg</span>';
-  h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(225,50,35,.65);margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Bottom 25%</span>';
-  h+='<span style="flex:1"></span>';
-  h+='<input id="sg-search" placeholder="Search..." oninput="renderSGRanksTab()" value="'+search+'" style="width:100px;font-size:.55rem;padding:.15rem .3rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:4px;outline:0;font-family:var(--fb)">';
+
+  let h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">';
+  h+='<span style="font-size:.52rem;color:var(--td);font-family:var(--fb)">Rank vs field of '+fieldSize+' · lower is better</span>';
+  h+='<input id="sg-search" placeholder="Search..." oninput="renderSGRanksTab()" value="'+search+'" style="width:110px;font-size:.55rem;padding:.2rem .4rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;font-family:var(--fb)">';
   h+='</div>';
-  // Table
-  h+='<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table class="pm-table"><thead><tr>';
-  h+='<th style="width:24px">Pos</th><th style="text-align:left">Player</th><th>Score</th>';
-  sgCols.forEach(c=>{h+='<th title="'+c.tip+'" style="min-width:38px">'+c.hdr+'</th>';});
-  h+='</tr></thead><tbody>';
-  filtered.forEach(p=>{
+
+  // Card-style rows instead of spreadsheet
+  h+='<div style="display:grid;gap:.2rem">';
+  // Header row
+  h+='<div style="display:grid;grid-template-columns:28px 1fr 36px repeat(4,1fr);gap:.15rem;align-items:center;padding:0 .2rem .15rem;border-bottom:1px solid var(--br)">';
+  h+='<span style="font-size:.45rem;color:var(--td);text-transform:uppercase;letter-spacing:.06em;text-align:center">Pos</span>';
+  h+='<span style="font-size:.45rem;color:var(--td);text-transform:uppercase;letter-spacing:.06em">Player</span>';
+  h+='<span style="font-size:.45rem;color:var(--td);text-transform:uppercase;letter-spacing:.06em;text-align:center">Sc</span>';
+  sgCols.forEach(c=>{
+    h+='<span style="font-size:.45rem;color:var(--td);text-transform:uppercase;letter-spacing:.06em;text-align:center" title="'+c.full+'">'+c.hdr+'</span>';
+  });
+  h+='</div>';
+
+  filtered.forEach((p,i)=>{
     const nm=fmNS?fmNS(p.player_name||''):sn(p.player_name||'');
     const fullNm=fmN?fmN(p.player_name||''):p.player_name||'';
     const cut=String(p.position)==='CUT';
     const sc=p.total!=null?(p.total>0?'+'+p.total:p.total===0?'E':''+p.total):'-';
     const scClr=p.total==null?'var(--ts)':p.total<0?'var(--rd)':p.total>0?'var(--gl)':'var(--tp)';
     const ip=typeof inPool==='function'&&inPool(p.player_name||'');
-    h+='<tr'+(cut?' style="opacity:.35"':'')+'>';
-    h+='<td style="font-size:.6rem;color:var(--ts)">'+(p.position||'-')+'</td>';
-    h+='<td style="text-align:left;font-family:var(--fb);font-weight:500;font-size:.65rem" title="'+fullNm+'">'+nm+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
-    h+='<td style="color:'+scClr+';font-weight:600;font-size:.65rem">'+sc+'</td>';
+    const stripe=i%2===0?'var(--bc)':'var(--bca)';
+
+    h+='<div style="display:grid;grid-template-columns:28px 1fr 36px repeat(4,1fr);gap:.15rem;align-items:center;padding:.25rem .2rem;border-radius:4px;background:'+stripe+';'+(cut?'opacity:.3;':'')+'transition:background .15s" onmouseover="this.style.background=\'var(--bh)\'" onmouseout="this.style.background=\''+stripe+'\'">';
+    // Pos
+    const pos=p.position||'-';
+    const posNum=pPos(pos);
+    const posClr=posNum<=3?'var(--go)':posNum<=10?'var(--gl)':'var(--ts)';
+    const posFw=posNum<=3?'700':posNum<=10?'600':'400';
+    h+='<span style="font-family:var(--fm);font-size:.58rem;color:'+posClr+';font-weight:'+posFw+';text-align:center">'+pos+'</span>';
+    // Name
+    h+='<span style="font-family:var(--fb);font-size:.62rem;font-weight:500;color:var(--tp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+fullNm+'">'+nm+(ip?' <span style="color:var(--go);font-size:.45rem">★</span>':'')+'</span>';
+    // Score
+    h+='<span style="font-family:var(--fm);font-size:.6rem;font-weight:600;color:'+scClr+';text-align:center">'+sc+'</span>';
+    // SG pills
     sgCols.forEach(c=>{
-      const v=p[c.key];
-      const cl=sgColor(v,fieldSize);
-      h+='<td style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+';font-size:.65rem;text-align:center">'+(v!=null?v:'-')+'</td>';
+      h+='<span style="text-align:center">'+_sgPill(p[c.key],fieldSize)+'</span>';
     });
-    h+='</tr>';
+    h+='</div>';
   });
-  h+='</tbody></table></div>';
+  h+='</div>';
+
   if(!search&&!_sgRanksShowAll&&sorted.length>defaultShow){
-    h+='<div style="text-align:center;padding:.4rem"><button onclick="_sgRanksShowAll=true;renderSGRanksTab()" style="font-family:var(--fb);font-size:.58rem;padding:.25rem .8rem;background:var(--bc);color:var(--go);border:1px solid var(--br);border-radius:4px;cursor:pointer">Show All '+sorted.length+' Players ▾</button></div>';
+    h+='<div style="text-align:center;padding:.5rem"><button onclick="_sgRanksShowAll=true;renderSGRanksTab()" style="font-family:var(--fb);font-size:.58rem;padding:.3rem 1rem;background:var(--bc);color:var(--go);border:1px solid rgba(196,160,53,.3);border-radius:5px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor=\'var(--go)\'" onmouseout="this.style.borderColor=\'rgba(196,160,53,.3)\'">Show All '+sorted.length+' Players ▾</button></div>';
   }else if(!search&&_sgRanksShowAll&&sorted.length>defaultShow){
-    h+='<div style="text-align:center;padding:.4rem"><button onclick="_sgRanksShowAll=false;renderSGRanksTab()" style="font-family:var(--fb);font-size:.58rem;padding:.25rem .8rem;background:var(--bc);color:var(--td);border:1px solid var(--br);border-radius:4px;cursor:pointer">Show Top 30 ▴</button></div>';
+    h+='<div style="text-align:center;padding:.5rem"><button onclick="_sgRanksShowAll=false;renderSGRanksTab()" style="font-family:var(--fb);font-size:.58rem;padding:.3rem 1rem;background:var(--bc);color:var(--td);border:1px solid var(--br);border-radius:5px;cursor:pointer">Show Top 30 ▴</button></div>';
   }
   // Last updated
   if(_sgRanksData.last_updated){
     try{const raw=_sgRanksData.last_updated.replace(' UTC','').replace(' ','T')+'Z';const d=new Date(raw);
-    h+='<div style="text-align:right;font-size:.48rem;color:var(--td);margin-top:.15rem">Updated '+d.toLocaleString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true})+' ET</div>';}
+    h+='<div style="text-align:right;font-size:.48rem;color:var(--td);margin-top:.2rem">Updated '+d.toLocaleString('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'2-digit',hour12:true})+' ET</div>';}
     catch(e){}
   }
   el.innerHTML=h;
