@@ -3517,7 +3517,6 @@ function renderSGRanksTab(){
   coreCols.forEach(c=>{h+='<th title="'+c.tip+'">'+c.hdr+'</th>';});
   h+='<th class="sg-div" title="'+bonusCols[0].tip+'">'+bonusCols[0].hdr+'</th>';
   for(let i=1;i<bonusCols.length;i++){h+='<th title="'+bonusCols[i].tip+'">'+bonusCols[i].hdr+'</th>';}
-  h+='<th title="SG insight — playing better or worse than score suggests">Insight</th>';
   h+='</tr></thead><tbody>';
 
   filtered.forEach(p=>{
@@ -3528,38 +3527,39 @@ function renderSGRanksTab(){
     const scClr=p.total==null?'var(--ts)':p.total<0?'var(--rd)':p.total>0?'var(--gl)':'var(--tp)';
     const ip=typeof inPool==='function'&&inPool(p.player_name||'');
     const ins=insights[p.player_name||''];
+    // Build inline insight badges (like playerIcons — small tags next to name)
+    let sgBadges='';
+    if(ins&&!cut){
+      // 1. Score vs SG divergence badge
+      if(ins.gap>0.15){
+        sgBadges+=' <span class="pm-align STRONG" title="SG rank avg #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — playing much better than score suggests">UNDERVAL</span>';
+      }else if(ins.gap>0.08){
+        sgBadges+=' <span class="pm-align DIVERGENT" title="SG rank avg #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — due for a move up">RISING</span>';
+      }else if(ins.gap<-0.15){
+        sgBadges+=' <span class="pm-align" style="background:rgba(210,60,40,.1);color:#c62828" title="SG rank avg #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — scoring above their play">OVERPERF</span>';
+      }else if(ins.gap<-0.08){
+        sgBadges+=' <span class="pm-align" style="background:rgba(210,60,40,.06);color:#b84020" title="SG rank avg #'+Math.round(ins.avgRk)+' vs Pos '+pPos(p.position)+' — scoring above underlying level">FADING</span>';
+      }
+      // 2. Hot weapon — top 10% in any SG category (e.g. "APP #3")
+      if(ins.bestPct<=0.10){
+        sgBadges+=' <span class="p-type" style="background:rgba(16,185,85,.15);color:#0a6e30;font-size:.42rem;padding:.02rem .15rem;border-radius:3px;font-family:var(--fb);font-weight:600" title="Top 10% in '+ins.best+'">'+ins.best+' #'+ins.bestRk+'</span>';
+      }
+      // 3. Cold weapon — bottom 20% AND top 30% elsewhere (imbalance, e.g. "PUTT #98")
+      if(ins.worstPct>=0.80&&ins.bestPct<=0.30){
+        sgBadges+=' <span class="p-type" style="background:rgba(210,50,30,.1);color:#c62828;font-size:.42rem;padding:.02rem .15rem;border-radius:3px;font-family:var(--fb)" title="Bottom 20% in '+ins.worst+'">'+ins.worst+' #'+ins.worstRk+'</span>';
+      }
+      // 4. Steady fallback — no divergence, no standout
+      if(!sgBadges.trim()){
+        sgBadges+=' <span style="font-size:.42rem;color:var(--td);font-family:var(--fb)">steady</span>';
+      }
+    }
     h+='<tr'+(cut?' style="opacity:.3"':'')+'>';
-    h+='<td style="text-align:left;font-family:var(--fb);font-weight:500">'+(ip?'<span style="color:var(--go)">'+nm+'</span>':nm)+playerIcons(p.player_name||'')+'</td>';
+    h+='<td style="text-align:left;font-family:var(--fb);font-weight:500">'+(ip?'<span style="color:var(--go)">'+nm+'</span>':nm)+playerIcons(p.player_name||'')+sgBadges+'</td>';
     h+='<td style="color:'+scClr+';font-weight:600">'+sc+'</td>';
     h+='<td>'+(p.position||'-')+'</td>';
     coreCols.forEach(c=>{h+=_sgCell(p[c.key],fieldSize,false);});
     h+=_sgCell(p[bonusCols[0].key],fieldSize,true);
     for(let i=1;i<bonusCols.length;i++){h+=_sgCell(p[bonusCols[i].key],fieldSize,false);}
-    // Insight cell — always shows something
-    if(ins&&!cut){
-      let parts=[];
-      // 1. Score vs SG divergence
-      if(ins.gap>0.15){
-        parts.push('<span class="pm-align STRONG" title="Avg SG rank: '+Math.round(ins.avgRk)+' vs Pos: '+pPos(p.position)+' — playing much better than score">UNDERVAL</span>');
-      }else if(ins.gap>0.08){
-        parts.push('<span class="pm-align DIVERGENT" title="Avg SG rank: '+Math.round(ins.avgRk)+' vs Pos: '+pPos(p.position)+' — due for a move up">RISING</span>');
-      }else if(ins.gap<-0.15){
-        parts.push('<span class="pm-align" style="background:rgba(210,60,40,.1);color:#c62828" title="Avg SG rank: '+Math.round(ins.avgRk)+' vs Pos: '+pPos(p.position)+' — scoring above their play">OVERPERF</span>');
-      }else if(ins.gap<-0.08){
-        parts.push('<span class="pm-align" style="background:rgba(210,60,40,.06);color:#b84020" title="Avg SG rank: '+Math.round(ins.avgRk)+' vs Pos: '+pPos(p.position)+'">FADING</span>');
-      }
-      // 2. Hot weapon (top 10% in a category)
-      if(ins.bestPct<=0.10){
-        parts.push('<span style="font-size:.42rem;color:var(--gl);font-family:var(--fb);font-weight:600">'+ins.best+' #'+ins.bestRk+'</span>');
-      }
-      // 3. Cold weapon (bottom 20% in a category) — only if also has a good one (shows imbalance)
-      if(ins.worstPct>=0.80&&ins.bestPct<=0.30){
-        parts.push('<span style="font-size:.42rem;color:var(--rd);font-family:var(--fb)">'+ins.worst+' #'+ins.worstRk+'</span>');
-      }
-      h+='<td style="white-space:nowrap;max-width:90px">'+(parts.length?parts.join(' '):'<span style="color:var(--td);font-size:.48rem">steady</span>')+'</td>';
-    }else{
-      h+='<td style="color:var(--td)">–</td>';
-    }
     h+='</tr>';
   });
   h+='</tbody></table>';
