@@ -3007,11 +3007,8 @@ async function fetchPredictionMarkets() {
         else alignment = 'ALIGNED';
       }
 
-      // Convert decimal odds to American
+      // Convert decimal odds to American + store raw decimal for shading
       const bks=edgeData.books||{};
-      const dkDec=bks.draftkings;
-      const fdDec=bks.fanduel;
-      const mgmDec=bks.betmgm;
       const decToAm=d=>{if(!d)return null;return d>=2?'+'+(Math.round((d-1)*100)):'-'+Math.round(100/(d-1));};
 
       rows.push({
@@ -3033,9 +3030,14 @@ async function fetchPredictionMarkets() {
         signals: lean.signals || [],
         composite: lean.composite_lean || 0,
         confidence: lean.confidence || 'LOW',
-        dk: decToAm(dkDec),
-        fd: decToAm(fdDec),
-        mgm: decToAm(mgmDec),
+        books: {
+          dk:{am:decToAm(bks.draftkings),dec:bks.draftkings},
+          fd:{am:decToAm(bks.fanduel),dec:bks.fanduel},
+          mgm:{am:decToAm(bks.betmgm),dec:bks.betmgm},
+          csrs:{am:decToAm(bks.caesars),dec:bks.caesars},
+          pb:{am:decToAm(bks.pointsbet),dec:bks.pointsbet},
+          b365:{am:decToAm(bks.bet365),dec:bks.bet365}
+        }
       });
     }
 
@@ -3047,17 +3049,38 @@ async function fetchPredictionMarkets() {
       return;
     }
 
+    // Book toggle buttons
+    const ALL_BOOKS=[
+      {key:'dk',label:'DraftKings',short:'DK'},
+      {key:'fd',label:'FanDuel',short:'FD'},
+      {key:'mgm',label:'BetMGM',short:'MGM'},
+      {key:'csrs',label:'Caesars',short:'CZR'},
+      {key:'pb',label:'PointsBet',short:'PB'},
+      {key:'b365',label:'Bet365',short:'365'}
+    ];
+    if(!window._visibleBooks)window._visibleBooks=['dk','fd','mgm'];
+    const vb=window._visibleBooks;
+
+    let h='<div style="display:flex;align-items:center;gap:.2rem;margin-bottom:.3rem;flex-wrap:wrap">';
+    h+='<span style="font-size:.5rem;color:var(--td);font-family:var(--fb);text-transform:uppercase;letter-spacing:.04em;margin-right:.15rem">Books:</span>';
+    ALL_BOOKS.forEach(bk=>{
+      const on=vb.includes(bk.key);
+      h+='<button onclick="toggleBook(\''+bk.key+'\')" style="font-family:var(--fb);font-size:.5rem;padding:.15rem .35rem;border-radius:4px;cursor:pointer;transition:all .15s;border:1px solid '+(on?'var(--go)':'var(--br)')+';background:'+(on?'rgba(196,160,53,.12)':'var(--bc)')+';color:'+(on?'var(--go)':'var(--td)')+';font-weight:'+(on?'600':'400')+'">'+bk.short+'</button>';
+    });
+    h+='</div>';
+
     // Render unified table
-    let h = '<table class="pm-table"><thead><tr>';
+    h += '<table class="pm-table"><thead><tr>';
     h += '<th>Player</th>';
     h += '<th title="Current tournament score">Score</th>';
     h += '<th title="Current position">Pos</th>';
     h += '<th title="DG live model win odds (American)" style="min-width:70px">Win</th>';
     h += '<th title="Top 5 finish odds (American)">Top 5</th>';
     h += '<th title="Top 10 finish odds (American)">Top 10</th>';
-    h += '<th class="sg-div" title="DraftKings outright win odds">DK</th>';
-    h += '<th title="FanDuel outright win odds">FD</th>';
-    h += '<th title="BetMGM outright win odds">MGM</th>';
+    if(vb.length>0){
+      h+='<th class="sg-div" title="'+ALL_BOOKS.find(b=>b.key===vb[0])?.label+' win odds">'+ALL_BOOKS.find(b=>b.key===vb[0])?.short+'</th>';
+      for(let bi=1;bi<vb.length;bi++){const bk=ALL_BOOKS.find(b=>b.key===vb[bi]);h+='<th title="'+(bk?.label||'')+' win odds">'+(bk?.short||'')+'</th>';}
+    }
     h += '<th title="DG model edge vs best sportsbook line (positive = DG likes more)">Edge</th>';
     h += '<th title="Prediction market consensus probability">Mkt</th>';
     h += '<th title="Three-way alignment signal: STRONG/DIVERGENT/SPLIT/ALIGNED">Signal</th>';
@@ -3088,10 +3111,25 @@ async function fetchPredictionMarkets() {
       // Top 10 (American odds)
       h += '<td>' + probToAmerican(r.top10) + '</td>';
 
-      // Sportsbook odds
-      h += '<td class="sg-div" style="color:var(--tp);font-size:.62rem">' + (r.dk || '\u2014') + '</td>';
-      h += '<td style="color:var(--tp);font-size:.62rem">' + (r.fd || '\u2014') + '</td>';
-      h += '<td style="color:var(--tp);font-size:.62rem">' + (r.mgm || '\u2014') + '</td>';
+      // Sportsbook odds — shaded by best/worst across visible books
+      if(vb.length>0){
+        const decVals=vb.map(k=>r.books[k]?.dec).filter(Boolean);
+        const minDec=decVals.length?Math.min(...decVals):null;// best odds (lowest decimal = shortest price = favorite)
+        const maxDec=decVals.length?Math.max(...decVals):null;
+        const range=maxDec&&minDec?maxDec-minDec:0;
+        vb.forEach((bk,bi)=>{
+          const b=r.books[bk];
+          let shade='';
+          if(b?.dec&&range>0.5&&decVals.length>=2){
+            // Green tint = best price for bettor (lowest decimal), red tint = worst
+            const t=(b.dec-minDec)/range;// 0=best, 1=worst
+            if(t<0.15)shade='background:rgba(20,180,80,.10);color:#0d7a3a;font-weight:600';
+            else if(t>0.85)shade='background:rgba(210,60,40,.08);color:#b84020';
+            else shade='color:var(--tp)';
+          }else{shade='color:var(--tp)';}
+          h+='<td'+(bi===0?' class="sg-div"':'')+' style="font-size:.62rem;'+shade+'">'+(b?.am||'\u2014')+'</td>';
+        });
+      }
 
       // Edge
       if (r.edge != null) {
@@ -3116,7 +3154,7 @@ async function fetchPredictionMarkets() {
 
       h += '</tr>';
       // Placeholder for expandable explanation row
-      h += '<tr class="pm-why-row" id="pm-why-' + ri + '" style="display:none"><td colspan="12"></td></tr>';
+      h += '<tr class="pm-why-row" id="pm-why-' + ri + '" style="display:none"><td colspan="'+(9+vb.length)+'"></td></tr>';
     }
 
     h += '</tbody></table>';
@@ -3342,6 +3380,14 @@ function renderProbBars(model, vegas, market) {
   if (market != null) h += '<div class="pm-bar-seg market" style="width:' + kW.toFixed(0) + '%" title="Market: ' + (market * 100).toFixed(1) + '%"></div>';
   h += '</div>';
   return h;
+}
+
+function toggleBook(key){
+  if(!window._visibleBooks)window._visibleBooks=['dk','fd','mgm'];
+  const vb=window._visibleBooks;
+  const idx=vb.indexOf(key);
+  if(idx>=0)vb.splice(idx,1);else vb.push(key);
+  fetchPredictionMarkets();
 }
 
 async function refreshPredMarkets() {
