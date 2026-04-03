@@ -633,7 +633,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 
 <div class="cd" id="upcoming-sched"></div>
 
-<div class="cd" id="live-preview" style="display:none"></div>
+<details class="cf-details" id="live-preview-wrap" style="display:none;margin:.4rem .6rem">
+  <summary class="cf-details-sum" style="font-family:var(--fh);font-size:.82rem;color:var(--go);cursor:pointer">Field Preview <span style="font-size:.52rem;color:var(--td);font-family:var(--fb);font-weight:400;margin-left:.3rem">Pre-tournament analysis</span></summary>
+  <div class="cd cf-details-body" id="live-preview" style="margin-top:.3rem"></div>
+</details>
 
 <div class="cd" id="odds-panel" style="margin-top:.4rem">
   <h4 style="font-family:var(--fh);color:var(--go);font-size:.82rem;margin:0 0 .3rem;display:flex;align-items:center;justify-content:space-between">
@@ -2009,13 +2012,13 @@ function switchPreview(evKey){
   window._forceEvent=evKey;
   renderPreview();
   rMjrSch();
-  document.getElementById('live-preview')?.scrollIntoView({behavior:'smooth'});
+  const _pw=document.getElementById('live-preview-wrap');if(_pw){_pw.style.display='';_pw.open=true;_pw.scrollIntoView({behavior:'smooth'});}
 }
 function backToCurrent(){
   window._forceEvent=null;
   renderPreview();
   rMjrSch();
-  document.getElementById('live-preview')?.scrollIntoView({behavior:'smooth'});
+  const _pw=document.getElementById('live-preview-wrap');if(_pw){_pw.style.display='';_pw.open=true;_pw.scrollIntoView({behavior:'smooth'});}
 }
 
 /* === NOTIFICATIONS === */
@@ -2378,6 +2381,11 @@ function getDateEvent() {
 function renderPreview(targetEl, overrideCourseName, overrideEvName) {
   const el = targetEl || document.getElementById('live-preview');
   if (!el) return;
+  // Show the collapsible wrapper if rendering into the default location
+  if (!targetEl) {
+    const wrap = document.getElementById('live-preview-wrap');
+    if (wrap) wrap.style.display = '';
+  }
   _overrideCourse = overrideCourseName || null;
   const ev = overrideCourseName ? null : getCurrentEvent();
   const courseName = overrideCourseName || COURSE_MAP[ev];
