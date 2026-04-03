@@ -3487,23 +3487,27 @@ function renderSGRanksTab(){
   const defaultShow=30;
   const filtered=search?sorted.filter(p=>(p.player_name||'').toLowerCase().includes(search)||fmN(p.player_name||'').toLowerCase().includes(search)):(_sgRanksShowAll?sorted:sorted.slice(0,defaultShow));
 
-  // Compute SG insight: avg of core SG ranks vs leaderboard position
-  // Low avg SG rank + high leaderboard pos = playing better than score
-  const allCols=[...coreCols,...bonusCols];
+  // Compute SG insights per player
   const coreKeys=coreCols.map(c=>c.key);
+  const catLabel={sg_ott:'OTT',sg_app:'APP',sg_arg:'ARG',sg_putt:'PUTT'};
   const insights={};
   sorted.forEach(p=>{
     const pos=pPos(p.position);if(pos>=999)return;
-    const ranks=coreKeys.map(k=>p[k]).filter(v=>v!=null&&v!=='-');
-    if(ranks.length<3)return;
-    const avgRk=ranks.reduce((s,v)=>s+parseInt(v),0)/ranks.length;
-    const delta=pos-avgRk;// positive = score worse than SG suggests, negative = score better than SG
-    // Find best and worst category
-    const ranked=coreKeys.map(k=>({k,r:parseInt(p[k])||999})).sort((a,b)=>a.r-b.r);
-    const best=ranked[0];const worst=ranked[ranked.length-1];
-    const bestLabel={sg_ott:'driver',sg_app:'irons',sg_arg:'wedges',sg_putt:'putter'}[best.k]||best.k;
-    const worstLabel={sg_ott:'driver',sg_app:'irons',sg_arg:'wedges',sg_putt:'putter'}[worst.k]||worst.k;
-    insights[p.player_name||'']={avgRk,delta,best:bestLabel,bestRk:best.r,worst:worstLabel,worstRk:worst.r};
+    const ranks=coreKeys.map(k=>({k,r:parseInt(p[k])})).filter(x=>!isNaN(x.r));
+    if(ranks.length<2)return;
+    const avgRk=ranks.reduce((s,x)=>s+x.r,0)/ranks.length;
+    const avgPct=avgRk/fieldSize;// 0=best, 1=worst
+    const posPct=pos/fieldSize;
+    const gap=posPct-avgPct;// positive = scoring worse than SG, negative = scoring better than SG
+    // Best and worst category
+    const byRank=[...ranks].sort((a,b)=>a.r-b.r);
+    const best=byRank[0];
+    const worst=byRank[byRank.length-1];
+    // Spread: biggest gap between best and worst category
+    const spread=worst.r-best.r;
+    insights[p.player_name||'']={avgRk,avgPct,posPct,gap,spread,
+      best:catLabel[best.k],bestRk:best.r,bestPct:best.r/fieldSize,
+      worst:catLabel[worst.k],worstRk:worst.r,worstPct:worst.r/fieldSize};
   });
 
   let h='<table class="pm-table sg-table"><thead><tr>';
@@ -3531,26 +3535,28 @@ function renderSGRanksTab(){
     coreCols.forEach(c=>{h+=_sgCell(p[c.key],fieldSize,false);});
     h+=_sgCell(p[bonusCols[0].key],fieldSize,true);
     for(let i=1;i<bonusCols.length;i++){h+=_sgCell(p[bonusCols[i].key],fieldSize,false);}
-    // Insight cell
+    // Insight cell — always shows something
     if(ins&&!cut){
-      let badge='';
-      if(ins.delta>15){
-        badge='<span class="pm-align STRONG" title="SG ranks much better than score — unlucky or due for a surge">UNDERVAL</span>';
-      }else if(ins.delta>8){
-        badge='<span class="pm-align DIVERGENT" title="Playing better than score shows — watch for a move">BETTER</span>';
-      }else if(ins.delta<-15){
-        badge='<span class="pm-align" style="background:rgba(210,60,40,.1);color:#c62828" title="Score flatters them — SG ranks much worse than position">OVERVAL</span>';
-      }else if(ins.delta<-8){
-        badge='<span class="pm-align" style="background:rgba(210,60,40,.06);color:#b84020" title="Scoring better than underlying play suggests">LUCKY</span>';
-      }else{
-        // Show best weapon as a subtle note
-        if(ins.bestRk<=Math.ceil(fieldSize*.12)){
-          badge='<span style="font-size:.45rem;color:var(--gl);font-family:var(--fb);font-weight:600;text-transform:uppercase">'+ins.best+' 🔥</span>';
-        }else{
-          badge='<span style="color:var(--td)">–</span>';
-        }
+      let parts=[];
+      // 1. Score vs SG divergence
+      if(ins.gap>0.15){
+        parts.push('<span class="pm-align STRONG" title="Avg SG rank: '+Math.round(ins.avgRk)+' vs Pos: '+pPos(p.position)+' — playing much better than score">UNDERVAL</span>');
+      }else if(ins.gap>0.08){
+        parts.push('<span class="pm-align DIVERGENT" title="Avg SG rank: '+Math.round(ins.avgRk)+' vs Pos: '+pPos(p.position)+' — due for a move up">RISING</span>');
+      }else if(ins.gap<-0.15){
+        parts.push('<span class="pm-align" style="background:rgba(210,60,40,.1);color:#c62828" title="Avg SG rank: '+Math.round(ins.avgRk)+' vs Pos: '+pPos(p.position)+' — scoring above their play">OVERPERF</span>');
+      }else if(ins.gap<-0.08){
+        parts.push('<span class="pm-align" style="background:rgba(210,60,40,.06);color:#b84020" title="Avg SG rank: '+Math.round(ins.avgRk)+' vs Pos: '+pPos(p.position)+'">FADING</span>');
       }
-      h+='<td style="white-space:nowrap">'+badge+'</td>';
+      // 2. Hot weapon (top 10% in a category)
+      if(ins.bestPct<=0.10){
+        parts.push('<span style="font-size:.42rem;color:var(--gl);font-family:var(--fb);font-weight:600">'+ins.best+' #'+ins.bestRk+'</span>');
+      }
+      // 3. Cold weapon (bottom 20% in a category) — only if also has a good one (shows imbalance)
+      if(ins.worstPct>=0.80&&ins.bestPct<=0.30){
+        parts.push('<span style="font-size:.42rem;color:var(--rd);font-family:var(--fb)">'+ins.worst+' #'+ins.worstRk+'</span>');
+      }
+      h+='<td style="white-space:nowrap;max-width:90px">'+(parts.length?parts.join(' '):'<span style="color:var(--td);font-size:.48rem">steady</span>')+'</td>';
     }else{
       h+='<td style="color:var(--td)">–</td>';
     }
