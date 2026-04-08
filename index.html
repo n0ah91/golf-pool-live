@@ -568,7 +568,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 <nav class="nav">
 <button onclick="go('players-results')">The Players</button>
-<button class="active" onclick="go('upcoming')">Upcoming</button>
+<button class="active" onclick="go('upcoming')">Masters</button>
+<button onclick="go('schedule')">Schedule</button>
 <button onclick="go('history')">History</button>
 <button onclick="go('rules')">Rules/Pay</button>
 </nav>
@@ -631,7 +632,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   <div id="pred-market-footer" style="margin-top:.3rem"></div>
 </div>
 
-<div class="cd" id="upcoming-sched"></div>
+<div class="cd" id="upcoming-sched" style="display:none"></div>
 
 <details class="cf-details" id="live-preview-wrap" style="display:none;margin:.4rem .6rem">
   <summary class="cf-details-sum" style="font-family:var(--fh);font-size:.82rem;color:var(--go);cursor:pointer">Field Preview <span style="font-size:.52rem;color:var(--td);font-family:var(--fb);font-weight:400;margin-left:.3rem">Pre-tournament analysis</span></summary>
@@ -669,6 +670,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 
 
+</section>
+<section id="schedule" class="pn2">
+<div class="cd" id="schedule-sched"></div>
+<div id="schedule-preview" style="margin-top:.4rem"></div>
 </section>
 <section id="rules" class="pn2">
 <div class="cd" style="max-width:640px;margin-left:auto;margin-right:auto">
@@ -996,10 +1001,11 @@ function yrCard(y,s){
 function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
-  ['players-results','upcoming','history','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
+  ['players-results','upcoming','schedule','history','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
   var meb=document.querySelector('.me-bar');if(meb)meb.style.display='none';
   if(t==='history'){populateHFilters();rHistory();}
   else if(t==='upcoming')rLive();
+  else if(t==='schedule')renderScheduleTab();
   else if(t==='players-results')renderPlayersResults();}
 
 /* ===== HISTORY TAB ===== */
@@ -4869,8 +4875,157 @@ const _origRLive = rLive;
 rLive = function() {
   renderPreview();
   _origRLive();
-  renderUpcomingSchedule();
 };
+
+/* ===== SCHEDULE TAB ===== */
+let _scheduleRendered=false;
+// Events to show in Schedule tab: exclude Masters and past events (before today)
+function _getScheduleEvents(){
+  const now=new Date();
+  const moMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6};
+  return UPCOMING_EVENTS.filter(ev=>{
+    if(ev.name==='Masters Tournament')return false;// Masters has its own tab
+    const parts=ev.dates.replace(/[–-]/g,' ').split(/\s+/);
+    const mo=parts[0];const endDay=parseInt(parts[parts.length-1]);
+    const endDate=new Date(2026,moMap[mo]||0,endDay+1);
+    return now<endDate;// only future/current events
+  });
+}
+function renderScheduleTab(){
+  if(_scheduleRendered)return;
+  _scheduleRendered=true;
+  const schedEl=document.getElementById('schedule-sched');
+  if(!schedEl)return;
+  const events=_getScheduleEvents();
+  if(!events.length){schedEl.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">No upcoming events</div>';return;}
+  // Determine which is next (first one since we filtered past events)
+  const now=new Date();
+  const moMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6};
+  let currentIdx=0;
+  for(let i=0;i<events.length;i++){
+    const ev=events[i];
+    const parts=ev.dates.replace(/[–-]/g,' ').split(/\s+/);
+    const mo=parts[0];const startDay=parseInt(parts[1]||parts[0]);
+    const endDay=parseInt(parts[parts.length-1]);
+    const startDate=new Date(2026,moMap[mo]||0,startDay);
+    const endDate=new Date(2026,moMap[mo]||0,endDay+1);
+    if(now>=startDate&&now<endDate){currentIdx=i;break;}// this week
+    if(now<startDate){currentIdx=i;break;}// next upcoming
+  }
+  let h='<div class="mjr-sched" id="schedule-cards">';
+  events.forEach((ev,i)=>{
+    const isCurrent=i===currentIdx;
+    const isMajor=ev.major;
+    const cls=isCurrent?'live':isMajor?'next':'';
+    const statusLabel=isCurrent?'NEXT UP':isMajor?'MAJOR':'';
+    const statusCls=isCurrent?'s-l':isMajor?'s-n':'';
+    h+='<div class="mjr-card '+cls+'" id="sc-'+i+'" onclick="selectScheduleEvent('+i+')" style="cursor:pointer">';
+    h+='<div class="mn">'+ev.name+'</div>';
+    h+='<div style="font-size:.42rem;color:var(--tp);margin-top:.02rem;font-family:var(--fm)">'+ev.dates+'</div>';
+    h+='<div style="font-size:.4rem;color:var(--go);margin-top:.01rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+ev.course.split('(')[0].trim()+'</div>';
+    if(statusLabel)h+='<div class="ms '+statusCls+'">'+statusLabel+'</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  schedEl.innerHTML=h;
+  selectScheduleEvent(currentIdx);
+}
+let _selectedScheduleEvent=-1;
+function selectScheduleEvent(idx){
+  _selectedScheduleEvent=idx;
+  const events=_getScheduleEvents();
+  // Highlight card
+  document.querySelectorAll('#schedule-cards .mjr-card').forEach((c,i)=>{
+    c.style.boxShadow=i===idx?'0 0 12px rgba(196,160,53,.3)':'';
+    c.style.transform=i===idx?'translateY(-2px)':'';
+  });
+  const ev=events[idx];
+  const el=document.getElementById('schedule-preview');
+  if(!el||!ev)return;
+  // Look up course data (same logic as selectUpcoming)
+  const courseName=ev.course;
+  let courseData=null;
+  if(typeof COURSES_DATA!=='undefined'){
+    const courseMap={'Innisbrook Resort (Copperhead Course)':'Innisbrook Resort (Copperhead Course)','Memorial Park Golf Course':null,
+      'TPC San Antonio (Oaks Course)':'TPC San Antonio (Oaks Course)','Augusta National Golf Club':'Augusta National Golf Club',
+      'Aronimink Golf Club':'Aronimink Golf Club','Shinnecock Hills Golf Club':'Shinnecock Hills Golf Club',
+      'Royal Birkdale Golf Club':'Royal Birkdale Golf Club'};
+    const mapped=courseMap[courseName];
+    if(mapped&&COURSES_DATA[mapped])courseData=COURSES_DATA[mapped];
+    else{for(const key in COURSES_DATA){if(key.toLowerCase().includes(courseName.toLowerCase().split('(')[0].trim().split(' ').slice(0,2).join(' ').toLowerCase())){courseData=COURSES_DATA[key];break;}}}
+  }
+  let tourCourse=null;
+  if(!courseData&&typeof TOUR_COURSES!=='undefined'){
+    const searchName=courseName.toLowerCase();
+    tourCourse=TOUR_COURSES.find(c=>searchName.includes(c.n.toLowerCase().split(' ')[0]));
+  }
+  // Full course preview for courses in COURSES_DATA
+  if(courseData){
+    let h='<div style="display:flex;justify-content:center;margin:.5rem 0">';
+    h+='<div style="background:var(--bca);border:1px solid var(--br);border-radius:8px;padding:.3rem;display:inline-flex;gap:.2rem">';
+    h+='<button id="sc-basic-btn" onclick="setSchedulePreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;transition:all .2s;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>';
+    h+='<button id="sc-adv-btn" onclick="setSchedulePreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500;transition:all .2s">Advanced</button>';
+    h+='</div></div>';
+    h+='<div id="sc-preview-target"></div>';
+    el.innerHTML=h;
+    const target=document.getElementById('sc-preview-target');
+    renderPreview(target, ev.course, ev.name);
+    return;
+  }
+  // Fallback: TOUR_COURSES simple profile
+  let h='<div class="cd" style="margin:0">';
+  h+='<div class="prev-hero-v2">';
+  h+='<div class="prev-title">'+ev.name+'</div>';
+  h+='<div class="prev-sub">'+ev.course+' · '+ev.dates+'</div>';
+  h+='</div>';
+  h+='<div style="font-size:.72rem;color:var(--tp);margin:.4rem 0;padding:.4rem .6rem;background:rgba(0,103,71,.06);border-radius:5px;border:1px solid var(--br);line-height:1.45">';
+  h+=ev.teaser;
+  h+='</div>';
+  if(tourCourse){
+    h+='<div style="margin-top:.5rem">';
+    h+='<div class="cf-section-title">Course Profile</div>';
+    h+='<div class="cf-profile-grid">';
+    if(tourCourse.y)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+tourCourse.y.toLocaleString()+'</div><div class="cf-pstat-l">Yards</div></div>';
+    if(tourCourse.p)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+tourCourse.p+'</div><div class="cf-pstat-l">Par</div></div>';
+    if(tourCourse.b)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+tourCourse.b+'</div><div class="cf-pstat-l">Bunkers</div></div>';
+    if(tourCourse.w)h+='<div class="cf-pstat"><div class="cf-pstat-v">'+tourCourse.w+'</div><div class="cf-pstat-l">Water Holes</div></div>';
+    h+='</div>';
+    if(tourCourse.sg){
+      h+='<div class="cf-section-title" style="margin-top:.5rem">Strokes Gained Emphasis</div>';
+      h+='<div style="max-width:320px">';
+      const sgLabels={ott:'Off the Tee',app:'Approach',arg:'Around Green',putt:'Putting'};
+      const sgColors={ott:'var(--rd)',app:'var(--go)',arg:'var(--gl)',putt:'var(--gl)'};
+      for(const k in tourCourse.sg){
+        const pct=Math.round(tourCourse.sg[k]*100);
+        h+='<div class="cf-sg-row"><span class="cf-sg-lbl">'+(sgLabels[k]||k)+'</span>';
+        h+='<span class="cf-sg-track"><span class="cf-sg-fill" style="width:'+pct+'%;background:'+(sgColors[k]||'var(--go)')+'"></span></span>';
+        h+='<span class="cf-sg-val">'+pct+'%</span></div>';
+      }
+      h+='</div>';
+    }
+    h+='</div>';
+  }
+  h+='</div>';
+  el.innerHTML=h;
+}
+let _schedPreviewMode='basic';
+function setSchedulePreviewMode(mode){
+  _schedPreviewMode=mode;
+  const basic=document.getElementById('sc-basic-btn');
+  const adv=document.getElementById('sc-adv-btn');
+  if(basic&&adv){
+    if(mode==='basic'){
+      basic.style.background='var(--gn)';basic.style.color='#fff';basic.style.fontWeight='700';basic.style.boxShadow='0 1px 4px rgba(82,183,136,.3)';
+      adv.style.background='transparent';adv.style.color='var(--ts)';adv.style.fontWeight='500';adv.style.boxShadow='none';
+    }else{
+      adv.style.background='var(--gn)';adv.style.color='#fff';adv.style.fontWeight='700';adv.style.boxShadow='0 1px 4px rgba(82,183,136,.3)';
+      basic.style.background='transparent';basic.style.color='var(--ts)';basic.style.fontWeight='500';basic.style.boxShadow='none';
+    }
+  }
+  document.querySelectorAll('#schedule-preview .uc-advanced').forEach(el=>{
+    el.style.display=mode==='advanced'?'':'none';
+  });
+}
 
 /* ===== THE PLAYERS RESULTS TAB ===== */
 let _tpcRendered=false;
