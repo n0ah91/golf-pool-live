@@ -2162,6 +2162,82 @@ const MASTERS_2026_HEADLINES = [
   {title:"First-Timer Watch",text:"Sahith Theegala, Robert MacIntyre, and Akshay Bhatia are among the notable first-time qualifiers. History says first-timers rarely contend — but Jon Rahm (T4 debut) and Jordan Spieth (T2 debut) rewrote that script."}
 ];
 
+// Augusta National Hole-by-Hole Guide
+const AUGUSTA_HOLES = [
+  {num:1,name:"Tea Olive",par:4,yds:445,named:"Named for the tea olive trees (Osmanthus) that line the right side of the fairway, blooming with fragrant white flowers each April.",
+   facts:"Slight dogleg right. The tee shot plays uphill, then the approach is sharply downhill to one of the most severely sloped greens on the course. The green tilts hard front-to-back — anything long rolls off into a difficult chip.",
+   history:"Jack Nicklaus called this 'one of the most difficult opening holes in major championship golf.' The green was rebuilt in 2009 to restore original MacKenzie contours.",
+   memorable:"In 2019, Tiger Woods opened with a bogey here in the final round — then birdied 3 of the next 5 to launch his legendary comeback victory."},
+  {num:2,name:"Pink Dogwood",par:5,yds:575,named:"Named for the pink flowering dogwood trees visible from the tee. Dogwoods are Georgia's state tree and peak bloom coincides with Masters week.",
+   facts:"Longest hole on the course. Dramatic downhill tee shot, then a long uphill approach to an elevated green. Reachable in two for long hitters, but the green is tiny and heavily guarded by bunkers.",
+   history:"Extended from 555 to 575 yards in 2006 during Augusta's 'Tiger-proofing' era. The hole yielded the most eagles in 2020 when Dustin Johnson went -20.",
+   memorable:"Bubba Watson's famous 40-yard hook from the pine straw on the 10th is more famous, but his eagle on 2 in the 2014 final round was equally critical to his second green jacket."},
+  {num:3,name:"Flowering Peach",par:4,yds:350,named:"Named for the flowering peach trees (Prunus persica) behind the green. Georgia is the Peach State.",
+   facts:"Shortest par-4 on the course. A wedge or short iron approach, but the green is one of Augusta's most treacherous — small, elevated, and sloping severely from back to front. A back pin is one of the scariest on the course.",
+   history:"Hurricane Helene (2025) removed several trees left of the hole, opening sightlines and changing wind patterns for 2026. The hole has been largely unchanged since the 1930s.",
+   memorable:"In 2016, Jordan Spieth made bogey here in the final round — part of his legendary collapse that saw him go from -5 on the front nine to losing by 3."},
+  {num:4,name:"Flowering Crab Apple",par:3,yds:240,named:"Named for the ornamental crab apple trees behind the tee box, which produce pink-white blossoms each spring.",
+   facts:"Longest par-3 on the course and one of the toughest on Tour. A long iron or hybrid to a wide but shallow green with a steep false front. Anything short rolls 30 yards back down the hill.",
+   history:"Played as a par-3 since 1934. The tee was moved back in 2006, adding 35 yards. It now plays at 240 yards — longer than some par-4s on Tour.",
+   memorable:"Phil Mickelson holed out from the bunker here for birdie during the 2010 final round, where he shot 67 to win his third green jacket."},
+  {num:5,name:"Magnolia",par:4,yds:495,named:"Named for the magnolia trees lining the left side of the fairway. The magnolia is the state flower of both Mississippi and Louisiana, but at Augusta it's simply iconic.",
+   facts:"Long uphill par-4 with the deepest green on the course. The tee shot must avoid two fairway bunkers left. The approach plays uphill to a green with dramatic back-to-front slope.",
+   history:"One of the hardest holes on the course, averaging over par in most years. The fairway bunkers were repositioned in 2019.",
+   memorable:"In 2004, Phil Mickelson's birdie putt here in the final round was one of 5 birdies on the back nine in a 31 that won his first major."},
+  {num:6,name:"Juniper",par:3,yds:180,named:"Named for the juniper bushes planted around the green complex.",
+   facts:"Downhill par-3 with one of Augusta's most dangerous greens. The putting surface is severely sloped — a 30-foot putt from the wrong tier can easily become a 3-putt. The back-left Sunday pin is the most feared location on the course.",
+   history:"Played at just 180 yards, but the green's severity makes it one of the hardest par-3s statistically. No changes to yardage since the 1930s.",
+   memorable:"In 2019, Francesco Molinari's tee shot found Rae's Creek short-left, opening the door for Tiger Woods to win. Tiger made par; Molinari made double."},
+  {num:7,name:"Pampas",par:4,yds:450,named:"Named for the pampas grass that once surrounded the green. Much of it has been replaced, but the name endures.",
+   facts:"Uphill dogleg left. The approach is blind, played to a green you can't see from the fairway. The green has a ridge running through it — being on the wrong side means a near-impossible two-putt.",
+   history:"The tee was moved back 40 yards in 2006 as part of the course lengthening. One of the most statistically difficult holes at Augusta.",
+   memorable:"Arnold Palmer eagled this hole in the 1958 final round with a stunning approach to 3 feet — part of his first Masters victory."},
+  {num:8,name:"Yellow Jasmine",par:5,yds:570,named:"Named for yellow jasmine (Gelsemium sempervirens), the state flower of South Carolina. The vine blooms yellow in early spring throughout the Augusta pines.",
+   facts:"Dramatic uphill par-5. The tee shot plays to a valley, then the second shot must carry a huge mound 100 yards short of the green. The green is severely sloped and one of the largest on the course.",
+   history:"Extended to 570 yards. Reachable in two for the longest hitters, but the severely undulating green makes eagle rare even from short range.",
+   memorable:"Bruce Devlin holed a 230-yard 4-wood for double eagle (albatross) here in 1967 — one of only 4 double eagles in Masters history."},
+  {num:9,name:"Carolina Cherry",par:4,yds:460,named:"Named for the Carolina cherry laurel trees that line the left side of the hole.",
+   facts:"Downhill tee shot to a sharply left-to-right sloping fairway. The approach is to a severely sloped green — the front-right pin is considered the hardest location on the front nine.",
+   history:"Ben Hogan called this 'the most demanding second shot on the course.' The green was rebuilt in 2002 to address drainage issues.",
+   memorable:"In 2012, Bubba Watson hit his approach to 10 feet and made birdie here in the playoff to secure his first green jacket over Louis Oosthuizen."},
+  {num:10,name:"Camellia",par:4,yds:495,named:"Named for the camellia bushes that bloom along the left side. Camellias are among the first flowers to bloom each year at Augusta.",
+   facts:"The most dramatic tee shot in golf — a 140-foot drop from tee to fairway. The fairway slopes severely left, and the approach is to a green that tilts sharply from right to left. Almost every Masters Sunday features drama here.",
+   history:"Hurricane Helene (2025) removed significant trees around the 10th tee area, opening the hole up considerably for 2026. The tee was moved left in 2002.",
+   memorable:"Larry Mize chipped in from 45 yards for birdie in the 1987 playoff to stun Greg Norman. Bubba Watson's impossible hook from the pine straw trees right of the fairway in the 2012 playoff is one of the greatest shots ever played."},
+  {num:11,name:"White Dogwood",par:4,yds:520,named:"Named for the white flowering dogwood trees visible throughout the hole. Begins the legendary Amen Corner.",
+   facts:"The start of Amen Corner. A long, demanding par-4 with water guarding the green left and front. The approach must avoid the pond — anything left is dead. Ben Hogan famously said he'd aim for the right side of the green every time.",
+   history:"Named by Herbert Warren Wind in his 1958 Sports Illustrated article. Extended multiple times, now playing at 520 yards — one of the longest par-4s in major championship golf.",
+   memorable:"In 2011, Rory McIlroy's triple-bogey 7 here in the final round — after leading by 4 — remains the most devastating single-hole collapse in Masters history. His drive found the cabins left of the fairway."},
+  {num:12,name:"Golden Bell",par:3,yds:155,named:"Named for the golden bell forsythia shrubs behind the green. The yellow blooms are visible on broadcast every April.",
+   facts:"The most famous par-3 in golf. Only 155 yards, but the wind swirls unpredictably through the tall pines and across Rae's Creek, making club selection nearly impossible. The green is wide but only 9 paces deep. Front bunker, creek short, creek right.",
+   history:"Has produced more drama per square yard than any hole in golf. The wind at green level often blows opposite to what players feel on the tee. Hogan once said: 'If you ever see me on 12 in a playoff, you'll know I've already lost.'",
+   memorable:"In 2020, Tiger Woods defending his title put three balls in Rae's Creek for a 10 — the worst score ever by a defending champion. Tom Weiskopf made 13 here in 1980 (5 balls in the water). Fred Couples' ball miraculously stuck on the bank in 1992 instead of rolling into the creek — he went on to win."},
+  {num:13,name:"Azalea",par:5,yds:510,named:"Named for the spectacular azalea bushes behind the green — the most photographed spot at Augusta. The azaleas bloom in vivid pinks, reds, and whites each April.",
+   facts:"Risk-reward par-5 that bends left around the corner of Amen Corner. A big drive over the dogleg sets up a reachable second shot over Rae's Creek to a green guarded by azaleas. The creek crosses in front — go-or-layup is the defining decision.",
+   history:"The 2nd most eagled hole at Augusta. Phil Mickelson's famous 'the shot' — a 3-iron threaded through pine trees from the straw in 2010 — landed here (actually on the par-5 13th). Extended to 510 yards for 2023.",
+   memorable:"Jeff Maggert's ball bounced out of the bunker, hit the lip, and came back to hit him in the chest in 2003 (2-stroke penalty). Louis Oosthuizen's double eagle (albatross) in 2012 — a 4-iron from 253 yards that went in the hole — is the most famous shot in modern Masters history."},
+  {num:14,name:"Chinese Fir",par:4,yds:440,named:"Named for the Chinese fir trees (Cunninghamia lanceolata) that line the right side of the fairway.",
+   facts:"The only hole at Augusta with no bunkers. A wide fairway lulls players into comfort, but the green is one of the most severely contoured on the course — a dramatic ridge runs through the middle. Being on the wrong tier means a near-impossible two-putt.",
+   history:"Has been bunkerless since the original MacKenzie/Jones design. The green complexity is the sole defense. The hole plays as one of the easiest at Augusta in terms of scoring average.",
+   memorable:"In 1986, Jack Nicklaus birdied 13, eagled 15, and birdied 16 and 17 — but his birdie on 14 was the quiet catalyst, pulling him within striking distance during his legendary final-round 65 at age 46."},
+  {num:15,name:"Firethorn",par:5,yds:530,named:"Named for the firethorn shrubs (Pyracantha) with their orange-red berries that line the left side of the green.",
+   facts:"Reachable par-5 with a pond fronting the green. The second shot decision — go over the water or lay up — has decided countless Masters. The green is wide but shallow, and anything over is dead. Gene Sarazen's 'shot heard round the world' was here.",
+   history:"Gene Sarazen's double eagle in 1935 (4-wood from 235 yards into the hole) is widely considered the shot that made the Masters famous. The pond was actually added in 1952 — Sarazen's shot carried over bare ground.",
+   memorable:"Sarazen's albatross in 1935 tied him for the lead and he won the playoff. In 2019, Tiger Woods laid up on Sunday, wedged to 2 feet, and made birdie — the safe play that helped seal his 5th green jacket. Jack Nicklaus eagled this hole in 1986 en route to his miracle victory at 46."},
+  {num:16,name:"Redbud",par:3,yds:170,named:"Named for the Eastern redbud trees behind the tee, which produce purple-pink flowers in early spring before their leaves appear.",
+   facts:"Par-3 over water to a green that slopes severely from right to left toward the pond. The Sunday pin position (front-right) is one of the most famous in golf — players must land the ball on the right slope and let it feed down to the pin.",
+   history:"Nicklaus, Weiskopf, and Miller were all on the tee at the same time during the epic 1975 Sunday. The hole-in-one board here is one of Augusta's signature features for patrons.",
+   memorable:"In 2005, Tiger Woods hit his tee shot left of the pin — the ball rolled down the slope, paused on the lip of the cup with the Nike swoosh facing the camera for a full two seconds, then dropped in. The most replayed shot in golf history. In 1975, Nicklaus nearly holed his tee shot on his way to his 5th green jacket."},
+  {num:17,name:"Nandina",par:4,yds:450,named:"Named for the nandina shrubs (heavenly bamboo) that line the left side of the hole, known for their red berries in winter.",
+   facts:"Uphill par-4 that plays longer than its yardage due to elevation. The Eisenhower Tree (a loblolly pine) stood on the left side for decades until an ice storm removed it in 2014. The green is small and slopes back-to-front.",
+   history:"Extended to 450 yards for 2026 (+10 yards). President Eisenhower hit the tree so often he formally asked the club to remove it — Chairman Roberts adjourned the meeting without discussion. The tree was finally felled by an ice storm in 2014.",
+   memorable:"In 1986, Jack Nicklaus's birdie putt here — dancing along the edge before dropping — was the punctuation mark on the most iconic back nine in history. His son Jackie, caddying, hugged him on the green."},
+  {num:18,name:"Holly",par:4,yds:465,named:"Named for the American holly trees flanking the fairway. Holly is traditionally associated with victory and celebration — fitting for the final hole.",
+   facts:"Uphill dogleg right through a chute of towering pines. The tee shot must draw around the corner; the approach is steeply uphill to a two-tiered green. The walk up 18 toward the Butler Cabin is golf's most emotional finish.",
+   history:"The green was expanded in 2002 to allow more pin positions. The famous walk from the fairway to the green, with the gallery lining both sides, creates a tunnel of noise that defines Masters Sunday.",
+   memorable:"In 2004, Phil Mickelson's birdie putt on 18 clinched his first major — his iconic leap of joy is one of golf's most famous celebrations. Bubba Watson holed a putt on 18 to force the playoff in 2012. Rory McIlroy's winning putt here in 2025 completed the career Grand Slam."}
+];
+
 // Merge fun facts into COURSES_DATA
 Object.keys(COURSE_FUN_FACTS).forEach(function(k) {
   Object.keys(COURSES_DATA).forEach(function(ck) {
@@ -2648,6 +2724,32 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
           '<details class="uc-advanced" style="margin-top:.2rem;'+(_previewMode==='basic'?'display:none':'')+'"><summary style="font-size:.55rem;color:var(--rd);cursor:pointer;font-family:var(--fb)">Show all '+MASTERS_2026_HEADLINES.length+' storylines ▸</summary>'+
           '<div style="padding-top:.3rem">'+MASTERS_2026_HEADLINES.slice(2).map(function(h){return '<div style="margin-bottom:.4rem"><div style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.7rem">'+h.title+'</div><div style="color:var(--tp);line-height:1.45;margin-top:.1rem">'+h.text+'</div></div>';}).join('')+'</div></details>':'') +
         '</div>' +
+      '</div>':'') +
+
+    // Hole-by-hole guide (Masters only)
+    (typeof AUGUSTA_HOLES!=='undefined'&&pwKey==='masters'?
+      '<div class="cf-block">' +
+        '<details class="cf-details">' +
+          '<summary class="cf-details-sum">Hole-by-Hole Guide <span style="font-size:.5rem;color:var(--td);font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--fb)">18 holes</span></summary>' +
+          '<div class="cf-details-body" style="padding:.3rem .4rem">' +
+            AUGUSTA_HOLES.map(function(h){
+              return '<details style="border-bottom:1px solid var(--br);padding:.25rem 0">' +
+                '<summary style="cursor:pointer;font-size:.65rem;display:flex;align-items:center;gap:.4rem">' +
+                  '<span style="color:var(--go);font-family:var(--fm);font-weight:700;min-width:1.4rem">#'+h.num+'</span>' +
+                  '<span style="color:var(--tb);font-weight:600;flex:1">'+h.name+'</span>' +
+                  '<span style="color:var(--ts);font-family:var(--fm);font-size:.58rem">Par '+h.par+' · '+h.yds+' yds</span>' +
+                '</summary>' +
+                '<div style="padding:.3rem .2rem .3rem 1.8rem;font-size:.6rem;line-height:1.5">' +
+                  '<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Why "'+h.name+'"</span><div style="color:var(--tp)">'+h.named+'</div></div>' +
+                  '<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">The Hole</span><div style="color:var(--tp)">'+h.facts+'</div></div>' +
+                  '<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Changes & History</span><div style="color:var(--tp)">'+h.history+'</div></div>' +
+                  '<div><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Memorable Moments</span><div style="color:var(--tp)">'+h.memorable+'</div></div>' +
+                '</div>' +
+              '</details>';
+            }).join('') +
+            '<div class="cf-source" style="margin-top:.3rem">Sources: Augusta National media guides, Masters historical records, PGA Tour archives</div>' +
+          '</div>' +
+        '</details>' +
       '</div>':'') +
 
     // Past winners — preview (last 3) + expandable
