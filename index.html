@@ -2104,7 +2104,7 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.getRegistrations().then(regs=>{
     regs.forEach(r=>{if(r.active&&r.active.scriptURL.includes('golf-majors-pool'))r.unregister();});
   });
-  navigator.serviceWorker.register('sw.js').then(r=>r.update()).catch(()=>{});
+  navigator.serviceWorker.register('sw.js?v=7').then(r=>r.update()).catch(()=>{});
 }
 
 /* ===== INIT ===== */
@@ -4967,27 +4967,15 @@ async function fetchMastersOdds(){
       {key:'bet365',label:'365'}
     ];
     const decToAm=d=>{if(!d)return null;return d>=2?'+'+(Math.round((d-1)*100)):'-'+Math.round(100/(d-1));};
-    // Find DG model field — API may use different names
-    const DG_FIELDS=['datagolf_base_history_fit','baseline_history_fit','datagolf','dg_odds','datagolf_baseline'];
-    let dgKey=null;
-    if(players.length){
-      const p0=players[0];
-      for(const f of DG_FIELDS){if(typeof p0[f]==='number'){dgKey=f;break;}}
-      if(!dgKey){
-        // Search all keys for a DG-like field with decimal odds range (1-1000)
-        for(const k of Object.keys(p0)){
-          if(k.includes('datagolf')&&typeof p0[k]==='number'){dgKey=k;break;}
-        }
-      }
-      console.log('[Masters Odds] Available keys on player[0]:', Object.keys(p0).join(', '));
-      console.log('[Masters Odds] DG model field found:', dgKey, dgKey?'= '+p0[dgKey]:'(none)');
+    // Extract DG model decimal odds — nested under p.datagolf.baseline_history_fit
+    function getDgOdds(p){
+      if(p.datagolf&&typeof p.datagolf==='object'){return p.datagolf.baseline_history_fit||p.datagolf.baseline||null;}
+      if(typeof p.datagolf_base_history_fit==='number')return p.datagolf_base_history_fit;
+      if(typeof p.baseline_history_fit==='number')return p.baseline_history_fit;
+      return null;
     }
     // Sort by DG model probability (lowest decimal odds = most likely)
-    players.sort((a,b)=>{
-      const aOdds=dgKey?a[dgKey]:999;
-      const bOdds=dgKey?b[dgKey]:999;
-      return (aOdds||999)-(bOdds||999);
-    });
+    players.sort((a,b)=>(getDgOdds(a)||999)-(getDgOdds(b)||999));
     const top20=players.slice(0,20);
     // Build table
     let h='<table class="pm-table"><thead><tr>';
@@ -4998,7 +4986,7 @@ async function fetchMastersOdds(){
     h+='</tr></thead><tbody>';
     top20.forEach((p,i)=>{
       const nm=typeof fmN==='function'?fmN(p.player_name||''):p.player_name||'';
-      const dgDec=dgKey?p[dgKey]:null;
+      const dgDec=getDgOdds(p);
       const dgPct=dgDec?(100/dgDec).toFixed(1)+'%':'–';
       const ip=typeof inPool==='function'&&inPool(p.player_name||'');
       // Collect decimal odds across books for shading
