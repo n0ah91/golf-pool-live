@@ -2777,7 +2777,7 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
     '<div class="cf-block">' +
       '<div class="cf-section-title">Past Winners <span style="font-size:.5rem;color:var(--td);font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--fb)">tap for the story</span></div>' +
       (pw.length ? '<div style="font-size:.65rem;margin-bottom:.3rem">' +
-        pw.slice(0,5).map(function(w){
+        pw.slice(0,10).map(function(w){
           if(w.story){
             return '<details style="border-bottom:1px solid var(--br)">' +
               '<summary style="cursor:pointer;display:flex;gap:.4rem;padding:.12rem 0;list-style:none">' +
@@ -2791,9 +2791,9 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
           return '<div style="display:flex;gap:.4rem;padding:.12rem 0;border-bottom:1px solid var(--br)"><span style="color:var(--ts);font-family:var(--fm);width:2rem">' + w.yr + '</span><span style="color:var(--tb);flex:1">' + w.nm + '</span><span style="color:var(--gl);font-family:var(--fm)">' + w.sc + '</span></div>';
         }).join('') +
         '</div>' : '<div style="font-size:.6rem;color:var(--ts)">No historical data available</div>') +
-      (pw.length > 5 ?
-        '<details class="uc-advanced" style="margin-top:.1rem;'+ (_previewMode==='basic'?'display:none':'') +'"><summary style="font-size:.55rem;color:var(--rd);cursor:pointer;font-family:var(--fb)">Show all ' + pw.length + ' winners ▸</summary>' +
-        '<div style="padding-top:.3rem;font-size:.65rem">' + pw.slice(5).map(function(w){
+      (pw.length > 10 ?
+        '<details style="margin-top:.1rem"><summary style="font-size:.55rem;color:var(--rd);cursor:pointer;font-family:var(--fb)">Show ' + (pw.length - 10) + ' more winners (' + pw[10].yr + '–' + pw[pw.length-1].yr + ') ▸</summary>' +
+        '<div style="padding-top:.3rem;font-size:.65rem">' + pw.slice(10).map(function(w){
           if(w.story){
             return '<details style="border-bottom:1px solid var(--br)">' +
               '<summary style="cursor:pointer;display:flex;gap:.4rem;padding:.12rem 0;list-style:none">' +
