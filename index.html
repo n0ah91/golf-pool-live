@@ -611,8 +611,22 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </section>
 <section id="upcoming" class="pn2 active">
 
-<!-- Intelligence Hub: Unified live field view -->
-<div class="cd" id="pred-market-panel" style="margin-top:.2rem">
+<!-- Masters Tournament Preview (primary content) -->
+<div class="cd" id="masters-preview" style="margin-top:.2rem">
+  <div style="text-align:center;padding:.3rem 0;font-size:.65rem;color:var(--ts)">Loading Masters preview...</div>
+</div>
+
+<!-- Masters Outright Odds — Top 20 from sportsbooks -->
+<div class="cd" id="masters-odds-panel" style="margin-top:.4rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">
+    <div class="cf-section-title" style="margin:0">Masters Outright Odds</div>
+    <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20</span>
+  </div>
+  <div id="masters-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading odds...</div></div>
+</div>
+
+<!-- Live Field (hidden pre-tournament — shown once Masters is in-play) -->
+<div class="cd" id="pred-market-panel" style="margin-top:.2rem;display:none">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.15rem">
     <div class="cf-section-title" style="margin:0" id="ih-title">Live Field</div>
     <div style="display:flex;align-items:center;gap:.25rem">
@@ -633,17 +647,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 
 <div class="cd" id="upcoming-sched" style="display:none"></div>
+<div id="live-preview-wrap" style="display:none"><div id="live-preview"></div></div>
 
-<details class="cf-details" id="live-preview-wrap" style="display:none;margin:.4rem .6rem">
-  <summary class="cf-details-sum" style="font-family:var(--fh);font-size:.82rem;color:var(--go);cursor:pointer">Field Preview <span style="font-size:.52rem;color:var(--td);font-family:var(--fb);font-weight:400;margin-left:.3rem">Pre-tournament analysis</span></summary>
-  <div class="cd cf-details-body" id="live-preview" style="margin-top:.3rem"></div>
-</details>
-
-<div class="cd" id="odds-panel" style="margin-top:.4rem">
-  <h4 style="font-family:var(--fh);color:var(--go);font-size:.82rem;margin:0 0 .3rem;display:flex;align-items:center;justify-content:space-between">
-    Live Win Odds <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20</span>
-  </h4>
-  <div id="live-odds"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading odds...</div></div>
+<div class="cd" id="odds-panel" style="display:none">
+  <div id="live-odds"></div>
 </div>
 
 <!-- Hidden leaderboard container (used by rLB/rLBS internally) -->
@@ -4873,9 +4880,120 @@ async function loadLiveStats(){
 /* ===== OVERRIDE rLive ===== */
 const _origRLive = rLive;
 rLive = function() {
-  renderPreview();
+  renderMastersPreview();
+  fetchMastersOdds();
+  checkMastersLive();
   _origRLive();
 };
+
+/* ===== MASTERS TAB — TOURNAMENT PREVIEW + ODDS ===== */
+let _mastersPreviewRendered=false;
+function renderMastersPreview(){
+  if(_mastersPreviewRendered)return;
+  _mastersPreviewRendered=true;
+  const el=document.getElementById('masters-preview');
+  if(!el)return;
+  // Render Augusta National course preview directly (not collapsible)
+  const courseName='Augusta National Golf Club';
+  if(typeof COURSES_DATA!=='undefined'&&COURSES_DATA[courseName]){
+    renderPreview(el, courseName, 'Masters Tournament');
+  }else{
+    el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Masters preview data not available</div>';
+  }
+}
+
+let _mastersOddsFetched=false;
+async function fetchMastersOdds(){
+  if(_mastersOddsFetched)return;
+  _mastersOddsFetched=true;
+  const el=document.getElementById('masters-odds-body');
+  if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading Masters odds from sportsbooks...</div>';
+  try{
+    const data=await dgF('betting-tools/outrights',{tour:'pga',market:'win',odds_format:'decimal'});
+    let players=[];
+    if(Array.isArray(data))players=data;
+    else if(data?.odds&&Array.isArray(data.odds))players=data.odds;
+    else{for(const k of Object.keys(data||{})){if(Array.isArray(data[k])){players=data[k];break;}}}
+    if(!players.length){el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">No Masters odds available yet</div>';return;}
+    const BOOKS=[
+      {key:'draftkings',label:'DK'},
+      {key:'fanduel',label:'FD'},
+      {key:'betmgm',label:'MGM'},
+      {key:'caesars',label:'CZR'},
+      {key:'pointsbet',label:'PB'},
+      {key:'bet365',label:'365'}
+    ];
+    const decToAm=d=>{if(!d)return null;return d>=2?'+'+(Math.round((d-1)*100)):'-'+Math.round(100/(d-1));};
+    // Sort by DG model probability (lowest decimal odds = most likely)
+    const dgKey='datagolf_base_history_fit';
+    players.sort((a,b)=>{
+      const aOdds=a[dgKey]||a.baseline_history_fit||999;
+      const bOdds=b[dgKey]||b.baseline_history_fit||999;
+      return aOdds-bOdds;
+    });
+    const top20=players.slice(0,20);
+    // Build table
+    let h='<table class="pm-table"><thead><tr>';
+    h+='<th style="text-align:left">#</th>';
+    h+='<th style="text-align:left">Player</th>';
+    h+='<th title="DataGolf model implied probability">DG Win%</th>';
+    BOOKS.forEach(b=>{h+='<th title="'+b.key+'">'+b.label+'</th>';});
+    h+='</tr></thead><tbody>';
+    top20.forEach((p,i)=>{
+      const nm=typeof fmN==='function'?fmN(p.player_name||''):p.player_name||'';
+      const dgDec=p[dgKey]||p.baseline_history_fit||null;
+      const dgPct=dgDec?(100/dgDec).toFixed(1)+'%':'–';
+      const ip=typeof inPool==='function'&&inPool(p.player_name||'');
+      // Collect decimal odds across books for shading
+      const bookOdds=BOOKS.map(b=>{
+        const o=typeof p[b.key]==='number'?p[b.key]:(p[b.key]?.odds||null);
+        return{key:b.key,label:b.label,dec:o,am:decToAm(o)};
+      });
+      const decVals=bookOdds.filter(b=>b.dec&&b.dec>1).map(b=>b.dec);
+      const maxDec=decVals.length?Math.max(...decVals):null;
+      const minDec=decVals.length?Math.min(...decVals):null;
+      const range=maxDec&&minDec?maxDec-minDec:0;
+      h+='<tr>';
+      h+='<td style="color:var(--td);font-size:.55rem">'+(i+1)+'</td>';
+      h+='<td style="text-align:left;font-family:var(--fb);font-weight:500">'+(ip?'<span style="color:var(--go)">'+nm+'</span>':nm)+(typeof playerIcons==='function'?playerIcons(p.player_name||''):'')+'</td>';
+      h+='<td style="color:var(--gl);font-weight:600;font-size:.62rem">'+dgPct+'</td>';
+      bookOdds.forEach(b=>{
+        if(!b.am){h+='<td style="color:var(--td)">–</td>';return;}
+        let shade='';
+        if(range>0&&b.dec){
+          const t=(b.dec-minDec)/range;
+          if(t>0.85)shade='background:rgba(20,180,80,.10);color:#0d7a3a;font-weight:600';
+          else if(t<0.15)shade='background:rgba(210,60,40,.08);color:#b84020';
+        }
+        h+='<td style="font-size:.58rem;font-family:var(--fm);'+shade+'">'+b.am+'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table>';
+    h+='<div style="text-align:right;font-size:.48rem;color:var(--td);margin-top:.15rem">Sportsbook outrights via DataGolf · Updated '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})+' ET</div>';
+    el.innerHTML=h;
+  }catch(e){
+    el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--rd)">Failed to load odds: '+e.message+'</div>';
+  }
+}
+
+// Show the Live Field panel once the Masters is actually in-play
+function checkMastersLive(){
+  const panel=document.getElementById('pred-market-panel');
+  if(!panel)return;
+  // Check if DG in-play data is for the Masters (dgId=14)
+  // For now, show Live Field if tournament has started (Apr 9+)
+  const now=new Date();
+  const mastersStart=new Date(2026,3,9);// Apr 9
+  const mastersEnd=new Date(2026,3,14);// Apr 13 + buffer
+  if(now>=mastersStart&&now<mastersEnd){
+    panel.style.display='';
+    // Also show the old odds panel if we're live
+    const oddsPanel=document.getElementById('odds-panel');
+    if(oddsPanel)oddsPanel.style.display='';
+  }
+}
 
 /* ===== SCHEDULE TAB ===== */
 let _scheduleRendered=false;
