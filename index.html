@@ -4922,6 +4922,9 @@ rLive = function() {
   fetchMastersOdds();
   checkMastersLive();
   _origRLive();
+  // Hide the old live-preview-wrap — Masters preview is in #masters-preview now
+  const lpw=document.getElementById('live-preview-wrap');
+  if(lpw)lpw.style.display='none';
 };
 
 /* ===== MASTERS TAB — TOURNAMENT PREVIEW + ODDS ===== */
