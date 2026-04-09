@@ -5187,7 +5187,10 @@ function checkMastersLive(){
   const mastersEnd=new Date(2026,3,14);// Apr 13 + buffer
   if(now>=mastersStart&&now<mastersEnd){
     panel.style.display='';
-    // Also show the old odds panel if we're live
+    // Hide pre-tournament odds once we're live
+    const preOdds=document.getElementById('masters-odds-panel');
+    if(preOdds)preOdds.style.display='none';
+    // Show live odds panel if needed
     const oddsPanel=document.getElementById('odds-panel');
     if(oddsPanel)oddsPanel.style.display='';
   }
