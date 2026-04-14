@@ -5329,6 +5329,8 @@ function checkMastersLive(){
     panel.style.display='none';
     const preOdds=document.getElementById('masters-odds-panel');
     if(preOdds)preOdds.style.display='none';
+    const preview=document.getElementById('masters-preview');
+    if(preview)preview.style.display='none';
     return;
   }
   // During tournament (no results yet): show live field, hide pre-tournament odds
