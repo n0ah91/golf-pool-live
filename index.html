@@ -588,7 +588,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <section id="players-results" class="pn2">
 <div class="cd" id="tpc-standings"></div>
 <div class="cd" id="tpc-insights"></div>
-<div id="ls-panel" class="ls-panel">
+<div class="cd" id="tpc-tourney"></div>
+<div id="ls-panel" class="ls-panel" style="display:none">
   <div class="ls-header">
     <div class="ls-event-name" id="ls-event-name"><span class="ls-live-dot"></span>Live Tournament</div>
     <div class="ls-header-right">
@@ -618,6 +619,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 
 <!-- Masters Pool Standings (shown post-tournament) -->
 <div class="cd" id="masters-standings" style="display:none"></div>
+<div class="cd" id="mst-tourney"></div>
 
 <!-- Masters Outright Odds — Top 20 from sportsbooks -->
 <div class="cd" id="masters-odds-panel" style="margin-top:.4rem">
@@ -4457,6 +4459,185 @@ const TPC_LIVE_STATS=[
 {nm:'Power, Seamus',pos:'T70',sc:8,ott:49,putt:71,dist:64,gs:69,prox:60,ottV:-0.05,puttV:-1.11,distV:285.63,gsV:2.0,proxV:34.1},
 {nm:'Kanaya, Takumi',pos:'73',sc:10,ott:57,putt:56,dist:71,gs:69,prox:73,ottV:-0.34,puttV:-0.33,distV:275.55,gsV:2.0,proxV:38.68}
 ];
+const MASTERS_LIVE_STATS=[
+{nm:'McIlroy, Rory',pos:'1',sc:-12,ott:7,app:22,arg:2,putt:17,dist:1,gs:5,prox:2,ottV:0.92,appV:0.66,argV:1.39,puttV:0.59,distV:330.48,gsV:5,proxV:29.1},
+{nm:'Scheffler, Scottie',pos:'2',sc:-11,ott:8,app:3,arg:10,putt:30,dist:17,gs:26,prox:20,ottV:0.89,appV:1.67,argV:0.6,puttV:0.14,distV:310.48,gsV:3.25,proxV:36.0},
+{nm:'Hatton, Tyrrell',pos:'T3',sc:-10,ott:3,app:16,arg:9,putt:26,dist:15,gs:20,prox:32,ottV:1.22,appV:0.92,argV:0.64,puttV:0.28,distV:310.95,gsV:3.5,proxV:37.63},
+{nm:'Henley, Russell',pos:'T3',sc:-10,ott:30,app:1,arg:23,putt:31,dist:45,gs:8,prox:13,ottV:0.16,appV:2.4,argV:0.36,puttV:0.14,distV:295.7,gsV:4.5,proxV:34.12},
+{nm:'Rose, Justin',pos:'T3',sc:-10,ott:6,app:4,arg:16,putt:32,dist:24,gs:7,prox:21,ottV:0.97,appV:1.56,argV:0.47,puttV:0.06,distV:306.38,gsV:4.75,proxV:36.3},
+{nm:'Young, Cameron',pos:'T3',sc:-10,ott:2,app:20,arg:20,putt:22,dist:11,gs:26,prox:15,ottV:1.37,appV:0.8,argV:0.39,puttV:0.49,distV:314.62,gsV:3.25,proxV:34.68},
+{nm:'Morikawa, Collin',pos:'T7',sc:-9,ott:51,app:15,arg:19,putt:1,dist:46,gs:5,prox:1,ottV:-0.65,appV:0.92,argV:0.4,puttV:2.14,distV:295.5,gsV:5,proxV:29.02},
+{nm:'Burns, Sam',pos:'T7',sc:-9,ott:27,app:11,arg:39,putt:3,dist:10,gs:40,prox:43,ottV:0.22,appV:1.11,argV:-0.03,puttV:1.51,distV:315.02,gsV:2.75,proxV:42.18},
+{nm:'Homa, Max',pos:'T9',sc:-8,ott:43,app:12,arg:25,putt:4,dist:33,gs:8,prox:41,ottV:-0.22,appV:1.1,argV:0.3,puttV:1.37,distV:303.75,gsV:4.5,proxV:41.41},
+{nm:'Schauffele, Xander',pos:'T9',sc:-8,ott:5,app:2,arg:48,putt:36,dist:14,gs:26,prox:6,ottV:1.11,appV:1.88,argV:-0.34,puttV:-0.11,distV:312.23,gsV:3.25,proxV:32.03},
+{nm:'Knapp, Jake',pos:'11',sc:-7,ott:1,app:30,arg:46,putt:19,dist:2,gs:1,prox:14,ottV:1.81,appV:0.19,argV:-0.21,puttV:0.52,distV:323.9,gsV:6,proxV:34.63},
+{nm:'Spieth, Jordan',pos:'T12',sc:-5,ott:36,app:5,arg:6,putt:50,dist:25,gs:48,prox:18,ottV:0.03,appV:1.48,argV:0.78,puttV:-0.48,distV:305.98,gsV:2.25,proxV:35.41},
+{nm:'Matsuyama, Hideki',pos:'T12',sc:-5,ott:44,app:10,arg:24,putt:18,dist:31,gs:3,prox:5,ottV:-0.23,appV:1.17,argV:0.34,puttV:0.53,distV:304.4,gsV:5.25,proxV:31.96},
+{nm:'Koepka, Brooks',pos:'T12',sc:-5,ott:10,app:17,arg:32,putt:33,dist:6,gs:36,prox:17,ottV:0.88,appV:0.86,argV:0.06,puttV:-0.0,distV:317.83,gsV:3,proxV:35.27},
+{nm:'Reed, Patrick',pos:'T12',sc:-5,ott:9,app:39,arg:8,putt:25,dist:27,gs:36,prox:30,ottV:0.89,appV:-0.12,argV:0.75,puttV:0.28,distV:305.18,gsV:3,proxV:36.96},
+{nm:'Cantlay, Patrick',pos:'T12',sc:-5,ott:49,app:7,arg:1,putt:45,dist:36,gs:17,prox:12,ottV:-0.53,appV:1.29,argV:1.4,puttV:-0.36,distV:302.32,gsV:3.75,proxV:33.54},
+{nm:'Day, Jason',pos:'T12',sc:-5,ott:29,app:25,arg:22,putt:12,dist:29,gs:26,prox:49,ottV:0.19,appV:0.32,argV:0.39,puttV:0.89,distV:304.75,gsV:3.25,proxV:45.85},
+{nm:'Hovland, Viktor',pos:'T18',sc:-4,ott:26,app:9,arg:44,putt:27,dist:35,gs:26,prox:50,ottV:0.23,appV:1.2,argV:-0.15,puttV:0.27,distV:303.32,gsV:3.25,proxV:46.17},
+{nm:'McNealy, Maverick',pos:'T18',sc:-4,ott:22,app:46,arg:5,putt:14,dist:19,gs:20,prox:45,ottV:0.38,appV:-0.43,argV:0.81,puttV:0.81,distV:309.43,gsV:3.5,proxV:43.64},
+{nm:'Fitzpatrick, Matt',pos:'T18',sc:-4,ott:13,app:18,arg:15,putt:48,dist:22,gs:26,prox:39,ottV:0.66,appV:0.85,argV:0.47,puttV:-0.42,distV:307.2,gsV:3.25,proxV:41.03},
+{nm:'Bradley, Keegan',pos:'T21',sc:-3,ott:12,app:41,arg:43,putt:8,dist:18,gs:17,prox:26,ottV:0.68,appV:-0.2,argV:-0.13,puttV:0.96,distV:309.55,gsV:3.75,proxV:36.54},
+{nm:'Aberg, Ludvig',pos:'T21',sc:-3,ott:16,app:6,arg:45,putt:47,dist:8,gs:8,prox:11,ottV:0.55,appV:1.32,argV:-0.17,puttV:-0.39,distV:316.9,gsV:4.5,proxV:33.11},
+{nm:'Clark, Wyndham',pos:'T21',sc:-3,ott:14,app:33,arg:4,putt:39,dist:40,gs:48,prox:46,ottV:0.64,appV:0.02,argV:0.86,puttV:-0.22,distV:301.35,gsV:2.25,proxV:43.81},
+{nm:'McCarty, Matt',pos:'T24',sc:-2,ott:31,app:47,arg:28,putt:6,dist:39,gs:40,prox:33,ottV:0.12,appV:-0.51,argV:0.24,puttV:1.2,distV:301.88,gsV:2.75,proxV:38.21},
+{nm:'Scott, Adam',pos:'T24',sc:-2,ott:18,app:24,arg:12,putt:49,dist:32,gs:52,prox:9,ottV:0.52,appV:0.46,argV:0.52,puttV:-0.45,distV:304.35,gsV:2,proxV:32.86},
+{nm:'Stevens, Sam',pos:'T24',sc:-2,ott:25,app:19,arg:38,putt:34,dist:16,gs:12,prox:28,ottV:0.28,appV:0.83,argV:-0.02,puttV:-0.03,distV:310.75,gsV:4.25,proxV:36.74},
+{nm:'Gotterup, Chris',pos:'T24',sc:-2,ott:18,app:31,arg:11,putt:37,dist:5,gs:8,prox:36,ottV:0.52,appV:0.16,argV:0.53,puttV:-0.15,distV:318.55,gsV:4.5,proxV:39.29},
+{nm:'Brennan, Michael',pos:'T24',sc:-2,ott:4,app:25,arg:33,putt:51,dist:3,gs:2,prox:4,ottV:1.18,appV:0.32,argV:0.05,puttV:-0.5,distV:322.68,gsV:5.75,proxV:31.74},
+{nm:'Campbell, Brian',pos:'T24',sc:-2,ott:48,app:53,arg:3,putt:2,dist:54,gs:26,prox:40,ottV:-0.52,appV:-1.29,argV:0.93,puttV:1.92,distV:287.57,gsV:3.25,proxV:41.11},
+{nm:'Noren, Alex',pos:'T30',sc:-1,ott:40,app:13,arg:51,putt:24,dist:48,gs:20,prox:34,ottV:-0.08,appV:0.99,argV:-0.39,puttV:0.29,distV:294.55,gsV:3.5,proxV:38.46},
+{nm:'English, Harris',pos:'T30',sc:-1,ott:37,app:43,arg:41,putt:5,dist:30,gs:40,prox:54,ottV:-0.0,appV:-0.35,argV:-0.08,puttV:1.23,distV:304.73,gsV:2.75,proxV:49.45},
+{nm:'Lowry, Shane',pos:'T30',sc:-1,ott:47,app:8,arg:29,putt:38,dist:43,gs:26,prox:35,ottV:-0.46,appV:1.29,argV:0.18,puttV:-0.21,distV:299.98,gsV:3.25,proxV:38.86},
+{nm:'Woodland, Gary',pos:'T33',sc:0,ott:20,app:36,arg:49,putt:21,dist:9,gs:17,prox:7,ottV:0.45,appV:-0.04,argV:-0.36,puttV:0.5,distV:315.55,gsV:3.75,proxV:32.35},
+{nm:'Johnson, Dustin',pos:'T33',sc:0,ott:17,app:50,arg:26,putt:15,dist:21,gs:26,prox:25,ottV:0.53,appV:-0.92,argV:0.26,puttV:0.7,distV:307.55,gsV:3.25,proxV:36.48},
+{nm:'Harman, Brian',pos:'T33',sc:0,ott:46,app:29,arg:27,putt:23,dist:47,gs:36,prox:29,ottV:-0.38,appV:0.2,argV:0.26,puttV:0.47,distV:295.02,gsV:3,proxV:36.89},
+{nm:'Fleetwood, Tommy',pos:'T33',sc:0,ott:15,app:34,arg:52,putt:7,dist:38,gs:20,prox:19,ottV:0.59,appV:0.01,argV:-1.01,puttV:0.97,distV:302.2,gsV:3.5,proxV:35.62},
+{nm:'Griffin, Ben',pos:'T33',sc:0,ott:33,app:45,arg:35,putt:13,dist:34,gs:26,prox:53,ottV:0.07,appV:-0.42,argV:0.03,puttV:0.87,distV:303.7,gsV:3.25,proxV:48.46},
+{nm:'Rahm, Jon',pos:'T38',sc:1,ott:24,app:32,arg:31,putt:40,dist:13,gs:20,prox:3,ottV:0.37,appV:0.08,argV:0.07,puttV:-0.22,distV:312.32,gsV:3.5,proxV:30.75},
+{nm:'Gerard, Ryan',pos:'T38',sc:1,ott:52,app:21,arg:47,putt:11,dist:37,gs:13,prox:27,ottV:-0.98,appV:0.72,argV:-0.32,puttV:0.9,distV:302.25,gsV:4,proxV:36.57},
+{nm:'Li, Haotong',pos:'T38',sc:1,ott:39,app:38,arg:42,putt:16,dist:26,gs:13,prox:22,ottV:-0.07,appV:-0.1,argV:-0.13,puttV:0.61,distV:305.77,gsV:4,proxV:36.36},
+{nm:'Thomas, Justin',pos:'T41',sc:2,ott:41,app:35,arg:18,putt:41,dist:41,gs:36,prox:31,ottV:-0.1,appV:-0.04,argV:0.44,puttV:-0.25,distV:301.27,gsV:3,proxV:37.31},
+{nm:'Straka, Sepp',pos:'T41',sc:2,ott:50,app:14,arg:34,putt:44,dist:44,gs:40,prox:23,ottV:-0.6,appV:0.97,argV:0.04,puttV:-0.36,distV:298.7,gsV:2.75,proxV:36.37},
+{nm:'Bridgeman, Jacob',pos:'T41',sc:2,ott:38,app:27,arg:14,putt:52,dist:28,gs:40,prox:51,ottV:-0.04,appV:0.23,argV:0.47,puttV:-0.61,distV:304.9,gsV:2.75,proxV:46.65},
+{nm:'Reitan, Kristoffer',pos:'T41',sc:2,ott:21,app:51,arg:30,putt:20,dist:12,gs:3,prox:44,ottV:0.44,appV:-1.07,argV:0.17,puttV:0.51,distV:313.05,gsV:5.25,proxV:42.46},
+{nm:'Taylor, Nick',pos:'T41',sc:2,ott:42,app:36,arg:40,putt:28,dist:50,gs:46,prox:47,ottV:-0.1,appV:-0.04,argV:-0.07,puttV:0.27,distV:292.52,gsV:2.5,proxV:44.06},
+{nm:'Im, Sungjae',pos:'46',sc:3,ott:11,app:52,arg:17,putt:42,dist:22,gs:48,prox:52,ottV:0.68,appV:-1.07,argV:0.46,puttV:-0.27,distV:307.2,gsV:2.25,proxV:47.06},
+{nm:'Kim, Si Woo',pos:'47',sc:4,ott:34,app:44,arg:36,putt:35,dist:42,gs:20,prox:10,ottV:0.05,appV:-0.4,argV:0.0,puttV:-0.1,distV:300.6,gsV:3.5,proxV:32.88},
+{nm:'Rai, Aaron',pos:'48',sc:5,ott:32,app:23,arg:20,putt:54,dist:52,gs:52,prox:48,ottV:0.09,appV:0.52,argV:0.39,puttV:-1.7,distV:288.12,gsV:2,proxV:45.63},
+{nm:'Conners, Corey',pos:'T49',sc:6,ott:53,app:28,arg:7,putt:46,dist:49,gs:46,prox:8,ottV:-1.53,appV:0.21,argV:0.75,puttV:-0.38,distV:292.91,gsV:2.5,proxV:32.75},
+{nm:'Penge, Marco',pos:'T49',sc:6,ott:28,app:54,arg:50,putt:9,dist:4,gs:13,prox:37,ottV:0.21,appV:-1.73,argV:-0.38,puttV:0.95,distV:320.25,gsV:4,proxV:39.95},
+{nm:'Kitayama, Kurt',pos:'51',sc:7,ott:23,app:40,arg:54,putt:10,dist:20,gs:13,prox:16,ottV:0.38,appV:-0.13,argV:-2.38,puttV:0.93,distV:308.98,gsV:4,proxV:34.77},
+{nm:'Garcia, Sergio',pos:'52',sc:8,ott:45,app:48,arg:13,putt:53,dist:53,gs:54,prox:42,ottV:-0.33,appV:-0.71,argV:0.51,puttV:-0.91,distV:287.75,gsV:1.75,proxV:41.74},
+{nm:'Hojgaard, Rasmus',pos:'53',sc:10,ott:35,app:42,arg:53,putt:43,dist:7,gs:48,prox:24,ottV:0.04,appV:-0.34,argV:-1.36,puttV:-0.29,distV:317.5,gsV:2.25,proxV:36.47},
+{nm:'Schwartzel, Charl',pos:'54',sc:12,ott:54,app:49,arg:37,putt:29,dist:51,gs:40,prox:38,ottV:-1.75,appV:-0.87,argV:-0.01,puttV:0.18,distV:291.6,gsV:2.75,proxV:40.22},
+{nm:'Willett, Danny',pos:'CUT',sc:5,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.75,appV:-0.62,argV:-1.55,puttV:2.17,distV:288.35,gsV:3,proxV:46.06},
+{nm:'Hall, Harry',pos:'CUT',sc:5,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.71,appV:0.6,argV:-0.79,puttV:0.15,distV:291.4,gsV:4.5,proxV:51.78},
+{nm:'Spaun, J.J.',pos:'CUT',sc:5,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.16,appV:0.45,argV:-0.02,puttV:-1.02,distV:296.45,gsV:1,proxV:30.9},
+{nm:'Fox, Ryan',pos:'CUT',sc:5,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.02,appV:-0.15,argV:0.25,puttV:-0.88,distV:312.4,gsV:3,proxV:40.77},
+{nm:'Watson, Bubba',pos:'CUT',sc:5,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.51,appV:0.35,argV:-0.7,puttV:-0.92,distV:305.15,gsV:2,proxV:37.25},
+{nm:'Johnson, Zach',pos:'CUT',sc:6,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.26,appV:-0.83,argV:0.15,puttV:-0.82,distV:288,gsV:1.5,proxV:43.76},
+{nm:'Hojgaard, Nicolai',pos:'CUT',sc:6,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.73,appV:0.11,argV:-0.7,puttV:-1.39,distV:316.35,gsV:4.5,proxV:39.46},
+{nm:'Bhatia, Akshay',pos:'CUT',sc:6,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-1.45,appV:0.48,argV:-1.55,puttV:1.27,distV:297.05,gsV:6,proxV:37.46},
+{nm:'DeChambeau, Bryson',pos:'CUT',sc:6,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.77,appV:-0.64,argV:-1.92,puttV:0.54,distV:314,gsV:5,proxV:36.31},
+{nm:'Novak, Andrew',pos:'CUT',sc:7,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.18,appV:-0.3,argV:-0.99,puttV:-0.64,distV:301,gsV:3.5,proxV:51.77},
+{nm:'McKibbin, Tom',pos:'CUT',sc:7,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:1.21,appV:-0.94,argV:-0.0,puttV:-2.02,distV:305.8,gsV:1.5,proxV:38.47},
+{nm:'MacIntyre, Robert',pos:'CUT',sc:7,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:1.83,appV:-3.69,argV:-0.46,puttV:0.57,distV:308.4,gsV:4,proxV:43.37},
+{nm:'Neergaard-Petersen, Rasmus',pos:'CUT',sc:7,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.94,appV:0.23,argV:0.02,puttV:-2.95,distV:306.6,gsV:5,proxV:33.49},
+{nm:'Smith, Cameron',pos:'CUT',sc:7,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-1.65,appV:-1.56,argV:1.47,puttV:-0.02,distV:295.2,gsV:3.5,proxV:42.09},
+{nm:'Kim, Michael',pos:'CUT',sc:8,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-1.24,appV:0.49,argV:-1.37,puttV:-0.12,distV:287.3,gsV:2,proxV:38.29},
+{nm:'Fang, Ethan',pos:'CUT',sc:8,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.69,appV:-0.01,argV:1.27,puttV:-2.83,distV:294.9,gsV:1,proxV:36.53},
+{nm:'Berger, Daniel',pos:'CUT',sc:8,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.12,appV:-0.67,argV:0.15,puttV:-1.86,distV:303.1,gsV:2,proxV:42.47},
+{nm:'Herrington, Jackson',pos:'CUT',sc:8,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.8,appV:0.81,argV:-1.92,puttV:-0.35,distV:317.5,gsV:4,proxV:43.02},
+{nm:'Jarvis, Casey',pos:'CUT',sc:8,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.6,appV:-0.4,argV:-1.29,puttV:-1.18,distV:301.9,gsV:2,proxV:43.35},
+{nm:'Couples, Fred',pos:'CUT',sc:9,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-1.76,appV:-4.31,argV:0.44,puttV:2.88,distV:273.2,gsV:1.5,proxV:39.28},
+{nm:'Olazabal, Jose Maria',pos:'CUT',sc:9,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-2.79,appV:-3.32,argV:2.76,puttV:0.59,distV:261.8,gsV:1.5,proxV:46.23},
+{nm:'Howell, Mason',pos:'CUT',sc:9,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.92,appV:0.47,argV:-1.92,puttV:-2.22,distV:312.65,gsV:2.5,proxV:34.82},
+{nm:'Weir, Mike',pos:'CUT',sc:10,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-1.5,appV:-0.39,argV:0.02,puttV:-1.37,distV:278.3,gsV:4,proxV:39.77},
+{nm:'Singh, Vijay',pos:'CUT',sc:10,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.97,appV:-0.56,argV:0.45,puttV:-2.19,distV:275.9,gsV:2,proxV:38.48},
+{nm:'Lee, Min Woo',pos:'CUT',sc:11,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.18,appV:-2.32,argV:-0.41,puttV:-0.84,distV:310.05,gsV:3,proxV:39.66},
+{nm:'Laopakdee, Fifa',pos:'CUT',sc:11,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-2.04,appV:-1.3,argV:-0.59,puttV:0.18,distV:303,gsV:4,proxV:46.69},
+{nm:'Keefer, Johnny',pos:'CUT',sc:11,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.33,appV:-1.44,argV:-0.66,puttV:-1.33,distV:302,gsV:3,proxV:46.91},
+{nm:'Ortiz, Carlos',pos:'CUT',sc:11,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-1.15,appV:-0.66,argV:-0.98,puttV:-0.96,distV:300,gsV:3.5,proxV:39.24},
+{nm:'Valimaki, Sami',pos:'CUT',sc:11,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:0.11,appV:-1.35,argV:-0.56,puttV:-1.94,distV:298.45,gsV:1.5,proxV:45.09},
+{nm:'Greyserman, Max',pos:'CUT',sc:12,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.23,appV:-0.99,argV:-1.24,puttV:-1.79,distV:300.65,gsV:2,proxV:38.25},
+{nm:'Echavarria, Nico',pos:'CUT',sc:13,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.69,appV:-3.47,argV:-0.23,puttV:-0.36,distV:291.3,gsV:3.5,proxV:46.31},
+{nm:'Pulcini, Mateo',pos:'CUT',sc:15,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-1.15,appV:-0.71,argV:-1.64,puttV:-2.26,distV:300,gsV:3.5,proxV:41.61},
+{nm:'Kataoka, Naoyuki',pos:'CUT',sc:15,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-1.09,appV:-3.01,argV:-1.78,puttV:0.13,distV:292.7,gsV:3.5,proxV:43.67},
+{nm:'Potgieter, Aldrich',pos:'CUT',sc:15,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-2.57,appV:-0.8,argV:-0.65,puttV:-1.75,distV:309.16,gsV:3.5,proxV:37.16},
+{nm:'Holtz, Brandon',pos:'CUT',sc:15,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-0.74,appV:-1.27,argV:-1.98,puttV:-1.75,distV:291.65,gsV:1.5,proxV:46.43},
+{nm:'Cabrera, Angel',pos:'CUT',sc:16,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-2.85,appV:-2.01,argV:-0.01,puttV:-1.39,distV:283.95,gsV:2,proxV:57.21},
+{nm:'Riley, Davis',pos:'CUT',sc:18,ott:null,app:null,arg:null,putt:null,dist:null,gs:null,prox:null,ottV:-4.24,appV:-2.19,argV:0.59,puttV:-1.41,distV:288.09,gsV:2.5,proxV:46.92},
+];
+const MASTERS_HOLE_STATS={
+event_name:'Masters Tournament',
+current_round:4,
+courses:[{rounds:[
+{round_num:1,holes:[
+{hole:1,par:4,yardage:445,total:{avg_score:4.22,eagles_or_better:0,birdies:7,pars:59,bogeys:23,doubles_or_worse:2}},
+{hole:2,par:5,yardage:585,total:{avg_score:4.648,eagles_or_better:3,birdies:36,pars:45,bogeys:5,doubles_or_worse:2}},
+{hole:3,par:4,yardage:350,total:{avg_score:4.044,eagles_or_better:0,birdies:16,pars:59,bogeys:12,doubles_or_worse:4}},
+{hole:4,par:3,yardage:240,total:{avg_score:3.154,eagles_or_better:0,birdies:10,pars:61,bogeys:16,doubles_or_worse:4}},
+{hole:5,par:4,yardage:495,total:{avg_score:4.374,eagles_or_better:0,birdies:4,pars:50,bogeys:36,doubles_or_worse:1}},
+{hole:6,par:3,yardage:180,total:{avg_score:3.165,eagles_or_better:0,birdies:8,pars:61,bogeys:21,doubles_or_worse:1}},
+{hole:7,par:4,yardage:450,total:{avg_score:4.418,eagles_or_better:0,birdies:2,pars:54,bogeys:30,doubles_or_worse:5}},
+{hole:8,par:5,yardage:570,total:{avg_score:4.769,eagles_or_better:3,birdies:23,pars:58,bogeys:6,doubles_or_worse:1}},
+{hole:9,par:4,yardage:460,total:{avg_score:4.165,eagles_or_better:0,birdies:12,pars:55,bogeys:21,doubles_or_worse:3}},
+{hole:10,par:4,yardage:495,total:{avg_score:4.286,eagles_or_better:0,birdies:11,pars:48,bogeys:27,doubles_or_worse:5}},
+{hole:11,par:4,yardage:520,total:{avg_score:4.341,eagles_or_better:0,birdies:1,pars:63,bogeys:23,doubles_or_worse:4}},
+{hole:12,par:3,yardage:155,total:{avg_score:3.165,eagles_or_better:0,birdies:11,pars:59,bogeys:16,doubles_or_worse:5}},
+{hole:13,par:5,yardage:545,total:{avg_score:4.813,eagles_or_better:4,birdies:32,pars:40,bogeys:9,doubles_or_worse:6}},
+{hole:14,par:4,yardage:440,total:{avg_score:4.154,eagles_or_better:0,birdies:8,pars:62,bogeys:20,doubles_or_worse:1}},
+{hole:15,par:5,yardage:550,total:{avg_score:5.121,eagles_or_better:1,birdies:21,pars:48,bogeys:14,doubles_or_worse:7}},
+{hole:16,par:3,yardage:170,total:{avg_score:3.154,eagles_or_better:0,birdies:8,pars:64,bogeys:16,doubles_or_worse:3}},
+{hole:17,par:4,yardage:450,total:{avg_score:4.33,eagles_or_better:0,birdies:6,pars:55,bogeys:24,doubles_or_worse:6}},
+{hole:18,par:4,yardage:465,total:{avg_score:4.33,eagles_or_better:0,birdies:4,pars:56,bogeys:28,doubles_or_worse:3}},
+]},
+{round_num:2,holes:[
+{hole:1,par:4,yardage:445,total:{avg_score:4.308,eagles_or_better:0,birdies:3,pars:58,bogeys:29,doubles_or_worse:1}},
+{hole:2,par:5,yardage:585,total:{avg_score:4.769,eagles_or_better:0,birdies:31,pars:53,bogeys:4,doubles_or_worse:3}},
+{hole:3,par:4,yardage:350,total:{avg_score:3.89,eagles_or_better:0,birdies:22,pars:57,bogeys:12,doubles_or_worse:0}},
+{hole:4,par:3,yardage:240,total:{avg_score:3.308,eagles_or_better:0,birdies:5,pars:57,bogeys:25,doubles_or_worse:4}},
+{hole:5,par:4,yardage:495,total:{avg_score:4.286,eagles_or_better:0,birdies:5,pars:56,bogeys:29,doubles_or_worse:1}},
+{hole:6,par:3,yardage:180,total:{avg_score:3.066,eagles_or_better:0,birdies:11,pars:64,bogeys:15,doubles_or_worse:1}},
+{hole:7,par:4,yardage:450,total:{avg_score:4.209,eagles_or_better:0,birdies:9,pars:55,bogeys:26,doubles_or_worse:1}},
+{hole:8,par:5,yardage:570,total:{avg_score:4.615,eagles_or_better:2,birdies:35,pars:51,bogeys:2,doubles_or_worse:1}},
+{hole:9,par:4,yardage:460,total:{avg_score:3.912,eagles_or_better:0,birdies:20,pars:60,bogeys:10,doubles_or_worse:1}},
+{hole:10,par:4,yardage:495,total:{avg_score:4.132,eagles_or_better:0,birdies:11,pars:60,bogeys:17,doubles_or_worse:3}},
+{hole:11,par:4,yardage:520,total:{avg_score:4.198,eagles_or_better:0,birdies:8,pars:60,bogeys:20,doubles_or_worse:3}},
+{hole:12,par:3,yardage:155,total:{avg_score:3.154,eagles_or_better:0,birdies:19,pars:49,bogeys:15,doubles_or_worse:8}},
+{hole:13,par:5,yardage:545,total:{avg_score:4.824,eagles_or_better:1,birdies:30,pars:46,bogeys:12,doubles_or_worse:2}},
+{hole:14,par:4,yardage:440,total:{avg_score:4.066,eagles_or_better:0,birdies:12,pars:62,bogeys:16,doubles_or_worse:1}},
+{hole:15,par:5,yardage:550,total:{avg_score:4.802,eagles_or_better:1,birdies:33,pars:45,bogeys:8,doubles_or_worse:4}},
+{hole:16,par:3,yardage:170,total:{avg_score:2.934,eagles_or_better:0,birdies:23,pars:52,bogeys:15,doubles_or_worse:1}},
+{hole:17,par:4,yardage:450,total:{avg_score:4.088,eagles_or_better:0,birdies:11,pars:62,bogeys:17,doubles_or_worse:1}},
+{hole:18,par:4,yardage:465,total:{avg_score:4.286,eagles_or_better:0,birdies:12,pars:46,bogeys:29,doubles_or_worse:4}},
+]},
+{round_num:3,holes:[
+{hole:1,par:4,yardage:445,total:{avg_score:4.148,eagles_or_better:0,birdies:5,pars:36,bogeys:13,doubles_or_worse:0}},
+{hole:2,par:5,yardage:585,total:{avg_score:4.63,eagles_or_better:2,birdies:23,pars:23,bogeys:5,doubles_or_worse:1}},
+{hole:3,par:4,yardage:350,total:{avg_score:3.63,eagles_or_better:1,birdies:22,pars:27,bogeys:4,doubles_or_worse:0}},
+{hole:4,par:3,yardage:240,total:{avg_score:3.13,eagles_or_better:0,birdies:7,pars:34,bogeys:12,doubles_or_worse:1}},
+{hole:5,par:4,yardage:495,total:{avg_score:4.111,eagles_or_better:0,birdies:4,pars:40,bogeys:10,doubles_or_worse:0}},
+{hole:6,par:3,yardage:180,total:{avg_score:3.056,eagles_or_better:1,birdies:5,pars:38,bogeys:10,doubles_or_worse:0}},
+{hole:7,par:4,yardage:450,total:{avg_score:4,eagles_or_better:0,birdies:8,pars:39,bogeys:6,doubles_or_worse:1}},
+{hole:8,par:5,yardage:570,total:{avg_score:4.352,eagles_or_better:3,birdies:29,pars:22,bogeys:0,doubles_or_worse:0}},
+{hole:9,par:4,yardage:460,total:{avg_score:3.981,eagles_or_better:0,birdies:7,pars:41,bogeys:6,doubles_or_worse:0}},
+{hole:10,par:4,yardage:495,total:{avg_score:3.944,eagles_or_better:0,birdies:12,pars:34,bogeys:7,doubles_or_worse:1}},
+{hole:11,par:4,yardage:520,total:{avg_score:4.389,eagles_or_better:0,birdies:5,pars:26,bogeys:20,doubles_or_worse:3}},
+{hole:12,par:3,yardage:155,total:{avg_score:3.019,eagles_or_better:0,birdies:7,pars:39,bogeys:8,doubles_or_worse:0}},
+{hole:13,par:5,yardage:545,total:{avg_score:4.685,eagles_or_better:0,birdies:25,pars:22,bogeys:6,doubles_or_worse:1}},
+{hole:14,par:4,yardage:440,total:{avg_score:3.796,eagles_or_better:0,birdies:18,pars:29,bogeys:7,doubles_or_worse:0}},
+{hole:15,par:5,yardage:550,total:{avg_score:4.667,eagles_or_better:1,birdies:21,pars:28,bogeys:3,doubles_or_worse:1}},
+{hole:16,par:3,yardage:170,total:{avg_score:2.852,eagles_or_better:0,birdies:12,pars:39,bogeys:2,doubles_or_worse:1}},
+{hole:17,par:4,yardage:450,total:{avg_score:4.148,eagles_or_better:0,birdies:5,pars:37,bogeys:11,doubles_or_worse:1}},
+{hole:18,par:4,yardage:465,total:{avg_score:4.093,eagles_or_better:0,birdies:10,pars:30,bogeys:13,doubles_or_worse:1}},
+]},
+{round_num:4,holes:[
+{hole:1,par:4,yardage:445,total:{avg_score:3.926,eagles_or_better:0,birdies:15,pars:29,bogeys:9,doubles_or_worse:1}},
+{hole:2,par:5,yardage:585,total:{avg_score:4.778,eagles_or_better:0,birdies:21,pars:27,bogeys:3,doubles_or_worse:3}},
+{hole:3,par:4,yardage:350,total:{avg_score:3.944,eagles_or_better:0,birdies:14,pars:30,bogeys:9,doubles_or_worse:1}},
+{hole:4,par:3,yardage:240,total:{avg_score:3.296,eagles_or_better:0,birdies:3,pars:34,bogeys:15,doubles_or_worse:2}},
+{hole:5,par:4,yardage:495,total:{avg_score:4.37,eagles_or_better:0,birdies:2,pars:32,bogeys:18,doubles_or_worse:2}},
+{hole:6,par:3,yardage:180,total:{avg_score:3.259,eagles_or_better:0,birdies:4,pars:32,bogeys:18,doubles_or_worse:0}},
+{hole:7,par:4,yardage:450,total:{avg_score:3.759,eagles_or_better:2,birdies:20,pars:24,bogeys:5,doubles_or_worse:3}},
+{hole:8,par:5,yardage:570,total:{avg_score:4.667,eagles_or_better:0,birdies:22,pars:28,bogeys:4,doubles_or_worse:0}},
+{hole:9,par:4,yardage:460,total:{avg_score:3.907,eagles_or_better:0,birdies:12,pars:35,bogeys:7,doubles_or_worse:0}},
+{hole:10,par:4,yardage:495,total:{avg_score:4.241,eagles_or_better:0,birdies:4,pars:33,bogeys:17,doubles_or_worse:0}},
+{hole:11,par:4,yardage:520,total:{avg_score:4.278,eagles_or_better:0,birdies:3,pars:37,bogeys:10,doubles_or_worse:4}},
+{hole:12,par:3,yardage:155,total:{avg_score:3.259,eagles_or_better:0,birdies:4,pars:38,bogeys:9,doubles_or_worse:3}},
+{hole:13,par:5,yardage:545,total:{avg_score:4.648,eagles_or_better:2,birdies:23,pars:26,bogeys:1,doubles_or_worse:2}},
+{hole:14,par:4,yardage:440,total:{avg_score:3.889,eagles_or_better:1,birdies:13,pars:31,bogeys:9,doubles_or_worse:0}},
+{hole:15,par:5,yardage:550,total:{avg_score:4.685,eagles_or_better:1,birdies:21,pars:27,bogeys:4,doubles_or_worse:1}},
+{hole:16,par:3,yardage:170,total:{avg_score:2.741,eagles_or_better:0,birdies:22,pars:26,bogeys:4,doubles_or_worse:2}},
+{hole:17,par:4,yardage:450,total:{avg_score:4.426,eagles_or_better:0,birdies:0,pars:34,bogeys:17,doubles_or_worse:3}},
+{hole:18,par:4,yardage:465,total:{avg_score:4.019,eagles_or_better:0,birdies:8,pars:37,bogeys:9,doubles_or_worse:0}},
+]},
+]}]};
+
 let _prevCache = {};
 
 function populatePrevDropdown() {
@@ -5326,6 +5507,10 @@ function checkMastersLive(){
   // If final results exist, show standings and hide live/odds panels
   if(POOL_RESULTS[14]){
     renderMastersStandings();
+    // Tournament analysis panel
+    if(typeof MASTERS_LIVE_STATS!=='undefined'&&MASTERS_LIVE_STATS.length){
+      renderTourneyPanel('mst-tourney',MASTERS_LIVE_STATS,typeof MASTERS_HOLE_STATS!=='undefined'?MASTERS_HOLE_STATS:null,{name:'Masters Tournament',venue:'Augusta National',dates:'Apr 9–13'});
+    }
     panel.style.display='none';
     const preOdds=document.getElementById('masters-odds-panel');
     if(preOdds)preOdds.style.display='none';
@@ -5518,6 +5703,10 @@ function renderPlayersResults(){
     lsRender();
   }
   renderTpcInsights(pr);
+  // Tournament analysis panel (Performance / Toughest Holes / Bomb vs. Control)
+  if(typeof TPC_LIVE_STATS!=='undefined'&&TPC_LIVE_STATS.length){
+    renderTourneyPanel('tpc-tourney',TPC_LIVE_STATS,null,{name:'The Players Championship',venue:'TPC Sawgrass',dates:'Mar 12–15'});
+  }
 }
 
 function _tpcComputeRanks(entries){
@@ -5718,6 +5907,217 @@ function renderMastersStandings(){
     filtered.forEach(e=>{h+=_mstRenderRow(e,false);});
     tbody.innerHTML=h;
   };
+  render();
+}
+
+/* ===== TOURNAMENT ANALYSIS PANEL (reusable factory) ===== */
+function renderTourneyPanel(containerId, statsArr, holeData, cfg){
+  var el=document.getElementById(containerId);if(!el)return;
+  var id=containerId;
+  // Build normalized live_stats from raw array
+  var allCols=[
+    {key:'sg_ott',src:'ott',hdr:'Drive',tip:'Strokes gained off the tee'},
+    {key:'sg_app',src:'app',hdr:'Appr.',tip:'Strokes gained on approach'},
+    {key:'sg_arg',src:'arg',hdr:'Short',tip:'Strokes gained around the green'},
+    {key:'sg_putt',src:'putt',hdr:'Putt',tip:'Strokes gained putting'},
+    {key:'distance',src:'dist',hdr:'Dist.',tip:'Average driving distance'},
+    {key:'great_shots',src:'gs',hdr:'A+ Shot',tip:'Great shots relative to field'},
+    {key:'prox_fw',src:'prox',hdr:'Prox.',tip:'Proximity to pin from fairway'}
+  ];
+  // Detect which rank columns have data (made-cut players only)
+  var madeCut=statsArr.filter(function(p){return p.ott!=null;});
+  var fieldSize=madeCut.length;
+  var cols=allCols.filter(function(c){return madeCut.length>0&&madeCut[0][c.src]!=null;});
+  // Build live_stats array
+  var liveStats=statsArr.map(function(p){
+    var o={player_name:p.nm.split(', ').reverse().join(' '),position:p.pos,total:p.sc};
+    cols.forEach(function(c){o[c.key]=p[c.src];});
+    return o;
+  });
+  // State scoped to this panel
+  var _view='hm',_showAll=false,_hChart=null;
+
+  function pPos(s){if(!s||s==='CUT'||s==='WD'||s==='DQ')return 999;return parseInt(String(s).replace(/^T/,''))||999;}
+  function sortPlayers(arr){
+    return arr.slice().sort(function(a,b){
+      var ac=String(a.position)==='CUT'||String(a.position)==='WD',bc=String(b.position)==='CUT'||String(b.position)==='WD';
+      if(ac!==bc)return ac?1:-1;
+      var pa=pPos(a.position),pb=pPos(b.position);if(pa!==pb)return pa-pb;
+      return(a.total||0)-(b.total||0);
+    });
+  }
+  function insightChips(){
+    var best=function(key,label){
+      var cands=liveStats.filter(function(p){return p[key]!=null&&p[key]!=='-'&&pPos(p.position)<900;});
+      if(!cands.length)return null;
+      cands.sort(function(a,b){return a[key]-b[key];});
+      var top=cands[0];
+      var nm=top.player_name||'';
+      var sc=top.total!=null?(top.total>0?'+'+top.total:top.total===0?'E':top.total):'';
+      return '<span class="ls-chip"><span class="ls-chip-lbl">'+label+'</span> '+nm+(sc?' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+sc+'</span>':'')+'</span>';
+    };
+    var chips=[best('sg_ott','Best Driver'),best('sg_app','Best Approach'),best('sg_putt','Best Putter'),best('distance','Longest'),best('prox_fw','Closest Prox'),best('great_shots','Most A+ Shots')].filter(Boolean);
+    return chips.length?'<div class="ls-insights" style="margin-bottom:.3rem">'+chips.join('')+'</div>':'';
+  }
+
+  function renderHeatmap(){
+    var bd=document.getElementById(id+'-body');if(!bd)return;
+    var sorted=sortPlayers(liveStats);
+    var search=(document.getElementById(id+'-search')?.value||'').toLowerCase();
+    var filtered=search?sorted.filter(function(p){return(p.player_name||'').toLowerCase().includes(search);}):(_showAll?sorted:sorted.slice(0,20));
+    var h='<div class="ls-legend" style="display:flex;align-items:center;flex-wrap:wrap;gap:.3rem">';
+    h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(20,190,90,.80);vertical-align:middle"></span><span style="font-size:.5rem;color:var(--td)">Top 15%</span>';
+    h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(50,140,60,.45);vertical-align:middle;margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Above avg</span>';
+    h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(60,70,80,.15);vertical-align:middle;margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Avg</span>';
+    h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(208,105,50,.35);vertical-align:middle;margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Below avg</span>';
+    h+='<span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(225,50,35,.65);vertical-align:middle;margin-left:4px"></span><span style="font-size:.5rem;color:var(--td)">Bottom 25%</span>';
+    h+='<span style="flex:1"></span>';
+    h+='<input id="'+id+'-search" class="ls-search" placeholder="Search..." oninput="window._tp_'+id+'_filter()" value="'+(search||'')+'" style="width:100px;font-size:.55rem;padding:.15rem .3rem">';
+    h+='</div>';
+    h+='<div class="ls-hm"><table><thead><tr>';
+    h+='<th class="ls-pos">Pos</th><th class="ls-nm">Player</th><th class="ls-sc">Score</th>';
+    cols.forEach(function(c){h+='<th title="'+c.tip+'" style="cursor:help">'+c.hdr+'</th>';});
+    h+='</tr></thead><tbody>';
+    filtered.forEach(function(p){
+      var cut=String(p.position)==='CUT';
+      var pos=pPos(p.position);
+      var posCls=pos===1?'ls-pos-1':pos<=5?'ls-pos-top5':pos<=10?'ls-pos-top10':'ls-pos-rest';
+      var sc=p.total!=null?(p.total>0?'+'+p.total:p.total===0?'E':p.total):'-';
+      var scClr=p.total==null?'var(--ts)':p.total<0?'var(--rd)':p.total>0?'var(--gl)':'var(--tp)';
+      var ip=typeof inPool==='function'&&inPool(p.player_name||'');
+      h+='<tr'+(cut?' style="opacity:.35"':'')+(ip?' class="ls-pool"':'')+'>';
+      h+='<td class="ls-pos '+posCls+'">'+(p.position||'-')+'</td>';
+      h+='<td class="ls-nm" title="'+p.player_name+'">'+p.player_name+(ip?' <span style="color:var(--go);font-size:.5rem">&#9733;</span>':'')+'</td>';
+      h+='<td class="ls-sc" style="color:'+scClr+'">'+sc+'</td>';
+      cols.forEach(function(c){
+        var v=p[c.key];var cl=sgColor(v,fieldSize);
+        h+='<td class="ls-stat" style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+(v!=null?v:'-')+'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+    if(!search&&!_showAll&&sorted.length>20){
+      h+='<div style="text-align:center;padding:.4rem"><button onclick="window._tp_'+id+'_expand()" style="font-family:var(--fb);font-size:.58rem;padding:.25rem .8rem;background:var(--bc);color:var(--go);border:1px solid var(--br);border-radius:4px;cursor:pointer">Show All '+sorted.length+' Players ▾</button></div>';
+    }else if(!search&&_showAll&&sorted.length>20){
+      h+='<div style="text-align:center;padding:.4rem"><button onclick="window._tp_'+id+'_collapse()" style="font-family:var(--fb);font-size:.58rem;padding:.25rem .8rem;background:var(--bc);color:var(--td);border:1px solid var(--br);border-radius:4px;cursor:pointer">Show Top 20 ▴</button></div>';
+    }
+    bd.innerHTML=h;
+  }
+
+  function renderHoles(){
+    var bd=document.getElementById(id+'-body');if(!bd)return;
+    if(!holeData||!holeData.courses||!holeData.courses.length){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">No hole data available</div>';return;}
+    // Average across all rounds
+    var rounds=holeData.courses[0].rounds;
+    var holes=rounds[0].holes.map(function(h,i){
+      var totAvg=0,totEag=0,totBir=0,totPar=0,totBog=0,totDbl=0,cnt=0;
+      rounds.forEach(function(r){
+        var rh=r.holes[i];if(!rh)return;
+        totAvg+=rh.total.avg_score;totEag+=rh.total.eagles_or_better;totBir+=rh.total.birdies;
+        totPar+=rh.total.pars;totBog+=rh.total.bogeys;totDbl+=rh.total.doubles_or_worse;cnt++;
+      });
+      return{hole:h.hole,par:h.par,yardage:h.yardage,total:{avg_score:totAvg/cnt,eagles_or_better:Math.round(totEag/cnt),birdies:Math.round(totBir/cnt),pars:Math.round(totPar/cnt),bogeys:Math.round(totBog/cnt),doubles_or_worse:Math.round(totDbl/cnt)}};
+    }).sort(function(a,b){return a.hole-b.hole;});
+    var labels=holes.map(function(h){return 'H'+h.hole;});
+    var deltas=holes.map(function(h){return +(h.total.avg_score-h.par).toFixed(3);});
+    var maxD=Math.max.apply(null,deltas.map(Math.abs))||0.5;
+    var colors=deltas.map(function(d){
+      var intensity=Math.min(1,Math.abs(d)/maxD);
+      if(d>0.03)return 'rgba(217,64,64,'+(0.35+intensity*0.6)+')';
+      if(d<-0.03)return 'rgba(45,181,96,'+(0.35+intensity*0.6)+')';
+      return 'rgba(196,160,53,0.35)';
+    });
+    var borderColors=deltas.map(function(d){return d>0.03?'#ef4444':d<-0.03?'#22c55e':'#c9a830';});
+    bd.innerHTML='<div style="text-align:center;padding:.4rem .2rem 0"><span style="font-family:var(--fh);font-size:.85rem;color:var(--go)">Hole Difficulty</span> <span style="font-size:.55rem;color:var(--td)">'+(cfg.venue||'')+' · Event Avg (All Rounds)</span></div><div class="ls-hole-wrap"><canvas id="'+id+'-hole-cv"></canvas></div>';
+    if(_hChart){_hChart.destroy();_hChart=null;}
+    var ctx=document.getElementById(id+'-hole-cv').getContext('2d');
+    _hChart=new Chart(ctx,{type:'bar',data:{labels:labels,datasets:[{data:deltas,backgroundColor:colors,borderColor:borderColors,borderWidth:1.5,borderRadius:3}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'#fff',titleColor:'#c9a227',bodyColor:'#3a3a35',borderColor:'#d4d4cc',borderWidth:1,
+        callbacks:{
+          title:function(items){var i=items[0].dataIndex;var h=holes[i];return 'Hole '+h.hole+' · Par '+h.par+' · '+h.yardage+' yds';},
+          label:function(item){var h=holes[item.dataIndex];var d=deltas[item.dataIndex];return 'Avg: '+h.total.avg_score.toFixed(2)+' ('+(d>0?'+':'')+d.toFixed(3)+' vs par)';},
+          afterLabel:function(item){var h=holes[item.dataIndex];var t=h.total;return '🦅 '+(t.eagles_or_better||0)+'  🐦 '+t.birdies+'  ⛳ '+t.pars+'  💀 '+t.bogeys+'  ❌ '+(t.doubles_or_worse||0);}
+        }}},scales:{x:{ticks:{color:'#586882',font:{size:10,family:'DM Sans',weight:'600'}},grid:{display:false}},
+          y:{ticks:{color:'#6b6b63',font:{size:10,family:'DM Mono'},callback:function(v){return(v>0?'+':'')+v.toFixed(2);}},grid:{color:'rgba(0,0,0,.06)'},
+            title:{display:true,text:'Avg Score vs Par',color:'#586882',font:{size:11,family:'DM Sans',weight:'600'}}}}}});
+  }
+
+  function renderPower(){
+    var bd=document.getElementById(id+'-body');if(!bd)return;
+    var stats=liveStats.filter(function(p){return p.distance!=null&&p.prox_fw!=null;});
+    if(stats.length<10){bd.innerHTML='<div style="text-align:center;color:var(--ts);padding:1rem;font-size:.72rem">Insufficient data for Power Profile</div>';return;}
+    var n=stats.length;
+    var top25=sortPlayers(liveStats).slice(0,25);
+    var t25d=top25.filter(function(p){return p.distance!=null;});
+    var t25p=top25.filter(function(p){return p.prox_fw!=null;});
+    var avgDR=t25d.length?t25d.reduce(function(s,p){return s+p.distance;},0)/t25d.length:n/2;
+    var avgPR=t25p.length?t25p.reduce(function(s,p){return s+p.prox_fw;},0)/t25p.length:n/2;
+    var distSig=1-(avgDR/n),proxSig=1-(avgPR/n);
+    var pi=Math.round((0.7*distSig+0.3*(1-proxSig))*100);
+    var clamped=Math.max(5,Math.min(95,pi));
+    var lbl=clamped<35?'Favoring Control & Precision':clamped>65?'Favoring Power & Distance':'Balanced — No Strong Advantage';
+    var clr=clamped<35?'var(--gl)':clamped>65?'var(--rd)':'var(--go)';
+    var h='<div class="ls-power">';
+    h+='<div class="ls-power-title">What Worked This Week?</div>';
+    h+='<div class="ls-power-sub">'+(cfg.name||'')+' · Event Average</div>';
+    h+='<div class="ls-gauge"><div class="ls-gauge-labels"><span>Control</span><span>Power</span></div>';
+    h+='<div class="ls-gauge-track"><div class="ls-gauge-fill" style="left:'+clamped+'%;background:'+clr+'"></div></div>';
+    h+='<div class="ls-gauge-val" style="color:'+clr+'">'+lbl+'</div></div>';
+    h+='<div class="ls-power-detail">';
+    h+='<div class="ls-pd-row"><span>Distance Advantage</span><span class="ls-pd-bar"><span style="width:'+Math.round(distSig*100)+'%;background:var(--rd)"></span></span><span>'+Math.round(distSig*100)+'%</span></div>';
+    h+='<div class="ls-pd-row"><span>Proximity Advantage</span><span class="ls-pd-bar"><span style="width:'+Math.round(proxSig*100)+'%;background:var(--gl)"></span></span><span>'+Math.round(proxSig*100)+'%</span></div>';
+    h+='</div>';
+    h+='<div style="font-size:.5rem;color:var(--td);padding:.3rem;text-align:center">Based on top-25 field ranks for distance and proximity · Source: DataGolf</div>';
+    h+='</div>';
+    bd.innerHTML=h;
+  }
+
+  function render(){
+    if(_view==='hm')renderHeatmap();
+    else if(_view==='holes')renderHoles();
+    else if(_view==='power')renderPower();
+  }
+
+  function setTab(v){
+    _view=v;
+    el.querySelectorAll('.ls-tab').forEach(function(b){
+      b.classList.toggle('active',
+        (v==='hm'&&b.textContent==='Performance')||
+        (v==='holes'&&b.textContent==='Toughest Holes')||
+        (v==='power'&&b.textContent==='Bomb vs. Control')
+      );
+    });
+    var helper=document.getElementById(id+'-helper');
+    if(helper){
+      var msgs={hm:'How each player ranks vs the field in key strokes-gained categories',holes:'Which holes played hardest and easiest across all rounds',power:'Did the course reward power or precision this week?'};
+      helper.textContent=msgs[v]||'';
+    }
+    render();
+  }
+
+  // Build panel HTML
+  var hasHoles=!!(holeData&&holeData.courses&&holeData.courses.length);
+  var html='<div class="ls-panel" style="margin-top:.5rem">';
+  html+='<div class="ls-header"><div class="ls-event-name"><span class="ls-live-dot" style="background:var(--go)"></span>'+(cfg.name||'Tournament')+'</div>';
+  html+='<div class="ls-header-right"><span style="font-size:.55rem;color:var(--td)">'+(cfg.venue||'')+' · '+(cfg.dates||'')+'</span></div></div>';
+  html+='<div class="ls-tabs">';
+  html+='<button class="ls-tab active" onclick="window._tp_'+id+'_tab(\'hm\')">Performance</button>';
+  if(hasHoles)html+='<button class="ls-tab" onclick="window._tp_'+id+'_tab(\'holes\')">Toughest Holes</button>';
+  html+='<button class="ls-tab" onclick="window._tp_'+id+'_tab(\'power\')">Bomb vs. Control</button>';
+  html+='</div>';
+  html+='<div id="'+id+'-helper" class="ls-helper">How each player ranks vs the field in key strokes-gained categories</div>';
+  html+=insightChips();
+  html+='<div id="'+id+'-body"></div>';
+  html+='</div>';
+  el.innerHTML=html;
+
+  // Expose scoped handlers on window
+  window['_tp_'+id+'_tab']=setTab;
+  window['_tp_'+id+'_filter']=function(){render();};
+  window['_tp_'+id+'_expand']=function(){_showAll=true;render();};
+  window['_tp_'+id+'_collapse']=function(){_showAll=false;render();};
+
   render();
 }
 
