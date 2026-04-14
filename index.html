@@ -619,6 +619,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 
 <!-- Masters Pool Standings (shown post-tournament) -->
 <div class="cd" id="masters-standings" style="display:none"></div>
+<div class="cd" id="mst-insights"></div>
 <div class="cd" id="mst-tourney"></div>
 
 <!-- Masters Outright Odds — Top 20 from sportsbooks -->
@@ -4337,6 +4338,95 @@ const POOL_RESULTS = {
       {rk:104,nm:'KlinkbeilJr',tp:8,rp:8,bn:0,win:540000,fed:82,td:1},
       {rk:105,nm:'Jordan Brock',tp:12,rp:12,bn:0,win:843750,fed:65,td:4},
       {rk:106,nm:'wbetts',tp:16,rp:16,bn:0,win:535500,fed:97,td:4}
+    ],
+    players: [
+      {pos:1,wr:2,nm:'Rory McIlroy',sal:9800,own:0.01,sc:-12,dkv:264.7,pk:1,pa:38,bi:24,ea:0,bo:8,db:2,tr:0,al:0},
+{pos:2,wr:1,nm:'Scottie Scheffler',sal:12400,own:0.16,sc:-11,dkv:249.7,pk:17,pa:53,bi:12,ea:2,bo:5,db:0,tr:0,al:0},
+{pos:3,wr:3,nm:'Cameron Young',sal:8100,own:0.25,sc:-10,dkv:250.2,pk:27,pa:44,bi:19,ea:0,bo:9,db:0,tr:0,al:0},
+{pos:3,wr:9,nm:'Justin Rose',sal:7800,own:0.31,sc:-10,dkv:251.1,pk:33,pa:44,bi:18,ea:0,bo:10,db:0,tr:0,al:0},
+{pos:3,wr:12,nm:'Russell Henley',sal:7700,own:0.06,sc:-10,dkv:251.4,pk:6,pa:40,bi:21,ea:0,bo:11,db:0,tr:0,al:0},
+{pos:3,wr:31,nm:'Tyrrell Hatton',sal:7000,own:0.07,sc:-10,dkv:253.5,pk:7,pa:44,bi:17,ea:1,bo:10,db:0,tr:0,al:0},
+{pos:7,wr:7,nm:'Collin Morikawa',sal:7700,own:0.01,sc:-9,dkv:243.7,pk:1,pa:41,bi:19,ea:1,bo:11,db:0,tr:0,al:0},
+{pos:7,wr:33,nm:'Sam Burns',sal:6800,own:0.01,sc:-9,dkv:247.3,pk:1,pa:46,bi:16,ea:1,bo:8,db:1,tr:0,al:0},
+{pos:9,wr:163,nm:'Max Homa',sal:6100,own:0.08,sc:-8,dkv:244.0,pk:8,pa:49,bi:13,ea:2,bo:7,db:1,tr:0,al:0},
+{pos:9,wr:10,nm:'Xander Schauffele',sal:7700,own:0.23,sc:-8,dkv:236.0,pk:24,pa:44,bi:17,ea:1,bo:10,db:0,tr:0,al:0},
+{pos:11,wr:42,nm:'Jake Knapp',sal:6700,own:0.08,sc:-7,dkv:234.3,pk:8,pa:36,bi:18,ea:2,bo:15,db:1,tr:0,al:0},
+{pos:12,wr:169,nm:'Brooks Koepka',sal:6100,own:0.08,sc:-5,dkv:225.7,pk:8,pa:37,bi:20,ea:0,bo:15,db:0,tr:0,al:0},
+{pos:12,wr:14,nm:'Hideki Matsuyama',sal:7300,own:0.13,sc:-5,dkv:216.1,pk:14,pa:35,bi:21,ea:0,bo:16,db:0,tr:0,al:0},
+{pos:12,wr:41,nm:'Jason Day',sal:6600,own:0.08,sc:-5,dkv:221.7,pk:8,pa:52,bi:13,ea:0,bo:6,db:1,tr:0,al:0},
+{pos:12,wr:61,nm:'Jordan Spieth',sal:6400,own:0.25,sc:-5,dkv:223.3,pk:27,pa:50,bi:12,ea:1,bo:9,db:0,tr:0,al:0},
+{pos:12,wr:35,nm:'Patrick Cantlay',sal:6800,own:0.05,sc:-5,dkv:220.1,pk:5,pa:52,bi:12,ea:0,bo:8,db:0,tr:0,al:0},
+{pos:12,wr:23,nm:'Patrick Reed',sal:7100,own:0.46,sc:-5,dkv:217.7,pk:49,pa:45,bi:14,ea:2,bo:10,db:1,tr:0,al:0},
+{pos:18,wr:6,nm:'Matthew Fitzpatrick',sal:7700,own:0.34,sc:-4,dkv:205.2,pk:36,pa:46,bi:16,ea:0,bo:8,db:2,tr:0,al:0},
+{pos:18,wr:27,nm:'Maverick McNealy',sal:6800,own:0.06,sc:-4,dkv:213.3,pk:6,pa:47,bi:15,ea:0,bo:10,db:0,tr:0,al:0},
+{pos:18,wr:22,nm:'Viktor Hovland',sal:7000,own:0.12,sc:-4,dkv:211.5,pk:13,pa:45,bi:17,ea:0,bo:7,db:3,tr:0,al:0},
+{pos:21,wr:26,nm:'Keegan Bradley',sal:6900,own:0.03,sc:-3,dkv:205.5,pk:3,pa:39,bi:19,ea:0,bo:12,db:2,tr:0,al:0},
+{pos:21,wr:17,nm:'Ludvig Aberg',sal:7200,own:0.26,sc:-3,dkv:202.5,pk:28,pa:38,bi:20,ea:0,bo:11,db:3,tr:0,al:0},
+{pos:21,wr:78,nm:'Wyndham Clark',sal:6300,own:0,sc:-3,dkv:211.5,pk:0,pa:47,bi:13,ea:1,bo:10,db:1,tr:0,al:0},
+{pos:24,wr:53,nm:'Adam Scott',sal:6500,own:0.07,sc:-2,dkv:203.0,pk:7,pa:48,bi:12,ea:1,bo:10,db:1,tr:0,al:0},
+{pos:24,wr:112,nm:'Brian Campbell',sal:6100,own:0.05,sc:-2,dkv:207.4,pk:5,pa:48,bi:13,ea:0,bo:11,db:0,tr:0,al:0},
+{pos:24,wr:11,nm:'Christopher Gotterup',sal:7600,own:0.07,sc:-2,dkv:190.9,pk:7,pa:43,bi:14,ea:1,bo:14,db:0,tr:0,al:0},
+{pos:24,wr:49,nm:'Matthew McCarty',sal:6500,own:0.01,sc:-2,dkv:203.0,pk:1,pa:48,bi:14,ea:0,bo:9,db:1,tr:0,al:0},
+{pos:24,wr:47,nm:'Michael Brennan',sal:6500,own:0.01,sc:-2,dkv:203.0,pk:1,pa:44,bi:15,ea:0,bo:12,db:1,tr:0,al:0},
+{pos:24,wr:45,nm:'Samuel Stevens',sal:6500,own:0.01,sc:-2,dkv:203.0,pk:1,pa:41,bi:17,ea:0,bo:13,db:1,tr:0,al:0},
+{pos:30,wr:19,nm:'Alex Noren',sal:7100,own:0.02,sc:-1,dkv:189.3,pk:2,pa:39,bi:18,ea:0,bo:14,db:1,tr:0,al:0},
+{pos:30,wr:20,nm:'Harris English',sal:7000,own:0.11,sc:-1,dkv:190.5,pk:12,pa:44,bi:15,ea:0,bo:11,db:2,tr:0,al:0},
+{pos:30,wr:32,nm:'Shane Lowry',sal:6700,own:0.08,sc:-1,dkv:194.1,pk:9,pa:43,bi:14,ea:2,bo:9,db:4,tr:0,al:0},
+{pos:33,wr:16,nm:'Ben Griffin',sal:7200,own:0.04,sc:0,dkv:180.9,pk:4,pa:49,bi:11,ea:0,bo:10,db:2,tr:0,al:0},
+{pos:33,wr:50,nm:'Brian Harman',sal:6500,own:0.04,sc:0,dkv:190.0,pk:4,pa:36,bi:19,ea:0,bo:14,db:3,tr:0,al:0},
+{pos:33,wr:593,nm:'Dustin Johnson',sal:5700,own:0,sc:0,dkv:200.4,pk:0,pa:55,bi:9,ea:0,bo:7,db:1,tr:0,al:0},
+{pos:33,wr:52,nm:'Gary Woodland',sal:6500,own:0.05,sc:0,dkv:190.0,pk:5,pa:47,bi:14,ea:0,bo:8,db:3,tr:0,al:0},
+{pos:33,wr:4,nm:'Tommy Fleetwood',sal:7800,own:0.15,sc:0,dkv:173.1,pk:16,pa:43,bi:12,ea:2,bo:14,db:1,tr:0,al:0},
+{pos:38,wr:84,nm:'Haotong Li',sal:6200,own:0.01,sc:1,dkv:187.7,pk:1,pa:41,bi:15,ea:2,bo:12,db:0,tr:2,al:0},
+{pos:38,wr:30,nm:'Jon Rahm',sal:6800,own:0.33,sc:1,dkv:179.3,pk:35,pa:46,bi:13,ea:0,bo:12,db:1,tr:0,al:0},
+{pos:38,wr:29,nm:'Ryan Gerard',sal:6800,own:0.02,sc:1,dkv:179.3,pk:2,pa:37,bi:16,ea:1,bo:17,db:1,tr:0,al:0},
+{pos:41,wr:18,nm:'Jacob Bridgeman',sal:7100,own:0.14,sc:2,dkv:168.0,pk:15,pa:45,bi:13,ea:0,bo:13,db:1,tr:0,al:0},
+{pos:41,wr:15,nm:'Justin Thomas',sal:7200,own:0.07,sc:2,dkv:166.5,pk:7,pa:49,bi:10,ea:0,bo:12,db:1,tr:0,al:0},
+{pos:41,wr:46,nm:'Kristoffer Reitan',sal:6500,own:0,sc:2,dkv:177.0,pk:0,pa:41,bi:15,ea:1,bo:13,db:2,tr:0,al:0},
+{pos:41,wr:67,nm:'Nick Taylor',sal:6300,own:0.03,sc:2,dkv:180.0,pk:3,pa:50,bi:10,ea:0,bo:12,db:0,tr:0,al:0},
+{pos:41,wr:13,nm:'Sepp Straka',sal:7300,own:0.08,sc:2,dkv:165.0,pk:8,pa:47,bi:12,ea:0,bo:13,db:0,tr:0,al:0},
+{pos:46,wr:71,nm:'Sungjae Im',sal:6300,own:0.08,sc:3,dkv:173.7,pk:9,pa:45,bi:13,ea:0,bo:12,db:2,tr:0,al:0},
+{pos:47,wr:28,nm:'Si Woo Kim',sal:6800,own:0.02,sc:4,dkv:158.9,pk:2,pa:45,bi:11,ea:0,bo:15,db:1,tr:0,al:0},
+{pos:48,wr:39,nm:'Aaron Rai',sal:6600,own:0,sc:5,dkv:155.7,pk:0,pa:49,bi:9,ea:1,bo:12,db:1,tr:0,al:0},
+{pos:49,wr:44,nm:'Corey Conners',sal:6500,own:0.18,sc:6,dkv:151.0,pk:19,pa:41,bi:11,ea:2,bo:15,db:3,tr:0,al:0},
+{pos:49,wr:37,nm:'Marco Penge',sal:6700,own:0.04,sc:6,dkv:147.2,pk:4,pa:44,bi:14,ea:0,bo:11,db:1,tr:2,al:0},
+{pos:51,wr:34,nm:'Kurt Kitayama',sal:6700,own:0,sc:7,dkv:140.5,pk:0,pa:42,bi:14,ea:0,bo:12,db:4,tr:0,al:0},
+{pos:52,wr:345,nm:'Sergio Garcia',sal:5800,own:0.01,sc:8,dkv:152.7,pk:1,pa:47,bi:10,ea:0,bo:13,db:2,tr:0,al:0},
+{pos:53,wr:57,nm:'Rasmus Hojgaard',sal:6400,own:0.02,sc:10,dkv:127.3,pk:2,pa:41,bi:13,ea:0,bo:14,db:3,tr:1,al:0},
+{pos:54,wr:566,nm:'Charl Schwartzel',sal:5700,own:0,sc:12,dkv:132.0,pk:0,pa:37,bi:13,ea:0,bo:19,db:3,tr:0,al:0},
+{pos:55,wr:702,nm:'Bubba Watson',sal:5700,own:0.01,sc:'CUT',dkv:92.1,pk:1,pa:19,bi:6,ea:0,bo:11,db:0,tr:0,al:0},
+{pos:55,wr:400,nm:'Danny Willett',sal:5700,own:0.01,sc:'CUT',dkv:92.1,pk:1,pa:19,bi:8,ea:0,bo:7,db:1,tr:1,al:0},
+{pos:55,wr:62,nm:'Harry Hall',sal:6300,own:0,sc:'CUT',dkv:72.9,pk:0,pa:22,bi:5,ea:0,bo:7,db:2,tr:0,al:0},
+{pos:55,wr:5,nm:'J.J. Spaun',sal:7600,own:0.05,sc:'CUT',dkv:31.3,pk:5,pa:23,bi:4,ea:0,bo:9,db:0,tr:0,al:0},
+{pos:55,wr:51,nm:'Ryan Fox',sal:6400,own:0.01,sc:'CUT',dkv:69.7,pk:1,pa:25,bi:3,ea:0,bo:8,db:0,tr:0,al:0},
+{pos:60,wr:21,nm:'Akshay Bhatia',sal:7000,own:0.15,sc:'CUT',dkv:43.5,pk:16,pa:17,bi:9,ea:0,bo:7,db:3,tr:0,al:0},
+{pos:60,wr:24,nm:'Bryson DeChambeau',sal:6900,own:0.37,sc:'CUT',dkv:46.8,pk:39,pa:22,bi:6,ea:0,bo:6,db:0,tr:2,al:0},
+{pos:60,wr:36,nm:'Nicolai Hojgaard',sal:6700,own:0.06,sc:'CUT',dkv:53.4,pk:6,pa:19,bi:5,ea:1,bo:9,db:2,tr:0,al:0},
+{pos:60,wr:321,nm:'Zach Johnson',sal:5800,own:0,sc:'CUT',dkv:83.1,pk:0,pa:23,bi:3,ea:0,bo:9,db:1,tr:0,al:0},
+{pos:64,wr:48,nm:'Andrew Novak',sal:6400,own:0.01,sc:'CUT',dkv:56.9,pk:1,pa:22,bi:4,ea:0,bo:9,db:1,tr:0,al:0},
+{pos:64,wr:222,nm:'Cameron Smith',sal:5900,own:0.08,sc:'CUT',dkv:73.9,pk:8,pa:21,bi:4,ea:0,bo:10,db:1,tr:0,al:0},
+{pos:64,wr:999,nm:'Rasmus Neergaard-Petersen',sal:5600,own:0.01,sc:'CUT',dkv:84.1,pk:1,pa:23,bi:3,ea:0,bo:10,db:0,tr:0,al:0},
+{pos:64,wr:8,nm:'Robert MacIntyre',sal:7500,own:0.18,sc:'CUT',dkv:19.5,pk:19,pa:22,bi:6,ea:0,bo:5,db:2,tr:1,al:0},
+{pos:64,wr:105,nm:'Tom McKibbin',sal:6100,own:0,sc:'CUT',dkv:67.1,pk:0,pa:22,bi:4,ea:0,bo:9,db:1,tr:0,al:0},
+{pos:69,wr:70,nm:'Casey Jarvis',sal:6300,own:0,sc:'CUT',dkv:54.0,pk:0,pa:25,bi:3,ea:0,bo:6,db:1,tr:1,al:0},
+{pos:69,wr:38,nm:'Daniel Berger',sal:6600,own:0.04,sc:'CUT',dkv:43.5,pk:4,pa:25,bi:2,ea:0,bo:8,db:1,tr:0,al:0},
+{pos:69,wr:999,nm:'Ethan Fang',sal:5600,own:0,sc:'CUT',dkv:78.5,pk:0,pa:23,bi:3,ea:0,bo:9,db:1,tr:0,al:0},
+{pos:69,wr:43,nm:'Michael Kim',sal:6500,own:0.02,sc:'CUT',dkv:47.0,pk:2,pa:22,bi:3,ea:0,bo:11,db:0,tr:0,al:0},
+{pos:74,wr:964,nm:'Fred Couples',sal:5700,own:0,sc:'CUT',dkv:69.3,pk:0,pa:23,bi:5,ea:0,bo:4,db:3,tr:1,al:0},
+{pos:74,wr:998,nm:'Jose Maria Olazabal',sal:5600,own:0,sc:'CUT',dkv:72.9,pk:0,pa:24,bi:3,ea:0,bo:5,db:4,tr:0,al:0},
+{pos:74,wr:999,nm:'Mason Howell',sal:5600,own:0,sc:'CUT',dkv:72.9,pk:0,pa:20,bi:5,ea:0,bo:9,db:2,tr:0,al:0},
+{pos:77,wr:988,nm:'Mike Weir',sal:5600,own:0,sc:'CUT',dkv:67.3,pk:0,pa:22,bi:3,ea:0,bo:8,db:3,tr:0,al:0},
+{pos:77,wr:1000,nm:'Vijay Singh',sal:5600,own:0,sc:'CUT',dkv:67.3,pk:0,pa:22,bi:2,ea:0,bo:12,db:0,tr:0,al:0},
+{pos:79,wr:161,nm:'Carlos Ortiz',sal:6000,own:0.01,sc:'CUT',dkv:46.5,pk:1,pa:19,bi:4,ea:0,bo:11,db:2,tr:0,al:0},
+{pos:79,wr:64,nm:'John Keefer',sal:6300,own:0,sc:'CUT',dkv:35.1,pk:0,pa:22,bi:2,ea:0,bo:11,db:1,tr:0,al:0},
+{pos:79,wr:25,nm:'Min Woo Lee',sal:6800,own:0.08,sc:'CUT',dkv:16.1,pk:9,pa:22,bi:2,ea:0,bo:10,db:2,tr:0,al:0},
+{pos:79,wr:56,nm:'Sami Valimaki',sal:6400,own:0.02,sc:'CUT',dkv:31.3,pk:2,pa:25,bi:1,ea:0,bo:8,db:2,tr:0,al:0},
+{pos:84,wr:59,nm:'Max Greyserman',sal:6300,own:0.01,sc:'CUT',dkv:28.8,pk:1,pa:20,bi:3,ea:0,bo:11,db:2,tr:0,al:0},
+{pos:85,wr:40,nm:'Nicolas Echavarria',sal:6600,own:0.05,sc:'CUT',dkv:10.5,pk:5,pa:17,bi:5,ea:0,bo:10,db:3,tr:1,al:0},
+{pos:86,wr:77,nm:'Aldrich Potgieter',sal:6200,own:0.01,sc:'CUT',dkv:14.1,pk:1,pa:15,bi:4,ea:1,bo:11,db:5,tr:0,al:0},
+{pos:86,wr:372,nm:'Naoyuki Kataoka',sal:5800,own:0,sc:'CUT',dkv:30.9,pk:0,pa:12,bi:7,ea:0,bo:12,db:5,tr:0,al:0},
+{pos:90,wr:993,nm:'Ángel Cabrera',sal:5600,own:0,sc:'CUT',dkv:33.7,pk:0,pa:20,bi:2,ea:0,bo:11,db:2,tr:1,al:0},
+{pos:91,wr:120,nm:'Davis Riley',sal:6100,own:0.01,sc:'CUT',dkv:0,pk:1,pa:17,bi:3,ea:0,bo:12,db:4,tr:0,al:0}
     ]
   }
 };
@@ -5507,6 +5597,10 @@ function checkMastersLive(){
   // If final results exist, show standings and hide live/odds panels
   if(POOL_RESULTS[14]){
     renderMastersStandings();
+    // Pool Pick Analysis
+    if(POOL_RESULTS[14].players){
+      renderTpcInsights(POOL_RESULTS[14],'mst-insights',106);
+    }
     // Tournament analysis panel
     if(typeof MASTERS_LIVE_STATS!=='undefined'&&MASTERS_LIVE_STATS.length){
       renderTourneyPanel('mst-tourney',MASTERS_LIVE_STATS,typeof MASTERS_HOLE_STATS!=='undefined'?MASTERS_HOLE_STATS:null,{name:'Masters Tournament',venue:'Augusta National',dates:'Apr 9–13'});
@@ -6182,9 +6276,9 @@ function renderTpcRecap(){
   };
 }
 
-function renderTpcInsights(pr){
-  const el=document.getElementById('tpc-insights');if(!el)return;
-  const p=pr.players;const totalEntries=107;
+function renderTpcInsights(pr,targetId,entryCount){
+  const el=document.getElementById(targetId||'tpc-insights');if(!el)return;
+  const p=pr.players;const totalEntries=entryCount||107;
   // Helper: bar row — barVal/barMax drive bar width, defaults to picks
   const barRow=(v,barMax,clr,barVal)=>{
     const bv=barVal!=null?barVal:v.pk;
@@ -6205,7 +6299,7 @@ function renderTpcInsights(pr){
   const card=(id,title,sub,items,clr,barKey)=>{
     const bk=barKey||'pk';
     const cardMax=Math.max(...items.map(x=>Math.abs(x[bk]||0)),1);
-    const cid='ppa-'+(++_cardN);
+    const cid=(targetId||'ppa')+'-'+(++_cardN);
     let c='<div class="ib" style="padding:.5rem .6rem">';
     c+='<div class="it" style="margin-bottom:.1rem">'+title+'</div>';
     if(sub)c+='<div style="font-size:.5rem;color:var(--td);margin-bottom:.3rem">'+sub+'</div>';
