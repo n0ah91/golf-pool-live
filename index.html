@@ -51,6 +51,9 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .sc{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.25rem .3rem;text-align:center}
 .sc .v{font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--tb)}.sc .v.go{color:var(--go)}.sc .v.gl{color:var(--gl)}
 .sc .l{font-size:.45rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ts);margin-top:.02rem}
+tbody tr.dnp td{opacity:.55;background:repeating-linear-gradient(45deg,var(--bm),var(--bm) 4px,rgba(138,154,143,.06) 4px,rgba(138,154,143,.06) 8px)!important}
+tbody tr.dnp:hover td{opacity:.8}
+.dnp-tag{display:inline-block;font-family:var(--fb);font-size:.5rem;font-weight:600;letter-spacing:.06em;margin-left:.3rem;padding:1px 4px;border-radius:3px;background:rgba(138,154,143,.18);color:var(--ts);vertical-align:.05em}
 .te{display:inline-block;font-family:var(--fb);font-size:.5rem;font-weight:500;font-style:italic;letter-spacing:.04em;margin-left:.3rem;opacity:.65;vertical-align:.05em;text-transform:lowercase}
 .te.og{color:var(--go);font-weight:600;opacity:.75}
 .te.rk{color:var(--gl)}
@@ -4074,8 +4077,8 @@ const POOL_RESULTS = {
       {rk:2,nm:"Vandelay Industries",tp:-68,rp:-41,bn:-27,r:[273,265,289,284],win:325,fed:1575,td:5},
       {rk:3,nm:"dwilhelm",tp:-68,rp:-41,bn:-27,r:[275,265,290,281],win:200,fed:1575,td:7},
       {rk:4,nm:"Luckyducks",tp:-63,rp:-39,bn:-24,r:[274,266,288,285],win:125,fed:1456,td:3},
-      {rk:5,nm:"Ryan Smith",tp:-61,rp:-36,bn:-25,r:[279,269,282,286],win:37.5,fed:1551,td:5},
       {rk:5,nm:"DavidAke",tp:-61,rp:-39,bn:-22,r:[276,275,283,279],win:37.5,fed:1531,td:5},
+      {rk:5,nm:"Ryan Smith",tp:-61,rp:-36,bn:-25,r:[279,269,282,286],win:37.5,fed:1551,td:5},
       {rk:7,nm:"dfirth",tp:-60,rp:-38,bn:-22,r:[274,275,288,277],win:0,fed:1425,td:1},
       {rk:8,nm:"My Favorite Fairportian",tp:-58,rp:-36,bn:-22,r:[282,275,276,283],win:0,fed:1352,td:6},
       {rk:9,nm:"Kengolf",tp:-58,rp:-34,bn:-24,r:[276,267,292,283],win:0,fed:1394,td:9},
@@ -4094,89 +4097,90 @@ const POOL_RESULTS = {
       {rk:22,nm:"krgolfer18",tp:-42,rp:-31,bn:-11,r:[278,274,288,281],win:0,fed:712,td:0},
       {rk:23,nm:"Pewey31",tp:-42,rp:-29,bn:-13,r:[274,276,287,286],win:0,fed:1057,td:3},
       {rk:24,nm:"Young_Falcon",tp:-41,rp:-25,bn:-16,r:[280,270,294,283],win:0,fed:1070,td:1},
-      {rk:25,nm:"plush-top-9943",tp:-41,rp:-31,bn:-10,r:[287,272,278,284],win:0,fed:1028,td:2},
-      {rk:26,nm:"Mark Regan",tp:-40,rp:-24,bn:-16,r:[280,274,287,287],win:0,fed:1077,td:1},
-      {rk:27,nm:"jfirth",tp:-40,rp:-29,bn:-11,r:[275,278,285,285],win:0,fed:678,td:2},
-      {rk:28,nm:"Burkey's Bogeys",tp:-39,rp:-26,bn:-13,r:[276,280,283,287],win:0,fed:1044,td:2},
-      {rk:29,nm:"ScottSummerson",tp:-39,rp:-29,bn:-10,r:[280,282,276,285],win:0,fed:658,td:3},
-      {rk:30,nm:"Putt Before U Nut",tp:-39,rp:-28,bn:-11,r:[277,277,292,278],win:0,fed:670,td:5},
-      {rk:31,nm:"Big Al",tp:-38,rp:-29,bn:-9,r:[283,271,282,287],win:0,fed:637,td:2},
-      {rk:31,nm:"Max Prosser",tp:-38,rp:-29,bn:-9,r:[277,273,281,292],win:0,fed:637,td:2},
-      {rk:33,nm:"CornerstoneCowboy",tp:-38,rp:-29,bn:-9,r:[283,277,284,279],win:0,fed:637,td:3},
-      {rk:34,nm:"Toastking12",tp:-37,rp:-20,bn:-17,r:[282,282,289,279],win:0,fed:896,td:3},
-      {rk:35,nm:"Scharf's Horseman",tp:-36,rp:-24,bn:-12,r:[277,283,292,276],win:0,fed:758,td:3},
-      {rk:36,nm:"rjm",tp:-35,rp:-24,bn:-11,r:[286,273,283,286],win:0,fed:644,td:5},
-      {rk:36,nm:"WilkinsFam",tp:-35,rp:-26,bn:-9,r:[274,276,290,286],win:0,fed:595,td:5},
-      {rk:38,nm:"Ian Rapp",tp:-35,rp:-19,bn:-16,r:[282,274,282,295],win:0,fed:1049,td:6},
-      {rk:39,nm:"Broadway",tp:-34,rp:-25,bn:-9,r:[271,278,282,296],win:0,fed:582,td:0},
-      {rk:40,nm:"Travis Shevlin",tp:-34,rp:-20,bn:-14,r:[281,272,288,291],win:0,fed:657,td:1},
-      {rk:41,nm:"Aldo",tp:-34,rp:-23,bn:-11,r:[276,275,286,292],win:0,fed:642,td:15},
-      {rk:42,nm:"Lady golfer",tp:-33,rp:-25,bn:-8,r:[289,275,280,283],win:0,fed:573,td:2},
-      {rk:43,nm:"NFoley",tp:-32,rp:-22,bn:-10,r:[283,286,276,285],win:0,fed:617,td:8},
-      {rk:44,nm:"tbane22",tp:-32,rp:-23,bn:-9,r:[285,277,289,278],win:0,fed:703,td:23},
-      {rk:45,nm:"BigRicks",tp:-31,rp:-22,bn:-9,r:[278,275,286,291],win:0,fed:541,td:2},
-      {rk:45,nm:"Justin Alves",tp:-31,rp:-22,bn:-9,r:[277,276,282,295],win:0,fed:569,td:2},
-      {rk:45,nm:"MParekh10",tp:-31,rp:-20,bn:-11,r:[279,280,291,282],win:0,fed:600,td:2},
-      {rk:48,nm:"Dylan Smith",tp:-31,rp:-22,bn:-9,r:[280,282,287,281],win:0,fed:541,td:5},
-      {rk:49,nm:"Jmeesh27",tp:-30,rp:-24,bn:-6,r:[283,273,286,286],win:0,fed:476,td:1},
-      {rk:50,nm:"long-draw-1117",tp:-30,rp:-14,bn:-16,r:[281,276,289,292],win:0,fed:1043,td:5},
-      {rk:51,nm:"Brendan",tp:-29,rp:-21,bn:-8,r:[283,277,282,289],win:0,fed:523,td:3},
-      {rk:52,nm:"Duder",tp:-28,rp:-22,bn:-6,r:[277,286,292,275],win:0,fed:478,td:2},
-      {rk:53,nm:"PapaDaws",tp:-28,rp:-25,bn:-3,r:[276,281,282,288],win:0,fed:414,td:3},
-      {rk:53,nm:"Putt4Dough",tp:-28,rp:-18,bn:-10,r:[277,283,285,289],win:0,fed:821,td:3},
-      {rk:55,nm:"MoWil",tp:-28,rp:-18,bn:-10,r:[286,281,282,285],win:0,fed:860,td:4},
-      {rk:56,nm:"KlinkbeilJr",tp:-27,rp:-21,bn:-6,r:[280,272,286,293],win:0,fed:453,td:2},
-      {rk:57,nm:"Jhamlin",tp:-26,rp:-20,bn:-6,r:[281,277,280,294],win:0,fed:450,td:1},
-      {rk:58,nm:"Jordan Brock",tp:-26,rp:-16,bn:-10,r:[280,283,278,295],win:0,fed:815,td:3},
-      {rk:59,nm:"The Pelican",tp:-26,rp:-20,bn:-6,r:[286,281,282,283],win:0,fed:400,td:5},
-      {rk:60,nm:"Chuck Jackson",tp:-25,rp:-17,bn:-8,r:[280,280,288,287],win:0,fed:463,td:2},
-      {rk:61,nm:"Kevin Struempfler",tp:-25,rp:-22,bn:-3,r:[277,284,282,287],win:0,fed:388,td:3},
-      {rk:62,nm:"chrobb",tp:-25,rp:-22,bn:-3,r:[273,285,281,291],win:0,fed:388,td:5},
-      {rk:63,nm:"big-sled-6647",tp:-24,rp:-21,bn:-3,r:[278,284,289,280],win:0,fed:381,td:2},
-      {rk:64,nm:"Ronners",tp:-24,rp:-18,bn:-6,r:[280,280,288,286],win:0,fed:401,td:15},
-      {rk:65,nm:"keen-arm-9499",tp:-23,rp:-4,bn:-19,r:[286,280,290,292],win:0,fed:1263,td:6},
-      {rk:66,nm:"CowboyMonkey",tp:-23,rp:-20,bn:-3,r:[280,282,285,285],win:0,fed:359,td:12},
-      {rk:67,nm:"Heartherors",tp:-22,rp:-19,bn:-3,r:[281,281,279,292],win:0,fed:375,td:1},
-      {rk:67,nm:"Chris McLeod",tp:-22,rp:-19,bn:-3,r:[279,284,281,289],win:0,fed:375,td:1},
-      {rk:69,nm:"Lewy",tp:-21,rp:-18,bn:-3,r:[279,291,279,285],win:0,fed:317,td:1},
-      {rk:70,nm:"Andrew Pikul",tp:-21,rp:-15,bn:-6,r:[280,277,280,300],win:0,fed:393,td:2},
-      {rk:71,nm:"wbetts",tp:-20,rp:-20,r:[282,284,284,282],win:0,fed:253,td:1},
-      {rk:72,nm:"BTR",tp:-20,rp:-17,bn:-3,r:[277,283,288,287],win:0,fed:326,td:3},
-      {rk:73,nm:"Kyle K",tp:-19,rp:-16,bn:-3,r:[281,285,286,284],win:0,fed:333,td:5},
-      {rk:74,nm:"TBrown",tp:-18,rp:-18,r:[277,288,277,292],win:0,fed:235,td:1},
-      {rk:74,nm:"We've Got Balls",tp:-18,rp:-15,bn:-3,r:[283,283,280,291],win:0,fed:320,td:1},
-      {rk:76,nm:"JWIII",tp:-17,rp:-17,r:[280,285,290,280],win:0,fed:227,td:1},
-      {rk:76,nm:"Commish",tp:-17,rp:-17,r:[287,278,283,287],win:0,fed:227,td:1},
-      {rk:78,nm:"apslotnick",tp:-16,rp:-13,bn:-3,r:[283,284,288,284],win:0,fed:311,td:3},
-      {rk:79,nm:"Will Tennant",tp:-16,rp:-13,bn:-3,r:[276,286,285,292],win:0,fed:271,td:5},
-      {rk:80,nm:"Schad",tp:-14,rp:-8,bn:-6,r:[280,282,275,307],win:0,fed:325,td:5},
-      {rk:81,nm:"Chris Edwards",tp:-13,rp:-13,r:[284,284,279,292],win:0,fed:201,td:1},
-      {rk:82,nm:"TheGunners",tp:-13,rp:-13,r:[284,284,279,292],win:0,fed:201,td:3},
-      {rk:82,nm:"David Wheeler",tp:-13,rp:-7,bn:-6,r:[284,279,285,297],win:0,fed:318,td:3},
-      {rk:84,nm:"Dude, Where's My Par",tp:-13,rp:-13,r:[279,289,284,287],win:0,fed:172,td:4},
-      {rk:85,nm:"Greyson",tp:-13,rp:-7,bn:-6,r:[280,281,285,299],win:0,fed:374,td:6},
-      {rk:86,nm:"SOStancamp",tp:-12,rp:-12,r:[280,285,292,283],win:0,fed:165,td:0},
-      {rk:87,nm:"Ollie Janzen",tp:-11,rp:-11,r:[287,284,288,282],win:0,fed:162,td:1},
-      {rk:88,nm:"Fluffyhead",tp:-11,rp:-11,r:[280,283,274,304],win:0,fed:170,td:3},
-      {rk:88,nm:"Modesti",tp:-11,rp:-11,r:[284,285,281,291],win:0,fed:130,td:3},
-      {rk:90,nm:"smak",tp:-10,rp:-10,r:[284,284,283,291],win:0,fed:159,td:2},
-      {rk:91,nm:"dan_firth",tp:-9,rp:-9,r:[289,284,281,289],win:0,fed:130,td:2},
-      {rk:92,nm:"ryankozack",tp:-9,rp:-9,r:[282,289,281,291],win:0,fed:146,td:8},
-      {rk:93,nm:"Crying Koepkas",tp:-8,rp:-8,r:[284,284,282,294],win:0,fed:139,td:3},
-      {rk:94,nm:"THE-SUPERB-OWL-142",tp:-7,rp:-7,r:[286,289,276,294],win:0,fed:155,td:7},
-      {rk:95,nm:"mtown10",tp:-5,rp:-5,r:[287,286,276,298],win:0,fed:131,td:1},
-      {rk:96,nm:"Matthew Cramer",tp:-3,rp:3,bn:-6,r:[288,273,292,302],win:0,fed:382,td:3},
-      {rk:97,nm:"Jordman8",tp:-1,rp:-1,r:[289,285,289,288],win:0,fed:127,td:3},
-      {rk:98,nm:"Firth",tp:0,rp:3,bn:-3,r:[283,281,302,289],win:0,fed:320,td:2},
-      {rk:99,nm:"TuliusJamasy",tp:1,rp:7,bn:-6,r:[291,277,293,298],win:0,fed:372,td:2},
-      {rk:100,nm:"tjnovak11",tp:2,rp:5,bn:-3,r:[282,281,295,299],win:0,fed:307,td:0},
-      {rk:101,nm:"Team Lowe",tp:3,rp:3,r:[283,288,290,294],win:0,fed:117,td:8},
-      {rk:102,nm:"Jennings",tp:4,rp:7,bn:-3,r:[286,285,291,297],win:0,fed:294,td:3},
-      {rk:103,nm:"m.manilla",tp:5,rp:8,bn:-3,r:[285,285,294,296],win:0,fed:292,td:5},
-      {rk:104,nm:"EddieZdo",tp:12,rp:12,r:[287,291,287,299],win:0,fed:146,td:0},
-      {rk:104,nm:"JWIII #2",tp:12,rp:12,r:[284,295,295,290],win:0,fed:112,td:0},
-      {rk:106,nm:"Bpratt",tp:17,rp:25,bn:-8,r:[288,280,303,306],win:0,fed:402,td:3},
-      {rk:107,nm:"Reid30",tp:31,rp:34,bn:-3,r:[287,290,302,307],win:0,fed:213,td:1}
+      {rk:25,nm:"Mark Regan",tp:-40,rp:-24,bn:-16,r:[280,274,287,287],win:0,fed:1077,td:1},
+      {rk:26,nm:"jfirth",tp:-40,rp:-29,bn:-11,r:[275,278,285,285],win:0,fed:678,td:2},
+      {rk:27,nm:"Burkey's Bogeys",tp:-39,rp:-26,bn:-13,r:[276,280,283,287],win:0,fed:1044,td:2},
+      {rk:28,nm:"ScottSummerson",tp:-39,rp:-29,bn:-10,r:[280,282,276,285],win:0,fed:658,td:3},
+      {rk:29,nm:"Putt Before U Nut",tp:-39,rp:-28,bn:-11,r:[277,277,292,278],win:0,fed:670,td:5},
+      {rk:30,nm:"Big Al",tp:-38,rp:-29,bn:-9,r:[283,271,282,287],win:0,fed:637,td:2},
+      {rk:30,nm:"Max Prosser",tp:-38,rp:-29,bn:-9,r:[277,273,281,292],win:0,fed:637,td:2},
+      {rk:32,nm:"CornerstoneCowboy",tp:-38,rp:-29,bn:-9,r:[283,277,284,279],win:0,fed:637,td:3},
+      {rk:33,nm:"Toastking12",tp:-37,rp:-20,bn:-17,r:[282,282,289,279],win:0,fed:896,td:3},
+      {rk:34,nm:"Scharf's Horseman",tp:-36,rp:-24,bn:-12,r:[277,283,292,276],win:0,fed:758,td:3},
+      {rk:35,nm:"WilkinsFam",tp:-35,rp:-26,bn:-9,r:[274,276,290,286],win:0,fed:595,td:5},
+      {rk:35,nm:"rjm",tp:-35,rp:-24,bn:-11,r:[286,273,283,286],win:0,fed:644,td:5},
+      {rk:37,nm:"Ian Rapp",tp:-35,rp:-19,bn:-16,r:[282,274,282,295],win:0,fed:1049,td:6},
+      {rk:38,nm:"Broadway",tp:-34,rp:-25,bn:-9,r:[271,278,282,296],win:0,fed:582,td:0},
+      {rk:39,nm:"Travis Shevlin",tp:-34,rp:-20,bn:-14,r:[281,272,288,291],win:0,fed:657,td:1},
+      {rk:40,nm:"Aldo",tp:-34,rp:-23,bn:-11,r:[276,275,286,292],win:0,fed:642,td:15},
+      {rk:41,nm:"Lady golfer",tp:-33,rp:-25,bn:-8,r:[289,275,280,283],win:0,fed:573,td:2},
+      {rk:42,nm:"NFoley",tp:-32,rp:-22,bn:-10,r:[283,286,276,285],win:0,fed:617,td:8},
+      {rk:43,nm:"tbane22",tp:-32,rp:-23,bn:-9,r:[285,277,289,278],win:0,fed:703,td:23},
+      {rk:44,nm:"BigRicks",tp:-31,rp:-22,bn:-9,r:[278,275,286,291],win:0,fed:541,td:2},
+      {rk:44,nm:"Justin Alves",tp:-31,rp:-22,bn:-9,r:[277,276,282,295],win:0,fed:569,td:2},
+      {rk:44,nm:"MParekh10",tp:-31,rp:-20,bn:-11,r:[279,280,291,282],win:0,fed:600,td:2},
+      {rk:47,nm:"Dylan Smith",tp:-31,rp:-22,bn:-9,r:[280,282,287,281],win:0,fed:541,td:5},
+      {rk:48,nm:"Jmeesh27",tp:-30,rp:-24,bn:-6,r:[283,273,286,286],win:0,fed:476,td:1},
+      {rk:49,nm:"long-draw-1117",tp:-30,rp:-14,bn:-16,r:[281,276,289,292],win:0,fed:1043,td:5},
+      {rk:50,nm:"Brendan",tp:-29,rp:-21,bn:-8,r:[283,277,282,289],win:0,fed:523,td:3},
+      {rk:51,nm:"Duder",tp:-28,rp:-22,bn:-6,r:[277,286,292,275],win:0,fed:478,td:2},
+      {rk:52,nm:"PapaDaws",tp:-28,rp:-25,bn:-3,r:[276,281,282,288],win:0,fed:414,td:3},
+      {rk:52,nm:"Putt4Dough",tp:-28,rp:-18,bn:-10,r:[277,283,285,289],win:0,fed:821,td:3},
+      {rk:54,nm:"MoWil",tp:-28,rp:-18,bn:-10,r:[286,281,282,285],win:0,fed:860,td:4},
+      {rk:55,nm:"KlinkbeilJr",tp:-27,rp:-21,bn:-6,r:[280,272,286,293],win:0,fed:453,td:2},
+      {rk:56,nm:"Jhamlin",tp:-26,rp:-20,bn:-6,r:[281,277,280,294],win:0,fed:450,td:1},
+      {rk:57,nm:"Jordan Brock",tp:-26,rp:-16,bn:-10,r:[280,283,278,295],win:0,fed:815,td:3},
+      {rk:58,nm:"The Pelican",tp:-26,rp:-20,bn:-6,r:[286,281,282,283],win:0,fed:400,td:5},
+      {rk:59,nm:"Chuck Jackson",tp:-25,rp:-17,bn:-8,r:[280,280,288,287],win:0,fed:463,td:2},
+      {rk:60,nm:"Kevin Struempfler",tp:-25,rp:-22,bn:-3,r:[277,284,282,287],win:0,fed:388,td:3},
+      {rk:61,nm:"chrobb",tp:-25,rp:-22,bn:-3,r:[273,285,281,291],win:0,fed:388,td:5},
+      {rk:62,nm:"big-sled-6647",tp:-24,rp:-21,bn:-3,r:[278,284,289,280],win:0,fed:381,td:2},
+      {rk:63,nm:"Ronners",tp:-24,rp:-18,bn:-6,r:[280,280,288,286],win:0,fed:401,td:15},
+      {rk:64,nm:"keen-arm-9499",tp:-23,rp:-4,bn:-19,r:[286,280,290,292],win:0,fed:1263,td:6},
+      {rk:65,nm:"CowboyMonkey",tp:-23,rp:-20,bn:-3,r:[280,282,285,285],win:0,fed:359,td:12},
+      {rk:66,nm:"Chris McLeod",tp:-22,rp:-19,bn:-3,r:[279,284,281,289],win:0,fed:375,td:1},
+      {rk:66,nm:"Heartherors",tp:-22,rp:-19,bn:-3,r:[281,281,279,292],win:0,fed:375,td:1},
+      {rk:68,nm:"Lewy",tp:-21,rp:-18,bn:-3,r:[279,291,279,285],win:0,fed:317,td:1},
+      {rk:69,nm:"Andrew Pikul",tp:-21,rp:-15,bn:-6,r:[280,277,280,300],win:0,fed:393,td:2},
+      {rk:70,nm:"wbetts",tp:-20,rp:-20,r:[282,284,284,282],win:0,fed:253,td:1},
+      {rk:71,nm:"BTR",tp:-20,rp:-17,bn:-3,r:[277,283,288,287],win:0,fed:326,td:3},
+      {rk:72,nm:"Kyle K",tp:-19,rp:-16,bn:-3,r:[281,285,286,284],win:0,fed:333,td:5},
+      {rk:73,nm:"TBrown",tp:-18,rp:-18,r:[277,288,277,292],win:0,fed:235,td:1},
+      {rk:73,nm:"We've Got Balls",tp:-18,rp:-15,bn:-3,r:[283,283,280,291],win:0,fed:320,td:1},
+      {rk:75,nm:"Commish",tp:-17,rp:-17,r:[287,278,283,287],win:0,fed:227,td:1},
+      {rk:75,nm:"JWIII",tp:-17,rp:-17,r:[280,285,290,280],win:0,fed:227,td:1},
+      {rk:77,nm:"apslotnick",tp:-16,rp:-13,bn:-3,r:[283,284,288,284],win:0,fed:311,td:3},
+      {rk:78,nm:"Will Tennant",tp:-16,rp:-13,bn:-3,r:[276,286,285,292],win:0,fed:271,td:5},
+      {rk:79,nm:"Schad",tp:-14,rp:-8,bn:-6,r:[280,282,275,307],win:0,fed:325,td:5},
+      {rk:80,nm:"Chris Edwards",tp:-13,rp:-13,r:[284,284,279,292],win:0,fed:201,td:1},
+      {rk:81,nm:"David Wheeler",tp:-13,rp:-7,bn:-6,r:[284,279,285,297],win:0,fed:318,td:3},
+      {rk:81,nm:"TheGunners",tp:-13,rp:-13,r:[284,284,279,292],win:0,fed:201,td:3},
+      {rk:83,nm:"Dude, Where's My Par",tp:-13,rp:-13,r:[279,289,284,287],win:0,fed:172,td:4},
+      {rk:84,nm:"Greyson",tp:-13,rp:-7,bn:-6,r:[280,281,285,299],win:0,fed:374,td:6},
+      {rk:85,nm:"SOStancamp",tp:-12,rp:-12,r:[280,285,292,283],win:0,fed:165,td:0},
+      {rk:86,nm:"Ollie Janzen",tp:-11,rp:-11,r:[287,284,288,282],win:0,fed:162,td:1},
+      {rk:87,nm:"Fluffyhead",tp:-11,rp:-11,r:[280,283,274,304],win:0,fed:170,td:3},
+      {rk:87,nm:"Modesti",tp:-11,rp:-11,r:[284,285,281,291],win:0,fed:130,td:3},
+      {rk:89,nm:"smak",tp:-10,rp:-10,r:[284,284,283,291],win:0,fed:159,td:2},
+      {rk:90,nm:"dan_firth",tp:-9,rp:-9,r:[289,284,281,289],win:0,fed:130,td:2},
+      {rk:91,nm:"ryankozack",tp:-9,rp:-9,r:[282,289,281,291],win:0,fed:146,td:8},
+      {rk:92,nm:"Crying Koepkas",tp:-8,rp:-8,r:[284,284,282,294],win:0,fed:139,td:3},
+      {rk:93,nm:"THE-SUPERB-OWL-142",tp:-7,rp:-7,r:[286,289,276,294],win:0,fed:155,td:7},
+      {rk:94,nm:"mtown10",tp:-5,rp:-5,r:[287,286,276,298],win:0,fed:131,td:1},
+      {rk:95,nm:"Matthew Cramer",tp:-3,rp:3,bn:-6,r:[288,273,292,302],win:0,fed:382,td:3},
+      {rk:96,nm:"Jordman8",tp:-1,rp:-1,r:[289,285,289,288],win:0,fed:127,td:3},
+      {rk:97,nm:"Firth",tp:0,rp:3,bn:-3,r:[283,281,302,289],win:0,fed:320,td:2},
+      {rk:98,nm:"TuliusJamasy",tp:1,rp:7,bn:-6,r:[291,277,293,298],win:0,fed:372,td:2},
+      {rk:99,nm:"tjnovak11",tp:2,rp:5,bn:-3,r:[282,281,295,299],win:0,fed:307,td:0},
+      {rk:100,nm:"Team Lowe",tp:3,rp:3,r:[283,288,290,294],win:0,fed:117,td:8},
+      {rk:101,nm:"Jennings",tp:4,rp:7,bn:-3,r:[286,285,291,297],win:0,fed:294,td:3},
+      {rk:102,nm:"m.manilla",tp:5,rp:8,bn:-3,r:[285,285,294,296],win:0,fed:292,td:5},
+      {rk:103,nm:"EddieZdo",tp:12,rp:12,r:[287,291,287,299],win:0,fed:146,td:0},
+      {rk:103,nm:"JWIII #2",tp:12,rp:12,r:[284,295,295,290],win:0,fed:112,td:0},
+      {rk:105,nm:"Bpratt",tp:17,rp:25,bn:-8,r:[288,280,303,306],win:0,fed:402,td:3},
+      {rk:106,nm:"Reid30",tp:31,rp:34,bn:-3,r:[287,290,302,307],win:0,fed:213,td:1},
+      {rk:107,nm:"BillHoffman",tp:32,win:0,td:999,_dnp:true},
+      {rk:108,nm:"Tim Maleck",tp:32,win:0,td:999,_dnp:true}
     ],
     players: [
       {pos:1,wr:15,nm:'Cameron Young',sal:7700,own:0.26,sc:-13,dkv:402.7,pk:28,pa:45,bi:20,ea:0,bo:5,db:1,tr:0,al:0},
@@ -4289,8 +4293,8 @@ const POOL_RESULTS = {
       {rk:5,nm:"Jhamlin",tp:-51,rp:-33,bn:-18,r:[285,281,274,279],win:75,fed:916,td:263},
       {rk:6,nm:"Luckyducks",tp:-49,rp:-30,bn:-19,r:[280,285,277,280],win:0,fed:1396,td:1},
       {rk:7,nm:"Jordman8",tp:-48,rp:-32,bn:-16,r:[288,275,275,282],win:0,fed:883,td:0},
-      {rk:8,nm:"Neill Stokes",tp:-48,rp:-31,bn:-17,r:[292,285,267,277],win:0,fed:1017,td:1},
       {rk:8,nm:"Max Prosser",tp:-48,rp:-30,bn:-18,r:[287,275,277,283],win:0,fed:858,td:1},
+      {rk:8,nm:"Neill Stokes",tp:-48,rp:-31,bn:-17,r:[292,285,267,277],win:0,fed:1017,td:1},
       {rk:10,nm:"Tim Maleck",tp:-46,rp:-27,bn:-19,r:[281,287,274,283],win:0,fed:1021,td:0},
       {rk:11,nm:"Crying Koepkas",tp:-46,rp:-30,bn:-16,r:[284,274,277,287],win:0,fed:728,td:2},
       {rk:11,nm:"Mark Regan",tp:-46,rp:-30,bn:-16,r:[284,282,277,279],win:0,fed:728,td:2},
@@ -4349,22 +4353,22 @@ const POOL_RESULTS = {
       {rk:65,nm:"The Pelican",tp:-20,rp:-12,bn:-8,r:[292,282,276,290],win:0,fed:421,td:4},
       {rk:66,nm:"andersanders",tp:-19,rp:-10,bn:-9,r:[288,290,277,287],win:0,fed:639,td:1},
       {rk:67,nm:"Kyle K",tp:-19,rp:-17,bn:-2,r:[286,282,282,285],win:0,fed:276,td:4},
-      {rk:68,nm:"Justin Alves",tp:-18,rp:-16,bn:-2,r:[297,282,285,272],win:0,fed:355,td:0},
       {rk:68,nm:"Duder",tp:-18,rp:-16,bn:-2,r:[291,280,285,280],win:0,fed:253,td:0},
+      {rk:68,nm:"Justin Alves",tp:-18,rp:-16,bn:-2,r:[297,282,285,272],win:0,fed:355,td:0},
+      {rk:70,nm:"Brendan",tp:-18,rp:-10,bn:-8,r:[287,278,276,301],win:0,fed:363,td:2},
       {rk:70,nm:"Ryan Reddy",tp:-18,rp:-18,r:[290,281,281,282],win:0,fed:334,td:2},
       {rk:70,nm:"kmo",tp:-18,rp:-18,r:[290,282,283,279],win:0,fed:232,td:2},
-      {rk:70,nm:"Brendan",tp:-18,rp:-10,bn:-8,r:[287,278,276,301],win:0,fed:363,td:2},
       {rk:73,nm:"Matthew Cramer",tp:-18,rp:-18,r:[290,282,283,279],win:0,fed:232,td:5},
       {rk:74,nm:"Zebo15",tp:-17,rp:-17,r:[294,278,282,281],win:0,fed:329,td:1},
-      {rk:75,nm:"tjnovak11",tp:-17,rp:-17,r:[295,282,280,278],win:0,fed:322,td:2},
       {rk:75,nm:"Burkey's Bogeys",tp:-17,rp:-17,r:[289,281,281,284],win:0,fed:220,td:2},
+      {rk:75,nm:"tjnovak11",tp:-17,rp:-17,r:[295,282,280,278],win:0,fed:322,td:2},
       {rk:77,nm:"rjm",tp:-15,rp:-6,bn:-9,r:[294,282,278,292],win:0,fed:585,td:0},
       {rk:78,nm:"Andrew Pikul",tp:-15,rp:-13,bn:-2,r:[290,281,283,285],win:0,fed:325,td:2},
       {rk:79,nm:"Ollie Janzen",tp:-14,rp:-14,r:[285,283,275,295],win:0,fed:292,td:2},
       {rk:80,nm:"CowboyMonkey",tp:-13,rp:-11,bn:-2,r:[281,283,284,293],win:0,fed:243,td:7},
       {rk:81,nm:"WilkinsFam",tp:-12,rp:-12,r:[292,279,279,290],win:0,fed:187,td:1},
-      {rk:82,nm:"TBrown",tp:-12,rp:-12,r:[291,280,282,287],win:0,fed:255,td:2},
       {rk:82,nm:"Pewey31",tp:-12,rp:-12,r:[291,276,283,290],win:0,fed:255,td:2},
+      {rk:82,nm:"TBrown",tp:-12,rp:-12,r:[291,280,282,287],win:0,fed:255,td:2},
       {rk:82,nm:"Will Tennant",tp:-12,rp:-10,bn:-2,r:[290,282,283,287],win:0,fed:256,td:2},
       {rk:85,nm:"BillHoffman",tp:-11,rp:-11,r:[290,283,289,279],win:0,fed:290,td:1},
       {rk:86,nm:"CornerstoneCowboy",tp:-11,rp:-11,r:[294,281,286,280],win:0,fed:248,td:4},
@@ -4387,7 +4391,9 @@ const POOL_RESULTS = {
       {rk:103,nm:"Bobby Beeman",tp:7,rp:7,r:[296,282,290,291],win:0,fed:130,td:1},
       {rk:104,nm:"KlinkbeilJr",tp:8,rp:8,r:[300,283,286,291],win:0,fed:82,td:1},
       {rk:105,nm:"Jordan Brock",tp:12,rp:12,r:[297,282,293,292],win:0,fed:65,td:4},
-      {rk:106,nm:"wbetts",tp:16,rp:16,r:[299,287,289,293],win:0,fed:97,td:4}
+      {rk:106,nm:"wbetts",tp:16,rp:16,r:[299,287,289,293],win:0,fed:97,td:4},
+      {rk:107,nm:"THE-SUPERB-OWL-142",tp:17,win:0,td:999,_dnp:true},
+      {rk:108,nm:"TuliusJamasy",tp:17,win:0,td:999,_dnp:true}
     ],
     players: [
       {pos:1,wr:2,nm:'Rory McIlroy',sal:9800,own:0.01,sc:-12,dkv:264.7,pk:1,pa:38,bi:24,ea:0,bo:8,db:2,tr:0,al:0},
@@ -4490,103 +4496,106 @@ const POOL_RESULTS = {
       {rk:6,nm:"Lewy",tp:-28,rp:-13,bn:-15,r:[285,273,272,277],win:0,fed:787,td:5},
       {rk:7,nm:"ScottSummerson",tp:-28,rp:-11,bn:-17,r:[280,282,267,280],win:0,fed:461,td:6},
       {rk:8,nm:"MoWil",tp:-27,rp:-14,bn:-13,r:[272,285,276,273],win:0,fed:830,td:3},
-      {rk:9,nm:"tbi020309 #2",tp:-26,rp:-14,bn:-12,r:[286,278,270,272],win:0,fed:760,td:3},
-      {rk:10,nm:"Tim Maleck",tp:-26,rp:-12,bn:-14,r:[282,274,283,269],win:0,fed:727,td:5},
-      {rk:11,nm:"Putt4Dough",tp:-26,rp:-12,bn:-14,r:[281,279,278,270],win:0,fed:727,td:8},
-      {rk:12,nm:"big-sled-6647",tp:-24,rp:-12,bn:-12,r:[281,275,281,271],win:0,fed:707,td:1},
-      {rk:13,nm:"Bridget Stancampiano",tp:-24,rp:-13,bn:-11,r:[281,277,279,270],win:0,fed:1008,td:2},
-      {rk:14,nm:"We've Got Balls",tp:-24,rp:-12,bn:-12,r:[286,268,281,273],win:0,fed:707,td:3},
-      {rk:15,nm:"The Pelican",tp:-24,rp:-14,bn:-10,r:[284,274,278,270],win:0,fed:740,td:7},
-      {rk:16,nm:"kmo",tp:-24,rp:-13,bn:-11,r:[272,282,280,273],win:0,fed:705,td:9},
-      {rk:17,nm:"Howie",tp:-23,rp:-11,bn:-12,r:[284,276,275,274],win:0,fed:693,td:1},
-      {rk:18,nm:"Modesti",tp:-23,rp:-7,bn:-16,r:[277,280,281,275],win:0,fed:334,td:3},
-      {rk:19,nm:"BillHoffman",tp:-23,rp:-12,bn:-11,r:[285,277,275,271],win:0,fed:671,td:5},
-      {rk:20,nm:"wbetts",tp:-22,rp:-11,bn:-11,r:[284,275,281,269],win:0,fed:652,td:2},
-      {rk:21,nm:"Jennings",tp:-22,rp:-11,bn:-11,r:[286,272,276,275],win:0,fed:652,td:8},
-      {rk:22,nm:"Mark Regan",tp:-21,rp:-10,bn:-11,r:[277,283,283,267],win:0,fed:638,td:3},
-      {rk:23,nm:"CornerstoneCowboy",tp:-21,rp:-10,bn:-11,r:[275,279,281,275],win:0,fed:618,td:9},
-      {rk:24,nm:"CowboyMonkey",tp:-21,rp:-11,bn:-10,r:[277,272,282,278],win:0,fed:697,td:12},
-      {rk:25,nm:"Chris Edwards",tp:-20,rp:-12,bn:-8,r:[274,284,281,269],win:0,fed:480,td:1},
-      {rk:26,nm:"Bobby Beeman",tp:-20,rp:-10,bn:-10,r:[280,279,275,276],win:0,fed:238,td:2},
-      {rk:27,nm:"tjnovak11",tp:-20,rp:-12,bn:-8,r:[276,285,279,268],win:0,fed:625,td:3},
-      {rk:28,nm:"Vandelay Industries",tp:-19,rp:-11,bn:-8,r:[278,277,289,265],win:0,fed:591,td:2},
-      {rk:29,nm:"Kyle K",tp:-18,rp:-10,bn:-8,r:[277,280,280,273],win:0,fed:572,td:2},
-      {rk:29,nm:"Justin Alves",tp:-18,rp:-7,bn:-11,r:[287,273,277,276],win:0,fed:577,td:2},
-      {rk:31,nm:"tbi020309",tp:-18,rp:-9,bn:-9,r:[275,285,275,276],win:0,fed:183,td:5},
-      {rk:32,nm:"keen-arm-9499",tp:-17,rp:-9,bn:-8,r:[281,283,270,277],win:0,fed:538,td:2},
-      {rk:33,nm:"Burkey's Bogeys",tp:-17,rp:-8,bn:-9,r:[279,284,273,276],win:0,fed:113,td:3},
-      {rk:34,nm:"David Wheeler",tp:-16,rp:-7,bn:-9,r:[275,284,279,275],win:0,fed:161,td:1},
-      {rk:35,nm:"Jmeesh27",tp:-16,rp:-5,bn:-11,r:[273,283,284,275],win:0,fed:622,td:5},
-      {rk:36,nm:"dan_firth",tp:-15,rp:-7,bn:-8,r:[283,276,278,276],win:0,fed:510,td:3},
-      {rk:37,nm:"rjm",tp:-15,rp:-8,bn:-7,r:[281,272,281,278],win:0,fed:483,td:4},
-      {rk:38,nm:"Heartherors",tp:-15,rp:-8,bn:-7,r:[278,277,276,281],win:0,fed:427,td:6},
-      {rk:39,nm:"Chuck Jackson",tp:-14,rp:-5,bn:-9,r:[273,284,274,284],win:0,fed:563,td:2},
-      {rk:39,nm:"Bpratt",tp:-14,rp:-6,bn:-8,r:[274,283,278,279],win:0,fed:398,td:2},
-      {rk:41,nm:"mtown10",tp:-14,rp:-5,bn:-9,r:[279,281,278,277],win:0,fed:138,td:3},
-      {rk:42,nm:"Aldo",tp:-13,rp:-2,bn:-11,r:[282,279,274,283],win:0,fed:544,td:6},
-      {rk:43,nm:"TheGunners",tp:-12,rp:-10,bn:-2,r:[279,281,278,272],win:0,fed:470,td:5},
-      {rk:44,nm:"ryankozack",tp:-11,rp:-3,bn:-8,r:[283,281,269,284],win:0,fed:456,td:0},
-      {rk:45,nm:"Ian Rapp",tp:-11,rp:-7,bn:-4,r:[279,276,282,276],win:0,fed:428,td:2},
-      {rk:46,nm:"Mike Miller",tp:-11,rp:-7,bn:-4,r:[282,277,275,279],win:0,fed:408,td:6},
-      {rk:47,nm:"EddieZdo",tp:-10,rp:-3,bn:-7,r:[280,279,283,275],win:0,fed:435,td:1},
-      {rk:47,nm:"dwilhelm",tp:-10,rp:-3,bn:-7,r:[276,281,282,278],win:0,fed:424,td:1},
-      {rk:47,nm:"PapaDaws",tp:-10,rp:-5,bn:-5,r:[279,281,279,276],win:0,fed:422,td:1},
-      {rk:50,nm:"Jhamlin",tp:-10,rp:-1,bn:-9,r:[279,277,280,283],win:0,fed:68,td:6},
-      {rk:51,nm:"Jordan Brock",tp:-9,rp:-1,bn:-8,r:[281,283,268,287],win:0,fed:469,td:1},
-      {rk:51,nm:"sdh4",tp:-9,rp:-2,bn:-7,r:[273,288,281,276],win:0,fed:416,td:1},
-      {rk:51,nm:"THE-SUPERB-OWL-142",tp:-9,rp:-2,bn:-7,r:[282,276,278,282],win:0,fed:401,td:1},
-      {rk:54,nm:"JWIII #2",tp:-9,rp:-2,bn:-7,r:[280,281,282,275],win:0,fed:385,td:2},
-      {rk:55,nm:"Young_Falcon",tp:-9,rp:-5,bn:-4,r:[284,276,277,278],win:0,fed:248,td:5},
-      {rk:56,nm:"Firth",tp:-9,rp:-5,bn:-4,r:[285,275,283,272],win:0,fed:375,td:6},
-      {rk:57,nm:"Chris McLeod",tp:-8,rp:-7,bn:-1,r:[273,286,277,277],win:0,fed:347,td:1},
-      {rk:58,nm:"krgolfer18",tp:-8,rp:-1,bn:-7,r:[277,281,281,280],win:0,fed:412,td:2},
-      {rk:59,nm:"Fluffyhead",tp:-8,rp:-4,bn:-4,r:[282,273,283,278],win:0,fed:341,td:4},
-      {rk:60,nm:"chrobb",tp:-8,rp:-7,bn:-1,r:[279,277,285,272],win:0,fed:362,td:5},
-      {rk:61,nm:"Pewey31",tp:-7,rp:-6,bn:-1,r:[278,280,279,277],win:0,fed:328,td:1},
-      {rk:61,nm:"BigRicks",tp:-7,rp:-6,bn:-1,r:[279,275,284,276],win:0,fed:328,td:1},
-      {rk:61,nm:"Lady golfer #2",tp:-7,rp:-3,bn:-4,r:[279,282,273,283],win:0,fed:363,td:1},
-      {rk:64,nm:"Commish",tp:-7,rp:-6,bn:-1,r:[277,274,289,274],win:0,fed:328,td:5},
-      {rk:65,nm:"Brendan",tp:-7,rp:0,bn:-7,r:[280,274,282,284],win:0,fed:451,td:7},
-      {rk:66,nm:"Zebo15",tp:-7,rp:-6,bn:-1,r:[277,283,278,276],win:0,fed:328,td:8},
-      {rk:67,nm:"My Favorite Fairportian",tp:-7,rp:-2,bn:-5,r:[280,278,279,281],win:0,fed:401,td:12},
-      {rk:68,nm:"SOStancamp",tp:-6,rp:3,bn:-9,r:[277,283,278,285],win:0,fed:106,td:0},
-      {rk:68,nm:"Team Lowe",tp:-6,rp:2,bn:-8,r:[282,286,274,280],win:0,fed:470,td:0},
-      {rk:70,nm:"Crying Koepkas",tp:-6,rp:-2,bn:-4,r:[274,286,283,275],win:0,fed:412,td:1},
-      {rk:70,nm:"JWIII",tp:-6,rp:-6,r:[277,282,283,272],win:0,fed:292,td:1},
-      {rk:72,nm:"MParekh10",tp:-6,rp:-5,bn:-1,r:[275,280,281,279],win:0,fed:164,td:6},
-      {rk:73,nm:"Travis Shevlin",tp:-5,rp:-5,r:[277,282,284,272],win:0,fed:273,td:3},
-      {rk:74,nm:"apslotnick",tp:-4,rp:3,bn:-7,r:[285,270,283,285],win:0,fed:379,td:3},
-      {rk:75,nm:"Duder",tp:-3,rp:-2,bn:-1,r:[279,275,282,282],win:0,fed:283,td:5},
-      {rk:76,nm:"Ronners",tp:-3,rp:1,bn:-4,r:[281,283,278,279],win:0,fed:303,td:11},
-      {rk:77,nm:"Putt Before U Nut",tp:-2,rp:12,bn:-14,r:[285,283,280,284],win:0,fed:370,td:1},
-      {rk:77,nm:"Broadway",tp:-2,rp:2,bn:-4,r:[281,284,279,278],win:0,fed:284,td:1},
-      {rk:79,nm:"Greyson",tp:-1,rp:-1,r:[278,279,284,278],win:0,fed:187,td:6},
-      {rk:80,nm:"Bstancam",tp:0,rp:13,bn:-13,r:[283,284,286,280],win:0,fed:315,td:7},
-      {rk:81,nm:"Lady golfer",tp:0,rp:0,r:[279,283,281,277],win:0,fed:194,td:8},
-      {rk:82,nm:"Toastking12",tp:1,rp:1,r:[274,288,280,279],win:0,fed:165,td:0},
-      {rk:83,nm:"dfirth",tp:1,rp:17,bn:-16,r:[279,284,289,285],win:0,fed:311,td:1},
-      {rk:84,nm:"Scharf's Horseman",tp:2,rp:16,bn:-14,r:[283,277,296,280],win:0,fed:623,td:1},
-      {rk:85,nm:"m.manilla",tp:2,rp:2,r:[277,282,278,285],win:0,fed:161,td:3},
-      {rk:86,nm:"Schad",tp:3,rp:3,r:[276,286,284,277],win:0,fed:199,td:6},
-      {rk:87,nm:"WilkinsFam",tp:4,rp:4,r:[277,284,277,286],win:0,fed:150,td:2},
-      {rk:88,nm:"Ollie Janzen",tp:4,rp:4,r:[275,283,283,283],win:0,fed:149,td:3},
-      {rk:89,nm:"Dude, Where's My Par",tp:8,rp:8,r:[278,285,284,281],win:0,fed:96,td:0},
-      {rk:90,nm:"andersanders",tp:13,rp:22,bn:-9,r:[285,280,289,288],win:0,fed:37,td:5},
-      {rk:91,nm:"Jordman8",tp:15,rp:22,bn:-7,r:[278,284,293,287],win:0,fed:398,td:9},
-      {rk:92,nm:"long-draw-1117",tp:16,rp:23,bn:-7,r:[280,285,292,286],win:0,fed:364,td:4},
-      {rk:93,nm:"Neill Stokes",tp:16,rp:20,bn:-4,r:[287,274,291,288],win:0,fed:318,td:5},
-      {rk:94,nm:"Reid30",tp:17,rp:21,bn:-4,r:[286,279,286,290],win:0,fed:299,td:1},
-      {rk:95,nm:"NFoley",tp:19,rp:26,bn:-7,r:[282,285,297,282],win:0,fed:395,td:1},
-      {rk:96,nm:"jfirth",tp:21,rp:25,bn:-4,r:[284,282,296,283],win:0,fed:259,td:3},
-      {rk:97,nm:"Kengolf",tp:23,rp:23,r:[280,288,289,286],win:0,fed:195,td:1},
-      {rk:98,nm:"Mister Pimento",tp:26,rp:26,r:[278,283,292,293],win:0,fed:138,td:0},
-      {rk:99,nm:"Will Tennant",tp:26,rp:26,r:[282,287,284,293],win:0,fed:138,td:4},
-      {rk:100,nm:"Ryan Smith",tp:26,rp:26,r:[278,282,292,294],win:0,fed:154,td:5},
-      {rk:100,nm:"Ryan Reddy",tp:26,rp:26,r:[280,282,293,291],win:0,fed:138,td:5},
-      {rk:102,nm:"TBrown",tp:27,rp:27,r:[281,282,293,291],win:0,fed:138,td:9},
-      {rk:103,nm:"Big Al",tp:28,rp:28,r:[279,288,294,287],win:0,fed:116,td:2},
-      {rk:104,nm:"smak",tp:30,rp:41,bn:-11,r:[284,285,298,294],win:0,fed:525,td:13},
-      {rk:105,nm:"DavidAke",tp:51,rp:51,r:[285,288,302,296],win:0,fed:127,td:9}
+      {rk:9,nm:"Tim Maleck",tp:-26,rp:-12,bn:-14,r:[282,274,283,269],win:0,fed:727,td:5},
+      {rk:10,nm:"Putt4Dough",tp:-26,rp:-12,bn:-14,r:[281,279,278,270],win:0,fed:727,td:8},
+      {rk:11,nm:"big-sled-6647",tp:-24,rp:-12,bn:-12,r:[281,275,281,271],win:0,fed:707,td:1},
+      {rk:12,nm:"Bridget Stancampiano",tp:-24,rp:-13,bn:-11,r:[281,277,279,270],win:0,fed:1008,td:2},
+      {rk:13,nm:"We've Got Balls",tp:-24,rp:-12,bn:-12,r:[286,268,281,273],win:0,fed:707,td:3},
+      {rk:14,nm:"The Pelican",tp:-24,rp:-14,bn:-10,r:[284,274,278,270],win:0,fed:740,td:7},
+      {rk:15,nm:"kmo",tp:-24,rp:-13,bn:-11,r:[272,282,280,273],win:0,fed:705,td:9},
+      {rk:16,nm:"Howie",tp:-23,rp:-11,bn:-12,r:[284,276,275,274],win:0,fed:693,td:1},
+      {rk:17,nm:"Modesti",tp:-23,rp:-7,bn:-16,r:[277,280,281,275],win:0,fed:334,td:3},
+      {rk:18,nm:"BillHoffman",tp:-23,rp:-12,bn:-11,r:[285,277,275,271],win:0,fed:671,td:5},
+      {rk:19,nm:"wbetts",tp:-22,rp:-11,bn:-11,r:[284,275,281,269],win:0,fed:652,td:2},
+      {rk:20,nm:"Jennings",tp:-22,rp:-11,bn:-11,r:[286,272,276,275],win:0,fed:652,td:8},
+      {rk:21,nm:"Mark Regan",tp:-21,rp:-10,bn:-11,r:[277,283,283,267],win:0,fed:638,td:3},
+      {rk:22,nm:"CornerstoneCowboy",tp:-21,rp:-10,bn:-11,r:[275,279,281,275],win:0,fed:618,td:9},
+      {rk:23,nm:"CowboyMonkey",tp:-21,rp:-11,bn:-10,r:[277,272,282,278],win:0,fed:697,td:12},
+      {rk:24,nm:"Chris Edwards",tp:-20,rp:-12,bn:-8,r:[274,284,281,269],win:0,fed:480,td:1},
+      {rk:25,nm:"Bobby Beeman",tp:-20,rp:-10,bn:-10,r:[280,279,275,276],win:0,fed:238,td:2},
+      {rk:26,nm:"tjnovak11",tp:-20,rp:-12,bn:-8,r:[276,285,279,268],win:0,fed:625,td:3},
+      {rk:27,nm:"Vandelay Industries",tp:-19,rp:-11,bn:-8,r:[278,277,289,265],win:0,fed:591,td:2},
+      {rk:28,nm:"Justin Alves",tp:-18,rp:-7,bn:-11,r:[287,273,277,276],win:0,fed:577,td:2},
+      {rk:28,nm:"Kyle K",tp:-18,rp:-10,bn:-8,r:[277,280,280,273],win:0,fed:572,td:2},
+      {rk:30,nm:"tbi020309",tp:-18,rp:-9,bn:-9,r:[275,285,275,276],win:0,fed:183,td:5},
+      {rk:31,nm:"keen-arm-9499",tp:-17,rp:-9,bn:-8,r:[281,283,270,277],win:0,fed:538,td:2},
+      {rk:32,nm:"Burkey's Bogeys",tp:-17,rp:-8,bn:-9,r:[279,284,273,276],win:0,fed:113,td:3},
+      {rk:33,nm:"David Wheeler",tp:-16,rp:-7,bn:-9,r:[275,284,279,275],win:0,fed:161,td:1},
+      {rk:34,nm:"Jmeesh27",tp:-16,rp:-5,bn:-11,r:[273,283,284,275],win:0,fed:622,td:5},
+      {rk:35,nm:"dan_firth",tp:-15,rp:-7,bn:-8,r:[283,276,278,276],win:0,fed:510,td:3},
+      {rk:36,nm:"rjm",tp:-15,rp:-8,bn:-7,r:[281,272,281,278],win:0,fed:483,td:4},
+      {rk:37,nm:"Heartherors",tp:-15,rp:-8,bn:-7,r:[278,277,276,281],win:0,fed:427,td:6},
+      {rk:38,nm:"Bpratt",tp:-14,rp:-6,bn:-8,r:[274,283,278,279],win:0,fed:398,td:2},
+      {rk:38,nm:"Chuck Jackson",tp:-14,rp:-5,bn:-9,r:[273,284,274,284],win:0,fed:563,td:2},
+      {rk:40,nm:"mtown10",tp:-14,rp:-5,bn:-9,r:[279,281,278,277],win:0,fed:138,td:3},
+      {rk:41,nm:"Aldo",tp:-13,rp:-2,bn:-11,r:[282,279,274,283],win:0,fed:544,td:6},
+      {rk:42,nm:"TheGunners",tp:-12,rp:-10,bn:-2,r:[279,281,278,272],win:0,fed:470,td:5},
+      {rk:43,nm:"ryankozack",tp:-11,rp:-3,bn:-8,r:[283,281,269,284],win:0,fed:456,td:0},
+      {rk:44,nm:"Ian Rapp",tp:-11,rp:-7,bn:-4,r:[279,276,282,276],win:0,fed:428,td:2},
+      {rk:45,nm:"Mike Miller",tp:-11,rp:-7,bn:-4,r:[282,277,275,279],win:0,fed:408,td:6},
+      {rk:46,nm:"EddieZdo",tp:-10,rp:-3,bn:-7,r:[280,279,283,275],win:0,fed:435,td:1},
+      {rk:46,nm:"PapaDaws",tp:-10,rp:-5,bn:-5,r:[279,281,279,276],win:0,fed:422,td:1},
+      {rk:46,nm:"dwilhelm",tp:-10,rp:-3,bn:-7,r:[276,281,282,278],win:0,fed:424,td:1},
+      {rk:49,nm:"Jhamlin",tp:-10,rp:-1,bn:-9,r:[279,277,280,283],win:0,fed:68,td:6},
+      {rk:50,nm:"Jordan Brock",tp:-9,rp:-1,bn:-8,r:[281,283,268,287],win:0,fed:469,td:1},
+      {rk:50,nm:"THE-SUPERB-OWL-142",tp:-9,rp:-2,bn:-7,r:[282,276,278,282],win:0,fed:401,td:1},
+      {rk:50,nm:"sdh4",tp:-9,rp:-2,bn:-7,r:[273,288,281,276],win:0,fed:416,td:1},
+      {rk:53,nm:"JWIII #2",tp:-9,rp:-2,bn:-7,r:[280,281,282,275],win:0,fed:385,td:2},
+      {rk:54,nm:"Young_Falcon",tp:-9,rp:-5,bn:-4,r:[284,276,277,278],win:0,fed:248,td:5},
+      {rk:55,nm:"Firth",tp:-9,rp:-5,bn:-4,r:[285,275,283,272],win:0,fed:375,td:6},
+      {rk:56,nm:"Chris McLeod",tp:-8,rp:-7,bn:-1,r:[273,286,277,277],win:0,fed:347,td:1},
+      {rk:57,nm:"krgolfer18",tp:-8,rp:-1,bn:-7,r:[277,281,281,280],win:0,fed:412,td:2},
+      {rk:58,nm:"Fluffyhead",tp:-8,rp:-4,bn:-4,r:[282,273,283,278],win:0,fed:341,td:4},
+      {rk:59,nm:"chrobb",tp:-8,rp:-7,bn:-1,r:[279,277,285,272],win:0,fed:362,td:5},
+      {rk:60,nm:"BigRicks",tp:-7,rp:-6,bn:-1,r:[279,275,284,276],win:0,fed:328,td:1},
+      {rk:60,nm:"Pewey31",tp:-7,rp:-6,bn:-1,r:[278,280,279,277],win:0,fed:328,td:1},
+      {rk:62,nm:"Commish",tp:-7,rp:-6,bn:-1,r:[277,274,289,274],win:0,fed:328,td:5},
+      {rk:63,nm:"Brendan",tp:-7,rp:0,bn:-7,r:[280,274,282,284],win:0,fed:451,td:7},
+      {rk:64,nm:"Zebo15",tp:-7,rp:-6,bn:-1,r:[277,283,278,276],win:0,fed:328,td:8},
+      {rk:65,nm:"My Favorite Fairportian",tp:-7,rp:-2,bn:-5,r:[280,278,279,281],win:0,fed:401,td:12},
+      {rk:66,nm:"SOStancamp",tp:-6,rp:3,bn:-9,r:[277,283,278,285],win:0,fed:106,td:0},
+      {rk:66,nm:"Team Lowe",tp:-6,rp:2,bn:-8,r:[282,286,274,280],win:0,fed:470,td:0},
+      {rk:68,nm:"Crying Koepkas",tp:-6,rp:-2,bn:-4,r:[274,286,283,275],win:0,fed:412,td:1},
+      {rk:68,nm:"JWIII",tp:-6,rp:-6,r:[277,282,283,272],win:0,fed:292,td:1},
+      {rk:70,nm:"MParekh10",tp:-6,rp:-5,bn:-1,r:[275,280,281,279],win:0,fed:164,td:6},
+      {rk:71,nm:"Travis Shevlin",tp:-5,rp:-5,r:[277,282,284,272],win:0,fed:273,td:3},
+      {rk:72,nm:"apslotnick",tp:-4,rp:3,bn:-7,r:[285,270,283,285],win:0,fed:379,td:3},
+      {rk:73,nm:"Duder",tp:-3,rp:-2,bn:-1,r:[279,275,282,282],win:0,fed:283,td:5},
+      {rk:74,nm:"Ronners",tp:-3,rp:1,bn:-4,r:[281,283,278,279],win:0,fed:303,td:11},
+      {rk:75,nm:"Broadway",tp:-2,rp:2,bn:-4,r:[281,284,279,278],win:0,fed:284,td:1},
+      {rk:75,nm:"Putt Before U Nut",tp:-2,rp:12,bn:-14,r:[285,283,280,284],win:0,fed:370,td:1},
+      {rk:77,nm:"Greyson",tp:-1,rp:-1,r:[278,279,284,278],win:0,fed:187,td:6},
+      {rk:78,nm:"Bstancam",tp:0,rp:13,bn:-13,r:[283,284,286,280],win:0,fed:315,td:7},
+      {rk:79,nm:"Lady golfer",tp:0,rp:0,r:[279,283,281,277],win:0,fed:194,td:8},
+      {rk:80,nm:"Toastking12",tp:1,rp:1,r:[274,288,280,279],win:0,fed:165,td:0},
+      {rk:81,nm:"dfirth",tp:1,rp:17,bn:-16,r:[279,284,289,285],win:0,fed:311,td:1},
+      {rk:82,nm:"Scharf's Horseman",tp:2,rp:16,bn:-14,r:[283,277,296,280],win:0,fed:623,td:1},
+      {rk:83,nm:"m.manilla",tp:2,rp:2,r:[277,282,278,285],win:0,fed:161,td:3},
+      {rk:84,nm:"Schad",tp:3,rp:3,r:[276,286,284,277],win:0,fed:199,td:6},
+      {rk:85,nm:"WilkinsFam",tp:4,rp:4,r:[277,284,277,286],win:0,fed:150,td:2},
+      {rk:86,nm:"Ollie Janzen",tp:4,rp:4,r:[275,283,283,283],win:0,fed:149,td:3},
+      {rk:87,nm:"Dude, Where's My Par",tp:8,rp:8,r:[278,285,284,281],win:0,fed:96,td:0},
+      {rk:88,nm:"andersanders",tp:13,rp:22,bn:-9,r:[285,280,289,288],win:0,fed:37,td:5},
+      {rk:89,nm:"Jordman8",tp:15,rp:22,bn:-7,r:[278,284,293,287],win:0,fed:398,td:9},
+      {rk:90,nm:"long-draw-1117",tp:16,rp:23,bn:-7,r:[280,285,292,286],win:0,fed:364,td:4},
+      {rk:91,nm:"Neill Stokes",tp:16,rp:20,bn:-4,r:[287,274,291,288],win:0,fed:318,td:5},
+      {rk:92,nm:"Reid30",tp:17,rp:21,bn:-4,r:[286,279,286,290],win:0,fed:299,td:1},
+      {rk:93,nm:"NFoley",tp:19,rp:26,bn:-7,r:[282,285,297,282],win:0,fed:395,td:1},
+      {rk:94,nm:"jfirth",tp:21,rp:25,bn:-4,r:[284,282,296,283],win:0,fed:259,td:3},
+      {rk:95,nm:"Kengolf",tp:23,rp:23,r:[280,288,289,286],win:0,fed:195,td:1},
+      {rk:96,nm:"Will Tennant",tp:26,rp:26,r:[282,287,284,293],win:0,fed:138,td:4},
+      {rk:97,nm:"Ryan Reddy",tp:26,rp:26,r:[280,282,293,291],win:0,fed:138,td:5},
+      {rk:97,nm:"Ryan Smith",tp:26,rp:26,r:[278,282,292,294],win:0,fed:154,td:5},
+      {rk:99,nm:"TBrown",tp:27,rp:27,r:[281,282,293,291],win:0,fed:138,td:9},
+      {rk:100,nm:"Big Al",tp:28,rp:28,r:[279,288,294,287],win:0,fed:116,td:2},
+      {rk:101,nm:"smak",tp:30,rp:41,bn:-11,r:[284,285,298,294],win:0,fed:525,td:13},
+      {rk:102,nm:"DavidAke",tp:51,rp:51,r:[285,288,302,296],win:0,fed:127,td:9},
+      {rk:103,nm:"Andrew Pikul",tp:52,win:0,td:999,_dnp:true},
+      {rk:104,nm:"BTR",tp:52,win:0,td:999,_dnp:true},
+      {rk:105,nm:"KlinkbeilJr",tp:52,win:0,td:999,_dnp:true},
+      {rk:106,nm:"Matthew Cramer",tp:52,win:0,td:999,_dnp:true},
+      {rk:107,nm:"Max Prosser",tp:52,win:0,td:999,_dnp:true},
+      {rk:108,nm:"TuliusJamasy",tp:52,win:0,td:999,_dnp:true}
     ]
   }
 };
@@ -6105,14 +6114,14 @@ function _tenureBadge(entryName){
 }
 
 function _tpcComputeRanks(entries){
-  // Compute rank after each round for all entries
-  const n=entries.length;
+  // Compute rank after each round — skip DNP entries (no rounds played)
+  const real=entries.filter(e=>e.r&&!e._dnp);
   for(let rd=0;rd<4;rd++){
-    const cumuls=entries.map((e,i)=>({i,cum:e.r.slice(0,rd+1).reduce((a,b)=>a+b,0)}));
+    const cumuls=real.map((e,i)=>({e,cum:e.r.slice(0,rd+1).reduce((a,b)=>a+(b||0),0)}));
     cumuls.sort((a,b)=>a.cum-b.cum);
     cumuls.forEach((c,rank)=>{
-      if(!entries[c.i]._ranks)entries[c.i]._ranks=[];
-      entries[c.i]._ranks[rd]=rank+1;
+      if(!c.e._ranks)c.e._ranks=[];
+      c.e._ranks[rd]=rank+1;
     });
   }
 }
@@ -6135,15 +6144,16 @@ function _tpcSparkline(ranks,total){
 }
 
 function _tpcRenderRow(e,me){
-  const scClr=e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
-  let h='<tr class="'+(me?'me':'')+'">';
+  const dnp=e._dnp;
+  const scClr=dnp?'var(--td)':e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
+  let h='<tr class="'+(me?'me':'')+(dnp?' dnp':'')+'">';
   h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
-  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+'</td>';
-  h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
-  h+='<td style="color:var(--tp)">'+e.rp+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+(dnp?' <span class="dnp-tag" title="Did not enter this tournament — assigned fallback score">DNP</span>':'')+'</td>';
+  h+='<td style="font-weight:700;color:'+scClr+'">'+(dnp?'+'+e.tp+'*':e.tp)+'</td>';
+  h+='<td style="color:var(--tp)">'+(dnp?'–':e.rp)+'</td>';
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
-  h+='<td style="color:var(--td)">'+(e.td!=null&&e.td!==''?e.td:'–')+'</td>';
-  h+='<td style="padding:0 2px">'+_tpcSparkline(e._ranks,107)+'</td>';
+  h+='<td style="color:var(--td)">'+(e.td!=null&&e.td!==''&&e.td!==999?e.td:'–')+'</td>';
+  h+='<td style="padding:0 2px">'+(e._ranks?_tpcSparkline(e._ranks,108):'')+'</td>';
   h+='<td style="color:var(--go)">'+(e.win?'$'+(e.win%1===0?e.win.toLocaleString():e.win.toFixed(2)):'–')+'</td>';
   h+='</tr>';
   return h;
@@ -6223,15 +6233,16 @@ function renderTpcStandings(pr){
 /* ===== MASTERS POOL STANDINGS ===== */
 let _mstRendered=false;
 function _mstRenderRow(e,me){
-  const scClr=e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
-  let h='<tr class="'+(me?'me':'')+'">';
+  const dnp=e._dnp;
+  const scClr=dnp?'var(--td)':e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
+  let h='<tr class="'+(me?'me':'')+(dnp?' dnp':'')+'">';
   h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
-  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+'</td>';
-  h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
-  h+='<td style="color:var(--tp)">'+e.rp+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+(dnp?' <span class="dnp-tag" title="Did not enter this tournament — assigned fallback score">DNP</span>':'')+'</td>';
+  h+='<td style="font-weight:700;color:'+scClr+'">'+(dnp?'+'+e.tp+'*':e.tp)+'</td>';
+  h+='<td style="color:var(--tp)">'+(e.rp!=null?e.rp:'–')+'</td>';
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
-  h+='<td style="color:var(--td)">'+(e.td!=null&&e.td!==''?e.td:'–')+'</td>';
-  h+='<td style="padding:0 2px">'+(e._ranks?_tpcSparkline(e._ranks,106):'')+'</td>';
+  h+='<td style="color:var(--td)">'+(e.td!=null&&e.td!==''&&e.td!==999?e.td:'–')+'</td>';
+  h+='<td style="padding:0 2px">'+(e._ranks?_tpcSparkline(e._ranks,108):'')+'</td>';
   h+='<td style="color:var(--go)">'+(e.win?'$'+(e.win%1===0?e.win.toLocaleString():e.win.toFixed(2)):'–')+'</td>';
   h+='</tr>';
   return h;
@@ -6312,16 +6323,17 @@ function renderMastersStandings(){
 /* ===== PGA POOL STANDINGS ===== */
 let _pgaRendered=false;
 function _pgaRenderRow(e,me){
-  const scClr=e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
+  const dnp=e._dnp;
+  const scClr=dnp?'var(--td)':e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
   const dh=DARK_HORSE_PAYOUTS&&DARK_HORSE_PAYOUTS[e.nm];
-  let h='<tr class="'+(me?'me':'')+'">';
+  let h='<tr class="'+(me?'me':'')+(dnp?' dnp':'')+'">';
   h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
-  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+(dh?' <span title="Dark Horse winner ('+dh.event+')" style="font-size:.5rem;color:var(--go);background:rgba(196,160,53,.12);padding:1px 4px;border-radius:3px;margin-left:3px;font-family:var(--fb)">DH</span>':'')+'</td>';
-  h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+(dh?' <span title="Dark Horse winner ('+dh.event+')" style="font-size:.5rem;color:var(--go);background:rgba(196,160,53,.12);padding:1px 4px;border-radius:3px;margin-left:3px;font-family:var(--fb)">DH</span>':'')+(dnp?' <span class="dnp-tag" title="Did not enter this tournament — assigned fallback score">DNP</span>':'')+'</td>';
+  h+='<td style="font-weight:700;color:'+scClr+'">'+(dnp?'+'+e.tp+'*':e.tp)+'</td>';
   h+='<td style="color:var(--tp)">'+(e.rp!=null?e.rp:'–')+'</td>';
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
-  h+='<td style="color:var(--td)">'+(e.td!=null&&e.td!==''?e.td:'–')+'</td>';
-  h+='<td style="padding:0 2px">'+(e._ranks?_tpcSparkline(e._ranks,105):'')+'</td>';
+  h+='<td style="color:var(--td)">'+(e.td!=null&&e.td!==''&&e.td!==999?e.td:'–')+'</td>';
+  h+='<td style="padding:0 2px">'+(e._ranks?_tpcSparkline(e._ranks,108):'')+'</td>';
   const totalWin=(e.win||0)+(dh?dh.amt:0);
   h+='<td style="color:var(--go)">'+(totalWin?'$'+(totalWin%1===0?totalWin.toLocaleString():totalWin.toFixed(2)):'–')+'</td>';
   h+='</tr>';
