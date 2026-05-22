@@ -246,7 +246,8 @@ table.tc{font-size:.68rem}table.tc thead th{font-size:.6rem;padding:.35rem .3rem
 .r1{color:var(--r1)}.r2{color:var(--r2)}.r3{color:var(--r3)}
 .sg{color:var(--gl)}.sb{color:var(--rd)}.sn{color:var(--td)}
 /* Finish-position cells in YTD grid — tiered heatmap + medals */
-td.fc{font-family:var(--fm);font-weight:600;text-align:center;font-size:.76rem;padding:.32rem .35rem;border-radius:0;transition:transform .2s ease,box-shadow .2s ease;position:relative}
+td.fc{font-family:var(--fm);font-weight:600;text-align:center;font-size:.76rem;padding:.32rem .35rem;border-radius:0;transition:transform .2s ease,box-shadow .2s ease;position:relative;width:54px;min-width:54px;max-width:54px}
+th.ev-th{width:54px;min-width:54px;max-width:54px;text-align:center;padding-left:.3rem;padding-right:.3rem}
 td.fc-na{color:var(--td);font-weight:400;opacity:.55}
 td.fc-mid{color:var(--tp)}
 td.fc-top{color:var(--gl);background:linear-gradient(135deg,rgba(82,183,136,.16) 0%,rgba(82,183,136,.04) 100%)!important;box-shadow:0 0 0 1px rgba(82,183,136,.18) inset}
@@ -275,12 +276,12 @@ tbody tr:hover td.fc-gold,tbody tr:hover td.fc-silver,tbody tr:hover td.fc-bronz
 .pn2{display:none;padding-bottom:2rem}.pn2.active{display:block;animation:fi .2s ease}
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .ft{text-align:center;padding:1rem;color:var(--go);font-size:.68rem;border-top:1px solid var(--br);margin-top:1rem;background:var(--bca)}
-.ev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.4rem;margin:0 .85rem .6rem}
-.ev-card{background:var(--bc);border:1px solid var(--br);border-radius:6px;padding:.4rem;cursor:pointer;transition:all .2s;text-align:center}
-.ev-card:hover,.ev-card.active{border-color:var(--go);background:var(--bca)}
-.ev-card .ev-n{font-family:var(--fd);font-size:.72rem;color:var(--tb);font-weight:600}
-.ev-card .ev-w{font-size:.58rem;color:var(--go);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ev-card .ev-r{font-size:.5rem;color:var(--ts);margin-top:.05rem}
+.ev-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:0 .85rem .6rem}
+.ev-card{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(240,239,235,.55));border:1px solid rgba(212,210,202,.45);border-radius:6px;padding:.4rem .3rem;cursor:pointer;transition:all .25s cubic-bezier(.16,.84,.36,1);text-align:center;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 1px 2px rgba(0,32,91,.03);min-width:0}
+.ev-card:hover,.ev-card.active{border-color:rgba(196,160,53,.5);background:linear-gradient(180deg,rgba(255,253,247,.95),rgba(254,247,224,.7));transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 4px 10px rgba(196,160,53,.1)}
+.ev-card .ev-n{font-family:var(--fb);font-size:.62rem;color:var(--ts);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.ev-card .ev-w{font-family:var(--fd);font-size:.78rem;color:var(--go);margin-top:.18rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.ev-card .ev-r{font-size:.5rem;color:var(--ts);margin-top:.05rem;font-family:var(--fm);letter-spacing:.04em}
 .stabs{display:flex;gap:0;margin:0 .85rem .4rem;border-radius:7px;overflow:hidden;border:1px solid var(--br)}
 .stabs button{flex:1;padding:.5rem .4rem;font-family:var(--fb);font-size:.68rem;font-weight:500;color:var(--ts);background:var(--bc);border:none;cursor:pointer;transition:all .2s;letter-spacing:.04em;text-transform:uppercase}
 .stabs button:hover{color:var(--tb)}.stabs button.active{background:var(--gn);color:var(--tb)}
@@ -1502,7 +1503,7 @@ function rSeasonView(y){
   h+='<th class="'+(ss.c==='rank'?'s':'')+'" onclick="sS(\'rank\')">Rk'+si('rank',ss)+'</th>';
   h+='<th class="'+(ss.c==='entry_used'?'s':'')+'" onclick="sS(\'entry_used\')">Entry'+si('entry_used',ss)+'</th>';
   h+='<th class="'+(ss.c==='total'?'s':'')+'" onclick="sS(\'total\')">Total'+si('total',ss)+'</th>';
-  EK.forEach(function(k){h+='<th class="'+(ss.c===k?'s':'')+'" onclick="sS(\''+k+'\')">'+lb[k]+si(k,ss)+'</th>';});
+  EK.forEach(function(k){h+='<th class="ev-th '+(ss.c===k?'s':'')+'" onclick="sS(\''+k+'\')">'+lb[k]+si(k,ss)+'</th>';});
   h+='<th class="'+(ss.c==='winnings'?'s':'')+'" onclick="sS(\'winnings\')">Won'+si('winnings',ss)+'</th>';
   h+='</tr></thead><tbody>';
   var searchActive=!!q;
