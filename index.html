@@ -6411,9 +6411,25 @@ rLive = function() {
   if(lpw)lpw.style.display='none';
 };
 
+/* Admin helper: snapshot current live DG event data — paste into PGA_SG_SNAPSHOT / PGA_HOLE_SNAPSHOT
+   when an event is wrapping up. Run from console: await snapshotDgEvent('pga')                       */
+window.snapshotDgEvent=async function(tour){
+  tour=tour||'pga';
+  try{
+    const sg=await dgF('preds/live-tournament-stats',{tour:tour,stats:'sg_ott,sg_app,sg_arg,sg_putt,distance,great_shots,prox_fw',round:'event_avg',display:'rank'});
+    const holes=await dgF('preds/live-hole-stats',{tour:tour});
+    console.log('=== EVENT:',sg.event_name,'===');
+    console.log('Copy as PGA_SG_SNAPSHOT (or rename per event):');
+    console.log(JSON.stringify(sg,null,2));
+    console.log('Copy as PGA_HOLE_SNAPSHOT:');
+    console.log(JSON.stringify(holes,null,2));
+    return{sg,holes};
+  }catch(e){console.error('snapshot failed:',e);return null;}
+};
+
 /* ===== PGA RESULTS (post-tournament) ===== */
 let _pgaResultsRendered=false;
-function renderPgaResults(){
+async function renderPgaResults(){
   if(_pgaResultsRendered)return;
   if(!POOL_RESULTS||!POOL_RESULTS[33])return;
   _pgaResultsRendered=true;
@@ -6421,11 +6437,33 @@ function renderPgaResults(){
   if(POOL_RESULTS[33].players){
     renderTpcInsights(POOL_RESULTS[33],'pga-insights',POOL_RESULTS[33].entries.length);
   }
-  // PGA Tournament Recap — field-wide scoring breakdown
-  if(typeof PGA_FIELD_STATS!=='undefined'&&PGA_FIELD_STATS.length){
-    renderPgaFieldRecap('pga-tourney');
+  // Try fetching live DG SG data — works ONLY if PGA Championship is still the active event in DG cache.
+  // The Masters SG data is hardcoded (snapshotted when live); PGA wasn't snapshotted at conclusion.
+  let dgSnapshotUsed=false;
+  if(typeof PGA_SG_SNAPSHOT!=='undefined'&&PGA_SG_SNAPSHOT.live_stats){
+    renderTourneyPanel('pga-tourney',PGA_SG_SNAPSHOT.live_stats,typeof PGA_HOLE_SNAPSHOT!=='undefined'?PGA_HOLE_SNAPSHOT:null,{name:'PGA Championship',venue:'Aronimink',dates:'May 14–17'});
+    dgSnapshotUsed=true;
+  } else {
+    try{
+      const sg=await dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt,distance,great_shots,prox_fw',round:'event_avg',display:'rank'});
+      if(sg&&sg.event_name&&/pga\s+championship/i.test(sg.event_name)){
+        const holes=await fetchHoleStats().catch(()=>null);
+        renderTourneyPanel('pga-tourney',sg.live_stats,holes,{name:'PGA Championship',venue:'Aronimink',dates:'May 14–17'});
+        dgSnapshotUsed=true;
+      }
+    }catch(e){console.warn('PGA SG fetch:',e);}
   }
-  // Still lazy-load the archived preview/odds so they're available when expanded
+  if(!dgSnapshotUsed&&typeof PGA_FIELD_STATS!=='undefined'&&PGA_FIELD_STATS.length){
+    // Fallback: scoring-breakdown panel (no live SG/hole data preserved post-PGA)
+    renderPgaFieldRecap('pga-tourney');
+    // Prepend a "data note" explaining the missing DG data
+    const el=document.getElementById('pga-tourney');
+    if(el){
+      const note='<div style="margin:.4rem 0 .55rem .15rem;padding:.45rem .65rem;background:linear-gradient(135deg,rgba(58,134,168,.06),rgba(58,134,168,.12));border-left:3px solid #3a86a8;border-radius:0 6px 6px 0;font-size:.6rem;font-family:var(--fb);color:#2960a8;line-height:1.5"><b style="color:#1d4d80;text-transform:uppercase;letter-spacing:.06em;font-size:.55rem">DataGolf SG Note</b><br>DG\'s SG/hole endpoints only serve the <em>current</em> tour event. Masters SG was snapshotted during the broadcast; PGA wasn\'t. Showing field scoring breakdown from official tournament data instead. Future majors will be auto-captured at conclusion.</div>';
+      el.insertAdjacentHTML('afterbegin',note);
+    }
+  }
+  // Lazy-load the archived preview/odds
   renderMastersPreview();
   fetchMastersOdds();
 }
