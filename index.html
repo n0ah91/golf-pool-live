@@ -51,17 +51,26 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .sc{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.25rem .3rem;text-align:center}
 .sc .v{font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--tb)}.sc .v.go{color:var(--go)}.sc .v.gl{color:var(--gl)}
 .sc .l{font-size:.45rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ts);margin-top:.02rem}
-.snap-extra{margin-top:.55rem;padding-top:.5rem;border-top:1px solid var(--br);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.55rem .85rem}
-.snap-blk{padding:.3rem .35rem}
-.snap-h{font-family:var(--fd);font-size:.78rem;font-weight:700;color:var(--tb);margin-bottom:.1rem;display:flex;align-items:center;gap:.3rem}
-.snap-h span{font-size:.85rem}
-.snap-sub{font-size:.55rem;color:var(--td);font-family:var(--fb);font-style:italic;margin-bottom:.3rem;letter-spacing:.02em}
-.snap-list{display:flex;flex-direction:column;gap:.18rem}
-.snap-row{font-size:.66rem;font-family:var(--fb);color:var(--tp);line-height:1.45;padding:.12rem 0;display:flex;align-items:baseline;gap:.3rem;flex-wrap:wrap}
-.snap-bullet{flex-shrink:0;color:var(--ts);font-size:.62rem;min-width:14px}
+.snap-extra{margin-top:.7rem;padding-top:.65rem;border-top:1px solid var(--br);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.85rem 1.1rem}
+.snap-blk{padding:.15rem .15rem}
+.snap-h{font-family:var(--fd);font-size:.72rem;font-weight:600;color:var(--tb);margin-bottom:.15rem;letter-spacing:.04em;text-transform:uppercase;padding-bottom:.18rem;border-bottom:1px solid rgba(196,160,53,.35);position:relative}
+.snap-h::after{content:'';position:absolute;left:0;bottom:-1px;width:28px;height:2px;background:var(--go);border-radius:1px}
+.snap-sub{font-size:.55rem;color:var(--td);font-family:var(--fb);font-style:italic;margin:.35rem 0 .4rem;letter-spacing:.02em;line-height:1.4}
+.snap-list{display:flex;flex-direction:column;gap:.22rem}
+.snap-row{font-size:.66rem;font-family:var(--fb);color:var(--tp);line-height:1.5;padding:.16rem 0;display:flex;align-items:baseline;gap:.35rem;flex-wrap:wrap;border-bottom:1px dotted rgba(0,0,0,.04)}
+.snap-row:last-child{border-bottom:none}
 .snap-row b{color:var(--tb);font-weight:600}
-.snap-tag{display:inline-block;font-size:.5rem;background:rgba(196,160,53,.12);color:var(--go);padding:1px 5px;border-radius:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.snap-tag{display:inline-block;font-size:.5rem;color:var(--ts);padding:0;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-left:2px solid var(--go);padding-left:5px;margin-right:.1rem}
 .snap-names{color:var(--tp)}
+.snap-sep{color:var(--td);margin:0 .15rem}
+.snap-amt{color:var(--go);font-family:var(--fm);font-weight:600;font-size:.62rem;margin-left:auto}
+.snap-arrow{display:inline-block;min-width:32px;font-family:var(--fm);font-size:.6rem;font-weight:600;padding:1px 6px;border-radius:3px;text-align:center}
+.snap-arrow.up{background:rgba(82,183,136,.12);color:var(--gl)}
+.snap-arrow.dn{background:rgba(139,35,50,.10);color:var(--rd)}
+.snap-path{color:var(--td);font-family:var(--fm);font-size:.6rem;letter-spacing:.02em}
+.snap-emp{font-family:var(--fm)}
+.snap-emp.up{color:var(--gl)}
+.snap-emp.dn{color:var(--rd)}
 .ml-card{margin:.4rem .6rem .85rem;padding:.5rem .6rem}
 .ml-head{display:flex;align-items:center;gap:.4rem;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid var(--br);flex-wrap:wrap}
 .ml-icon{font-size:.85rem}
@@ -1032,68 +1041,67 @@ function superlatives(y){
 function renderSeasonDetails(all,lb,paidOut,pot){
   if(!all||!all.length)return '';
   var h='<div class="snap-extra">';
-  // 1. Money List Mini (top 5 earners)
+  // 1. Money Leaderboard
   var earners=[...all].filter(function(e){return e.winnings>0;}).sort(function(a,b){return b.winnings-a.winnings;});
   if(earners.length){
-    h+='<div class="snap-blk"><div class="snap-h"><span>💵</span> Money Leaderboard</div>';
+    h+='<div class="snap-blk"><div class="snap-h">Money Leaderboard</div>';
     h+='<div class="snap-sub">'+earners.length+' paid · $'+paidOut.toLocaleString()+' of $'+pot.toLocaleString()+' awarded ('+Math.round(paidOut/pot*100)+'%)</div>';
     h+='<div class="snap-list">';
     var groups=[];var cur=null;
     earners.forEach(function(e){if(!cur||cur.amt!==e.winnings){cur={amt:e.winnings,entries:[]};groups.push(cur);}cur.entries.push(e);});
     groups.slice(0,5).forEach(function(g,i){
-      var medal=['🥇','🥈','🥉'][i]||'';
       var amt='$'+(g.amt%1===0?g.amt.toLocaleString():g.amt.toFixed(2));
       var names=g.entries.map(function(e){return e.entry_used;}).join(', ');
-      h+='<div class="snap-row"><span class="snap-bullet">'+(medal||'·')+'</span><b>'+amt+'</b>'+(g.entries.length>1?' <span class="snap-tag">×'+g.entries.length+'</span>':'')+' — <span class="snap-names">'+names+'</span></div>';
+      h+='<div class="snap-row"><b>'+amt+'</b>'+(g.entries.length>1?' <span class="snap-tag">×'+g.entries.length+'</span>':'')+' <span class="snap-sep">—</span> <span class="snap-names">'+names+'</span></div>';
     });
     h+='</div></div>';
   }
-  // 2. Dark Horse Picks
+  // 2. Dark Horse
   if(typeof DARK_HORSE_PAYOUTS!=='undefined'){
     var dhs=Object.keys(DARK_HORSE_PAYOUTS);
     if(dhs.length){
-      h+='<div class="snap-blk"><div class="snap-h"><span>🐎</span> Dark Horse Hits</div>';
+      h+='<div class="snap-blk"><div class="snap-h">Dark Horse Hits</div>';
       h+='<div class="snap-sub">Entries who correctly picked the tournament dark horse (+$50 bonus)</div>';
       h+='<div class="snap-list">';
       dhs.forEach(function(nm){
         var dh=DARK_HORSE_PAYOUTS[nm];
         var ev=dh.event==='players'?'The Players':dh.event==='masters'?'Masters':dh.event==='pga'?'PGA':dh.event;
-        h+='<div class="snap-row"><span class="snap-bullet">🎯</span><b>'+nm+'</b> <span class="snap-tag">'+ev+'</span> +$'+dh.amt+'</div>';
+        h+='<div class="snap-row"><b>'+nm+'</b> <span class="snap-tag">'+ev+'</span> <span class="snap-amt">+$'+dh.amt+'</span></div>';
       });
       h+='</div></div>';
     }
   }
-  // 3. Standout Performances (top 3 finishes per event)
-  h+='<div class="snap-blk"><div class="snap-h"><span>⭐</span> Standout Performances</div>';
+  // 3. Standout Performances
+  h+='<div class="snap-blk"><div class="snap-h">Standout Performances</div>';
   h+='<div class="snap-sub">Top-5 finishes from this season</div>';
   h+='<div class="snap-list">';
   ['players','masters','pga'].forEach(function(k){
     var top5=[...all].filter(function(e){return e[k]!=null&&e[k]<=5;}).sort(function(a,b){return a[k]-b[k];});
     if(top5.length){
       var evLbl=lb[k]||k;
-      h+='<div class="snap-row"><span class="snap-bullet">🏌️</span><span class="snap-tag">'+evLbl+'</span> '+top5.map(function(e){return '<b>#'+e[k]+'</b> '+e.entry_used;}).join(' · ')+'</div>';
+      h+='<div class="snap-row"><span class="snap-tag">'+evLbl+'</span> '+top5.map(function(e){return '<b>#'+e[k]+'</b> '+e.entry_used;}).join(' · ')+'</div>';
     }
   });
   h+='</div></div>';
-  // 4. Biggest Movers (YTD rank vs Players rank)
+  // 4. Movers
   var movers=all.filter(function(e){return e._plRk!=null&&e.rank!=null;}).map(function(e){return {nm:e.entry_used,from:e._plRk,to:e.rank,diff:e._plRk-e.rank};});
   var up=[...movers].sort(function(a,b){return b.diff-a.diff;}).slice(0,3);
   var down=[...movers].sort(function(a,b){return a.diff-b.diff;}).slice(0,3);
   if(up.length){
-    h+='<div class="snap-blk"><div class="snap-h"><span>📈</span> Biggest Risers</div>';
+    h+='<div class="snap-blk"><div class="snap-h">Biggest Risers</div>';
     h+='<div class="snap-sub">Climbed the most since the Players</div>';
     h+='<div class="snap-list">';
-    up.forEach(function(m){if(m.diff>0)h+='<div class="snap-row"><span class="snap-bullet" style="color:var(--gl)">▲'+m.diff+'</span><b>'+m.nm+'</b> #'+m.from+' → #'+m.to+'</div>';});
+    up.forEach(function(m){if(m.diff>0)h+='<div class="snap-row"><span class="snap-arrow up">+'+m.diff+'</span><b>'+m.nm+'</b> <span class="snap-path">#'+m.from+' → #'+m.to+'</span></div>';});
     h+='</div></div>';
   }
   if(down.length){
-    h+='<div class="snap-blk"><div class="snap-h"><span>📉</span> Biggest Sliders</div>';
+    h+='<div class="snap-blk"><div class="snap-h">Biggest Sliders</div>';
     h+='<div class="snap-sub">Dropped the most since the Players</div>';
     h+='<div class="snap-list">';
-    down.forEach(function(m){if(m.diff<0)h+='<div class="snap-row"><span class="snap-bullet" style="color:var(--rd)">▼'+Math.abs(m.diff)+'</span><b>'+m.nm+'</b> #'+m.from+' → #'+m.to+'</div>';});
+    down.forEach(function(m){if(m.diff<0)h+='<div class="snap-row"><span class="snap-arrow dn">−'+Math.abs(m.diff)+'</span><b>'+m.nm+'</b> <span class="snap-path">#'+m.from+' → #'+m.to+'</span></div>';});
     h+='</div></div>';
   }
-  // 5. Hot streaks — improving event-over-event
+  // 5. Trends
   var hot=[];var cold=[];
   all.forEach(function(e){
     if(e.players!=null&&e.masters!=null&&e.pga!=null){
@@ -1102,24 +1110,24 @@ function renderSeasonDetails(all,lb,paidOut,pot){
     }
   });
   if(hot.length){
-    h+='<div class="snap-blk"><div class="snap-h"><span>🔥</span> Heating Up</div>';
+    h+='<div class="snap-blk"><div class="snap-h">Trending Up</div>';
     h+='<div class="snap-sub">Improved finish in each of 3 events (Players → Masters → PGA)</div>';
     h+='<div class="snap-list">';
     hot.sort(function(a,b){return (a.r[2]-a.r[0])-(b.r[2]-b.r[0]);}).slice(0,5).forEach(function(m){
-      h+='<div class="snap-row"><span class="snap-bullet" style="color:var(--gl)">🔥</span><b>'+m.nm+'</b> #'+m.r[0]+' → #'+m.r[1]+' → <b style="color:var(--gl)">#'+m.r[2]+'</b></div>';
+      h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → </span><b class="snap-emp up">#'+m.r[2]+'</b></div>';
     });
     h+='</div></div>';
   }
   if(cold.length){
-    h+='<div class="snap-blk"><div class="snap-h"><span>🧊</span> Cooling Off</div>';
+    h+='<div class="snap-blk"><div class="snap-h">Trending Down</div>';
     h+='<div class="snap-sub">Worse finish in each of 3 events (Players → Masters → PGA)</div>';
     h+='<div class="snap-list">';
     cold.sort(function(a,b){return (b.r[2]-b.r[0])-(a.r[2]-a.r[0]);}).slice(0,5).forEach(function(m){
-      h+='<div class="snap-row"><span class="snap-bullet" style="color:var(--rd)">🧊</span><b>'+m.nm+'</b> #'+m.r[0]+' → #'+m.r[1]+' → <b style="color:var(--rd)">#'+m.r[2]+'</b></div>';
+      h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → </span><b class="snap-emp dn">#'+m.r[2]+'</b></div>';
     });
     h+='</div></div>';
   }
-  // 6. DNP penalty leaders
+  // 6. Missed Events
   var dnpCount={};
   [11,14,33].forEach(function(k){
     if(POOL_RESULTS[k]&&POOL_RESULTS[k].entries){
@@ -1128,10 +1136,10 @@ function renderSeasonDetails(all,lb,paidOut,pot){
   });
   var dnpList=Object.keys(dnpCount).map(function(nm){return{nm:nm,n:dnpCount[nm]};}).sort(function(a,b){return b.n-a.n;});
   if(dnpList.length){
-    h+='<div class="snap-blk"><div class="snap-h"><span>🚫</span> Missed Events</div>';
-    h+='<div class="snap-sub">Entries that didn\'t pick a roster for at least one event</div>';
+    h+='<div class="snap-blk"><div class="snap-h">Missed Events</div>';
+    h+='<div class="snap-sub">Entries that didn\'t submit a roster for at least one event</div>';
     h+='<div class="snap-list">';
-    dnpList.forEach(function(d){h+='<div class="snap-row"><span class="snap-bullet">·</span><b>'+d.nm+'</b> <span class="snap-tag">'+d.n+' DNP'+(d.n>1?'s':'')+'</span></div>';});
+    dnpList.forEach(function(d){h+='<div class="snap-row"><b>'+d.nm+'</b> <span class="snap-tag">'+d.n+' DNP'+(d.n>1?'s':'')+'</span></div>';});
     h+='</div></div>';
   }
   h+='</div>';
