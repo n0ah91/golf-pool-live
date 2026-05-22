@@ -546,8 +546,16 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 @media(max-width:768px){.cf-facts-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.prev-title{font-size:1.05rem}}
 /* Live Stats Panel */
-.splash-link{display:inline-block;font-size:.58rem;font-family:var(--fb);font-weight:600;color:#c66b5c;text-decoration:none;transition:all .2s;letter-spacing:.04em;margin:.15rem 0 .4rem .6rem;cursor:pointer;text-transform:uppercase}
-.splash-link:hover{color:#b04535;letter-spacing:.08em}
+.quick-links{display:flex;flex-wrap:wrap;align-items:center;gap:.2rem .9rem;margin:.15rem .6rem .45rem}
+.splash-link,.preview-link{display:inline-flex;align-items:center;gap:.25rem;font-size:.58rem;font-family:var(--fb);font-weight:600;text-decoration:none;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;padding:.15rem 0;transition:all .2s ease;position:relative}
+.splash-link{color:#c66b5c}
+.splash-link:hover{color:#b04535;letter-spacing:.07em}
+.preview-link.uso{color:#3a86a8}
+.preview-link.uso:hover{color:#2960a8;letter-spacing:.07em}
+.preview-link.open{color:#6b4e8e}
+.preview-link.open:hover{color:#4f3870;letter-spacing:.07em}
+.preview-link::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:1px;background:currentColor;transition:right .25s ease;opacity:.5}
+.preview-link:hover::after{right:0}
 .ls-panel{background:var(--bc);border-radius:10px;padding:0;margin-top:.5rem;overflow:hidden;border:1px solid var(--br)}
 .ls-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:var(--bca);border-bottom:1px solid var(--br)}
 .ls-event-name{font-family:var(--fd);font-size:1.15rem;color:var(--tb);font-weight:600;letter-spacing:.01em;display:flex;align-items:center;gap:.4rem}
@@ -767,7 +775,11 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <input type="text" id="hs" placeholder="Search..." oninput="rHistory()" style="flex:1;min-width:100px">
 <span id="hc" class="cnt"></span>
 </div>
+<div class="quick-links">
 <a href="https://splashsports.com" target="_blank" class="splash-link">Splash Sports ↗</a>
+<a href="javascript:go('uso-tab')" class="preview-link uso">Shinnecock Preview →</a>
+<a href="javascript:go('open-tab')" class="preview-link open">Royal Birkdale Preview →</a>
+</div>
 <div id="h-body"></div>
 </section>
 <section id="players-results" class="pn2">
