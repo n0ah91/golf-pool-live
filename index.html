@@ -38,7 +38,7 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .me-bar label{font-size:.72rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em}
 .me-bar select{font-family:var(--fb);font-size:.8rem;padding:.35rem .6rem;background:var(--bc);color:var(--go);border:1px solid var(--br);border-radius:5px;outline:0;max-width:200px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23c9a227' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
 .me-badge{font-size:.72rem;color:var(--go);font-family:var(--fm)}
-.nav{display:flex;background:var(--bm);border-bottom:1px solid var(--br);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:.25rem .4rem;gap:.15rem}
+.nav{display:flex;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.7));backdrop-filter:blur(10px) saturate(1.1);-webkit-backdrop-filter:blur(10px) saturate(1.1);border-bottom:1px solid rgba(212,210,202,.5);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 2px 8px -2px rgba(0,32,91,.05);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:.25rem .4rem;gap:.15rem;position:sticky;top:0;z-index:50}
 .nav::-webkit-scrollbar{display:none}
 .nav button{flex:1;min-width:max-content;padding:.55rem .75rem;font-family:var(--fb);font-weight:500;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ts);background:0 0;border:none;border-radius:6px;cursor:pointer;transition:color .2s,background .25s,transform .15s,box-shadow .2s;white-space:nowrap;position:relative}
 .nav button::after{content:'';position:absolute;left:50%;right:50%;bottom:-1px;height:2px;background:var(--gn);transition:left .25s ease,right .25s ease;border-radius:1px}
@@ -212,7 +212,8 @@ table.tc{font-size:.68rem}table.tc thead th{font-size:.6rem;padding:.35rem .3rem
 .wi{color:var(--go);font-weight:500}.wi.z{color:var(--td)}
 .pn{font-family:var(--fb);font-size:.58rem;color:var(--td);font-weight:400}
 .yoy{font-size:.58rem;font-family:var(--fm);margin-left:.25rem}.yoy.up{color:var(--gl)}.yoy.dn{color:var(--rd)}.yoy.nw{color:var(--go);font-style:italic;font-family:var(--fb)}
-.cd{background:var(--bc);border:1px solid var(--br);border-radius:9px;padding:.9rem;margin:0 .85rem .85rem}
+.cd{background:linear-gradient(180deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.85) 100%);backdrop-filter:blur(6px) saturate(1.05);-webkit-backdrop-filter:blur(6px) saturate(1.05);border:1px solid rgba(212,210,202,.55);border-radius:9px;padding:.9rem;margin:0 .85rem .85rem;box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 1px 3px rgba(0,32,91,.04),0 6px 14px -8px rgba(0,32,91,.06);position:relative}
+.cd::before{content:'';position:absolute;inset:0;border-radius:9px;background:linear-gradient(135deg,rgba(255,255,255,.4) 0%,transparent 35%,transparent 65%,rgba(196,160,53,.03) 100%);pointer-events:none;opacity:.7}
 .cd+.cd{margin-top:.15rem}
 .cd h3{font-family:var(--fd);font-size:1.15rem;font-weight:600;color:var(--tb);margin-bottom:.55rem}
 .cd h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ts);margin:.6rem 0 .4rem}
@@ -953,7 +954,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 </section>
 </main>
-<footer class="ft"><a href="https://account.venmo.com/u/NoahStancamp" target="_blank" style="color:#00205b;text-decoration:none;letter-spacing:.04em;font-size:.72rem;display:inline-block;font-weight:500;margin-bottom:.4rem">🍺 Buy Me a Beer</a><br>The Majors Pool &middot; Est. 2017 &middot; Live Dashboard</footer>
+<footer class="ft"><a href="https://account.venmo.com/u/NoahStancamp" target="_blank" style="color:#00205b;text-decoration:none;letter-spacing:.04em;font-size:.72rem;display:inline-block;font-weight:500;margin-bottom:.4rem">🍻 Cheers</a><br>The Majors Pool &middot; Est. 2017 &middot; Live Dashboard</footer>
 <script>
 /* Font size control */
 var _fsLevel=parseInt(localStorage.getItem('fsLevel')||'0');
@@ -6333,76 +6334,128 @@ function renderPgaResults(){
   fetchMastersOdds();
 }
 
-/* PGA Field Recap — uses PGA_FIELD_STATS (world rank, score, scoring breakdown, salary, value) */
+/* PGA Field Recap — multi-tab panel mirroring Masters tournament panel */
+let _pgaRecapView='perf';
 function renderPgaFieldRecap(targetId){
   const el=document.getElementById(targetId);if(!el)return;
   const stats=PGA_FIELD_STATS.filter(p=>p.sc!=null);
   const scored=stats.filter(p=>typeof p.sc==='number');
   const cut=stats.filter(p=>p.sc==='CUT').length;
+  // Compute derived metrics for sorting
+  stats.forEach(p=>{
+    p._bm=(p.birds||0)+2*(p.eagles||0); // birdie momentum
+    p._risk=(p.doubles||0)+(p.triples||0)+(p.bogeys||0); // mistakes
+    p._steady=(p.pars||0); // par-makers
+    p._netScore=(p.birds||0)+2*(p.eagles||0)-(p.bogeys||0)-2*(p.doubles||0)-3*(p.triples||0); // hot vs cold delta
+  });
   const bestSc=scored.slice().sort((a,b)=>a.sc-b.sc)[0];
   const mostBirds=stats.slice().sort((a,b)=>(b.birds||0)-(a.birds||0))[0];
   const mostEagles=stats.slice().sort((a,b)=>(b.eagles||0)-(a.eagles||0)).filter(p=>p.eagles>0)[0];
   const fewestBog=scored.slice().sort((a,b)=>(a.bogeys||0)-(b.bogeys||0))[0];
   const bestVal=stats.filter(p=>p.val).sort((a,b)=>b.val-a.val)[0];
   const worstVal=stats.filter(p=>p.val!=null&&p.sal).sort((a,b)=>a.val-b.val)[0];
-  let h='<div class="ls-panel" style="margin-top:.5rem">';
-  h+='<div class="ls-header"><div class="ls-event-name"><span class="ls-live-dot" style="background:var(--go)"></span>PGA Championship</div>';
-  h+='<div class="ls-header-right"><span style="font-size:.55rem;color:var(--td)">Aronimink · May 14–17</span></div></div>';
-  h+='<div class="ls-helper" style="font-style:italic;margin:.4rem 0 .5rem">Field-wide scoring breakdown · '+scored.length+' made cut · '+cut+' missed</div>';
-  h+='<div class="ls-insights" style="margin-bottom:.6rem">';
-  if(bestSc)h+='<span class="ls-chip"><span class="ls-chip-lbl">Best Score</span> '+bestSc.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+(bestSc.sc>0?'+':'')+bestSc.sc+'</span></span>';
-  if(mostBirds)h+='<span class="ls-chip"><span class="ls-chip-lbl">Most Birdies</span> '+mostBirds.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+mostBirds.birds+'</span></span>';
-  if(mostEagles)h+='<span class="ls-chip"><span class="ls-chip-lbl">Most Eagles</span> '+mostEagles.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+mostEagles.eagles+'</span></span>';
-  if(fewestBog)h+='<span class="ls-chip"><span class="ls-chip-lbl">Fewest Bogeys</span> '+fewestBog.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+fewestBog.bogeys+'</span></span>';
-  if(bestVal)h+='<span class="ls-chip"><span class="ls-chip-lbl">Best DK Value</span> '+bestVal.nm+' <span style="color:var(--go);font-weight:700;font-family:var(--fm)">'+bestVal.val.toFixed(1)+'</span></span>';
-  if(worstVal)h+='<span class="ls-chip"><span class="ls-chip-lbl">Worst DK Value</span> '+worstVal.nm+' <span style="color:var(--rd);font-weight:700;font-family:var(--fm)">'+worstVal.val.toFixed(1)+'</span></span>';
-  h+='</div>';
-  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">';
-  h+='<div style="font-size:.62rem;color:var(--tp);font-family:var(--fb);font-weight:600">Top 25 — Scoring Breakdown</div>';
-  h+='<input type="text" id="pga-recap-search" placeholder="Search…" oninput="filterPgaRecap()" style="font-family:var(--fb);font-size:.6rem;padding:.2rem .45rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:4px;outline:0;width:120px">';
-  h+='</div>';
-  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr>';
-  h+='<th style="width:24px">WR</th><th>PLAYER</th><th style="width:42px">SCORE</th>';
-  h+='<th style="width:34px" title="Birdies">BIRD</th><th style="width:34px" title="Eagles">EAG</th><th style="width:34px" title="Pars">PAR</th><th style="width:34px" title="Bogeys">BOG</th><th style="width:34px" title="Doubles or worse">D+</th>';
-  h+='<th style="width:48px" title="DraftKings Salary">SAL</th><th style="width:42px" title="DraftKings Value">VAL</th>';
-  h+='</tr></thead><tbody id="pga-recap-tbody">';
-  const sorted=[...stats].sort((a,b)=>{
-    const aSc=typeof a.sc==='number'?a.sc:9999;
-    const bSc=typeof b.sc==='number'?b.sc:9999;
-    return aSc-bSc;
-  });
-  sorted.slice(0,25).forEach(p=>{
-    const scClr=typeof p.sc==='number'?(p.sc<0?'var(--rd)':p.sc>0?'var(--gl)':'var(--tp)'):'var(--td)';
-    const scTxt=typeof p.sc==='number'?(p.sc>0?'+'+p.sc:p.sc===0?'E':p.sc):p.sc;
-    h+='<tr><td class="rc" style="color:var(--ts)">'+(p.wr||'-')+'</td>';
-    h+='<td class="nc" style="font-size:.66rem">'+p.nm+'</td>';
-    h+='<td style="font-weight:700;color:'+scClr+';font-family:var(--fm)">'+scTxt+'</td>';
-    h+='<td style="font-family:var(--fm);color:var(--gl)">'+(p.birds||0)+'</td>';
-    h+='<td style="font-family:var(--fm);color:'+((p.eagles||0)>0?'var(--go)':'var(--td)')+'">'+(p.eagles||0)+'</td>';
-    h+='<td style="font-family:var(--fm);color:var(--tp)">'+(p.pars||0)+'</td>';
-    h+='<td style="font-family:var(--fm);color:var(--rd)">'+(p.bogeys||0)+'</td>';
-    h+='<td style="font-family:var(--fm);color:var(--rd)">'+((p.doubles||0)+(p.triples||0))+'</td>';
-    h+='<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'-')+'</td>';
-    h+='<td style="font-family:var(--fm);color:var(--go);font-weight:600">'+(p.val!=null?p.val.toFixed(0):'-')+'</td>';
-    h+='</tr>';
-  });
-  h+='</tbody></table></div>';
-  h+='<details style="margin-top:.4rem"><summary style="cursor:pointer;font-size:.6rem;color:var(--go);font-family:var(--fb);padding:.3rem 0">Show full field ('+stats.length+' players)</summary>';
-  h+='<div class="tw" style="margin:.3rem 0 0;border-radius:5px;max-height:400px;overflow-y:auto"><table class="tc"><tbody>';
-  sorted.slice(25).forEach(p=>{
-    const scClr=typeof p.sc==='number'?(p.sc<0?'var(--rd)':p.sc>0?'var(--gl)':'var(--tp)'):'var(--td)';
-    const scTxt=typeof p.sc==='number'?(p.sc>0?'+'+p.sc:p.sc===0?'E':p.sc):p.sc;
-    h+='<tr><td class="rc" style="width:24px;color:var(--ts)">'+(p.wr||'-')+'</td>';
-    h+='<td class="nc" style="font-size:.62rem">'+p.nm+'</td>';
-    h+='<td style="width:42px;font-weight:700;color:'+scClr+';font-family:var(--fm)">'+scTxt+'</td>';
-    h+='<td style="width:34px;font-family:var(--fm);color:var(--gl)">'+(p.birds||0)+'</td>';
-    h+='<td style="width:34px;font-family:var(--fm);color:var(--rd)">'+(p.bogeys||0)+'</td>';
-    h+='<td style="width:48px;font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'-')+'</td>';
-    h+='<td style="width:42px;font-family:var(--fm);color:var(--go);font-weight:600">'+(p.val!=null?p.val.toFixed(0):'-')+'</td></tr>';
-  });
-  h+='</tbody></table></div></details>';
-  h+='</div>';
-  el.innerHTML=h;
+
+  function render(){
+    let h='<div class="ls-panel" style="margin-top:.5rem">';
+    h+='<div class="ls-header"><div class="ls-event-name"><span class="ls-live-dot" style="background:var(--go)"></span>PGA Championship</div>';
+    h+='<div class="ls-header-right"><span style="font-size:.55rem;color:var(--td)">Aronimink · May 14–17</span></div></div>';
+    h+='<div class="ls-tabs">';
+    const tabs=[
+      {k:'perf',l:'Performance'},
+      {k:'hot',l:'Hot vs Cold'},
+      {k:'value',l:'DK Value Map'}
+    ];
+    tabs.forEach(t=>{h+='<button class="ls-tab'+(_pgaRecapView===t.k?' active':'')+'" onclick="setPgaRecapView(\''+t.k+'\')">'+t.l+'</button>';});
+    h+='</div>';
+    // Helper text per tab
+    var helpMsg={
+      perf:'Field-wide scoring breakdown · '+scored.length+' made cut · '+cut+' missed',
+      hot:'Net score = (birds + 2·eagles) − (bogeys + 2·doubles + 3·triples) — who attacked vs played safe',
+      value:'DraftKings value (fantasy points per $1k salary) — best money returns'
+    }[_pgaRecapView];
+    h+='<div class="ls-helper" style="font-style:italic;margin:.4rem 0 .5rem">'+helpMsg+'</div>';
+    // Leader chips — show all three rows of summary chips regardless of tab
+    h+='<div class="ls-insights" style="margin-bottom:.6rem">';
+    if(bestSc)h+='<span class="ls-chip"><span class="ls-chip-lbl">Best Score</span> '+bestSc.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+(bestSc.sc>0?'+':'')+bestSc.sc+'</span></span>';
+    if(mostBirds)h+='<span class="ls-chip"><span class="ls-chip-lbl">Most Birdies</span> '+mostBirds.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+mostBirds.birds+'</span></span>';
+    if(mostEagles)h+='<span class="ls-chip"><span class="ls-chip-lbl">Most Eagles</span> '+mostEagles.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+mostEagles.eagles+'</span></span>';
+    if(fewestBog)h+='<span class="ls-chip"><span class="ls-chip-lbl">Fewest Bogeys</span> '+fewestBog.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+fewestBog.bogeys+'</span></span>';
+    if(bestVal)h+='<span class="ls-chip"><span class="ls-chip-lbl">Best DK Value</span> '+bestVal.nm+' <span style="color:var(--go);font-weight:700;font-family:var(--fm)">'+bestVal.val.toFixed(1)+'</span></span>';
+    if(worstVal)h+='<span class="ls-chip"><span class="ls-chip-lbl">Worst DK Value</span> '+worstVal.nm+' <span style="color:var(--rd);font-weight:700;font-family:var(--fm)">'+worstVal.val.toFixed(1)+'</span></span>';
+    h+='</div>';
+    // Sort + table per tab
+    let sorted,cols,rowFn,title;
+    if(_pgaRecapView==='perf'){
+      sorted=[...stats].sort((a,b)=>{const aSc=typeof a.sc==='number'?a.sc:9999;const bSc=typeof b.sc==='number'?b.sc:9999;return aSc-bSc;});
+      title='Top 25 — Scoring Breakdown';
+      cols=['WR','PLAYER','SCORE','BIRD','EAG','PAR','BOG','D+','SAL','VAL'];
+      rowFn=(p)=>{
+        const scClr=typeof p.sc==='number'?(p.sc<0?'var(--rd)':p.sc>0?'var(--gl)':'var(--tp)'):'var(--td)';
+        const scTxt=typeof p.sc==='number'?(p.sc>0?'+'+p.sc:p.sc===0?'E':p.sc):p.sc;
+        return '<td class="rc" style="color:var(--ts)">'+(p.wr||'-')+'</td>'+
+          '<td class="nc" style="font-size:.66rem">'+p.nm+'</td>'+
+          '<td style="font-weight:700;color:'+scClr+';font-family:var(--fm)">'+scTxt+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--gl)">'+(p.birds||0)+'</td>'+
+          '<td style="font-family:var(--fm);color:'+((p.eagles||0)>0?'var(--go)':'var(--td)')+'">'+(p.eagles||0)+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--tp)">'+(p.pars||0)+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--rd)">'+(p.bogeys||0)+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--rd)">'+((p.doubles||0)+(p.triples||0))+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'-')+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--go);font-weight:600">'+(p.val!=null?p.val.toFixed(0):'-')+'</td>';
+      };
+    } else if(_pgaRecapView==='hot'){
+      sorted=[...stats].sort((a,b)=>(b._netScore)-(a._netScore));
+      title='Top 25 — Net Scoring Delta';
+      cols=['WR','PLAYER','SCORE','NET','BIRD','EAG','BOG','D+'];
+      rowFn=(p)=>{
+        const scClr=typeof p.sc==='number'?(p.sc<0?'var(--rd)':p.sc>0?'var(--gl)':'var(--tp)'):'var(--td)';
+        const scTxt=typeof p.sc==='number'?(p.sc>0?'+'+p.sc:p.sc===0?'E':p.sc):p.sc;
+        const netClr=p._netScore>0?'var(--gl)':p._netScore<0?'var(--rd)':'var(--tp)';
+        return '<td class="rc" style="color:var(--ts)">'+(p.wr||'-')+'</td>'+
+          '<td class="nc" style="font-size:.66rem">'+p.nm+'</td>'+
+          '<td style="font-weight:700;color:'+scClr+';font-family:var(--fm)">'+scTxt+'</td>'+
+          '<td style="font-family:var(--fm);font-weight:700;color:'+netClr+'">'+(p._netScore>0?'+':'')+p._netScore+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--gl)">'+(p.birds||0)+'</td>'+
+          '<td style="font-family:var(--fm);color:'+((p.eagles||0)>0?'var(--go)':'var(--td)')+'">'+(p.eagles||0)+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--rd)">'+(p.bogeys||0)+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--rd)">'+((p.doubles||0)+(p.triples||0))+'</td>';
+      };
+    } else {// value
+      sorted=stats.filter(p=>p.val!=null).sort((a,b)=>b.val-a.val);
+      title='Top 25 — DraftKings Value';
+      cols=['WR','PLAYER','SCORE','VAL','SAL','PPP'];
+      rowFn=(p)=>{
+        const scClr=typeof p.sc==='number'?(p.sc<0?'var(--rd)':p.sc>0?'var(--gl)':'var(--tp)'):'var(--td)';
+        const scTxt=typeof p.sc==='number'?(p.sc>0?'+'+p.sc:p.sc===0?'E':p.sc):p.sc;
+        const ppp=p.sal&&p.val?(p.val/(p.sal/1000)).toFixed(1):'-';
+        return '<td class="rc" style="color:var(--ts)">'+(p.wr||'-')+'</td>'+
+          '<td class="nc" style="font-size:.66rem">'+p.nm+'</td>'+
+          '<td style="font-weight:700;color:'+scClr+';font-family:var(--fm)">'+scTxt+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--go);font-weight:700">'+(p.val!=null?p.val.toFixed(1):'-')+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'-')+'</td>'+
+          '<td style="font-family:var(--fm);color:var(--go)">'+ppp+'</td>';
+      };
+    }
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">';
+    h+='<div style="font-size:.62rem;color:var(--tp);font-family:var(--fb);font-weight:600">'+title+'</div>';
+    h+='<input type="text" id="pga-recap-search" placeholder="Search…" oninput="filterPgaRecap()" style="font-family:var(--fb);font-size:.6rem;padding:.2rem .45rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:4px;outline:0;width:120px">';
+    h+='</div>';
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr>';
+    cols.forEach((c,i)=>{
+      const w=c==='PLAYER'?'':(c==='WR'?'24px':c==='SCORE'?'42px':c==='SAL'?'48px':c==='VAL'?'42px':c==='NET'?'40px':c==='PPP'?'40px':'34px');
+      h+='<th style="'+(w?'width:'+w:'')+'">'+c+'</th>';
+    });
+    h+='</tr></thead><tbody id="pga-recap-tbody">';
+    sorted.slice(0,25).forEach(p=>{h+='<tr>'+rowFn(p)+'</tr>';});
+    h+='</tbody></table></div>';
+    h+='<details style="margin-top:.4rem"><summary style="cursor:pointer;font-size:.6rem;color:var(--go);font-family:var(--fb);padding:.3rem 0">Show full field ('+sorted.length+' players)</summary>';
+    h+='<div class="tw" style="margin:.3rem 0 0;border-radius:5px;max-height:400px;overflow-y:auto"><table class="tc"><tbody>';
+    sorted.slice(25).forEach(p=>{h+='<tr>'+rowFn(p)+'</tr>';});
+    h+='</tbody></table></div></details>';
+    h+='</div>';
+    el.innerHTML=h;
+  }
+  window.setPgaRecapView=function(v){_pgaRecapView=v;render();};
   window.filterPgaRecap=function(){
     const q=document.getElementById('pga-recap-search')?.value?.toLowerCase()||'';
     document.querySelectorAll('#pga-recap-tbody tr').forEach(r=>{
@@ -6410,6 +6463,7 @@ function renderPgaFieldRecap(targetId){
       r.style.display=(!q||nm.includes(q))?'':'none';
     });
   };
+  render();
 }
 
 /* ===== MASTERS RESULTS TAB ===== */
