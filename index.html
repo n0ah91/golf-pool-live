@@ -289,17 +289,11 @@ tbody tr:hover td.fc-gold,tbody tr:hover td.fc-silver,tbody tr:hover td.fc-bronz
 .aw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.35rem;margin-bottom:.4rem}
 .aw{background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(240,239,235,.55));border:1px solid rgba(212,210,202,.45);border-radius:7px;padding:.4rem .35rem;text-align:center;transition:all .3s cubic-bezier(.16,.84,.36,1);box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 1px 2px rgba(0,32,91,.03);position:relative;overflow:hidden}
 .aw::before{content:'';position:absolute;left:-50%;top:0;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);transition:left .6s ease;z-index:2;pointer-events:none}
-.aw::after{content:'';position:absolute;inset:-1px;border-radius:8px;background:conic-gradient(from 0deg,rgba(196,160,53,.06) 0deg,rgba(196,160,53,.6) 35deg,rgba(230,200,71,.85) 55deg,rgba(196,160,53,.6) 75deg,rgba(196,160,53,.06) 110deg,rgba(196,160,53,.06) 360deg);padding:1.5px;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:awSpin 8s linear infinite;pointer-events:none;opacity:.85;z-index:3}
 .aw>*{position:relative;z-index:1}
 .aw:hover{border-color:rgba(196,160,53,.4);transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 4px 10px rgba(0,32,91,.07)}
 .aw:hover::before{left:150%}
-.aw:hover::after{opacity:1;animation-duration:4s}
 .aw.gold{border-color:rgba(196,160,53,.6);background:linear-gradient(135deg,rgba(255,253,247,.95) 0%,rgba(254,247,224,.85) 50%,rgba(255,253,247,.95) 100%);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 0 18px rgba(196,160,53,.15),0 2px 6px rgba(196,160,53,.1)}
-.aw.gold::after{background:conic-gradient(from 0deg,rgba(196,160,53,.15) 0deg,rgba(230,200,71,.9) 40deg,rgba(255,245,211,.95) 55deg,rgba(230,200,71,.9) 70deg,rgba(196,160,53,.15) 110deg,rgba(196,160,53,.15) 360deg);opacity:.8;animation-duration:5s;padding:1.5px}
 .aw.gold:hover{box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 0 26px rgba(196,160,53,.22),0 6px 14px rgba(196,160,53,.15);transform:translateY(-2px)}
-.aw.gold:hover::after{opacity:1;animation-duration:3s}
-@keyframes awSpin{to{transform:rotate(1turn)}}
-@media(prefers-reduced-motion:reduce){.aw::after{animation:none;opacity:.35}}
 .aw .at{font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ts)}
 .aw .an{font-family:var(--fd);font-size:.75rem;color:var(--tb);font-weight:600;margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .aw .ad{font-size:.52rem;color:var(--go);margin-top:.05rem}
