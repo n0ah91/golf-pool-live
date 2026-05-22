@@ -245,6 +245,20 @@ td.rc{font-weight:600;min-width:38px}
 table.tc{font-size:.68rem}table.tc thead th{font-size:.6rem;padding:.35rem .3rem}table.tc td{padding:.28rem .3rem;font-size:.66rem}
 .r1{color:var(--r1)}.r2{color:var(--r2)}.r3{color:var(--r3)}
 .sg{color:var(--gl)}.sb{color:var(--rd)}.sn{color:var(--td)}
+/* Finish-position cells in YTD grid — tiered heatmap + medals */
+td.fc{font-family:var(--fm);font-weight:600;text-align:center;font-size:.76rem;padding:.32rem .35rem;border-radius:0;transition:transform .2s ease,box-shadow .2s ease;position:relative}
+td.fc-na{color:var(--td);font-weight:400;opacity:.55}
+td.fc-mid{color:var(--tp)}
+td.fc-top{color:var(--gl);background:linear-gradient(135deg,rgba(82,183,136,.16) 0%,rgba(82,183,136,.04) 100%)!important;box-shadow:0 0 0 1px rgba(82,183,136,.18) inset}
+td.fc-good{color:var(--gl);background:linear-gradient(135deg,rgba(82,183,136,.08) 0%,transparent 100%)!important}
+td.fc-bad{color:var(--rd);background:linear-gradient(135deg,rgba(139,35,50,.12) 0%,rgba(139,35,50,.03) 100%)!important;box-shadow:0 0 0 1px rgba(139,35,50,.15) inset}
+td.fc-gold{color:#9a7e28;background:linear-gradient(135deg,rgba(196,160,53,.28) 0%,rgba(196,160,53,.10) 100%)!important;box-shadow:0 0 0 1px rgba(196,160,53,.4) inset,0 0 10px rgba(196,160,53,.25);font-weight:700;font-family:var(--fd);font-size:.82rem}
+td.fc-gold::before{content:'';position:absolute;top:2px;right:3px;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#f4d77c,#c9a227);box-shadow:0 0 4px rgba(196,160,53,.6)}
+td.fc-silver{color:#5a6878;background:linear-gradient(135deg,rgba(168,178,189,.28) 0%,rgba(168,178,189,.10) 100%)!important;box-shadow:0 0 0 1px rgba(168,178,189,.4) inset,0 0 8px rgba(168,178,189,.2);font-weight:700;font-family:var(--fd);font-size:.78rem}
+td.fc-silver::before{content:'';position:absolute;top:2px;right:3px;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#e0e5eb,#a8b2bd);box-shadow:0 0 4px rgba(168,178,189,.5)}
+td.fc-bronze{color:#8a5a2c;background:linear-gradient(135deg,rgba(184,134,79,.22) 0%,rgba(184,134,79,.08) 100%)!important;box-shadow:0 0 0 1px rgba(184,134,79,.35) inset,0 0 8px rgba(184,134,79,.18);font-weight:700;font-family:var(--fd);font-size:.78rem}
+td.fc-bronze::before{content:'';position:absolute;top:2px;right:3px;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#d4a570,#9a6e3a);box-shadow:0 0 4px rgba(184,134,79,.5)}
+tbody tr:hover td.fc-gold,tbody tr:hover td.fc-silver,tbody tr:hover td.fc-bronze{transform:scale(1.04)}
 .tp{display:inline-block;padding:.08rem .35rem;border-radius:9px;font-weight:500;font-size:.7rem}
 .tp.g{background:rgba(82,183,136,.12);color:var(--gl)}.tp.b{background:rgba(139,35,50,.09);color:var(--rd)}.tp.n{background:rgba(138,154,143,.07);color:var(--ts)}
 .wi{color:var(--go);font-weight:500}.wi.z{color:var(--td)}
@@ -1505,8 +1519,12 @@ function rSeasonView(y){
       if(pr!=null&&pr!==e.rank){var diff=pr-e.rank;yh=diff>0?'<span class="yoy up">\u25B2'+diff+'</span>':diff<0?'<span class="yoy dn">\u25BC'+Math.abs(diff)+'</span>':'<span class="yoy">=</span>';}
       else if(pr!=null)yh='<span class="yoy">=</span>';
       else if(isRookie(e.person,y))yh='<span class="yoy nw">NEW</span>';}
-    var ec='';EK.forEach(function(k){var v=e[k];if(v==null){ec+='<td class="sn">-</td>';}else{
-      var c2=v<=5?'sg':v<=10?'sg':v>=Math.max(80,tot*.85)?'sb':'';ec+='<td class="'+c2+'">'+v+'</td>';}});
+    var ec='';EK.forEach(function(k){var v=e[k];if(v==null){ec+='<td class="fc fc-na">–</td>';}else{
+      var medal=v===1?'gold':v===2?'silver':v===3?'bronze':'';
+      var tier=v<=10?'top':v<=25?'good':v>=Math.max(80,tot*.85)?'bad':'mid';
+      var label=v;
+      ec+='<td class="fc fc-'+tier+(medal?' fc-'+medal:'')+'" title="'+(medal?(v===1?'🥇 ':v===2?'🥈 ':'🥉 ')+'Rank #'+v:'Rank #'+v)+'">'+label+'</td>';
+    }});
     var w=e.winnings?(e.winnings%1===0?e.winnings.toLocaleString():e.winnings.toFixed(2)):'-';var wc=e.winnings?'wi':'wi z';
     var pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
     h+='<tr class="'+rw+'" onclick="toggleDet(this,\''+e.id+'\')"><td class="rc '+rc+'">'+rd+yh+'</td>'+
