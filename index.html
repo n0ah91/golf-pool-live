@@ -620,21 +620,29 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 
 <section id="upcoming" class="pn2 active">
 
-<!-- PGA Championship Preview (primary content) -->
-<div class="cd" id="masters-preview" style="margin-top:.2rem">
-  <div style="text-align:center;padding:.3rem 0;font-size:.65rem;color:var(--ts)">Loading PGA Championship preview...</div>
-</div>
+<!-- PGA Championship Results (primary content post-tournament) -->
+<div class="cd" id="pga-standings"></div>
+<div class="cd" id="pga-insights"></div>
+<div class="cd" id="pga-tourney"></div>
 
-<!-- PGA Outright Odds — Top 20 from sportsbooks -->
-<div class="cd" id="masters-odds-panel" style="margin-top:.4rem">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">
-    <div class="cf-section-title" style="margin:0">PGA Championship Outright Odds</div>
-    <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20</span>
+<!-- Archived: PGA Championship Preview + Outright Odds (collapsed after tournament) -->
+<details class="cd" id="pga-archive" style="margin-top:.4rem;padding:.3rem .6rem">
+  <summary style="cursor:pointer;font-family:var(--fd);font-size:.72rem;font-weight:600;color:var(--tp);letter-spacing:.04em;text-transform:uppercase;padding:.2rem 0">📁 Pre-Tournament Preview &amp; Odds (Archive)</summary>
+  <div style="margin-top:.4rem">
+    <div id="masters-preview">
+      <div style="text-align:center;padding:.3rem 0;font-size:.65rem;color:var(--ts)">Loading PGA Championship preview...</div>
+    </div>
+    <div id="masters-odds-panel" style="margin-top:.4rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">
+        <div class="cf-section-title" style="margin:0">PGA Championship Outright Odds</div>
+        <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20 · Pre-Tournament</span>
+      </div>
+      <div id="masters-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading odds...</div></div>
+    </div>
   </div>
-  <div id="masters-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading odds...</div></div>
-</div>
+</details>
 
-<!-- Live Field (hidden pre-tournament — shown once Masters is in-play) -->
+<!-- Live Field (hidden pre-tournament — shown once major is in-play) -->
 <div class="cd" id="pred-market-panel" style="margin-top:.2rem;display:none">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.15rem">
     <div class="cf-section-title" style="margin:0" id="ih-title">Live Field</div>
@@ -4432,6 +4440,116 @@ const POOL_RESULTS = {
 {pos:91,wr:120,nm:'Davis Riley',sal:6100,own:0.01,sc:'CUT',dkv:0,pk:1,pa:17,bi:3,ea:0,bo:12,db:4,tr:0,al:0}
     ]
   }
+  ,
+  33: {
+    entries: [
+      {rk:1,nm:"Kevin Struempfler",tp:-36,rp:-13,bn:-23,r:[279,277,281,270],win:500,fed:611,td:6},
+      {rk:2,nm:"Luckyducks",tp:-35,rp:-17,bn:-18,r:[276,284,271,272],win:325,fed:445,td:1},
+      {rk:3,nm:"tbane22",tp:-35,rp:-15,bn:-20,r:[279,281,268,277],win:200,fed:562,td:3},
+      {rk:4,nm:"CKobis",tp:-32,rp:-15,bn:-17,r:[279,276,280,270],win:125,fed:501,td:3},
+      {rk:5,nm:"Dylan Smith",tp:-29,rp:-14,bn:-15,r:[282,267,282,275],win:75,fed:801,td:3},
+      {rk:6,nm:"Lewy",tp:-28,rp:-13,bn:-15,r:[285,273,272,277],win:0,fed:787,td:5},
+      {rk:7,nm:"ScottSummerson",tp:-28,rp:-11,bn:-17,r:[280,282,267,280],win:0,fed:461,td:6},
+      {rk:8,nm:"MoWil",tp:-27,rp:-14,bn:-13,r:[272,285,276,273],win:0,fed:830,td:3},
+      {rk:9,nm:"tbi020309 #2",tp:-26,rp:-14,bn:-12,r:[286,278,270,272],win:0,fed:760,td:3},
+      {rk:10,nm:"Tim Maleck",tp:-26,rp:-12,bn:-14,r:[282,274,283,269],win:0,fed:727,td:5},
+      {rk:11,nm:"Putt4Dough",tp:-26,rp:-12,bn:-14,r:[281,279,278,270],win:0,fed:727,td:8},
+      {rk:12,nm:"big-sled-6647",tp:-24,rp:-12,bn:-12,r:[281,275,281,271],win:0,fed:707,td:1},
+      {rk:13,nm:"Bridget Stancampiano",tp:-24,rp:-13,bn:-11,r:[281,277,279,270],win:0,fed:1008,td:2},
+      {rk:14,nm:"We've Got Balls",tp:-24,rp:-12,bn:-12,r:[286,268,281,273],win:0,fed:707,td:3},
+      {rk:15,nm:"The Pelican",tp:-24,rp:-14,bn:-10,r:[284,274,278,270],win:0,fed:740,td:7},
+      {rk:16,nm:"kmo",tp:-24,rp:-13,bn:-11,r:[272,282,280,273],win:0,fed:705,td:9},
+      {rk:17,nm:"Howie",tp:-23,rp:-11,bn:-12,r:[284,276,275,274],win:0,fed:693,td:1},
+      {rk:18,nm:"Modesti",tp:-23,rp:-7,bn:-16,r:[277,280,281,275],win:0,fed:334,td:3},
+      {rk:19,nm:"BillHoffman",tp:-23,rp:-12,bn:-11,r:[285,277,275,271],win:0,fed:671,td:5},
+      {rk:20,nm:"wbetts",tp:-22,rp:-11,bn:-11,r:[284,275,281,269],win:0,fed:652,td:2},
+      {rk:21,nm:"Jennings",tp:-22,rp:-11,bn:-11,r:[286,272,276,275],win:0,fed:652,td:8},
+      {rk:22,nm:"Mark Regan",tp:-21,rp:-10,bn:-11,r:[277,283,283,267],win:0,fed:638,td:3},
+      {rk:23,nm:"CornerstoneCowboy",tp:-21,rp:-10,bn:-11,r:[275,279,281,275],win:0,fed:618,td:9},
+      {rk:24,nm:"CowboyMonkey",tp:-21,rp:-11,bn:-10,r:[277,272,282,278],win:0,fed:697,td:12},
+      {rk:25,nm:"Chris Edwards",tp:-20,rp:-12,bn:-8,r:[274,284,281,269],win:0,fed:480,td:1},
+      {rk:26,nm:"Bobby Beeman",tp:-20,rp:-10,bn:-10,r:[280,279,275,276],win:0,fed:238,td:2},
+      {rk:27,nm:"tjnovak11",tp:-20,rp:-12,bn:-8,r:[276,285,279,268],win:0,fed:625,td:3},
+      {rk:28,nm:"Vandelay Industries",tp:-19,rp:-11,bn:-8,r:[278,277,289,265],win:0,fed:591,td:2},
+      {rk:29,nm:"Kyle K",tp:-18,rp:-10,bn:-8,r:[277,280,280,273],win:0,fed:572,td:2},
+      {rk:30,nm:"Justin Alves",tp:-18,rp:-7,bn:-11,r:[287,273,277,276],win:0,fed:577,td:2},
+      {rk:31,nm:"tbi020309",tp:-18,rp:-9,bn:-9,r:[275,285,275,276],win:0,fed:183,td:5},
+      {rk:32,nm:"keen-arm-9499",tp:-17,rp:-9,bn:-8,r:[281,283,270,277],win:0,fed:538,td:2},
+      {rk:33,nm:"Burkey's Bogeys",tp:-17,rp:-8,bn:-9,r:[279,284,273,276],win:0,fed:113,td:3},
+      {rk:34,nm:"David Wheeler",tp:-16,rp:-7,bn:-9,r:[275,284,279,275],win:0,fed:161,td:1},
+      {rk:35,nm:"Jmeesh27",tp:-16,rp:-5,bn:-11,r:[273,283,284,275],win:0,fed:622,td:5},
+      {rk:36,nm:"dan_firth",tp:-15,rp:-7,bn:-8,r:[283,276,278,276],win:0,fed:510,td:3},
+      {rk:37,nm:"rjm",tp:-15,rp:-8,bn:-7,r:[281,272,281,278],win:0,fed:483,td:4},
+      {rk:38,nm:"Heartherors",tp:-15,rp:-8,bn:-7,r:[278,277,276,281],win:0,fed:427,td:6},
+      {rk:39,nm:"Chuck Jackson",tp:-14,rp:-5,bn:-9,r:[273,284,274,284],win:0,fed:563,td:2},
+      {rk:40,nm:"Bpratt",tp:-14,rp:-6,bn:-8,r:[274,283,278,279],win:0,fed:398,td:2},
+      {rk:41,nm:"mtown10",tp:-14,rp:-5,bn:-9,r:[279,281,278,277],win:0,fed:138,td:3},
+      {rk:42,nm:"Aldo",tp:-13,rp:-2,bn:-11,r:[282,279,274,283],win:0,fed:544,td:6},
+      {rk:43,nm:"TheGunners",tp:-12,rp:-10,bn:-2,r:[279,281,278,272],win:0,fed:470,td:5},
+      {rk:44,nm:"ryankozack",tp:-11,rp:-3,bn:-8,r:[283,281,269,284],win:0,fed:456,td:0},
+      {rk:45,nm:"Ian Rapp",tp:-11,rp:-7,bn:-4,r:[279,276,282,276],win:0,fed:428,td:2},
+      {rk:46,nm:"Mike Miller",tp:-11,rp:-7,bn:-4,r:[282,277,275,279],win:0,fed:408,td:6},
+      {rk:48,nm:"dwilhelm",tp:-10,rp:-3,bn:-7,r:[276,281,282,278],win:0,fed:424,td:1},
+      {rk:49,nm:"PapaDaws",tp:-10,rp:-5,bn:-5,r:[279,281,279,276],win:0,fed:422,td:1},
+      {rk:47,nm:"EddieZdo",tp:-10,rp:-3,bn:-7,r:[280,279,283,275],win:0,fed:435,td:1},
+      {rk:50,nm:"Jhamlin",tp:-10,rp:-1,bn:-9,r:[279,277,280,283],win:0,fed:68,td:6},
+      {rk:52,nm:"sdh4",tp:-9,rp:-2,bn:-7,r:[273,288,281,276],win:0,fed:416,td:1},
+      {rk:51,nm:"Jordan Brock",tp:-9,rp:-1,bn:-8,r:[281,283,268,287],win:0,fed:469,td:1},
+      {rk:53,nm:"THE-SUPERB-OWL-142",tp:-9,rp:-2,bn:-7,r:[282,276,278,282],win:0,fed:401,td:1},
+      {rk:54,nm:"JWIII #2",tp:-9,rp:-2,bn:-7,r:[280,281,282,275],win:0,fed:385,td:2},
+      {rk:55,nm:"Young_Falcon",tp:-9,rp:-5,bn:-4,r:[284,276,277,278],win:0,fed:248,td:5},
+      {rk:56,nm:"Firth",tp:-9,rp:-5,bn:-4,r:[285,275,283,272],win:0,fed:375,td:6},
+      {rk:57,nm:"Chris McLeod",tp:-8,rp:-7,bn:-1,r:[273,286,277,277],win:0,fed:347,td:1},
+      {rk:58,nm:"krgolfer18",tp:-8,rp:-1,bn:-7,r:[277,281,281,280],win:0,fed:412,td:2},
+      {rk:59,nm:"Fluffyhead",tp:-8,rp:-4,bn:-4,r:[282,273,283,278],win:0,fed:341,td:4},
+      {rk:60,nm:"chrobb",tp:-8,rp:-7,bn:-1,r:[279,277,285,272],win:0,fed:362,td:5},
+      {rk:61,nm:"Pewey31",tp:-7,rp:-6,bn:-1,r:[278,280,279,277],win:0,fed:328,td:1},
+      {rk:63,nm:"Lady golfer #2",tp:-7,rp:-3,bn:-4,r:[279,282,273,283],win:0,fed:363,td:1},
+      {rk:61,nm:"BigRicks",tp:-7,rp:-6,bn:-1,r:[279,275,284,276],win:0,fed:328,td:1},
+      {rk:64,nm:"Commish",tp:-7,rp:-6,bn:-1,r:[277,274,289,274],win:0,fed:328,td:5},
+      {rk:65,nm:"Brendan",tp:-7,rp:0,bn:-7,r:[280,274,282,284],win:0,fed:451,td:7},
+      {rk:66,nm:"Zebo15",tp:-7,rp:-6,bn:-1,r:[277,283,278,276],win:0,fed:328,td:8},
+      {rk:67,nm:"My Favorite Fairportian",tp:-7,rp:-2,bn:-5,r:[280,278,279,281],win:0,fed:401,td:12},
+      {rk:69,nm:"Team Lowe",tp:-6,rp:2,bn:-8,r:[282,286,274,280],win:0,fed:470,td:0},
+      {rk:68,nm:"SOStancamp",tp:-6,rp:3,bn:-9,r:[277,283,278,285],win:0,fed:106,td:0},
+      {rk:70,nm:"Crying Koepkas",tp:-6,rp:-2,bn:-4,r:[274,286,283,275],win:0,fed:412,td:1},
+      {rk:71,nm:"JWIII",tp:-6,rp:-6,r:[277,282,283,272],win:0,fed:292,td:1},
+      {rk:72,nm:"MParekh10",tp:-6,rp:-5,bn:-1,r:[275,280,281,279],win:0,fed:164,td:6},
+      {rk:73,nm:"Travis Shevlin",tp:-5,rp:-5,r:[277,282,284,272],win:0,fed:273,td:3},
+      {rk:74,nm:"apslotnick",tp:-4,rp:3,bn:-7,r:[285,270,283,285],win:0,fed:379,td:3},
+      {rk:75,nm:"Duder",tp:-3,rp:-2,bn:-1,r:[279,275,282,282],win:0,fed:283,td:5},
+      {rk:76,nm:"Ronners",tp:-3,rp:1,bn:-4,r:[281,283,278,279],win:0,fed:303,td:11},
+      {rk:77,nm:"Putt Before U Nut",tp:-2,rp:12,bn:-14,r:[285,283,280,284],win:0,fed:370,td:1},
+      {rk:78,nm:"Broadway",tp:-2,rp:2,bn:-4,r:[281,284,279,278],win:0,fed:284,td:1},
+      {rk:79,nm:"Greyson",tp:-1,rp:-1,r:[278,279,284,278],win:0,fed:187,td:6},
+      {rk:110,nm:"Bstancam",tp:0,rp:13,bn:-13,r:[283,284,286,280],win:0,fed:315,td:7},
+      {rk:111,nm:"Lady golfer",tp:0,rp:0,r:[279,283,281,277],win:0,fed:194,td:8},
+      {rk:80,nm:"Toastking12",tp:1,rp:1,r:[274,288,280,279],win:0,fed:165,td:0},
+      {rk:81,nm:"dfirth",tp:1,rp:17,bn:-16,r:[279,284,289,285],win:0,fed:311,td:1},
+      {rk:82,nm:"Scharf's Horseman",tp:2,rp:16,bn:-14,r:[283,277,296,280],win:0,fed:623,td:1},
+      {rk:83,nm:"m.manilla",tp:2,rp:2,r:[277,282,278,285],win:0,fed:161,td:3},
+      {rk:84,nm:"Schad",tp:3,rp:3,r:[276,286,284,277],win:0,fed:199,td:6},
+      {rk:85,nm:"WilkinsFam",tp:4,rp:4,r:[277,284,277,286],win:0,fed:150,td:2},
+      {rk:86,nm:"Ollie Janzen",tp:4,rp:4,r:[275,283,283,283],win:0,fed:149,td:3},
+      {rk:87,nm:"Dude, Where's My Par",tp:8,rp:8,r:[278,285,284,281],win:0,fed:96,td:0},
+      {rk:88,nm:"andersanders",tp:13,rp:22,bn:-9,r:[285,280,289,288],win:0,fed:37,td:5},
+      {rk:89,nm:"Jordman8",tp:15,rp:22,bn:-7,r:[278,284,293,287],win:0,fed:398,td:9},
+      {rk:90,nm:"long-draw-1117",tp:16,rp:23,bn:-7,r:[280,285,292,286],win:0,fed:364,td:4},
+      {rk:91,nm:"Neill Stokes",tp:16,rp:20,bn:-4,r:[287,274,291,288],win:0,fed:318,td:5},
+      {rk:92,nm:"Reid30",tp:17,rp:21,bn:-4,r:[286,279,286,290],win:0,fed:299,td:1},
+      {rk:93,nm:"NFoley",tp:19,rp:26,bn:-7,r:[282,285,297,282],win:0,fed:395,td:1},
+      {rk:94,nm:"jfirth",tp:21,rp:25,bn:-4,r:[284,282,296,283],win:0,fed:259,td:3},
+      {rk:95,nm:"Kengolf",tp:23,rp:23,r:[280,288,289,286],win:0,fed:195,td:1},
+      {rk:96,nm:"Mister Pimento",tp:26,rp:26,r:[278,283,292,293],win:0,fed:138,td:0},
+      {rk:97,nm:"Will Tennant",tp:26,rp:26,r:[282,287,284,293],win:0,fed:138,td:4},
+      {rk:99,nm:"Ryan Reddy",tp:26,rp:26,r:[280,282,293,291],win:0,fed:138,td:5},
+      {rk:98,nm:"Ryan Smith",tp:26,rp:26,r:[278,282,292,294],win:0,fed:154,td:5},
+      {rk:100,nm:"TBrown",tp:27,rp:27,r:[281,282,293,291],win:0,fed:138,td:9},
+      {rk:101,nm:"Big Al",tp:28,rp:28,r:[279,288,294,287],win:0,fed:116,td:2},
+      {rk:102,nm:"smak",tp:30,rp:41,bn:-11,r:[284,285,298,294],win:0,fed:525,td:13},
+      {rk:103,nm:"DavidAke",tp:51,rp:51,r:[285,288,302,296],win:0,fed:127,td:9}
+    ]
+  }
 };
 /* ===== PATCH: inject 2026 season from POOL_RESULTS ===== */
 (function(){
@@ -4505,6 +4623,72 @@ const POOL_RESULTS = {
     se._plRk=plEntry?plEntry.rk:null;
   });
   // Compute YTD ranks — flatten arrays first
+  var all2026=[];
+  DB.participants.forEach(function(p){
+    var s=p.seasons['2026'];if(!s)return;
+    if(Array.isArray(s)){s.forEach(function(x){if(x.total!=null)all2026.push(x);});}
+    else if(s.total!=null)all2026.push(s);
+  });
+  all2026.sort(function(a,b){return a.total-b.total;});
+  all2026.forEach(function(x,i){x.rank=i+1;});
+})();
+/* ===== DARK HORSE PAYOUTS (per-entry bonus for picking the dark horse correctly) ===== */
+const DARK_HORSE_PAYOUTS={
+  'Luckyducks':{event:'masters',amt:50},
+  'My Favorite Fairportian':{event:'players',amt:50},
+  'Bridget Stancampiano':{event:'pga',amt:50}
+};
+/* ===== PATCH: inject PGA Championship results into 2026 season ===== */
+(function(){
+  var pr=POOL_RESULTS[33];
+  if(!pr||!pr.entries)return;
+  function findSeason(matched,entryName){
+    var s=matched.seasons['2026'];
+    if(!s)return null;
+    if(Array.isArray(s))return s.find(function(x){return x.entry_used&&x.entry_used.toLowerCase()===entryName.toLowerCase();})||null;
+    if(s.entry_used&&s.entry_used.toLowerCase()===entryName.toLowerCase())return s;
+    return s;
+  }
+  pr.entries.forEach(function(e){
+    var matched=DB.participants.find(function(p){
+      return p.all_entry_names&&p.all_entry_names.some(function(n){return n.toLowerCase()===e.nm.toLowerCase();});
+    });
+    if(!matched)return;
+    var se=findSeason(matched,e.nm);
+    if(!se){
+      if(!matched.seasons['2026']){
+        matched.seasons['2026']={entry_used:e.nm,rank:null,total:e.tp,winnings:e.win,players:null,masters:null,pga:e.rk,uso:null,open:null,_plRk:null};
+        if(matched.career)matched.career.total_seasons=(matched.career.total_seasons||0)+1;
+      } else if(Array.isArray(matched.seasons['2026'])){
+        matched.seasons['2026'].push({entry_used:e.nm,rank:null,total:e.tp,winnings:e.win,players:null,masters:null,pga:e.rk,uso:null,open:null,_plRk:null});
+      }
+      return;
+    }
+    se.pga=e.rk;
+    // Sum Players + Masters + PGA totals (existing total was Players+Masters)
+    var plEntry=POOL_RESULTS[11]&&POOL_RESULTS[11].entries.find(function(pe){return pe.nm.toLowerCase()===e.nm.toLowerCase();});
+    var mstEntry=POOL_RESULTS[14]&&POOL_RESULTS[14].entries.find(function(me){return me.nm.toLowerCase()===e.nm.toLowerCase();});
+    var plTp=plEntry?plEntry.tp:0;
+    var mstTp=mstEntry?mstEntry.tp:0;
+    se.total=plTp+mstTp+e.tp;
+    var plWin=plEntry?plEntry.win:0;
+    var mstWin=mstEntry?mstEntry.win:0;
+    var dh=DARK_HORSE_PAYOUTS[e.nm]?DARK_HORSE_PAYOUTS[e.nm].amt:0;
+    se.winnings=plWin+mstWin+e.win+dh;
+    if(dh)se.dark_horse=DARK_HORSE_PAYOUTS[e.nm];
+  });
+  // Also catch entries that didn't play PGA but have DH bonus
+  Object.keys(DARK_HORSE_PAYOUTS).forEach(function(nm){
+    var matched=DB.participants.find(function(p){
+      return p.all_entry_names&&p.all_entry_names.some(function(n){return n.toLowerCase()===nm.toLowerCase();});
+    });
+    if(!matched)return;
+    var se=findSeason(matched,nm);
+    if(!se||se.dark_horse)return;// already applied above
+    se.winnings=(se.winnings||0)+DARK_HORSE_PAYOUTS[nm].amt;
+    se.dark_horse=DARK_HORSE_PAYOUTS[nm];
+  });
+  // Recompute YTD ranks
   var all2026=[];
   DB.participants.forEach(function(p){
     var s=p.seasons['2026'];if(!s)return;
@@ -5520,14 +5704,34 @@ async function loadLiveStats(){
 /* ===== OVERRIDE rLive ===== */
 const _origRLive = rLive;
 rLive = function() {
-  renderMastersPreview();
-  fetchMastersOdds();
-  checkMastersLive();
+  // PGA Championship is over — render results directly
+  if(POOL_RESULTS&&POOL_RESULTS[33]){
+    renderPgaResults();
+  } else {
+    renderMastersPreview();
+    fetchMastersOdds();
+    checkMastersLive();
+  }
   _origRLive();
-  // Hide the old live-preview-wrap — preview is in #masters-preview now
+  // Hide the old live-preview-wrap — preview is in archive section now
   const lpw=document.getElementById('live-preview-wrap');
   if(lpw)lpw.style.display='none';
 };
+
+/* ===== PGA RESULTS (post-tournament) ===== */
+let _pgaResultsRendered=false;
+function renderPgaResults(){
+  if(_pgaResultsRendered)return;
+  if(!POOL_RESULTS||!POOL_RESULTS[33])return;
+  _pgaResultsRendered=true;
+  renderPgaStandings();
+  if(POOL_RESULTS[33].players){
+    renderTpcInsights(POOL_RESULTS[33],'pga-insights',POOL_RESULTS[33].entries.length);
+  }
+  // Still lazy-load the archived preview/odds so they're available when expanded
+  renderMastersPreview();
+  fetchMastersOdds();
+}
 
 /* ===== MASTERS RESULTS TAB ===== */
 let _mastersResultsRendered=false;
@@ -6043,6 +6247,95 @@ function renderMastersStandings(){
     const tbody=el.querySelector('tbody');if(!tbody)return;
     let h='';
     filtered.forEach(e=>{h+=_mstRenderRow(e,false);});
+    tbody.innerHTML=h;
+  };
+  render();
+}
+
+/* ===== PGA POOL STANDINGS ===== */
+let _pgaRendered=false;
+function _pgaRenderRow(e,me){
+  const scClr=e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
+  const dh=DARK_HORSE_PAYOUTS&&DARK_HORSE_PAYOUTS[e.nm];
+  let h='<tr class="'+(me?'me':'')+'">';
+  h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+(dh?' <span title="Dark Horse winner ('+dh.event+')" style="font-size:.5rem;color:var(--go);background:rgba(196,160,53,.12);padding:1px 4px;border-radius:3px;margin-left:3px;font-family:var(--fb)">DH</span>':'')+'</td>';
+  h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
+  h+='<td style="color:var(--tp)">'+(e.rp!=null?e.rp:'–')+'</td>';
+  h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
+  h+='<td style="color:var(--td)">'+(e.td!=null&&e.td!==''?e.td:'–')+'</td>';
+  h+='<td style="padding:0 2px">'+(e._ranks?_tpcSparkline(e._ranks,105):'')+'</td>';
+  const totalWin=(e.win||0)+(dh?dh.amt:0);
+  h+='<td style="color:var(--go)">'+(totalWin?'$'+(totalWin%1===0?totalWin.toLocaleString():totalWin.toFixed(2)):'–')+'</td>';
+  h+='</tr>';
+  return h;
+}
+function renderPgaStandings(){
+  if(_pgaRendered)return;
+  _pgaRendered=true;
+  const pr=POOL_RESULTS[33];if(!pr)return;
+  const el=document.getElementById('pga-standings');if(!el)return;
+  el.style.display='';
+  const entries=pr.entries;
+  if(entries[0]&&entries[0].r&&!entries[0]._ranks)_tpcComputeRanks(entries);
+  let _showAll=false;
+  let _sortKey='rk';let _sortAsc=true;
+  function render(){
+    const sorted=[...entries].sort((a,b)=>{
+      let av=a[_sortKey],bv=b[_sortKey];
+      if(typeof av==='string')return _sortAsc?av.localeCompare(bv):bv.localeCompare(av);
+      return _sortAsc?av-bv:bv-av;
+    });
+    const shown=_showAll?sorted:sorted.slice(0,20);
+    let h='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.15rem"><h3 style="margin:0">Pool Standings</h3>';
+    h+='<span style="font-size:.55rem;color:var(--td);font-family:var(--fb)">PGA Championship · Aronimink GC · May 14–17</span></div>';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">';
+    h+='<input id="pga-search" placeholder="Search entry..." oninput="filterPgaStandings()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:140px">';
+    h+='<span style="font-size:.58rem;color:var(--td)">'+entries.length+' entries · 3 Dark Horse bonuses ($50 each)</span>';
+    h+='</div>';
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>';
+    const cols=[{k:'rk',l:'#',w:'24px'},{k:'nm',l:'Entry',w:''},{k:'tp',l:'Total',w:'42px'},{k:'rp',l:'Roster',w:'42px'},{k:'bn',l:'Bonus',w:'38px'},{k:'td',l:'TB',w:'28px'},{k:'spark',l:'Rank',w:'62px'},{k:'win',l:'Winnings',w:'58px'}];
+    cols.forEach(c=>{
+      if(c.k==='spark'){h+='<th style="width:'+c.w+';cursor:default">'+c.l+'</th>';return;}
+      const active=_sortKey===c.k;
+      h+='<th class="'+(active?'s':'')+'" onclick="sortPgaStandings(\''+c.k+'\')" style="'+(c.w?'width:'+c.w:'')+';cursor:pointer">'+c.l+(active?'<span class="sa">'+(_sortAsc?'▲':'▼')+'</span>':'')+'</th>';
+    });
+    h+='</tr></thead><tbody>';
+    shown.forEach(e=>{
+      const me=S.me&&e.nm.toLowerCase()===S.me.toLowerCase();
+      h+=_pgaRenderRow(e,me);
+    });
+    h+='</tbody></table></div>';
+    if(!_showAll){
+      h+='<div style="text-align:center;padding:.4rem"><button onclick="expandPgaStandings()" style="font-family:var(--fb);font-size:.62rem;color:var(--go);background:none;border:1px solid rgba(196,160,53,.3);border-radius:5px;padding:.3rem .8rem;cursor:pointer">Show All '+entries.length+' Entries</button></div>';
+    }
+    const tieGroups={};
+    entries.forEach(e=>{if(!tieGroups[e.tp])tieGroups[e.tp]=[];tieGroups[e.tp].push(e);});
+    const ties=Object.entries(tieGroups).filter(([,g])=>g.length>1).sort((a,b)=>Number(a[0])-Number(b[0]));
+    if(ties.length){
+      h+='<details style="margin-top:.3rem"><summary style="font-size:.55rem;color:var(--td);cursor:pointer;font-family:var(--fb)">Tiebreak info ('+ties.length+' ties)</summary>';
+      h+='<div style="font-size:.52rem;color:var(--td);font-family:var(--fm);padding:.3rem .2rem;line-height:1.6">';
+      h+='<div style="margin-bottom:.3rem;color:var(--ts);font-family:var(--fb)">Ranked by total score (under par), then tiebreak.</div>';
+      ties.forEach(([score,group])=>{
+        const names=group.sort((a,b)=>(a.td||0)-(b.td||0)).map(e=>e.nm+'<span style="color:var(--ts)"> ('+(e.td!=null?e.td:'–')+')</span>').join(', ');
+        h+='<div><span style="color:var(--tp)">'+score+':</span> '+names+'</div>';
+      });
+      h+='</div></details>';
+    }
+    el.innerHTML=h;
+  }
+  window.sortPgaStandings=function(key){
+    if(_sortKey===key)_sortAsc=!_sortAsc;else{_sortKey=key;_sortAsc=key==='rk'||key==='nm';}
+    render();
+  };
+  window.expandPgaStandings=function(){_showAll=true;render();};
+  window.filterPgaStandings=function(){
+    const q=document.getElementById('pga-search')?.value?.toLowerCase()||'';
+    if(!q){render();return;}
+    const filtered=entries.filter(e=>e.nm.toLowerCase().includes(q));
+    const tbody=el.querySelector('tbody');if(!tbody)return;
+    let h='';
+    filtered.forEach(e=>{h+=_pgaRenderRow(e,false);});
     tbody.innerHTML=h;
   };
   render();
