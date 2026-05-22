@@ -51,6 +51,21 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .sc{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.25rem .3rem;text-align:center}
 .sc .v{font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--tb)}.sc .v.go{color:var(--go)}.sc .v.gl{color:var(--gl)}
 .sc .l{font-size:.45rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ts);margin-top:.02rem}
+.ml-card{margin:.4rem .6rem .85rem;padding:.5rem .6rem}
+.ml-head{display:flex;align-items:center;gap:.4rem;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid var(--br);flex-wrap:wrap}
+.ml-icon{font-size:.85rem}
+.ml-sub{margin-left:auto;font-size:.55rem;color:var(--td);font-family:var(--fb);font-weight:400;letter-spacing:.03em}
+.ml-list{display:flex;flex-direction:column;gap:.18rem}
+.ml-row{display:grid;grid-template-columns:90px 1fr;gap:.6rem;align-items:flex-start;padding:.25rem .15rem;border-radius:4px;font-size:.7rem}
+.ml-row.top{background:linear-gradient(90deg,rgba(196,160,53,.08),transparent 80%)}
+.ml-row:hover{background:rgba(196,160,53,.04)}
+.ml-amt{font-family:var(--fd);font-weight:700;color:var(--go);font-size:.78rem;display:flex;align-items:center;gap:.2rem;white-space:nowrap}
+.ml-medal{font-size:.85rem}
+.ml-tie{color:var(--td);font-size:.55rem;font-weight:500;font-family:var(--fb)}
+.ml-names{display:flex;flex-wrap:wrap;gap:.3rem .55rem;font-family:var(--fb);color:var(--tp);font-size:.66rem;line-height:1.4}
+.ml-entry{white-space:nowrap}
+.ml-src{color:var(--ts);font-size:.55rem;font-style:italic}
+@media(max-width:520px){.ml-row{grid-template-columns:1fr;gap:.05rem}.ml-amt{font-size:.72rem}.ml-names{font-size:.62rem}}
 tbody tr.dnp td{opacity:.55;background:repeating-linear-gradient(45deg,var(--bm),var(--bm) 4px,rgba(138,154,143,.06) 4px,rgba(138,154,143,.06) 8px)!important}
 tbody tr.dnp:hover td{opacity:.8}
 .dnp-tag{display:inline-block;font-family:var(--fb);font-size:.5rem;font-weight:600;letter-spacing:.06em;margin-left:.3rem;padding:1px 4px;border-radius:3px;background:rgba(138,154,143,.18);color:var(--ts);vertical-align:.05em}
@@ -992,9 +1007,14 @@ function superlatives(y){
   if(bestSingle.r<Infinity)awards.push({t:'Event Ace',n:bestSingle.n,d:'#'+bestSingle.r+' in '+lb[bestSingle.k]});
   // Mr. Consistent
   const bb=boomBust(y);if(bb.length>0)awards.push({t:'Mr. Consistent',n:bb[0].entry_used,d:'\u03C3 '+bb[0].bb.toFixed(1)+' | Avg Rk '+bb[0].avgEvRank.toFixed(0)});
-  // Biggest payday
+  // Biggest payday — if multiple tied, show count
   const bp=[...e4y(y)].filter(e=>e.winnings>0).sort((a,b)=>b.winnings-a.winnings);
-  if(bp.length>0)awards.push({t:'Biggest Payday',n:bp[0].entry_used,d:Math.round(bp[0].winnings).toLocaleString()});
+  if(bp.length>0){
+    const top=bp[0].winnings;
+    const tied=bp.filter(e=>e.winnings===top);
+    if(tied.length===1){awards.push({t:'Biggest Payday',n:bp[0].entry_used,d:'$'+(top%1===0?top.toLocaleString():top.toFixed(2))});}
+    else {awards.push({t:'Top Earners ('+tied.length+'-way tie)',n:tied.map(e=>e.entry_used).join(', '),d:'$'+(top%1===0?top.toLocaleString():top.toFixed(2))+' each'});}
+  }
   return awards;
 }
 function boomBust(y){
@@ -1129,6 +1149,37 @@ function rSeasonView(y){
     h+='</div>';
   });
   h+='</div>';
+  // Money List — all entries with winnings, sorted descending, grouped by tied amounts
+  var earners=[...all].filter(function(e){return e.winnings&&e.winnings>0;}).sort(function(a,b){return b.winnings-a.winnings;});
+  if(earners.length){
+    h+='<div class="cd ml-card">';
+    h+='<div class="ml-head"><span class="ml-icon">💵</span><h3 style="margin:0;display:inline-block">Money List</h3>';
+    h+='<span class="ml-sub">'+earners.length+' paid · $'+paidOut.toLocaleString()+' of $'+pot.toLocaleString()+' ('+paidPct+'%)</span></div>';
+    // Group ties
+    var groups=[];var cur=null;
+    earners.forEach(function(e){
+      if(!cur||cur.amt!==e.winnings){cur={amt:e.winnings,entries:[]};groups.push(cur);}
+      cur.entries.push(e);
+    });
+    h+='<div class="ml-list">';
+    groups.forEach(function(g,i){
+      var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      var amtStr='$'+(g.amt%1===0?g.amt.toLocaleString():g.amt.toFixed(2));
+      h+='<div class="ml-row'+(i===0?' top':'')+'">';
+      h+='<div class="ml-amt">'+(medal?'<span class="ml-medal">'+medal+'</span>':'')+amtStr+(g.entries.length>1?' <span class="ml-tie">×'+g.entries.length+'</span>':'')+'</div>';
+      h+='<div class="ml-names">'+g.entries.map(function(e){
+        var src=[];
+        if(e.players!=null&&e.players<=5)src.push('Players #'+e.players);
+        if(e.masters!=null&&e.masters<=5)src.push('Masters #'+e.masters);
+        if(e.pga!=null&&e.pga<=5)src.push('PGA #'+e.pga);
+        var dh=(typeof DARK_HORSE_PAYOUTS!=='undefined'&&DARK_HORSE_PAYOUTS[e.entry_used])?DARK_HORSE_PAYOUTS[e.entry_used]:null;
+        if(dh)src.push('DH '+dh.event);
+        return '<span class="ml-entry">'+e.entry_used+(src.length?' <span class="ml-src">('+src.join(', ')+')</span>':'')+'</span>';
+      }).join('')+'</div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
+  }
   // Standings table
   var pmap=yoyMap(y);var ml=Math.ceil(tot*.33),ss=S.sort;
   h+='<div class="tap-hint">Tap any name to expand career history &amp; season breakdowns</div>';
