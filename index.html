@@ -159,12 +159,14 @@ body>*{position:relative;z-index:1}
 /* Money tier coloring */
 .snap-money .snap-row{padding:.2rem .3rem;border-radius:5px;border-bottom:none;margin-bottom:1px;position:relative}
 .snap-money .snap-row .money-amt{font-family:var(--fd);font-size:.78rem;font-weight:700;min-width:62px;display:inline-block}
-.snap-money .snap-row.tier-gold{background:linear-gradient(90deg,rgba(196,160,53,.14) 0%,rgba(196,160,53,.04) 70%,transparent)}
+.snap-money .snap-row.tier-gold{background:linear-gradient(90deg,rgba(196,160,53,.04) 0%,rgba(196,160,53,.22) 35%,rgba(230,200,71,.18) 50%,rgba(196,160,53,.22) 65%,rgba(196,160,53,.04) 100%);background-size:280% 100%;animation:tier-flow 9s ease-in-out infinite}
 .snap-money .snap-row.tier-gold .money-amt{color:var(--go);text-shadow:0 0 14px rgba(196,160,53,.4);background:linear-gradient(180deg,#c9a227,#9a7e28);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.snap-money .snap-row.tier-silver{background:linear-gradient(90deg,rgba(160,170,180,.14) 0%,rgba(160,170,180,.04) 70%,transparent)}
+.snap-money .snap-row.tier-silver{background:linear-gradient(90deg,rgba(160,170,180,.04) 0%,rgba(160,170,180,.22) 35%,rgba(200,210,220,.16) 50%,rgba(160,170,180,.22) 65%,rgba(160,170,180,.04) 100%);background-size:280% 100%;animation:tier-flow 11s ease-in-out infinite;animation-delay:-2s}
 .snap-money .snap-row.tier-silver .money-amt{color:#7a8590;background:linear-gradient(180deg,#a8b2bd,#7a8590);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.snap-money .snap-row.tier-bronze{background:linear-gradient(90deg,rgba(184,134,73,.12) 0%,rgba(184,134,73,.03) 70%,transparent)}
+.snap-money .snap-row.tier-bronze{background:linear-gradient(90deg,rgba(184,134,73,.03) 0%,rgba(184,134,73,.2) 35%,rgba(212,165,112,.15) 50%,rgba(184,134,73,.2) 65%,rgba(184,134,73,.03) 100%);background-size:280% 100%;animation:tier-flow 13s ease-in-out infinite;animation-delay:-4s}
 .snap-money .snap-row.tier-bronze .money-amt{color:#9a6e3a;background:linear-gradient(180deg,#b8864f,#8a5a2c);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+@keyframes tier-flow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@media(prefers-reduced-motion:reduce){.snap-money .snap-row.tier-gold,.snap-money .snap-row.tier-silver,.snap-money .snap-row.tier-bronze{animation:none}}
 .snap-money .snap-row.tier-base .money-amt{color:var(--tp)}
 .snap-money .snap-tag.tier-x{border-left-color:var(--td);color:var(--td);font-size:.52rem}
 /* Per-block accent variation (cycles by nth-child) */
