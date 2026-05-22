@@ -38,7 +38,7 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .me-bar label{font-size:.72rem;color:var(--ts);text-transform:uppercase;letter-spacing:.06em}
 .me-bar select{font-family:var(--fb);font-size:.8rem;padding:.35rem .6rem;background:var(--bc);color:var(--go);border:1px solid var(--br);border-radius:5px;outline:0;max-width:200px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23c9a227' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
 .me-badge{font-size:.72rem;color:var(--go);font-family:var(--fm)}
-.nav{display:flex;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.7));backdrop-filter:blur(10px) saturate(1.1);-webkit-backdrop-filter:blur(10px) saturate(1.1);border-bottom:1px solid rgba(212,210,202,.5);box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 2px 8px -2px rgba(0,32,91,.05);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:.25rem .4rem;gap:.15rem;position:sticky;top:0;z-index:50}
+.nav{display:flex;background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(252,250,246,.65));backdrop-filter:blur(14px) saturate(1.15);-webkit-backdrop-filter:blur(14px) saturate(1.15);border-bottom:1px solid rgba(212,210,202,.4);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 0 0 1px rgba(255,255,255,.3) inset,0 4px 12px -4px rgba(0,32,91,.06);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:.3rem .45rem;gap:.15rem;position:sticky;top:0;z-index:50}
 .nav::-webkit-scrollbar{display:none}
 .nav button{flex:1;min-width:max-content;padding:.55rem .75rem;font-family:var(--fb);font-weight:500;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ts);background:0 0;border:none;border-radius:6px;cursor:pointer;transition:color .2s,background .25s,transform .15s,box-shadow .2s;white-space:nowrap;position:relative}
 .nav button::after{content:'';position:absolute;left:50%;right:50%;bottom:-1px;height:2px;background:var(--gn);transition:left .25s ease,right .25s ease;border-radius:1px}
@@ -212,8 +212,10 @@ table.tc{font-size:.68rem}table.tc thead th{font-size:.6rem;padding:.35rem .3rem
 .wi{color:var(--go);font-weight:500}.wi.z{color:var(--td)}
 .pn{font-family:var(--fb);font-size:.58rem;color:var(--td);font-weight:400}
 .yoy{font-size:.58rem;font-family:var(--fm);margin-left:.25rem}.yoy.up{color:var(--gl)}.yoy.dn{color:var(--rd)}.yoy.nw{color:var(--go);font-style:italic;font-family:var(--fb)}
-.cd{background:linear-gradient(180deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.85) 100%);backdrop-filter:blur(6px) saturate(1.05);-webkit-backdrop-filter:blur(6px) saturate(1.05);border:1px solid rgba(212,210,202,.55);border-radius:9px;padding:.9rem;margin:0 .85rem .85rem;box-shadow:0 1px 0 rgba(255,255,255,.85) inset,0 1px 3px rgba(0,32,91,.04),0 6px 14px -8px rgba(0,32,91,.06);position:relative}
-.cd::before{content:'';position:absolute;inset:0;border-radius:9px;background:linear-gradient(135deg,rgba(255,255,255,.4) 0%,transparent 35%,transparent 65%,rgba(196,160,53,.03) 100%);pointer-events:none;opacity:.7}
+.cd{background:linear-gradient(180deg,rgba(255,255,255,.92) 0%,rgba(252,250,246,.82) 100%);backdrop-filter:blur(10px) saturate(1.1);-webkit-backdrop-filter:blur(10px) saturate(1.1);border:1px solid rgba(212,210,202,.5);border-radius:10px;padding:.9rem;margin:0 .85rem .85rem;box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 0 0 1px rgba(255,255,255,.4) inset,0 2px 4px rgba(0,32,91,.05),0 10px 22px -12px rgba(0,32,91,.09);position:relative;transition:box-shadow .3s ease,transform .3s ease}
+.cd:hover{box-shadow:0 1px 0 rgba(255,255,255,.95) inset,0 0 0 1px rgba(255,255,255,.5) inset,0 4px 8px rgba(0,32,91,.06),0 14px 28px -12px rgba(0,32,91,.12)}
+.cd::before{content:'';position:absolute;inset:0;border-radius:10px;background:linear-gradient(135deg,rgba(255,255,255,.5) 0%,transparent 30%,transparent 70%,rgba(196,160,53,.04) 100%);pointer-events:none;opacity:.85}
+.cd::after{content:'';position:absolute;left:14%;right:14%;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);border-radius:1px;pointer-events:none}
 .cd+.cd{margin-top:.15rem}
 .cd h3{font-family:var(--fd);font-size:1.15rem;font-weight:600;color:var(--tb);margin-bottom:.55rem}
 .cd h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ts);margin:.6rem 0 .4rem}
@@ -4998,6 +5000,86 @@ const POOL_RESULTS = {
       {rk:106,nm:"Matthew Cramer",tp:52,win:0,td:999,_dnp:true},
       {rk:107,nm:"Max Prosser",tp:52,win:0,td:999,_dnp:true},
       {rk:108,nm:"TuliusJamasy",tp:52,win:0,td:999,_dnp:true}
+    ],
+    players: [
+      {wr:1,nm:"Scottie Scheffler",sal:11900,own:0.45,pk:47,sc:-2,pa:46,bi:14,ea:0,bo:12,db:0,tr:0,al:0},
+      {wr:3,nm:"Cameron Young",sal:9100,own:0.34,pk:36,sc:0,pa:40,bi:15,ea:1,bo:16,db:0,tr:0,al:0},
+      {wr:16,nm:"Justin Thomas",sal:7900,own:0.29,pk:30,sc:-5,pa:42,bi:18,ea:0,bo:12,db:0,tr:0,al:0},
+      {wr:125,nm:"Brooks Koepka",sal:7700,own:0.29,pk:30,sc:3,pa:50,bi:7,ea:2,bo:12,db:1,tr:0,al:0},
+      {wr:6,nm:"Tommy Fleetwood",sal:8500,own:0.27,pk:28,sc:"CUT",pa:28,bi:1,ea:0,bo:5,db:1,tr:0,al:0},
+      {wr:2,nm:"Rory McIlroy",sal:10400,own:0.25,pk:26,sc:-4,pa:50,bi:13,ea:0,bo:9,db:0,tr:0,al:0},
+      {wr:37,nm:"Rickie Fowler",sal:7200,own:0.25,pk:26,sc:4,pa:47,bi:11,ea:0,bo:13,db:1,tr:0,al:0},
+      {wr:4,nm:"Matthew Fitzpatrick",sal:8100,own:0.23,pk:34,sc:-2,pa:50,bi:12,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:15,nm:"Ludvig Aberg",sal:8600,own:0.19,pk:20,sc:-5,pa:46,bi:15,ea:0,bo:11,db:0,tr:0,al:0},
+      {wr:35,nm:"Sam Burns",sal:7300,own:0.18,pk:19,sc:0,pa:45,bi:14,ea:0,bo:12,db:1,tr:0,al:0},
+      {wr:11,nm:"Xander Schauffele",sal:8800,own:0.17,pk:18,sc:-4,pa:44,bi:16,ea:0,bo:12,db:0,tr:0,al:0},
+      {wr:30,nm:"Patrick Cantlay",sal:7700,own:0.17,pk:18,sc:1,pa:49,bi:11,ea:0,bo:12,db:0,tr:0,al:0},
+      {wr:20,nm:"Jon Rahm",sal:9200,own:0.16,pk:17,sc:-6,pa:49,bi:13,ea:1,bo:9,db:0,tr:0,al:0},
+      {wr:9,nm:"Russell Henley",sal:7600,own:0.15,pk:16,sc:"CUT",pa:21,bi:5,ea:0,bo:10,db:0,tr:0,al:0},
+      {wr:26,nm:"Tyrrell Hatton",sal:7600,own:0.15,pk:16,sc:"CUT",pa:21,bi:5,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:51,nm:"Jordan Spieth",sal:7500,own:0.14,pk:15,sc:-1,pa:51,bi:11,ea:0,bo:10,db:0,tr:0,al:0},
+      {wr:8,nm:"J.J. Spaun",sal:7200,own:0.13,pk:14,sc:"CUT",pa:21,bi:5,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:28,nm:"Bryson DeChambeau",sal:9100,own:0.13,pk:14,sc:"CUT",pa:21,bi:5,ea:0,bo:8,db:2,tr:0,al:0},
+      {wr:10,nm:"Christopher Gotterup",sal:7500,own:0.12,pk:13,sc:-3,pa:52,bi:11,ea:0,bo:9,db:0,tr:0,al:0},
+      {wr:7,nm:"Justin Rose",sal:7900,own:0.11,pk:12,sc:-3,pa:49,bi:12,ea:1,bo:8,db:2,tr:0,al:0},
+      {wr:47,nm:"Gary Woodland",sal:6900,own:0.1,pk:11,sc:"CUT",pa:26,bi:2,ea:0,bo:8,db:0,tr:0,al:0},
+      {wr:5,nm:"Collin Morikawa",sal:8000,own:0.1,pk:10,sc:3,pa:41,bi:14,ea:0,bo:17,db:0,tr:0,al:0},
+      {wr:83,nm:"Alex Fitzpatrick",sal:7000,own:0.1,pk:0,sc:8,pa:42,bi:11,ea:1,bo:15,db:3,tr:0,al:0},
+      {wr:23,nm:"Akshay Bhatia",sal:7300,own:0.09,pk:9,sc:"CUT",pa:21,bi:5,ea:0,bo:10,db:0,tr:0,al:0},
+      {wr:27,nm:"Viktor Hovland",sal:7700,own:0.09,pk:9,sc:"CUT",pa:16,bi:7,ea:0,bo:13,db:0,tr:0,al:0},
+      {wr:17,nm:"Hideki Matsuyama",sal:7500,own:0.08,pk:8,sc:0,pa:41,bi:14,ea:1,bo:16,db:0,tr:0,al:0},
+      {wr:46,nm:"Adam Scott",sal:7000,own:0.08,pk:8,sc:"CUT",pa:21,bi:4,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:33,nm:"Maverick McNealy",sal:7100,own:0.07,pk:7,sc:-1,pa:45,bi:13,ea:1,bo:12,db:1,tr:0,al:0},
+      {wr:38,nm:"Shane Lowry",sal:7300,own:0.07,pk:7,sc:2,pa:43,bi:11,ea:2,bo:15,db:1,tr:0,al:0},
+      {wr:12,nm:"Robert MacIntyre",sal:7400,own:0.06,pk:6,sc:"CUT",pa:20,bi:6,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:13,nm:"Sepp Straka",sal:7300,own:0.06,pk:6,sc:"CUT",pa:21,bi:5,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:29,nm:"Nicolai Hojgaard",sal:7000,own:0.05,pk:6,sc:2,pa:46,bi:12,ea:1,bo:9,db:4,tr:0,al:0},
+      {wr:34,nm:"Kurt Kitayama",sal:7100,own:0.05,pk:5,sc:-3,pa:39,bi:19,ea:0,bo:12,db:2,tr:0,al:0},
+      {wr:123,nm:"Max Homa",sal:6600,own:0.05,pk:5,sc:"CUT",pa:23,bi:1,ea:0,bo:11,db:1,tr:0,al:0},
+      {wr:24,nm:"Patrick Reed",sal:7400,own:0.04,pk:4,sc:-3,pa:51,bi:12,ea:0,bo:9,db:0,tr:0,al:0},
+      {wr:21,nm:"Harris English",sal:7000,own:0.04,pk:4,sc:-1,pa:39,bi:18,ea:0,bo:13,db:2,tr:0,al:0},
+      {wr:31,nm:"Min Woo Lee",sal:7300,own:0.04,pk:4,sc:-1,pa:42,bi:16,ea:0,bo:13,db:1,tr:0,al:0},
+      {wr:32,nm:"Keegan Bradley",sal:7000,own:0.04,pk:4,sc:"CUT",pa:26,bi:2,ea:0,bo:8,db:0,tr:0,al:0},
+      {wr:43,nm:"Matthew McCarty",sal:6600,own:0.04,pk:4,sc:"CUT",pa:21,bi:2,ea:0,bo:13,db:0,tr:0,al:0},
+      {wr:14,nm:"Ben Griffin",sal:7200,own:0.03,pk:3,sc:-2,pa:49,bi:13,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:41,nm:"Jason Day",sal:7100,own:0.03,pk:3,sc:6,pa:50,bi:9,ea:1,bo:7,db:5,tr:0,al:0},
+      {wr:78,nm:"Alex Smalley",sal:6600,own:0.03,pk:3,sc:-6,pa:38,bi:19,ea:1,bo:13,db:1,tr:0,al:0},
+      {wr:50,nm:"Corey Conners",sal:7100,own:0.03,pk:3,sc:3,pa:47,bi:11,ea:0,bo:14,db:0,tr:0,al:0},
+      {wr:57,nm:"Harry Hall",sal:6700,own:0.03,pk:3,sc:"CUT",pa:22,bi:4,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:67,nm:"Sungjae Im",sal:7000,own:0.03,pk:3,sc:"CUT",pa:24,bi:4,ea:0,bo:7,db:1,tr:0,al:0},
+      {wr:71,nm:"Wyndham Clark",sal:6800,own:0.03,pk:3,sc:"CUT",pa:23,bi:6,ea:0,bo:4,db:2,tr:1,al:0},
+      {wr:167,nm:"Joaquin Niemann",sal:7300,own:0.03,pk:3,sc:-1,pa:49,bi:11,ea:1,bo:11,db:0,tr:0,al:0},
+      {wr:19,nm:"Jacob Bridgeman",sal:7000,own:0.02,pk:2,sc:"CUT",pa:26,bi:2,ea:0,bo:6,db:2,tr:0,al:0},
+      {wr:22,nm:"Si Woo Kim",sal:7400,own:0.02,pk:4,sc:1,pa:45,bi:14,ea:0,bo:12,db:1,tr:0,al:0},
+      {wr:25,nm:"Kristoffer Reitan",sal:7000,own:0.02,pk:2,sc:2,pa:44,bi:10,ea:2,bo:16,db:0,tr:0,al:0},
+      {wr:42,nm:"Daniel Berger",sal:6700,own:0.02,pk:2,sc:1,pa:49,bi:12,ea:0,bo:10,db:1,tr:0,al:0},
+      {wr:45,nm:"Michael Kim",sal:6400,own:0.02,pk:0,sc:2,pa:41,bi:13,ea:2,bo:12,db:4,tr:0,al:0},
+      {wr:70,nm:"Max Greyserman",sal:6300,own:0.02,pk:2,sc:-2,pa:47,bi:12,ea:1,bo:12,db:0,tr:0,al:0},
+      {wr:76,nm:"Sahith Theegala",sal:6700,own:0.02,pk:2,sc:4,pa:50,bi:10,ea:0,bo:11,db:0,tr:1,al:0},
+      {wr:84,nm:"Austin Smotherman",sal:6200,own:0.02,pk:2,sc:"CUT",pa:16,bi:6,ea:0,bo:14,db:0,tr:0,al:0},
+      {wr:105,nm:"Sudarshan Yellamaraju",sal:6600,own:0.02,pk:2,sc:"CUT",pa:22,bi:3,ea:0,bo:9,db:2,tr:0,al:0},
+      {wr:471,nm:"Dustin Johnson",sal:6600,own:0.02,pk:2,sc:2,pa:42,bi:14,ea:0,bo:16,db:0,tr:0,al:0},
+      {wr:44,nm:"Aaron Rai",sal:6700,own:0.01,pk:1,sc:-9,pa:35,bi:22,ea:1,bo:13,db:1,tr:0,al:0},
+      {wr:18,nm:"Alex Noren",sal:6700,own:0.01,pk:1,sc:0,pa:52,bi:10,ea:0,bo:10,db:0,tr:0,al:0},
+      {wr:36,nm:"Ryan Gerard",sal:6600,own:0.01,pk:1,sc:7,pa:45,bi:11,ea:0,bo:14,db:2,tr:0,al:0},
+      {wr:54,nm:"Andrew Novak",sal:6400,own:0.01,pk:1,sc:0,pa:45,bi:12,ea:1,bo:14,db:0,tr:0,al:0},
+      {wr:53,nm:"Brian Harman",sal:7000,own:0.01,pk:1,sc:4,pa:49,bi:9,ea:1,bo:11,db:2,tr:0,al:0},
+      {wr:55,nm:"Pierceson Coody",sal:6500,own:0.01,pk:1,sc:"CUT",pa:21,bi:5,ea:0,bo:9,db:1,tr:0,al:0},
+      {wr:58,nm:"Nick Taylor",sal:6600,own:0.01,pk:1,sc:0,pa:54,bi:9,ea:0,bo:9,db:0,tr:0,al:0},
+      {wr:61,nm:"Thomas Detry",sal:6800,own:0.01,pk:1,sc:"CUT",pa:24,bi:4,ea:0,bo:8,db:0,tr:0,al:0},
+      {wr:64,nm:"Rasmus Hojgaard",sal:6600,own:0.01,pk:0,sc:6,pa:43,bi:10,ea:1,bo:18,db:0,tr:0,al:0},
+      {wr:63,nm:"Michael Thorbjornsen",sal:6800,own:0.01,pk:1,sc:"CUT",pa:18,bi:5,ea:0,bo:11,db:1,tr:1,al:0},
+      {wr:80,nm:"Haotong Li",sal:6400,own:0.01,pk:1,sc:1,pa:47,bi:12,ea:0,bo:13,db:0,tr:0,al:0},
+      {wr:79,nm:"J.T. Poston",sal:6500,own:0.01,pk:1,sc:"CUT",pa:21,bi:5,ea:0,bo:10,db:0,tr:0,al:0},
+      {wr:92,nm:"Christiaan Bezuidenhout",sal:6300,own:0.01,pk:1,sc:1,pa:45,bi:12,ea:1,bo:13,db:1,tr:0,al:0},
+      {wr:90,nm:"Ricky Castillo",sal:6300,own:0.01,pk:1,sc:"CUT",pa:24,bi:3,ea:0,bo:8,db:1,tr:0,al:0},
+      {wr:93,nm:"Lucas Glover",sal:6200,own:0.01,pk:1,sc:"CUT",pa:26,bi:2,ea:0,bo:5,db:3,tr:0,al:0},
+      {wr:109,nm:"David Puig",sal:6800,own:0.01,pk:1,sc:-1,pa:49,bi:11,ea:1,bo:10,db:1,tr:0,al:0},
+      {wr:117,nm:"Billy Horschel",sal:6300,own:0.01,pk:1,sc:"CUT",pa:21,bi:4,ea:0,bo:10,db:1,tr:0,al:0},
+      {wr:152,nm:"Kazuki Higa",sal:5900,own:0.01,pk:1,sc:7,pa:45,bi:12,ea:0,bo:10,db:5,tr:0,al:0},
+      {wr:203,nm:"Bernd Wiesberger",sal:6200,own:0.01,pk:1,sc:"CUT",pa:21,bi:4,ea:0,bo:10,db:1,tr:0,al:0},
+      {wr:894,nm:"Padraig Harrington",sal:5900,own:0.01,pk:1,sc:-1,pa:48,bi:11,ea:1,bo:12,db:0,tr:0,al:0},
+      {wr:700,nm:"Stewart Cink",sal:6100,own:0.01,pk:1,sc:"CUT",pa:23,bi:3,ea:0,bo:10,db:0,tr:0,al:0}
     ]
   }
 };
@@ -5138,14 +5220,28 @@ const DARK_HORSE_PAYOUTS={
     se.winnings=(se.winnings||0)+DARK_HORSE_PAYOUTS[nm].amt;
     se.dark_horse=DARK_HORSE_PAYOUTS[nm];
   });
-  // Recompute YTD ranks
+  // Recompute YTD ranks — tie-break by total FedEx points (higher = better)
   var all2026=[];
+  // First compute total FedEx points per season-entry by summing event fed values
+  function getFed(nm){
+    var total=0;
+    [11,14,33].forEach(function(k){
+      if(!POOL_RESULTS[k]||!POOL_RESULTS[k].entries)return;
+      var e=POOL_RESULTS[k].entries.find(function(x){return x.nm&&x.nm.toLowerCase()===nm.toLowerCase();});
+      if(e&&e.fed)total+=e.fed;
+    });
+    return total;
+  }
   DB.participants.forEach(function(p){
     var s=p.seasons['2026'];if(!s)return;
-    if(Array.isArray(s)){s.forEach(function(x){if(x.total!=null)all2026.push(x);});}
-    else if(s.total!=null)all2026.push(s);
+    if(Array.isArray(s)){s.forEach(function(x){if(x.total!=null){x._fed=getFed(x.entry_used);all2026.push(x);}});}
+    else if(s.total!=null){s._fed=getFed(s.entry_used);all2026.push(s);}
   });
-  all2026.sort(function(a,b){return a.total-b.total;});
+  all2026.sort(function(a,b){
+    if(a.total!==b.total) return a.total-b.total;
+    // Tiebreak: higher FedEx points wins
+    return (b._fed||0)-(a._fed||0);
+  });
   all2026.forEach(function(x,i){x.rank=i+1;});
 })();
 const TPC_LIVE_STATS=[
