@@ -47,6 +47,15 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .nav button:active{transform:translateY(0) scale(.97)}
 .nav button.active{color:var(--gn);background:rgba(0,103,71,.06);font-weight:600;box-shadow:inset 0 -2px 0 var(--gn)}
 .nav button.active::after{left:0;right:0}
+.nav button.up-tab{color:rgba(0,32,91,.55);font-style:italic;font-weight:400}
+.nav button.up-tab:hover{color:#2960a8;background:rgba(58,134,168,.07)}
+.nav button.up-tab:hover::after{background:#3a86a8}
+.nav button.up-tab.active{color:#2960a8;background:rgba(58,134,168,.08);box-shadow:inset 0 -2px 0 #3a86a8;font-style:italic;font-weight:500}
+.nav button.up-tab.active::after{background:#3a86a8}
+.upcoming-tab{position:relative}
+.up-banner{display:flex;align-items:center;justify-content:center;gap:.45rem;margin:.5rem .6rem;padding:.45rem .8rem;background:linear-gradient(135deg,rgba(58,134,168,.06),rgba(58,134,168,.12));border:1px solid rgba(58,134,168,.25);border-radius:6px;font-family:var(--fb);font-size:.62rem;color:#2960a8;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.up-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3a86a8;box-shadow:0 0 0 3px rgba(58,134,168,.25);animation:up-pulse 2.5s ease-in-out infinite}
+@keyframes up-pulse{0%,100%{box-shadow:0 0 0 3px rgba(58,134,168,.25)}50%{box-shadow:0 0 0 5px rgba(58,134,168,.08)}}
 .ctrl{display:flex;gap:.35rem;align-items:center;padding:.4rem .7rem;flex-wrap:wrap}
 .ctrl select,.ctrl input{font-family:var(--fb);font-size:.62rem;padding:.22rem .42rem;background:var(--bc);color:var(--tp);border:1px solid rgba(0,0,0,.06);border-radius:4px;outline:0;transition:border-color .2s,background .2s,box-shadow .2s;height:24px;line-height:1}
 .ctrl select:hover,.ctrl input:hover{border-color:rgba(196,160,53,.35)}
@@ -60,6 +69,26 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .sc{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.25rem .3rem;text-align:center}
 .sc .v{font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--tb)}.sc .v.go{color:var(--go)}.sc .v.gl{color:var(--gl)}
 .sc .l{font-size:.45rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ts);margin-top:.02rem}
+/* DataGolf Insight card */
+.dg-card{margin:.4rem .6rem .85rem;padding:.55rem .7rem}
+.dg-card .snap-head{margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:1px solid var(--br)}
+.dg-card h3{font-family:var(--fd);font-size:.95rem;color:var(--tb)}
+.dg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.7rem 1.1rem}
+.dg-blk{padding:.1rem .15rem}
+.dg-blk.dg-next{padding:.4rem .5rem;background:linear-gradient(135deg,rgba(58,134,168,.04),rgba(58,134,168,.10));border:1px solid rgba(58,134,168,.2);border-radius:6px}
+.dg-h{font-family:var(--fd);font-size:.7rem;font-weight:600;color:var(--tb);letter-spacing:.04em;text-transform:uppercase;padding-bottom:.18rem;border-bottom:1px solid rgba(196,160,53,.3);position:relative;margin-bottom:.15rem}
+.dg-h::after{content:'';position:absolute;left:0;bottom:-1px;width:24px;height:2px;background:var(--go);border-radius:1px}
+.dg-blk.dg-next .dg-h::after{background:#3a86a8}
+.dg-sub{font-size:.5rem;color:var(--td);font-family:var(--fb);font-style:italic;margin:.35rem 0 .35rem;letter-spacing:.02em}
+.dg-list{display:flex;flex-direction:column;gap:.18rem}
+.dg-row{font-size:.62rem;font-family:var(--fb);color:var(--tp);line-height:1.45;padding:.14rem 0;display:flex;align-items:baseline;gap:.35rem;flex-wrap:wrap;border-bottom:1px dotted rgba(0,0,0,.05)}
+.dg-row:last-child{border-bottom:none}
+.dg-row b{color:var(--tb);font-weight:600}
+.dg-rk{font-family:var(--fm);font-size:.55rem;color:var(--ts);min-width:14px}
+.dg-meta{color:var(--td);font-size:.56rem;font-family:var(--fm)}
+.dg-tag{display:inline-block;font-size:.48rem;color:var(--ts);font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-left:2px solid var(--go);padding-left:5px}
+.dg-blk.dg-next .dg-tag{border-left-color:#3a86a8}
+.dg-cta{margin-top:.3rem;border-bottom:none}
 /* Generic interactive buttons (expand toggles, etc) */
 .btn-pill{font-family:var(--fb);font-size:.62rem;font-weight:600;letter-spacing:.04em;color:var(--go);background:linear-gradient(135deg,rgba(196,160,53,.04),rgba(196,160,53,.08));border:1px solid rgba(196,160,53,.3);border-radius:18px;padding:.35rem 1rem;cursor:pointer;transition:all .2s ease;position:relative;overflow:hidden}
 .btn-pill:hover{background:linear-gradient(135deg,rgba(196,160,53,.12),rgba(196,160,53,.2));border-color:var(--go);box-shadow:0 2px 8px rgba(196,160,53,.18);transform:translateY(-1px)}
@@ -133,6 +162,16 @@ tbody tr.dnp:hover td{opacity:.8}
 .te.vt{color:var(--ts)}
 .tap-hint{display:flex;align-items:center;gap:.35rem;font-size:.56rem;color:var(--td);font-family:var(--fb);font-style:italic;margin:0 0 .35rem .15rem;letter-spacing:.02em}
 .tap-hint::before{content:'👆';font-style:normal;opacity:.7}
+.sr.sr-2col{grid-template-columns:1fr 1fr;gap:.4rem}
+.sc.combo{padding:.4rem .55rem;text-align:left}
+.sc.combo .combo-row{display:flex;align-items:center;gap:.6rem}
+.sc.combo .combo-cell{display:flex;flex-direction:column;gap:1px;flex:0 0 auto}
+.sc.combo .combo-cell.wide{flex:1 1 auto;min-width:0}
+.sc.combo .combo-v{font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--tb);line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc.combo .combo-v.go{color:var(--go)}.sc.combo .combo-v.gl{color:var(--gl)}
+.sc.combo .combo-l{font-size:.46rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ts);font-family:var(--fb);font-weight:500}
+.sc.combo .combo-sep{width:1px;align-self:stretch;background:linear-gradient(180deg,transparent,var(--br) 30%,var(--br) 70%,transparent);margin:.05rem 0}
+@media(max-width:520px){.sr.sr-2col{grid-template-columns:1fr}.sc.combo .combo-v{font-size:.82rem}}
 .sc.pp-card{position:relative;background:linear-gradient(135deg,var(--bc) 0%,rgba(196,160,53,.04) 100%);border-color:rgba(196,160,53,.25);overflow:hidden}
 .sc.pp-card::before{content:'';position:absolute;top:-6px;right:-8px;width:24px;height:24px;background:radial-gradient(circle,rgba(196,160,53,.18) 0%,transparent 70%);pointer-events:none}
 .pp-bag{position:absolute;top:1px;left:3px;font-size:.7rem;opacity:.55;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))}
@@ -662,8 +701,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <button onclick="go('upcoming')">PGA</button>
 <button onclick="go('masters-results')">Masters</button>
 <button onclick="go('players-results')">Players</button>
-<button onclick="go('schedule')">Schedule</button>
-<button onclick="go('rules')">Rules/Pay</button>
+<button class="up-tab" onclick="go('uso-tab')">U.S. Open</button>
+<button class="up-tab" onclick="go('open-tab')">The Open</button>
+<button onclick="go('rules')">Rules</button>
 </nav>
 <main>
 <section id="history" class="pn2 active">
@@ -770,9 +810,13 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 
 
 </section>
-<section id="schedule" class="pn2">
-<div class="cd" id="schedule-sched"></div>
-<div id="schedule-preview" style="margin-top:.4rem"></div>
+<section id="uso-tab" class="pn2 upcoming-tab">
+<div class="up-banner"><span class="up-dot"></span>Upcoming — June 18–21, 2026 · Shinnecock Hills</div>
+<div id="uso-preview"></div>
+</section>
+<section id="open-tab" class="pn2 upcoming-tab">
+<div class="up-banner"><span class="up-dot"></span>Upcoming — July 16–19, 2026 · Royal Birkdale</div>
+<div id="open-preview"></div>
 </section>
 <section id="rules" class="pn2">
 <div class="cd" style="max-width:640px;margin-left:auto;margin-right:auto">
@@ -1215,13 +1259,14 @@ function yrCard(y,s){
 function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
-  ['history','upcoming','masters-results','players-results','schedule','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
+  ['history','upcoming','masters-results','players-results','uso-tab','open-tab','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
   var meb=document.querySelector('.me-bar');if(meb)meb.style.display='none';
   if(t==='history'){populateHFilters();rHistory();}
   else if(t==='upcoming')rLive();
-  else if(t==='schedule')renderScheduleTab();
   else if(t==='players-results')renderPlayersResults();
-  else if(t==='masters-results')renderMastersResults();}
+  else if(t==='masters-results')renderMastersResults();
+  else if(t==='uso-tab')renderUsoTab();
+  else if(t==='open-tab')renderOpenTab();}
 
 /* ===== HISTORY TAB ===== */
 function populateHFilters(){
@@ -1309,18 +1354,25 @@ function rSeasonView(y){
   }
   var remaining=pot-paidOut;
   var paidPct=pot>0?Math.min(100,Math.round((paidOut/pot)*100)):0;
-  // Stats row
-  h+='<div class="sr">'+
-    '<div class="sc"><div class="v">'+tot+'</div><div class="l">Entries</div></div>'+
-    '<div class="sc pp-card" title="$'+paidOut.toLocaleString()+' paid out, $'+remaining.toLocaleString()+' still in the bag">'+
-      '<div class="pp-bag">💰</div>'+
-      '<div class="v">$'+pot.toLocaleString()+'</div>'+
-      '<div class="l">Prize Pool</div>'+
+  // Stats row — 2 combined cards
+  var leaderScoreTxt=(leader&&leader.total!=null?(leader.total>0?'+':'')+leader.total:'-');
+  h+='<div class="sr sr-2col">'+
+    '<div class="sc pp-card combo" title="$'+paidOut.toLocaleString()+' paid · $'+remaining.toLocaleString()+' left in the bag">'+
+      '<div class="combo-row">'+
+        '<div class="combo-cell"><div class="combo-v">'+tot+'</div><div class="combo-l">Entries</div></div>'+
+        '<div class="combo-sep"></div>'+
+        '<div class="combo-cell wide"><div class="combo-v">$'+pot.toLocaleString()+'</div><div class="combo-l">Prize Pool</div></div>'+
+      '</div>'+
       (paidOut>0?'<div class="pp-bar"><div class="pp-fill" style="width:'+paidPct+'%"></div></div>'+
         '<div class="pp-split"><span class="pp-paid">$'+paidOut.toLocaleString()+' paid</span><span class="pp-left">$'+remaining.toLocaleString()+' left</span></div>':'')+
     '</div>'+
-    '<div class="sc"><div class="v go">'+(leader?leader.entry_used:'-')+'</div><div class="l">'+(y==='2026'?'Current Leader':y+' Champion')+'</div></div>'+
-    '<div class="sc"><div class="v gl">'+(leader&&leader.total!=null?(leader.total>0?'+':'')+leader.total:'-')+'</div><div class="l">'+(y==='2026'?'Leader Score (thru 3)':'Winning Score')+'</div></div></div>';
+    '<div class="sc combo">'+
+      '<div class="combo-row">'+
+        '<div class="combo-cell wide"><div class="combo-v go">'+(leader?leader.entry_used:'-')+'</div><div class="combo-l">'+(y==='2026'?'Current Leader':y+' Champion')+'</div></div>'+
+        '<div class="combo-sep"></div>'+
+        '<div class="combo-cell"><div class="combo-v gl">'+leaderScoreTxt+'</div><div class="combo-l">'+(y==='2026'?'thru 3':'final')+'</div></div>'+
+      '</div>'+
+    '</div></div>';
   // Awards
   var aw=superlatives(y);
   if(aw.length>0){
@@ -1381,9 +1433,12 @@ function rSeasonView(y){
   if(!searchActive&&d.length>25){
     h+='<div style="text-align:center;padding:.5rem"><button class="btn-pill" onclick="toggleShowAll()">'+(showAll?'Show Top 25 Only ↑':'Show All '+d.length+' Entries ↓')+'</button></div>';
   }
+  // DataGolf insights (only for in-progress 2026 season)
+  if(y==='2026'){
+    h+=renderDgInsights(y);
+  }
   // Collapsible Insights
   h+='<details class="cf-details" style="margin:.85rem"><summary class="cf-details-sum">Season Insights</summary><div class="cf-details-body">';
-  h+=hRecords(y);
   h+=hMovers(y);
   h+=hBoom(y);
   // H2H
@@ -1392,16 +1447,113 @@ function rSeasonView(y){
   h+='<div id="h2h-body"><div style="text-align:center;color:var(--ts);padding:.8rem;font-size:.8rem">Select two entries to compare</div></div></div>';
   // Score Distribution
   h+='<div class="cd"><h3>Score Distribution</h3><div class="cc"><canvas id="dist-chart"></canvas></div></div>';
-  // Pool Growth
-  h+='<div class="cd"><h3>Pool Growth</h3><div class="cc"><canvas id="g-chart"></canvas></div></div>';
   h+='</div></details>';
   document.getElementById('h-body').innerHTML=h;
   // Initialize interactive parts after DOM is ready
   setTimeout(function(){
     hInitH2H(y);
     hDistC(y);
-    hGC();
   },50);
+}
+
+/* DataGolf-derived insights from POOL_RESULTS player data */
+function renderDgInsights(y){
+  if(typeof POOL_RESULTS==='undefined')return '';
+  var h='<div class="cd dg-card"><div class="snap-head"><h3 style="margin:0">DataGolf Insight</h3>'+
+    '<span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-style:italic;letter-spacing:.04em">Player picks · venue fit · field strength</span>'+
+    '</div>';
+  h+='<div class="dg-grid">';
+  // 1. Most picked players across all 3 events
+  var picks={};var totalEntries=0;
+  [11,14,33].forEach(function(k){
+    var pr=POOL_RESULTS[k];if(!pr||!pr.players)return;
+    totalEntries+=(pr.entries?pr.entries.length:108);
+    pr.players.forEach(function(p){
+      if(!p.nm||!p.pk)return;
+      if(!picks[p.nm])picks[p.nm]={nm:p.nm,total:0,events:[],sals:[],scs:[],owns:[]};
+      picks[p.nm].total+=p.pk;
+      picks[p.nm].events.push(k===11?'Players':k===14?'Masters':'PGA');
+      if(p.sal)picks[p.nm].sals.push(p.sal);
+      if(p.sc!=null&&typeof p.sc==='number')picks[p.nm].scs.push(p.sc);
+      if(p.own)picks[p.nm].owns.push(p.own);
+    });
+  });
+  var topPicks=Object.values(picks).sort(function(a,b){return b.total-a.total;}).slice(0,5);
+  if(topPicks.length){
+    h+='<div class="dg-blk"><div class="dg-h">Most-Picked Golfers · Season</div>';
+    h+='<div class="dg-sub">Total picks across The Players, Masters, PGA</div>';
+    h+='<div class="dg-list">';
+    topPicks.forEach(function(p,i){
+      var avgSal=p.sals.length?Math.round(p.sals.reduce(function(s,x){return s+x;},0)/p.sals.length):null;
+      h+='<div class="dg-row"><span class="dg-rk">'+(i+1)+'</span><b>'+p.nm+'</b> <span class="dg-meta">'+p.total+' picks · '+p.events.join(', ')+(avgSal?' · avg $'+(avgSal/1000).toFixed(1)+'k':'')+'</span></div>';
+    });
+    h+='</div></div>';
+  }
+  // 2. Best value picks (low own, low salary, top finish)
+  var vals=[];
+  [11,14,33].forEach(function(k){
+    var pr=POOL_RESULTS[k];if(!pr||!pr.players)return;
+    var ev=k===11?'Players':k===14?'Masters':'PGA';
+    pr.players.forEach(function(p){
+      if(typeof p.sc!=='number'||p.sc>0||!p.own||p.own>=0.15||!p.sal)return;
+      var posNum=parseInt(p.pos);
+      if(isNaN(posNum)||posNum>15)return;
+      vals.push({nm:p.nm,sal:p.sal,own:p.own,sc:p.sc,pos:p.pos,ev:ev});
+    });
+  });
+  vals.sort(function(a,b){return (a.pos*a.own*1000)-(b.pos*b.own*1000);});
+  if(vals.length){
+    h+='<div class="dg-blk"><div class="dg-h">Best Value Picks · Low Ownership Hits</div>';
+    h+='<div class="dg-sub">Under 15% owned, finished top 15</div>';
+    h+='<div class="dg-list">';
+    vals.slice(0,5).forEach(function(v){
+      h+='<div class="dg-row"><b>'+v.nm+'</b> <span class="dg-tag">'+v.ev+'</span> <span class="dg-meta">T'+v.pos+' · $'+(v.sal/1000).toFixed(1)+'k · '+(v.own*100).toFixed(1)+'% own</span></div>';
+    });
+    h+='</div></div>';
+  }
+  // 3. Chalky busts (high own, missed)
+  var busts=[];
+  [11,14,33].forEach(function(k){
+    var pr=POOL_RESULTS[k];if(!pr||!pr.players)return;
+    var ev=k===11?'Players':k===14?'Masters':'PGA';
+    pr.players.forEach(function(p){
+      if(!p.own||p.own<0.20)return;
+      var posStr=String(p.pos||'');
+      if(posStr==='CUT'||(typeof p.sc==='number'&&p.sc>5)){
+        busts.push({nm:p.nm,own:p.own,sal:p.sal,pos:p.pos,sc:p.sc,ev:ev});
+      }
+    });
+  });
+  busts.sort(function(a,b){return b.own-a.own;});
+  if(busts.length){
+    h+='<div class="dg-blk"><div class="dg-h">Chalk Busts · High Ownership Misses</div>';
+    h+='<div class="dg-sub">20%+ owned, missed cut or struggled</div>';
+    h+='<div class="dg-list">';
+    busts.slice(0,5).forEach(function(v){
+      h+='<div class="dg-row"><b>'+v.nm+'</b> <span class="dg-tag">'+v.ev+'</span> <span class="dg-meta">'+v.pos+' · '+(v.own*100).toFixed(0)+'% own'+(v.sal?' · $'+(v.sal/1000).toFixed(1)+'k':'')+'</span></div>';
+    });
+    h+='</div></div>';
+  }
+  // 4. Next Up — venue fit preview
+  if(typeof COURSES_DATA!=='undefined'){
+    var nextCourse='Shinnecock Hills Golf Club';
+    var cd=COURSES_DATA[nextCourse];
+    if(cd){
+      h+='<div class="dg-blk dg-next"><div class="dg-h">Next Up · U.S. Open Venue</div>';
+      h+='<div class="dg-sub">Shinnecock Hills · Jun 18–21 · Par '+cd.par+' · '+cd.yardageDisplay+'</div>';
+      h+='<div class="dg-list">';
+      var sg=cd.sgEmphasis||{};
+      h+='<div class="dg-row"><b>SG Emphasis</b> <span class="dg-meta">Tee '+Math.round((sg.ott||0)*100)+'% · App '+Math.round((sg.app||0)*100)+'% · ARG '+Math.round((sg.arg||0)*100)+'% · Putt '+Math.round((sg.putt||0)*100)+'%</span></div>';
+      h+='<div class="dg-row"><b>Defense</b> <span class="dg-meta">'+cd.bunkerCount+' bunkers · '+cd.avgRoughHeight+' rough · '+cd.greensSpeed+' greens · '+cd.windExposure+' wind</span></div>';
+      h+='<div class="dg-row"><b>Profile</b> <span class="dg-meta">'+cd.courseType+' · '+cd.distanceVsAccuracy+'</span></div>';
+      var corr=(cd.correlatedCourses||[]).slice(0,3).join(' · ');
+      if(corr)h+='<div class="dg-row"><b>Similar To</b> <span class="dg-meta">'+corr+'</span></div>';
+      h+='<div class="dg-row dg-cta"><a href="javascript:go(\'uso-tab\')" class="btn-pill" style="display:inline-block">Open U.S. Open Tab →</a></div>';
+      h+='</div></div>';
+    }
+  }
+  h+='</div></div>';
+  return h;
 }
 
 /* --- Insight helper: records HTML --- */
@@ -6015,6 +6167,41 @@ function renderMastersResults(){
   }
   if(typeof MASTERS_LIVE_STATS!=='undefined'&&MASTERS_LIVE_STATS.length){
     renderTourneyPanel('mst-tourney',MASTERS_LIVE_STATS,typeof MASTERS_HOLE_STATS!=='undefined'?MASTERS_HOLE_STATS:null,{name:'Masters Tournament',venue:'Augusta National',dates:'Apr 9–13'});
+  }
+}
+
+/* ===== UPCOMING MAJOR TABS (U.S. Open / The Open) ===== */
+let _usoTabRendered=false,_openTabRendered=false;
+function renderUsoTab(){
+  if(_usoTabRendered)return;
+  _usoTabRendered=true;
+  const el=document.getElementById('uso-preview');
+  if(!el)return;
+  const courseName='Shinnecock Hills Golf Club';
+  if(typeof COURSES_DATA!=='undefined'&&COURSES_DATA[courseName]){
+    const toggle='<div style="display:flex;justify-content:center;gap:.4rem;margin:.4rem 0;padding:.3rem 0">'+
+      '<button id="uso-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
+      '<button id="uso-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
+    el.innerHTML=toggle+'<div id="uso-preview-target"></div>';
+    renderPreview(document.getElementById('uso-preview-target'),courseName,'U.S. Open');
+  }else{
+    el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
+  }
+}
+function renderOpenTab(){
+  if(_openTabRendered)return;
+  _openTabRendered=true;
+  const el=document.getElementById('open-preview');
+  if(!el)return;
+  const courseName='Royal Birkdale Golf Club';
+  if(typeof COURSES_DATA!=='undefined'&&COURSES_DATA[courseName]){
+    const toggle='<div style="display:flex;justify-content:center;gap:.4rem;margin:.4rem 0;padding:.3rem 0">'+
+      '<button id="open-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
+      '<button id="open-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
+    el.innerHTML=toggle+'<div id="open-preview-target"></div>';
+    renderPreview(document.getElementById('open-preview-target'),courseName,'The Open Championship');
+  }else{
+    el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
   }
 }
 
