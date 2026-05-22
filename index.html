@@ -27,21 +27,8 @@ html{font-size:16px;-webkit-font-smoothing:antialiased}
 body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bd)}
 ::-webkit-scrollbar-thumb{background:var(--brl);border-radius:3px}
-.logo-banner{padding:.8rem 1rem .4rem;text-align:center;overflow:hidden;perspective:600px}
-.logo-banner img{max-width:min(500px,90%);height:auto;mix-blend-mode:multiply;animation:trippy-logo 18s ease-in-out infinite;transform-origin:center center;will-change:transform,filter;cursor:pointer;transition:filter .3s}
-.logo-banner img:hover{animation-duration:6s;filter:hue-rotate(15deg) saturate(1.15) contrast(1.05)}
-@keyframes trippy-logo{
-  0%   {transform:translate3d(0,0,0) rotateX(0) rotateY(0) scale(1);filter:hue-rotate(0deg) saturate(1)}
-  12%  {transform:translate3d(-3px,1px,0) rotateX(2deg) rotateY(-2deg) scale(1.005);filter:hue-rotate(-4deg) saturate(1.04)}
-  25%  {transform:translate3d(2px,-2px,0) rotateX(-1deg) rotateY(3deg) scale(1.012);filter:hue-rotate(6deg) saturate(1.08)}
-  37%  {transform:translate3d(4px,1px,0) rotateX(1deg) rotateY(-2deg) scale(1.008);filter:hue-rotate(-3deg) saturate(1.02)}
-  50%  {transform:translate3d(0,-3px,0) rotateX(3deg) rotateY(0) scale(1.018);filter:hue-rotate(10deg) saturate(1.12)}
-  62%  {transform:translate3d(-4px,-1px,0) rotateX(0) rotateY(2deg) scale(1.01);filter:hue-rotate(-6deg) saturate(1.06)}
-  75%  {transform:translate3d(-2px,2px,0) rotateX(-2deg) rotateY(-3deg) scale(1.006);filter:hue-rotate(4deg) saturate(1.03)}
-  87%  {transform:translate3d(3px,0,0) rotateX(1deg) rotateY(1deg) scale(1.012);filter:hue-rotate(-2deg) saturate(1.05)}
-  100% {transform:translate3d(0,0,0) rotateX(0) rotateY(0) scale(1);filter:hue-rotate(0deg) saturate(1)}
-}
-@media(prefers-reduced-motion:reduce){.logo-banner img{animation:none}}
+.logo-banner{padding:.8rem 1rem .4rem;text-align:center}
+.logo-banner img{max-width:min(500px,90%);height:auto;mix-blend-mode:multiply}
 .hdr{background:linear-gradient(180deg,var(--bc) 0%,var(--bd) 100%);border-bottom:1px solid var(--br);padding:1rem 1rem 0;text-align:center}
 .hdr h1{font-family:var(--fd);font-weight:700;font-size:2rem;color:var(--tb);letter-spacing:.04em}
 .hdr h1::after{content:'';display:block;width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--go),transparent);margin:.35rem auto 0}
