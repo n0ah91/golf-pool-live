@@ -51,6 +51,17 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .sc{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.25rem .3rem;text-align:center}
 .sc .v{font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--tb)}.sc .v.go{color:var(--go)}.sc .v.gl{color:var(--gl)}
 .sc .l{font-size:.45rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ts);margin-top:.02rem}
+.snap-extra{margin-top:.55rem;padding-top:.5rem;border-top:1px solid var(--br);display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.55rem .85rem}
+.snap-blk{padding:.3rem .35rem}
+.snap-h{font-family:var(--fd);font-size:.78rem;font-weight:700;color:var(--tb);margin-bottom:.1rem;display:flex;align-items:center;gap:.3rem}
+.snap-h span{font-size:.85rem}
+.snap-sub{font-size:.55rem;color:var(--td);font-family:var(--fb);font-style:italic;margin-bottom:.3rem;letter-spacing:.02em}
+.snap-list{display:flex;flex-direction:column;gap:.18rem}
+.snap-row{font-size:.66rem;font-family:var(--fb);color:var(--tp);line-height:1.45;padding:.12rem 0;display:flex;align-items:baseline;gap:.3rem;flex-wrap:wrap}
+.snap-bullet{flex-shrink:0;color:var(--ts);font-size:.62rem;min-width:14px}
+.snap-row b{color:var(--tb);font-weight:600}
+.snap-tag{display:inline-block;font-size:.5rem;background:rgba(196,160,53,.12);color:var(--go);padding:1px 5px;border-radius:3px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.snap-names{color:var(--tp)}
 .ml-card{margin:.4rem .6rem .85rem;padding:.5rem .6rem}
 .ml-head{display:flex;align-items:center;gap:.4rem;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid var(--br);flex-wrap:wrap}
 .ml-icon{font-size:.85rem}
@@ -396,9 +407,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 @media(max-width:768px){.cf-facts-grid{grid-template-columns:1fr}}
 @media(max-width:480px){.prev-title{font-size:1.05rem}}
 /* Live Stats Panel */
-.splash-link{display:block;font-size:.72rem;font-family:var(--fb);font-weight:600;color:var(--rd);border:1px solid rgba(139,35,50,.35);border-radius:6px;padding:.45rem .8rem;text-decoration:none;transition:all .2s;background:rgba(139,35,50,.06);letter-spacing:.03em;text-align:center;margin:0 0 .4rem;cursor:pointer}
-.splash-link:hover{background:rgba(139,35,50,.14);border-color:rgba(139,35,50,.55)}
-.splash-link:active{background:rgba(139,35,50,.2)}
+.splash-link{display:inline-block;font-size:.55rem;font-family:var(--fb);font-weight:500;color:var(--ts);text-decoration:none;transition:color .2s;letter-spacing:.02em;margin:.15rem 0 .4rem .6rem;cursor:pointer;opacity:.7}
+.splash-link:hover{color:var(--go);opacity:1}
 .ls-panel{background:var(--bc);border-radius:10px;padding:0;margin-top:.5rem;overflow:hidden;border:1px solid var(--br)}
 .ls-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:var(--bca);border-bottom:1px solid var(--br)}
 .ls-event-name{font-family:var(--fd);font-size:1.15rem;color:var(--tb);font-weight:600;letter-spacing:.01em;display:flex;align-items:center;gap:.4rem}
@@ -601,15 +611,15 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <span id="me-badge" class="me-badge"></span>
 </div>
 <nav class="nav">
-<button onclick="go('schedule')">Schedule</button>
-<button onclick="go('players-results')">Players</button>
+<button class="active" onclick="go('history')">YTD &amp; Hist.</button>
+<button onclick="go('upcoming')">PGA</button>
 <button onclick="go('masters-results')">Masters</button>
-<button class="active" onclick="go('upcoming')">PGA</button>
-<button onclick="go('history')">YTD &amp; Hist.</button>
+<button onclick="go('players-results')">Players</button>
+<button onclick="go('schedule')">Schedule</button>
 <button onclick="go('rules')">Rules/Pay</button>
 </nav>
 <main>
-<section id="history" class="pn2">
+<section id="history" class="pn2 active">
 <div class="ctrl" id="h-ctrl" style="position:sticky;top:36px;z-index:40;background:var(--bm);border-bottom:1px solid var(--br);display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
 <select id="hyr" onchange="chgH()"></select>
 <select id="hev" onchange="chgH()"></select>
@@ -617,7 +627,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <input type="text" id="hs" placeholder="Search..." oninput="rHistory()" style="flex:1;min-width:100px">
 <span id="hc" class="cnt"></span>
 </div>
-<a href="https://splashsports.com" target="_blank" class="splash-link">📊 Pool Standings on Splash Sports →</a>
+<a href="https://splashsports.com" target="_blank" class="splash-link">Splash Sports ↗</a>
 <div id="h-body"></div>
 </section>
 <section id="players-results" class="pn2">
@@ -652,7 +662,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <div class="cd" id="mst-tourney"></div>
 </section>
 
-<section id="upcoming" class="pn2 active">
+<section id="upcoming" class="pn2">
 
 <!-- PGA Championship Results (primary content post-tournament) -->
 <div class="cd" id="pga-standings"></div>
@@ -987,9 +997,10 @@ function superlatives(y){
   const ents=e4y(y).filter(e=>e.rank!=null).sort((a,b)=>a.rank-b.rank);
   const lb=EL[y]||EL['2025'];const prev=yoyMap(y);
   const awards=[];
-  if(ents.length>0)awards.push({t:'Champion',n:ents[0].entry_used,d:'Rank #1'+(ents[0].total!=null?' ('+((ents[0].total>0?'+':'')+ents[0].total)+')':''),gold:true});
-  if(ents.length>1)awards.push({t:'Runner-Up',n:ents[1].entry_used,d:'Rank #2'});
-  if(ents.length>2)awards.push({t:'Bronze',n:ents[2].entry_used,d:'Rank #3'});
+  var inProgress=(y==='2026');
+  if(ents.length>0)awards.push({t:inProgress?'Current Leader':'Champion',n:ents[0].entry_used,d:'Rank #1'+(ents[0].total!=null?' ('+((ents[0].total>0?'+':'')+ents[0].total)+')':''),gold:true});
+  if(ents.length>1)awards.push({t:inProgress?'2nd Place':'Runner-Up',n:ents[1].entry_used,d:'Rank #2'});
+  if(ents.length>2)awards.push({t:inProgress?'3rd Place':'Bronze',n:ents[2].entry_used,d:'Rank #3'});
   const dfl=ents[ents.length-1];if(dfl&&dfl.rank>3)awards.push({t:'DFL',n:dfl.entry_used,d:'Rank #'+dfl.rank+(dfl.total!=null?' ('+(dfl.total>0?'+':'')+dfl.total+')':'')});
   // Rookie of Year
   const rookies=ents.filter(e=>isRookie(e.person,y));
@@ -1017,6 +1028,116 @@ function superlatives(y){
   }
   return awards;
 }
+/* Rich season-in-progress snapshot — extends Superlatives with deeper detail */
+function renderSeasonDetails(all,lb,paidOut,pot){
+  if(!all||!all.length)return '';
+  var h='<div class="snap-extra">';
+  // 1. Money List Mini (top 5 earners)
+  var earners=[...all].filter(function(e){return e.winnings>0;}).sort(function(a,b){return b.winnings-a.winnings;});
+  if(earners.length){
+    h+='<div class="snap-blk"><div class="snap-h"><span>💵</span> Money Leaderboard</div>';
+    h+='<div class="snap-sub">'+earners.length+' paid · $'+paidOut.toLocaleString()+' of $'+pot.toLocaleString()+' awarded ('+Math.round(paidOut/pot*100)+'%)</div>';
+    h+='<div class="snap-list">';
+    var groups=[];var cur=null;
+    earners.forEach(function(e){if(!cur||cur.amt!==e.winnings){cur={amt:e.winnings,entries:[]};groups.push(cur);}cur.entries.push(e);});
+    groups.slice(0,5).forEach(function(g,i){
+      var medal=['🥇','🥈','🥉'][i]||'';
+      var amt='$'+(g.amt%1===0?g.amt.toLocaleString():g.amt.toFixed(2));
+      var names=g.entries.map(function(e){return e.entry_used;}).join(', ');
+      h+='<div class="snap-row"><span class="snap-bullet">'+(medal||'·')+'</span><b>'+amt+'</b>'+(g.entries.length>1?' <span class="snap-tag">×'+g.entries.length+'</span>':'')+' — <span class="snap-names">'+names+'</span></div>';
+    });
+    h+='</div></div>';
+  }
+  // 2. Dark Horse Picks
+  if(typeof DARK_HORSE_PAYOUTS!=='undefined'){
+    var dhs=Object.keys(DARK_HORSE_PAYOUTS);
+    if(dhs.length){
+      h+='<div class="snap-blk"><div class="snap-h"><span>🐎</span> Dark Horse Hits</div>';
+      h+='<div class="snap-sub">Entries who correctly picked the tournament dark horse (+$50 bonus)</div>';
+      h+='<div class="snap-list">';
+      dhs.forEach(function(nm){
+        var dh=DARK_HORSE_PAYOUTS[nm];
+        var ev=dh.event==='players'?'The Players':dh.event==='masters'?'Masters':dh.event==='pga'?'PGA':dh.event;
+        h+='<div class="snap-row"><span class="snap-bullet">🎯</span><b>'+nm+'</b> <span class="snap-tag">'+ev+'</span> +$'+dh.amt+'</div>';
+      });
+      h+='</div></div>';
+    }
+  }
+  // 3. Standout Performances (top 3 finishes per event)
+  h+='<div class="snap-blk"><div class="snap-h"><span>⭐</span> Standout Performances</div>';
+  h+='<div class="snap-sub">Top-5 finishes from this season</div>';
+  h+='<div class="snap-list">';
+  ['players','masters','pga'].forEach(function(k){
+    var top5=[...all].filter(function(e){return e[k]!=null&&e[k]<=5;}).sort(function(a,b){return a[k]-b[k];});
+    if(top5.length){
+      var evLbl=lb[k]||k;
+      h+='<div class="snap-row"><span class="snap-bullet">🏌️</span><span class="snap-tag">'+evLbl+'</span> '+top5.map(function(e){return '<b>#'+e[k]+'</b> '+e.entry_used;}).join(' · ')+'</div>';
+    }
+  });
+  h+='</div></div>';
+  // 4. Biggest Movers (YTD rank vs Players rank)
+  var movers=all.filter(function(e){return e._plRk!=null&&e.rank!=null;}).map(function(e){return {nm:e.entry_used,from:e._plRk,to:e.rank,diff:e._plRk-e.rank};});
+  var up=[...movers].sort(function(a,b){return b.diff-a.diff;}).slice(0,3);
+  var down=[...movers].sort(function(a,b){return a.diff-b.diff;}).slice(0,3);
+  if(up.length){
+    h+='<div class="snap-blk"><div class="snap-h"><span>📈</span> Biggest Risers</div>';
+    h+='<div class="snap-sub">Climbed the most since the Players</div>';
+    h+='<div class="snap-list">';
+    up.forEach(function(m){if(m.diff>0)h+='<div class="snap-row"><span class="snap-bullet" style="color:var(--gl)">▲'+m.diff+'</span><b>'+m.nm+'</b> #'+m.from+' → #'+m.to+'</div>';});
+    h+='</div></div>';
+  }
+  if(down.length){
+    h+='<div class="snap-blk"><div class="snap-h"><span>📉</span> Biggest Sliders</div>';
+    h+='<div class="snap-sub">Dropped the most since the Players</div>';
+    h+='<div class="snap-list">';
+    down.forEach(function(m){if(m.diff<0)h+='<div class="snap-row"><span class="snap-bullet" style="color:var(--rd)">▼'+Math.abs(m.diff)+'</span><b>'+m.nm+'</b> #'+m.from+' → #'+m.to+'</div>';});
+    h+='</div></div>';
+  }
+  // 5. Hot streaks — improving event-over-event
+  var hot=[];var cold=[];
+  all.forEach(function(e){
+    if(e.players!=null&&e.masters!=null&&e.pga!=null){
+      if(e.players>e.masters&&e.masters>e.pga)hot.push({nm:e.entry_used,r:[e.players,e.masters,e.pga]});
+      if(e.players<e.masters&&e.masters<e.pga)cold.push({nm:e.entry_used,r:[e.players,e.masters,e.pga]});
+    }
+  });
+  if(hot.length){
+    h+='<div class="snap-blk"><div class="snap-h"><span>🔥</span> Heating Up</div>';
+    h+='<div class="snap-sub">Improved finish in each of 3 events (Players → Masters → PGA)</div>';
+    h+='<div class="snap-list">';
+    hot.sort(function(a,b){return (a.r[2]-a.r[0])-(b.r[2]-b.r[0]);}).slice(0,5).forEach(function(m){
+      h+='<div class="snap-row"><span class="snap-bullet" style="color:var(--gl)">🔥</span><b>'+m.nm+'</b> #'+m.r[0]+' → #'+m.r[1]+' → <b style="color:var(--gl)">#'+m.r[2]+'</b></div>';
+    });
+    h+='</div></div>';
+  }
+  if(cold.length){
+    h+='<div class="snap-blk"><div class="snap-h"><span>🧊</span> Cooling Off</div>';
+    h+='<div class="snap-sub">Worse finish in each of 3 events (Players → Masters → PGA)</div>';
+    h+='<div class="snap-list">';
+    cold.sort(function(a,b){return (b.r[2]-b.r[0])-(a.r[2]-a.r[0]);}).slice(0,5).forEach(function(m){
+      h+='<div class="snap-row"><span class="snap-bullet" style="color:var(--rd)">🧊</span><b>'+m.nm+'</b> #'+m.r[0]+' → #'+m.r[1]+' → <b style="color:var(--rd)">#'+m.r[2]+'</b></div>';
+    });
+    h+='</div></div>';
+  }
+  // 6. DNP penalty leaders
+  var dnpCount={};
+  [11,14,33].forEach(function(k){
+    if(POOL_RESULTS[k]&&POOL_RESULTS[k].entries){
+      POOL_RESULTS[k].entries.forEach(function(e){if(e._dnp){dnpCount[e.nm]=(dnpCount[e.nm]||0)+1;}});
+    }
+  });
+  var dnpList=Object.keys(dnpCount).map(function(nm){return{nm:nm,n:dnpCount[nm]};}).sort(function(a,b){return b.n-a.n;});
+  if(dnpList.length){
+    h+='<div class="snap-blk"><div class="snap-h"><span>🚫</span> Missed Events</div>';
+    h+='<div class="snap-sub">Entries that didn\'t pick a roster for at least one event</div>';
+    h+='<div class="snap-list">';
+    dnpList.forEach(function(d){h+='<div class="snap-row"><span class="snap-bullet">·</span><b>'+d.nm+'</b> <span class="snap-tag">'+d.n+' DNP'+(d.n>1?'s':'')+'</span></div>';});
+    h+='</div></div>';
+  }
+  h+='</div>';
+  return h;
+}
+
 function boomBust(y){
   const ents=e4y(y);return ents.map(e=>{
     const ranks=EK.map(k=>e[k]).filter(v=>v!=null);if(ranks.length<2)return null;
@@ -1048,7 +1169,7 @@ function yrCard(y,s){
 function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
-  ['schedule','players-results','masters-results','upcoming','history','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
+  ['history','upcoming','masters-results','players-results','schedule','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
   var meb=document.querySelector('.me-bar');if(meb)meb.style.display='none';
   if(t==='history'){populateHFilters();rHistory();}
   else if(t==='upcoming')rLive();
@@ -1093,6 +1214,7 @@ function rHistory(){
   else rEventView(hyr,hev);
 }
 function sS(c){if(S.sort.c===c)S.sort.a=!S.sort.a;else S.sort={c,a:true};rHistory();}
+function toggleShowAll(){S.showAll=!S.showAll;rHistory();}
 function cSS(c){if(S.csort.c===c)S.csort.a=!S.csort.a;else S.csort={c,a:c==='name'};rHistory();}
 
 /* --- Season View --- */
@@ -1130,14 +1252,17 @@ function rSeasonView(y){
       (paidOut>0?'<div class="pp-bar"><div class="pp-fill" style="width:'+paidPct+'%"></div></div>'+
         '<div class="pp-split"><span class="pp-paid">$'+paidOut.toLocaleString()+' paid</span><span class="pp-left">$'+remaining.toLocaleString()+' left</span></div>':'')+
     '</div>'+
-    '<div class="sc"><div class="v go">'+(leader?leader.entry_used:'-')+'</div><div class="l">'+y+' Champion</div></div>'+
-    '<div class="sc"><div class="v gl">'+(leader&&leader.total!=null?(leader.total>0?'+':'')+leader.total:'-')+'</div><div class="l">Winning Score</div></div></div>';
+    '<div class="sc"><div class="v go">'+(leader?leader.entry_used:'-')+'</div><div class="l">'+(y==='2026'?'Current Leader':y+' Champion')+'</div></div>'+
+    '<div class="sc"><div class="v gl">'+(leader&&leader.total!=null?(leader.total>0?'+':'')+leader.total:'-')+'</div><div class="l">'+(y==='2026'?'Leader Score (thru 3)':'Winning Score')+'</div></div></div>';
   // Awards
   var aw=superlatives(y);
   if(aw.length>0){
-    h+='<div class="cd"><h3>'+y+' Superlatives</h3><div class="aw-grid">';
+    h+='<div class="cd"><h3>'+y+(y==='2026'?' Season Snapshot':' Superlatives')+'</h3><div class="aw-grid">';
     aw.forEach(function(a){h+='<div class="aw'+(a.gold?' gold':'')+'"><div class="at">'+a.t+'</div><div class="an">'+a.n+'</div><div class="ad">'+a.d+'</div></div>';});
-    h+='</div></div>';
+    h+='</div>';
+    // Extended snapshot for in-progress 2026 season
+    if(y==='2026') h+=renderSeasonDetails(all,lb,paidOut,pot);
+    h+='</div>';
   }
   // Event cards
   h+='<div class="ev-grid">';
@@ -1149,37 +1274,6 @@ function rSeasonView(y){
     h+='</div>';
   });
   h+='</div>';
-  // Money List — all entries with winnings, sorted descending, grouped by tied amounts
-  var earners=[...all].filter(function(e){return e.winnings&&e.winnings>0;}).sort(function(a,b){return b.winnings-a.winnings;});
-  if(earners.length){
-    h+='<div class="cd ml-card">';
-    h+='<div class="ml-head"><span class="ml-icon">💵</span><h3 style="margin:0;display:inline-block">Money List</h3>';
-    h+='<span class="ml-sub">'+earners.length+' paid · $'+paidOut.toLocaleString()+' of $'+pot.toLocaleString()+' ('+paidPct+'%)</span></div>';
-    // Group ties
-    var groups=[];var cur=null;
-    earners.forEach(function(e){
-      if(!cur||cur.amt!==e.winnings){cur={amt:e.winnings,entries:[]};groups.push(cur);}
-      cur.entries.push(e);
-    });
-    h+='<div class="ml-list">';
-    groups.forEach(function(g,i){
-      var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-      var amtStr='$'+(g.amt%1===0?g.amt.toLocaleString():g.amt.toFixed(2));
-      h+='<div class="ml-row'+(i===0?' top':'')+'">';
-      h+='<div class="ml-amt">'+(medal?'<span class="ml-medal">'+medal+'</span>':'')+amtStr+(g.entries.length>1?' <span class="ml-tie">×'+g.entries.length+'</span>':'')+'</div>';
-      h+='<div class="ml-names">'+g.entries.map(function(e){
-        var src=[];
-        if(e.players!=null&&e.players<=5)src.push('Players #'+e.players);
-        if(e.masters!=null&&e.masters<=5)src.push('Masters #'+e.masters);
-        if(e.pga!=null&&e.pga<=5)src.push('PGA #'+e.pga);
-        var dh=(typeof DARK_HORSE_PAYOUTS!=='undefined'&&DARK_HORSE_PAYOUTS[e.entry_used])?DARK_HORSE_PAYOUTS[e.entry_used]:null;
-        if(dh)src.push('DH '+dh.event);
-        return '<span class="ml-entry">'+e.entry_used+(src.length?' <span class="ml-src">('+src.join(', ')+')</span>':'')+'</span>';
-      }).join('')+'</div>';
-      h+='</div>';
-    });
-    h+='</div></div>';
-  }
   // Standings table
   var pmap=yoyMap(y);var ml=Math.ceil(tot*.33),ss=S.sort;
   h+='<div class="tap-hint">Tap any name to expand career history &amp; season breakdowns</div>';
@@ -1190,7 +1284,10 @@ function rSeasonView(y){
   EK.forEach(function(k){h+='<th class="'+(ss.c===k?'s':'')+'" onclick="sS(\''+k+'\')">'+lb[k]+si(k,ss)+'</th>';});
   h+='<th class="'+(ss.c==='winnings'?'s':'')+'" onclick="sS(\'winnings\')">Won'+si('winnings',ss)+'</th>';
   h+='</tr></thead><tbody>';
-  d.forEach(function(e){
+  var searchActive=!!q;
+  var showAll=S.showAll||searchActive;
+  var visible=showAll?d:d.slice(0,25);
+  visible.forEach(function(e){
     var rc=e.rank===1?'r1':e.rank===2?'r2':e.rank===3?'r3':'';
     var rw=[e.rank!=null&&e.rank<=3?'t3':(e.rank!=null&&e.rank<=ml?'im':''),e.rank===ml?'ml-row':'',isMe(e)?'me':''].filter(Boolean).join(' ');
     var tc=e.total==null?'n':e.total<0?'g':e.total>0?'b':'n';
@@ -1210,6 +1307,9 @@ function rSeasonView(y){
       '<td><span class="tp '+tc+'">'+td2+'</span></td>'+ec+'<td class="'+wc+'">'+w+'</td></tr>';
   });
   h+='</tbody></table></div>';
+  if(!searchActive&&d.length>25){
+    h+='<div style="text-align:center;padding:.4rem"><button onclick="toggleShowAll()" style="font-family:var(--fb);font-size:.62rem;color:var(--go);background:none;border:1px solid rgba(196,160,53,.3);border-radius:5px;padding:.3rem .9rem;cursor:pointer">'+(showAll?'Show Top 25 Only':'Show All '+d.length+' Entries')+'</button></div>';
+  }
   // Collapsible Insights
   h+='<details class="cf-details" style="margin:.85rem"><summary class="cf-details-sum">Season Insights</summary><div class="cf-details-body">';
   h+=hRecords(y);
@@ -2206,7 +2306,7 @@ if('serviceWorker' in navigator){
 }
 
 /* ===== INIT ===== */
-document.addEventListener('DOMContentLoaded',()=>{try{populateMe();}catch(e){console.warn('populateMe:',e);}try{rLive();}catch(e){console.warn('rLive:',e);}dgConn();setTimeout(fetchPreviewOdds,1000);setTimeout(fetchPredictionMarkets,2500);});
+document.addEventListener('DOMContentLoaded',()=>{try{populateMe();}catch(e){console.warn('populateMe:',e);}try{populateHFilters();rHistory();}catch(e){console.warn('history:',e);}try{rLive();}catch(e){console.warn('rLive:',e);}dgConn();setTimeout(fetchPreviewOdds,1000);setTimeout(fetchPredictionMarkets,2500);});
 
 
 /* ===== COURSE DATA ===== */
