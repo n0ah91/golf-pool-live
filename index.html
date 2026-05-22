@@ -5222,6 +5222,153 @@ const TPC_LIVE_STATS=[
 {nm:'Power, Seamus',pos:'T70',sc:8,ott:49,putt:71,dist:64,gs:69,prox:60,ottV:-0.05,puttV:-1.11,distV:285.63,gsV:2.0,proxV:34.1},
 {nm:'Kanaya, Takumi',pos:'73',sc:10,ott:57,putt:56,dist:71,gs:69,prox:73,ottV:-0.34,puttV:-0.33,distV:275.55,gsV:2.0,proxV:38.68}
 ];
+const PGA_FIELD_STATS=[
+{nm:"Scottie Scheffler",wr:1,sc:-2,pars:46,birds:14,eagles:0,bogeys:12,doubles:0,triples:0,albs:0,sal:11900,val:232.1},
+{nm:"Rory McIlroy",wr:2,sc:-4,pars:50,birds:13,eagles:0,bogeys:9,doubles:0,triples:0,albs:0,sal:9400,val:278.4},
+{nm:"Cameron Young",wr:3,sc:0,pars:40,birds:15,eagles:1,bogeys:16,doubles:0,triples:0,albs:0,sal:8400,val:253.8},
+{nm:"Matthew Fitzpatrick",wr:4,sc:-2,pars:50,birds:12,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:8000,val:275},
+{nm:"Collin Morikawa",wr:5,sc:3,pars:41,birds:14,eagles:0,bogeys:17,doubles:0,triples:0,albs:0,sal:7500,val:243},
+{nm:"Tommy Fleetwood",wr:6,sc:"CUT",pars:28,birds:1,eagles:0,bogeys:5,doubles:1,triples:0,albs:0,sal:7500,val:78},
+{nm:"Justin Rose",wr:7,sc:-3,pars:49,birds:12,eagles:1,bogeys:8,doubles:2,triples:0,albs:0,sal:7600,val:287},
+{nm:"J.J. Spaun",wr:8,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:7500,val:70.5},
+{nm:"Russell Henley",wr:9,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:10,doubles:0,triples:0,albs:0,sal:7400,val:81.8},
+{nm:"Christopher Gotterup",wr:10,sc:-3,pars:52,birds:11,eagles:0,bogeys:9,doubles:0,triples:0,albs:0,sal:7400,val:289},
+{nm:"Xander Schauffele",wr:11,sc:-4,pars:44,birds:16,eagles:0,bogeys:12,doubles:0,triples:0,albs:0,sal:7500,val:295.5},
+{nm:"Robert MacIntyre",wr:12,sc:"CUT",pars:20,birds:6,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:7200,val:89.4},
+{nm:"Sepp Straka",wr:13,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:7200,val:82.2},
+{nm:"Ben Griffin",wr:14,sc:-2,pars:49,birds:13,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:7200,val:283.8},
+{nm:"Ludvig Aberg",wr:15,sc:-5,pars:46,birds:15,eagles:0,bogeys:11,doubles:0,triples:0,albs:0,sal:7300,val:304.6},
+{nm:"Justin Thomas",wr:16,sc:-5,pars:42,birds:18,eagles:0,bogeys:12,doubles:0,triples:0,albs:0,sal:7200,val:305.4},
+{nm:"Hideki Matsuyama",wr:17,sc:0,pars:41,birds:14,eagles:1,bogeys:16,doubles:0,triples:0,albs:0,sal:7000,val:272},
+{nm:"Alex Noren",wr:18,sc:0,pars:52,birds:10,eagles:0,bogeys:10,doubles:0,triples:0,albs:0,sal:7000,val:272},
+{nm:"Jacob Bridgeman",wr:19,sc:"CUT",pars:26,birds:2,eagles:0,bogeys:6,doubles:2,triples:0,albs:0,sal:7000,val:76},
+{nm:"Jon Rahm",wr:20,sc:-6,pars:49,birds:13,eagles:1,bogeys:9,doubles:0,triples:0,albs:0,sal:7400,val:311.2},
+{nm:"Harris English",wr:21,sc:-1,pars:39,birds:18,eagles:0,bogeys:13,doubles:2,triples:0,albs:0,sal:7000,val:279},
+{nm:"Si Woo Kim",wr:22,sc:1,pars:45,birds:14,eagles:0,bogeys:12,doubles:1,triples:0,albs:0,sal:6900,val:266.4},
+{nm:"Akshay Bhatia",wr:23,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:10,doubles:0,triples:0,albs:0,sal:6900,val:100.8},
+{nm:"Patrick Reed",wr:24,sc:-3,pars:51,birds:12,eagles:0,bogeys:9,doubles:0,triples:0,albs:0,sal:7000,val:293},
+{nm:"Kristoffer Reitan",wr:25,sc:2,pars:44,birds:10,eagles:2,bogeys:16,doubles:0,triples:0,albs:0,sal:6900,val:259.5},
+{nm:"Tyrrell Hatton",wr:26,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:6800,val:97.8},
+{nm:"Viktor Hovland",wr:27,sc:"CUT",pars:16,birds:7,eagles:0,bogeys:13,doubles:0,triples:0,albs:0,sal:6800,val:97.8},
+{nm:"Bryson DeChambeau",wr:28,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:8,doubles:2,triples:0,albs:0,sal:6700,val:95},
+{nm:"Nicolai Hojgaard",wr:29,sc:2,pars:46,birds:12,eagles:1,bogeys:9,doubles:4,triples:0,albs:0,sal:6800,val:261},
+{nm:"Patrick Cantlay",wr:30,sc:1,pars:49,birds:11,eagles:0,bogeys:12,doubles:0,triples:0,albs:0,sal:6700,val:269.2},
+{nm:"Min Woo Lee",wr:31,sc:-1,pars:42,birds:16,eagles:0,bogeys:13,doubles:1,triples:0,albs:0,sal:6700,val:282.6},
+{nm:"Keegan Bradley",wr:32,sc:"CUT",pars:26,birds:2,eagles:0,bogeys:8,doubles:0,triples:0,albs:0,sal:6700,val:101.7},
+{nm:"Maverick McNealy",wr:33,sc:-1,pars:45,birds:13,eagles:1,bogeys:12,doubles:1,triples:0,albs:0,sal:6700,val:282.6},
+{nm:"Kurt Kitayama",wr:34,sc:-3,pars:39,birds:19,eagles:0,bogeys:12,doubles:2,triples:0,albs:0,sal:6800,val:295},
+{nm:"Sam Burns",wr:35,sc:0,pars:45,birds:14,eagles:0,bogeys:12,doubles:1,triples:0,albs:0,sal:6700,val:275.9},
+{nm:"Ryan Gerard",wr:36,sc:7,pars:45,birds:11,eagles:0,bogeys:14,doubles:2,triples:0,albs:0,sal:6700,val:229},
+{nm:"Rickie Fowler",wr:37,sc:4,pars:47,birds:11,eagles:0,bogeys:13,doubles:1,triples:0,albs:0,sal:6600,val:250.8},
+{nm:"Shane Lowry",wr:38,sc:2,pars:43,birds:11,eagles:2,bogeys:15,doubles:1,triples:0,albs:0,sal:6600,val:264},
+{nm:"Jake Knapp",wr:39,sc:"WD",pars:0,birds:0,eagles:0,bogeys:0,doubles:0,triples:0,albs:0,sal:6600,val:0},
+{nm:"Marco Penge",wr:40,sc:"CUT",pars:26,birds:1,eagles:0,bogeys:5,doubles:4,triples:0,albs:0,sal:6500,val:70.5},
+{nm:"Jason Day",wr:41,sc:6,pars:50,birds:9,eagles:1,bogeys:7,doubles:5,triples:0,albs:0,sal:6500,val:239.5},
+{nm:"Daniel Berger",wr:42,sc:1,pars:49,birds:12,eagles:0,bogeys:10,doubles:1,triples:0,albs:0,sal:6500,val:272},
+{nm:"Matthew McCarty",wr:43,sc:"CUT",pars:21,birds:2,eagles:0,bogeys:13,doubles:0,triples:0,albs:0,sal:6400,val:81.4},
+{nm:"Aaron Rai",wr:44,sc:-9,pars:35,birds:22,eagles:1,bogeys:13,doubles:1,triples:0,albs:0,sal:7200,val:334.2},
+{nm:"Michael Kim",wr:45,sc:2,pars:41,birds:13,eagles:2,bogeys:12,doubles:4,triples:0,albs:0,sal:6500,val:265.5},
+{nm:"Adam Scott",wr:46,sc:"CUT",pars:21,birds:4,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:6400,val:100.6},
+{nm:"Gary Woodland",wr:47,sc:"CUT",pars:26,birds:2,eagles:0,bogeys:8,doubles:0,triples:0,albs:0,sal:6400,val:113.4},
+{nm:"Nicolas Echavarria",wr:48,sc:"CUT",pars:20,birds:4,eagles:0,bogeys:11,doubles:0,triples:1,albs:0,sal:6400,val:87.8},
+{nm:"Samuel Stevens",wr:49,sc:6,pars:48,birds:8,eagles:1,bogeys:14,doubles:1,triples:0,albs:0,sal:6400,val:241.4},
+{nm:"Corey Conners",wr:50,sc:3,pars:47,birds:11,eagles:0,bogeys:14,doubles:0,triples:0,albs:0,sal:6400,val:260.6},
+{nm:"Jordan Spieth",wr:51,sc:-1,pars:51,birds:11,eagles:0,bogeys:10,doubles:0,triples:0,albs:0,sal:6400,val:286.2},
+{nm:"Michael Brennan",wr:52,sc:11,pars:43,birds:8,eagles:1,bogeys:19,doubles:1,triples:0,albs:0,sal:6300,val:211.8},
+{nm:"Brian Harman",wr:53,sc:4,pars:49,birds:9,eagles:1,bogeys:11,doubles:2,triples:0,albs:0,sal:6400,val:254.2},
+{nm:"Andrew Novak",wr:54,sc:0,pars:45,birds:12,eagles:1,bogeys:14,doubles:0,triples:0,albs:0,sal:6400,val:279.8},
+{nm:"Pierceson Coody",wr:55,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:6300,val:117.3},
+{nm:"Ryan Fox",wr:56,sc:1,pars:43,birds:13,eagles:1,bogeys:15,doubles:0,triples:0,albs:0,sal:6400,val:273.4},
+{nm:"Harry Hall",wr:57,sc:"CUT",pars:22,birds:4,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:6300,val:111},
+{nm:"Nick Taylor",wr:58,sc:0,pars:54,birds:9,eagles:0,bogeys:9,doubles:0,triples:0,albs:0,sal:6300,val:281.1},
+{nm:"Ryo Hisatsune",wr:59,sc:1,pars:41,birds:15,eagles:0,bogeys:16,doubles:0,triples:0,albs:0,sal:6300,val:274.8},
+{nm:"Sami Valimaki",wr:60,sc:4,pars:45,birds:12,eagles:0,bogeys:14,doubles:1,triples:0,albs:0,sal:6300,val:255.9},
+{nm:"Thomas Detry",wr:61,sc:"CUT",pars:24,birds:4,eagles:0,bogeys:8,doubles:0,triples:0,albs:0,sal:6300,val:123.6},
+{nm:"Michael Thorbjornsen",wr:63,sc:"CUT",pars:18,birds:5,eagles:0,bogeys:11,doubles:1,triples:1,albs:0,sal:6200,val:90.2},
+{nm:"Rasmus Hojgaard",wr:64,sc:6,pars:43,birds:10,eagles:1,bogeys:18,doubles:0,triples:0,albs:0,sal:6300,val:243.3},
+{nm:"Bud Cauley",wr:66,sc:0,pars:50,birds:11,eagles:0,bogeys:11,doubles:0,triples:0,albs:0,sal:6300,val:281.1},
+{nm:"Sungjae Im",wr:67,sc:"CUT",pars:24,birds:4,eagles:0,bogeys:7,doubles:1,triples:0,albs:0,sal:6200,val:127.4},
+{nm:"Matt Wallace",wr:69,sc:2,pars:47,birds:11,eagles:0,bogeys:14,doubles:0,triples:0,albs:0,sal:6200,val:270},
+{nm:"Max Greyserman",wr:70,sc:-2,pars:47,birds:12,eagles:1,bogeys:12,doubles:0,triples:0,albs:0,sal:6300,val:293.7},
+{nm:"Wyndham Clark",wr:71,sc:"CUT",pars:23,birds:6,eagles:0,bogeys:4,doubles:2,triples:1,albs:0,sal:6200,val:127.4},
+{nm:"Casey Jarvis",wr:72,sc:6,pars:44,birds:11,eagles:1,bogeys:13,doubles:3,triples:0,albs:0,sal:6200,val:245.2},
+{nm:"Patrick Rodgers",wr:73,sc:"CUT",pars:23,birds:4,eagles:0,bogeys:7,doubles:2,triples:0,albs:0,sal:6200,val:115},
+{nm:"John Keefer",wr:74,sc:9,pars:46,birds:11,eagles:0,bogeys:10,doubles:5,triples:0,albs:0,sal:6200,val:226.6},
+{nm:"Aldrich Potgieter",wr:75,sc:1,pars:46,birds:13,eagles:0,bogeys:12,doubles:1,triples:0,albs:0,sal:6200,val:276.2},
+{nm:"Sahith Theegala",wr:76,sc:4,pars:50,birds:10,eagles:0,bogeys:11,doubles:0,triples:1,albs:0,sal:6200,val:257.6},
+{nm:"Alex Smalley",wr:78,sc:-6,pars:38,birds:19,eagles:1,bogeys:13,doubles:1,triples:0,albs:0,sal:6500,val:317.5},
+{nm:"J.T. Poston",wr:79,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:10,doubles:0,triples:0,albs:0,sal:6100,val:131.2},
+{nm:"Haotong Li",wr:80,sc:1,pars:47,birds:12,eagles:0,bogeys:13,doubles:0,triples:0,albs:0,sal:6200,val:276.2},
+{nm:"Max McGreevy",wr:80,sc:"CUT",pars:29,birds:1,eagles:0,bogeys:5,doubles:1,triples:0,albs:0,sal:6100,val:125.1},
+{nm:"Andrew Putnam",wr:82,sc:3,pars:51,birds:10,eagles:0,bogeys:9,doubles:2,triples:0,albs:0,sal:6200,val:263.8},
+{nm:"Alex Fitzpatrick",wr:83,sc:8,pars:42,birds:11,eagles:1,bogeys:15,doubles:3,triples:0,albs:0,sal:6100,val:234.9},
+{nm:"Austin Smotherman",wr:84,sc:"CUT",pars:16,birds:6,eagles:0,bogeys:14,doubles:0,triples:0,albs:0,sal:6100,val:119},
+{nm:"Garrick Higgo",wr:85,sc:"CUT",pars:22,birds:5,eagles:0,bogeys:8,doubles:1,triples:0,albs:0,sal:6100,val:131.2},
+{nm:"Taylor Pendrith",wr:86,sc:2,pars:42,birds:15,eagles:0,bogeys:14,doubles:1,triples:0,albs:0,sal:6100,val:271.5},
+{nm:"John Parry",wr:87,sc:7,pars:53,birds:6,eagles:1,bogeys:10,doubles:1,triples:1,albs:0,sal:6100,val:241},
+{nm:"Rico Hoey",wr:88,sc:4,pars:40,birds:15,eagles:0,bogeys:15,doubles:2,triples:0,albs:0,sal:6100,val:259.3},
+{nm:"Ricky Castillo",wr:90,sc:"CUT",pars:24,birds:3,eagles:0,bogeys:8,doubles:1,triples:0,albs:0,sal:6100,val:119},
+{nm:"David Lipsky",wr:91,sc:"CUT",pars:24,birds:2,eagles:1,bogeys:8,doubles:1,triples:0,albs:0,sal:6100,val:125.1},
+{nm:"Christiaan Bezuidenhout",wr:92,sc:1,pars:45,birds:12,eagles:1,bogeys:13,doubles:1,triples:0,albs:0,sal:6100,val:277.6},
+{nm:"Lucas Glover",wr:93,sc:"CUT",pars:26,birds:2,eagles:0,bogeys:5,doubles:3,triples:0,albs:0,sal:6100,val:106.8},
+{nm:"Elvis Smylie",wr:94,sc:8,pars:48,birds:7,eagles:1,bogeys:15,doubles:1,triples:0,albs:0,sal:6100,val:234.9},
+{nm:"Daniel Hillier",wr:96,sc:0,pars:49,birds:11,eagles:1,bogeys:9,doubles:2,triples:0,albs:0,sal:6100,val:283.7},
+{nm:"Chris Kirk",wr:98,sc:2,pars:42,birds:15,eagles:0,bogeys:15,doubles:0,triples:0,albs:0,sal:6100,val:271.5},
+{nm:"Denny McCarthy",wr:99,sc:2,pars:49,birds:11,eagles:0,bogeys:12,doubles:0,triples:0,albs:0,sal:6100,val:271.5},
+{nm:"Stephan Jaeger",wr:100,sc:-1,pars:48,birds:13,eagles:0,bogeys:10,doubles:1,triples:0,albs:0,sal:6100,val:289.8},
+{nm:"Adrien Saddier",wr:101,sc:"CUT",pars:21,birds:2,eagles:0,bogeys:12,doubles:1,triples:0,albs:0,sal:6100,val:88.5},
+{nm:"Brian Campbell",wr:104,sc:18,pars:42,birds:8,eagles:0,bogeys:18,doubles:3,triples:1,albs:0,sal:6100,val:173.9},
+{nm:"Sudarshan Yellamaraju",wr:105,sc:"CUT",pars:22,birds:3,eagles:0,bogeys:9,doubles:2,triples:0,albs:0,sal:6100,val:100.7},
+{nm:"Andy Sullivan",wr:106,sc:"CUT",pars:26,birds:3,eagles:0,bogeys:6,doubles:1,triples:0,albs:0,sal:6100,val:131.2},
+{nm:"Tom McKibbin",wr:108,sc:"CUT",pars:21,birds:4,eagles:0,bogeys:11,doubles:0,triples:0,albs:0,sal:6000,val:123},
+{nm:"Keith Mitchell",wr:109,sc:6,pars:48,birds:10,eagles:0,bogeys:13,doubles:0,triples:1,albs:0,sal:6100,val:247.1},
+{nm:"David Puig",wr:109,sc:-1,pars:49,birds:11,eagles:1,bogeys:10,doubles:1,triples:0,albs:0,sal:5600,val:295.8},
+{nm:"Chandler Blanchet",wr:112,sc:2,pars:52,birds:10,eagles:0,bogeys:9,doubles:0,triples:1,albs:0,sal:6100,val:271.5},
+{nm:"Emiliano Grillo",wr:115,sc:"CUT",pars:24,birds:2,eagles:0,bogeys:10,doubles:0,triples:0,albs:0,sal:6000,val:117},
+{nm:"Billy Horschel",wr:117,sc:"CUT",pars:21,birds:4,eagles:0,bogeys:10,doubles:1,triples:0,albs:0,sal:6000,val:117},
+{nm:"Max Homa",wr:123,sc:"CUT",pars:23,birds:1,eagles:0,bogeys:11,doubles:1,triples:0,albs:0,sal:6000,val:93},
+{nm:"Brooks Koepka",wr:125,sc:3,pars:50,birds:7,eagles:2,bogeys:12,doubles:1,triples:0,albs:0,sal:6000,val:267},
+{nm:"Jhonattan Vegas",wr:126,sc:2,pars:44,birds:13,eagles:0,bogeys:15,doubles:0,triples:0,albs:0,sal:6000,val:273},
+{nm:"Brandt Snedeker",wr:131,sc:"CUT",pars:21,birds:5,eagles:0,bogeys:9,doubles:1,triples:0,albs:0,sal:6000,val:129},
+{nm:"William Mouw",wr:132,sc:7,pars:49,birds:9,eagles:0,bogeys:12,doubles:2,triples:0,albs:0,sal:6000,val:243},
+{nm:"Steven Fisk",wr:134,sc:"CUT",pars:23,birds:4,eagles:0,bogeys:6,doubles:3,triples:0,albs:0,sal:6000,val:117},
+{nm:"Davis Riley",wr:141,sc:"CUT",pars:21,birds:3,eagles:0,bogeys:10,doubles:2,triples:0,albs:0,sal:6000,val:99},
+{nm:"Travis Smyth",wr:145,sc:"CUT",pars:20,birds:3,eagles:1,bogeys:12,doubles:0,triples:0,albs:0,sal:6000,val:123},
+{nm:"Joe Highsmith",wr:151,sc:"CUT",pars:18,birds:6,eagles:0,bogeys:11,doubles:0,triples:1,albs:0,sal:6000,val:117},
+{nm:"Kazuki Higa",wr:152,sc:7,pars:45,birds:12,eagles:0,bogeys:10,doubles:5,triples:0,albs:0,sal:6000,val:243},
+{nm:"Adam Schenk",wr:155,sc:"CUT",pars:22,birds:5,eagles:0,bogeys:8,doubles:0,triples:1,albs:0,sal:6000,val:129},
+{nm:"Joaquin Niemann",wr:167,sc:-1,pars:49,birds:11,eagles:1,bogeys:11,doubles:0,triples:0,albs:0,sal:6000,val:291},
+{nm:"Kota Yuta Kaneko",wr:192,sc:"CUT",pars:25,birds:3,eagles:0,bogeys:8,doubles:0,triples:0,albs:0,sal:5900,val:138.8},
+{nm:"Bernd Wiesberger",wr:203,sc:"CUT",pars:21,birds:4,eagles:0,bogeys:10,doubles:1,triples:0,albs:0,sal:5900,val:121.1},
+{nm:"Cameron Smith",wr:239,sc:-4,pars:46,birds:15,eagles:0,bogeys:11,doubles:0,triples:0,albs:0,sal:6000,val:309},
+{nm:"Matthias Schmid",wr:263,sc:-5,pars:47,birds:15,eagles:0,bogeys:10,doubles:0,triples:0,albs:0,sal:5900,val:315.8},
+{nm:"Jordan Gumberg",wr:315,sc:"CUT",pars:22,birds:5,eagles:0,bogeys:8,doubles:1,triples:0,albs:0,sal:5800,val:136.8},
+{nm:"Dustin Johnson",wr:471,sc:2,pars:42,birds:14,eagles:0,bogeys:16,doubles:0,triples:0,albs:0,sal:5700,val:277.5},
+{nm:"Stewart Cink",wr:700,sc:"CUT",pars:23,birds:3,eagles:0,bogeys:10,doubles:0,triples:0,albs:0,sal:5700,val:140.7},
+{nm:"Jimmy Walker",wr:846,sc:"CUT",pars:22,birds:5,eagles:0,bogeys:8,doubles:1,triples:0,albs:0,sal:5600,val:150.2},
+{nm:"Padraig Harrington",wr:894,sc:-1,pars:48,birds:11,eagles:1,bogeys:12,doubles:0,triples:0,albs:0,sal:5700,val:294.6},
+{nm:"Michael Block",wr:896,sc:"CUT",pars:21,birds:6,eagles:0,bogeys:7,doubles:2,triples:0,albs:0,sal:5600,val:150.2},
+{nm:"Luke Donald",wr:970,sc:7,pars:43,birds:12,eagles:0,bogeys:16,doubles:0,triples:1,albs:0,sal:5600,val:251},
+{nm:"Jason Dufner",wr:992,sc:"CUT",pars:22,birds:5,eagles:0,bogeys:5,doubles:4,triples:0,albs:0,sal:5600,val:133.4},
+{nm:"Y.E. Yang",wr:997,sc:"CUT",pars:24,birds:3,eagles:0,bogeys:6,doubles:3,triples:0,albs:0,sal:5600,val:127.8},
+{nm:"Martin Kaymer",wr:999,sc:1,pars:44,birds:14,eagles:0,bogeys:13,doubles:1,triples:0,albs:0,sal:5700,val:283.2},
+{nm:"Shaun Micheel",wr:999,sc:"CUT",pars:24,birds:2,eagles:0,bogeys:8,doubles:2,triples:0,albs:0,sal:5600,val:122.2},
+{nm:"Ben Polland",wr:999,sc:"CUT",pars:26,birds:2,eagles:0,bogeys:8,doubles:0,triples:0,albs:0,sal:5600,val:144.6},
+{nm:"Michael Kartrude",wr:999,sc:"CUT",pars:15,birds:2,eagles:0,bogeys:18,doubles:1,triples:0,albs:0,sal:5600,val:77.4},
+{nm:"Austin Hurt",wr:999,sc:"CUT",pars:18,birds:3,eagles:0,bogeys:13,doubles:2,triples:0,albs:0,sal:5600,val:94.2},
+{nm:"Jared Jones",wr:999,sc:"CUT",pars:17,birds:3,eagles:0,bogeys:15,doubles:1,triples:0,albs:0,sal:5600,val:99.8},
+{nm:"Braden Shattuck",wr:999,sc:"CUT",pars:20,birds:3,eagles:0,bogeys:9,doubles:3,triples:1,albs:0,sal:5600,val:88.6},
+{nm:"Jordan L. Smith",wr:999,sc:"CUT",pars:20,birds:3,eagles:0,bogeys:12,doubles:0,triples:1,albs:0,sal:5600,val:111},
+{nm:"Tyler Collet",wr:999,sc:"CUT",pars:23,birds:4,eagles:0,bogeys:8,doubles:1,triples:0,albs:0,sal:5600,val:144.6},
+{nm:"Mark Geddes",wr:999,sc:"CUT",pars:19,birds:0,eagles:0,bogeys:14,doubles:2,triples:1,albs:0,sal:5600,val:60.6},
+{nm:"Jesse Droemer",wr:999,sc:"CUT",pars:15,birds:2,eagles:0,bogeys:18,doubles:1,triples:0,albs:0,sal:5600,val:77.4},
+{nm:"Ryan Vermeer",wr:999,sc:"CUT",pars:18,birds:2,eagles:0,bogeys:14,doubles:1,triples:1,albs:0,sal:5600,val:83},
+{nm:"Ben Kern",wr:999,sc:10,pars:37,birds:14,eagles:0,bogeys:19,doubles:1,triples:1,albs:0,sal:5600,val:234.2},
+{nm:"Timothy Wiseman",wr:999,sc:"CUT",pars:23,birds:0,eagles:0,bogeys:11,doubles:2,triples:0,albs:0,sal:5600,val:94.2},
+{nm:"Daniel Brown",wr:999,sc:8,pars:48,birds:8,eagles:1,bogeys:12,doubles:2,triples:1,albs:0,sal:5600,val:245.4},
+{nm:"Rasmus Neergaard-Petersen",wr:999,sc:8,pars:49,birds:8,eagles:0,bogeys:14,doubles:1,triples:0,albs:0,sal:5600,val:245.4},
+{nm:"Ryan Lenahan",wr:999,sc:"CUT",pars:20,birds:3,eagles:0,bogeys:9,doubles:3,triples:1,albs:0,sal:5600,val:94.2}
+];
 const MASTERS_LIVE_STATS=[
 {nm:'McIlroy, Rory',pos:'1',sc:-12,ott:7,app:22,arg:2,putt:17,dist:1,gs:5,prox:2,ottV:0.92,appV:0.66,argV:1.39,puttV:0.59,distV:330.48,gsV:5,proxV:29.1},
 {nm:'Scheffler, Scottie',pos:'2',sc:-11,ott:8,app:3,arg:10,putt:30,dist:17,gs:26,prox:20,ottV:0.89,appV:1.67,argV:0.6,puttV:0.14,distV:310.48,gsV:3.25,proxV:36.0},
@@ -6177,9 +6324,92 @@ function renderPgaResults(){
   if(POOL_RESULTS[33].players){
     renderTpcInsights(POOL_RESULTS[33],'pga-insights',POOL_RESULTS[33].entries.length);
   }
+  // PGA Tournament Recap — field-wide scoring breakdown
+  if(typeof PGA_FIELD_STATS!=='undefined'&&PGA_FIELD_STATS.length){
+    renderPgaFieldRecap('pga-tourney');
+  }
   // Still lazy-load the archived preview/odds so they're available when expanded
   renderMastersPreview();
   fetchMastersOdds();
+}
+
+/* PGA Field Recap — uses PGA_FIELD_STATS (world rank, score, scoring breakdown, salary, value) */
+function renderPgaFieldRecap(targetId){
+  const el=document.getElementById(targetId);if(!el)return;
+  const stats=PGA_FIELD_STATS.filter(p=>p.sc!=null);
+  const scored=stats.filter(p=>typeof p.sc==='number');
+  const cut=stats.filter(p=>p.sc==='CUT').length;
+  const bestSc=scored.slice().sort((a,b)=>a.sc-b.sc)[0];
+  const mostBirds=stats.slice().sort((a,b)=>(b.birds||0)-(a.birds||0))[0];
+  const mostEagles=stats.slice().sort((a,b)=>(b.eagles||0)-(a.eagles||0)).filter(p=>p.eagles>0)[0];
+  const fewestBog=scored.slice().sort((a,b)=>(a.bogeys||0)-(b.bogeys||0))[0];
+  const bestVal=stats.filter(p=>p.val).sort((a,b)=>b.val-a.val)[0];
+  const worstVal=stats.filter(p=>p.val!=null&&p.sal).sort((a,b)=>a.val-b.val)[0];
+  let h='<div class="ls-panel" style="margin-top:.5rem">';
+  h+='<div class="ls-header"><div class="ls-event-name"><span class="ls-live-dot" style="background:var(--go)"></span>PGA Championship</div>';
+  h+='<div class="ls-header-right"><span style="font-size:.55rem;color:var(--td)">Aronimink · May 14–17</span></div></div>';
+  h+='<div class="ls-helper" style="font-style:italic;margin:.4rem 0 .5rem">Field-wide scoring breakdown · '+scored.length+' made cut · '+cut+' missed</div>';
+  h+='<div class="ls-insights" style="margin-bottom:.6rem">';
+  if(bestSc)h+='<span class="ls-chip"><span class="ls-chip-lbl">Best Score</span> '+bestSc.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+(bestSc.sc>0?'+':'')+bestSc.sc+'</span></span>';
+  if(mostBirds)h+='<span class="ls-chip"><span class="ls-chip-lbl">Most Birdies</span> '+mostBirds.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+mostBirds.birds+'</span></span>';
+  if(mostEagles)h+='<span class="ls-chip"><span class="ls-chip-lbl">Most Eagles</span> '+mostEagles.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+mostEagles.eagles+'</span></span>';
+  if(fewestBog)h+='<span class="ls-chip"><span class="ls-chip-lbl">Fewest Bogeys</span> '+fewestBog.nm+' <span style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+fewestBog.bogeys+'</span></span>';
+  if(bestVal)h+='<span class="ls-chip"><span class="ls-chip-lbl">Best DK Value</span> '+bestVal.nm+' <span style="color:var(--go);font-weight:700;font-family:var(--fm)">'+bestVal.val.toFixed(1)+'</span></span>';
+  if(worstVal)h+='<span class="ls-chip"><span class="ls-chip-lbl">Worst DK Value</span> '+worstVal.nm+' <span style="color:var(--rd);font-weight:700;font-family:var(--fm)">'+worstVal.val.toFixed(1)+'</span></span>';
+  h+='</div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">';
+  h+='<div style="font-size:.62rem;color:var(--tp);font-family:var(--fb);font-weight:600">Top 25 — Scoring Breakdown</div>';
+  h+='<input type="text" id="pga-recap-search" placeholder="Search…" oninput="filterPgaRecap()" style="font-family:var(--fb);font-size:.6rem;padding:.2rem .45rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:4px;outline:0;width:120px">';
+  h+='</div>';
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr>';
+  h+='<th style="width:24px">WR</th><th>PLAYER</th><th style="width:42px">SCORE</th>';
+  h+='<th style="width:34px" title="Birdies">BIRD</th><th style="width:34px" title="Eagles">EAG</th><th style="width:34px" title="Pars">PAR</th><th style="width:34px" title="Bogeys">BOG</th><th style="width:34px" title="Doubles or worse">D+</th>';
+  h+='<th style="width:48px" title="DraftKings Salary">SAL</th><th style="width:42px" title="DraftKings Value">VAL</th>';
+  h+='</tr></thead><tbody id="pga-recap-tbody">';
+  const sorted=[...stats].sort((a,b)=>{
+    const aSc=typeof a.sc==='number'?a.sc:9999;
+    const bSc=typeof b.sc==='number'?b.sc:9999;
+    return aSc-bSc;
+  });
+  sorted.slice(0,25).forEach(p=>{
+    const scClr=typeof p.sc==='number'?(p.sc<0?'var(--rd)':p.sc>0?'var(--gl)':'var(--tp)'):'var(--td)';
+    const scTxt=typeof p.sc==='number'?(p.sc>0?'+'+p.sc:p.sc===0?'E':p.sc):p.sc;
+    h+='<tr><td class="rc" style="color:var(--ts)">'+(p.wr||'-')+'</td>';
+    h+='<td class="nc" style="font-size:.66rem">'+p.nm+'</td>';
+    h+='<td style="font-weight:700;color:'+scClr+';font-family:var(--fm)">'+scTxt+'</td>';
+    h+='<td style="font-family:var(--fm);color:var(--gl)">'+(p.birds||0)+'</td>';
+    h+='<td style="font-family:var(--fm);color:'+((p.eagles||0)>0?'var(--go)':'var(--td)')+'">'+(p.eagles||0)+'</td>';
+    h+='<td style="font-family:var(--fm);color:var(--tp)">'+(p.pars||0)+'</td>';
+    h+='<td style="font-family:var(--fm);color:var(--rd)">'+(p.bogeys||0)+'</td>';
+    h+='<td style="font-family:var(--fm);color:var(--rd)">'+((p.doubles||0)+(p.triples||0))+'</td>';
+    h+='<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'-')+'</td>';
+    h+='<td style="font-family:var(--fm);color:var(--go);font-weight:600">'+(p.val!=null?p.val.toFixed(0):'-')+'</td>';
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<details style="margin-top:.4rem"><summary style="cursor:pointer;font-size:.6rem;color:var(--go);font-family:var(--fb);padding:.3rem 0">Show full field ('+stats.length+' players)</summary>';
+  h+='<div class="tw" style="margin:.3rem 0 0;border-radius:5px;max-height:400px;overflow-y:auto"><table class="tc"><tbody>';
+  sorted.slice(25).forEach(p=>{
+    const scClr=typeof p.sc==='number'?(p.sc<0?'var(--rd)':p.sc>0?'var(--gl)':'var(--tp)'):'var(--td)';
+    const scTxt=typeof p.sc==='number'?(p.sc>0?'+'+p.sc:p.sc===0?'E':p.sc):p.sc;
+    h+='<tr><td class="rc" style="width:24px;color:var(--ts)">'+(p.wr||'-')+'</td>';
+    h+='<td class="nc" style="font-size:.62rem">'+p.nm+'</td>';
+    h+='<td style="width:42px;font-weight:700;color:'+scClr+';font-family:var(--fm)">'+scTxt+'</td>';
+    h+='<td style="width:34px;font-family:var(--fm);color:var(--gl)">'+(p.birds||0)+'</td>';
+    h+='<td style="width:34px;font-family:var(--fm);color:var(--rd)">'+(p.bogeys||0)+'</td>';
+    h+='<td style="width:48px;font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'-')+'</td>';
+    h+='<td style="width:42px;font-family:var(--fm);color:var(--go);font-weight:600">'+(p.val!=null?p.val.toFixed(0):'-')+'</td></tr>';
+  });
+  h+='</tbody></table></div></details>';
+  h+='</div>';
+  el.innerHTML=h;
+  window.filterPgaRecap=function(){
+    const q=document.getElementById('pga-recap-search')?.value?.toLowerCase()||'';
+    document.querySelectorAll('#pga-recap-tbody tr').forEach(r=>{
+      const nm=r.querySelector('.nc')?.textContent?.toLowerCase()||'';
+      r.style.display=(!q||nm.includes(q))?'':'none';
+    });
+  };
 }
 
 /* ===== MASTERS RESULTS TAB ===== */
