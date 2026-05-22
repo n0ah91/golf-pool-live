@@ -51,6 +51,12 @@ body{font-family:var(--fb);background:var(--bd);color:var(--tp);min-height:100vh
 .sc{background:var(--bc);border:1px solid var(--br);border-radius:5px;padding:.25rem .3rem;text-align:center}
 .sc .v{font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--tb)}.sc .v.go{color:var(--go)}.sc .v.gl{color:var(--gl)}
 .sc .l{font-size:.45rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ts);margin-top:.02rem}
+.te{display:inline-block;font-family:var(--fb);font-size:.5rem;font-weight:500;font-style:italic;letter-spacing:.04em;margin-left:.3rem;opacity:.65;vertical-align:.05em;text-transform:lowercase}
+.te.og{color:var(--go);font-weight:600;opacity:.75}
+.te.rk{color:var(--gl)}
+.te.vt{color:var(--ts)}
+.tap-hint{display:flex;align-items:center;gap:.35rem;font-size:.56rem;color:var(--td);font-family:var(--fb);font-style:italic;margin:0 0 .35rem .15rem;letter-spacing:.02em}
+.tap-hint::before{content:'👆';font-style:normal;opacity:.7}
 .sc.pp-card{position:relative;background:linear-gradient(135deg,var(--bc) 0%,rgba(196,160,53,.04) 100%);border-color:rgba(196,160,53,.25);overflow:hidden}
 .sc.pp-card::before{content:'';position:absolute;top:-6px;right:-8px;width:24px;height:24px;background:radial-gradient(circle,rgba(196,160,53,.18) 0%,transparent 70%);pointer-events:none}
 .pp-bag{position:absolute;top:1px;left:3px;font-size:.7rem;opacity:.55;line-height:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))}
@@ -1122,6 +1128,7 @@ function rSeasonView(y){
   h+='</div>';
   // Standings table
   var pmap=yoyMap(y);var ml=Math.ceil(tot*.33),ss=S.sort;
+  h+='<div class="tap-hint">Tap any name to expand career history &amp; season breakdowns</div>';
   h+='<div class="tw"><table><thead><tr>';
   h+='<th class="'+(ss.c==='rank'?'s':'')+'" onclick="sS(\'rank\')">Rk'+si('rank',ss)+'</th>';
   h+='<th class="'+(ss.c==='entry_used'?'s':'')+'" onclick="sS(\'entry_used\')">Entry'+si('entry_used',ss)+'</th>';
@@ -1145,7 +1152,7 @@ function rSeasonView(y){
     var w=e.winnings?(e.winnings%1===0?e.winnings.toLocaleString():e.winnings.toFixed(2)):'-';var wc=e.winnings?'wi':'wi z';
     var pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
     h+='<tr class="'+rw+'" onclick="toggleDet(this,\''+e.id+'\')"><td class="rc '+rc+'">'+rd+yh+'</td>'+
-      '<td class="nc">'+e.entry_used+(pn?'<br><span class="pn">'+pn+'</span>':'')+'</td>'+
+      '<td class="nc">'+e.entry_used+_tenureBadge(e.entry_used)+(pn?'<br><span class="pn">'+pn+'</span>':'')+'</td>'+
       '<td><span class="tp '+tc+'">'+td2+'</span></td>'+ec+'<td class="'+wc+'">'+w+'</td></tr>';
   });
   h+='</tbody></table></div>';
@@ -1280,12 +1287,13 @@ function rEventView(y,ev){
     '<div class="sc"><div class="v">'+dns+'</div><div class="l">DNS</div></div>'+
     '<div class="sc"><div class="v go">'+(w?w.entry_used:'-')+'</div><div class="l">'+(lb[k]||k)+' Winner</div></div>'+
     '<div class="sc"><div class="v">'+avg+'</div><div class="l">Avg Rank</div></div></div>';
+  h+='<div class="tap-hint">Tap any name to expand career history &amp; season breakdowns</div>';
   h+='<div class="tw"><table><thead><tr><th>'+(lb[k]||k)+' Rk</th><th>Entry</th><th>Season Rk</th><th>Total</th><th>Won</th></tr></thead><tbody>';
   ents.forEach(function(e,i){
     var rc=i<3?'r'+(i+1):'';var rw=[i<3?'t3':(i<Math.ceil(tot*.33)?'im':''),isMe(e)?'me':''].filter(Boolean).join(' ');
     var tc=e.total==null?'n':e.total<0?'g':e.total>0?'b':'n';var pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
     h+='<tr class="'+rw+'" onclick="toggleDet(this,\''+e.id+'\')"><td class="rc '+rc+'">'+e[k]+'</td>'+
-      '<td class="nc">'+e.entry_used+(pn?'<br><span class="pn">'+pn+'</span>':'')+'</td>'+
+      '<td class="nc">'+e.entry_used+_tenureBadge(e.entry_used)+(pn?'<br><span class="pn">'+pn+'</span>':'')+'</td>'+
       '<td>'+(e.rank!=null?e.rank:'DNS')+'</td><td><span class="tp '+tc+'">'+(e.total==null?'DNS':(e.total>0?'+'+e.total:e.total))+'</span></td>'+
       '<td class="'+(e.winnings?'wi':'wi z')+'">'+(e.winnings?Math.round(e.winnings).toLocaleString():'-')+'</td></tr>';
   });
@@ -1310,6 +1318,7 @@ function rCareerView(){
     '<div class="sc"><div class="v">'+DB.unknowns.length+'</div><div class="l">Unidentified</div></div></div>';
   // Career table
   var cs=S.csort;
+  h+='<div class="tap-hint">Tap any name to expand career history &amp; season breakdowns</div>';
   h+='<div class="tw"><table><thead><tr>';
   h+='<th class="'+(cs.c==='name'?'s':'')+'" onclick="cSS(\'name\')">Name'+si('name',cs)+'</th>';
   h+='<th class="'+(cs.c==='seasons'?'s':'')+'" onclick="cSS(\'seasons\')">Yrs'+si('seasons',cs)+'</th>';
@@ -1321,7 +1330,7 @@ function rCareerView(){
   d.forEach(function(s){
     var wc=s.totalWinnings>0?'wi':'wi z';var al=s.entries.filter(function(e2){return e2!==s.name;}).join(', ');
     var pid=s.id;var meC=loadMe()===s.name?'me':'';
-    h+='<tr class="'+meC+'" onclick="toggleDet(this,\''+pid+'\')"><td class="nc">'+s.name+(al?'<br><span class="pn">'+al+'</span>':'')+'</td>'+
+    h+='<tr class="'+meC+'" onclick="toggleDet(this,\''+pid+'\')"><td class="nc">'+s.name+_tenureBadge(s.name)+(al?'<br><span class="pn">'+al+'</span>':'')+'</td>'+
       '<td>'+s.seasons+'</td><td class="'+(s.bestRank<=3?'r'+s.bestRank:'')+'">'+((s.bestRank!=null)?s.bestRank:'-')+'</td>'+
       '<td>'+(s.avgRank!=null?s.avgRank.toFixed(1):'-')+'</td><td>'+s.inMoney+'</td>'+
       '<td class="'+wc+'">'+(s.totalWinnings?Math.round(s.totalWinnings).toLocaleString():'-')+'</td></tr>';
@@ -6077,6 +6086,24 @@ function renderPlayersResults(){
   }
 }
 
+/** Subtle tenure badge: rookie / OG / 5+ vet — based on DB participant data */
+function _tenureBadge(entryName){
+  if(!entryName||typeof DB==='undefined')return '';
+  var nm=entryName.toLowerCase();
+  var p=DB.participants.find(function(x){
+    return x.all_entry_names&&x.all_entry_names.some(function(n){return n.toLowerCase()===nm;});
+  });
+  if(!p)return '';
+  var seasons=(p.career&&p.career.total_seasons)||Object.keys(p.seasons||{}).length;
+  // OG: joined in pool's first year (2019) AND has 6+ seasons
+  if(p.joined_year<=2019&&seasons>=6)return '<span class="te og" title="OG — pool founding member ('+seasons+' seasons)">OG</span>';
+  // Rookie: joined this year (2026) and only 1 season
+  if(p.joined_year>=2026&&seasons<=1)return '<span class="te rk" title="Rookie — first season">rookie</span>';
+  // 5+ veteran (5 or more total seasons)
+  if(seasons>=5)return '<span class="te vt" title="'+seasons+' seasons in the pool">'+seasons+'+</span>';
+  return '';
+}
+
 function _tpcComputeRanks(entries){
   // Compute rank after each round for all entries
   const n=entries.length;
@@ -6111,7 +6138,7 @@ function _tpcRenderRow(e,me){
   const scClr=e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
   let h='<tr class="'+(me?'me':'')+'">';
   h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
-  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+'</td>';
   h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
   h+='<td style="color:var(--tp)">'+e.rp+'</td>';
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
@@ -6199,7 +6226,7 @@ function _mstRenderRow(e,me){
   const scClr=e.tp<0?'var(--rd)':e.tp>0?'var(--gl)':'var(--tp)';
   let h='<tr class="'+(me?'me':'')+'">';
   h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
-  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+'</td>';
   h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
   h+='<td style="color:var(--tp)">'+e.rp+'</td>';
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
@@ -6289,7 +6316,7 @@ function _pgaRenderRow(e,me){
   const dh=DARK_HORSE_PAYOUTS&&DARK_HORSE_PAYOUTS[e.nm];
   let h='<tr class="'+(me?'me':'')+'">';
   h+='<td class="rc" style="color:var(--ts)">'+e.rk+'</td>';
-  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+(dh?' <span title="Dark Horse winner ('+dh.event+')" style="font-size:.5rem;color:var(--go);background:rgba(196,160,53,.12);padding:1px 4px;border-radius:3px;margin-left:3px;font-family:var(--fb)">DH</span>':'')+'</td>';
+  h+='<td class="nc">'+(me?'<b style="color:var(--go)">'+e.nm+'</b>':e.nm)+_tenureBadge(e.nm)+(dh?' <span title="Dark Horse winner ('+dh.event+')" style="font-size:.5rem;color:var(--go);background:rgba(196,160,53,.12);padding:1px 4px;border-radius:3px;margin-left:3px;font-family:var(--fb)">DH</span>':'')+'</td>';
   h+='<td style="font-weight:700;color:'+scClr+'">'+e.tp+'</td>';
   h+='<td style="color:var(--tp)">'+(e.rp!=null?e.rp:'–')+'</td>';
   h+='<td style="color:var(--td)">'+(e.bn!=null?e.bn:'–')+'</td>';
