@@ -786,8 +786,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <span id="me-badge" class="me-badge"></span>
 </div>
 <nav class="nav">
-<button class="active" onclick="go('history')">YTD &amp; Hist.</button>
-<button class="live-tab" onclick="go('uso-tab')">U.S. Open</button>
+<button onclick="go('history')">YTD &amp; Hist.</button>
+<button class="live-tab active" onclick="go('uso-tab')">U.S. Open</button>
 <button onclick="go('upcoming')">PGA</button>
 <button onclick="go('masters-results')">Masters</button>
 <button onclick="go('players-results')">Players</button>
@@ -795,7 +795,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <button onclick="go('rules')">Rules</button>
 </nav>
 <main>
-<section id="history" class="pn2 active">
+<section id="history" class="pn2">
 <div class="ctrl" id="h-ctrl" style="position:sticky;top:36px;z-index:40;background:var(--bm);border-bottom:1px solid var(--br);display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
 <select id="hyr" onchange="chgH()"></select>
 <select id="hev" onchange="chgH()"></select>
@@ -882,7 +882,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 
 
 </section>
-<section id="uso-tab" class="pn2">
+<section id="uso-tab" class="pn2 active">
 <div class="live-banner"><span class="live-banner-dot"></span><span id="uso-banner-txt">This Week · 126th U.S. Open · Shinnecock Hills · June 18–21</span></div>
 
 <!-- Course preview -->
@@ -2656,7 +2656,7 @@ if('serviceWorker' in navigator){
 }
 
 /* ===== INIT ===== */
-document.addEventListener('DOMContentLoaded',()=>{try{populateMe();}catch(e){console.warn('populateMe:',e);}try{populateHFilters();rHistory();}catch(e){console.warn('history:',e);}try{rLive();}catch(e){console.warn('rLive:',e);}dgConn();setTimeout(fetchPreviewOdds,1000);setTimeout(fetchPredictionMarkets,2500);});
+document.addEventListener('DOMContentLoaded',()=>{try{populateMe();}catch(e){console.warn('populateMe:',e);}try{populateHFilters();rHistory();}catch(e){console.warn('history:',e);}try{rLive();}catch(e){console.warn('rLive:',e);}try{renderUsoTab();}catch(e){console.warn('renderUsoTab:',e);}dgConn();setTimeout(fetchPreviewOdds,1000);setTimeout(fetchPredictionMarkets,2500);});
 
 
 /* ===== COURSE DATA ===== */
@@ -6728,10 +6728,11 @@ function renderUsoTab(){
     const courseName='Shinnecock Hills Golf Club';
     if(typeof COURSES_DATA!=='undefined'&&COURSES_DATA[courseName]){
       const toggle='<div style="display:flex;justify-content:center;gap:.4rem;margin:.4rem 0;padding:.3rem 0">'+
-        '<button id="uso-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
-        '<button id="uso-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
+        '<button id="uso-basic-btn" class="pv-basic" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
+        '<button id="uso-adv-btn" class="pv-adv" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
       el.innerHTML=toggle+'<div id="uso-preview-target"></div>';
       renderPreview(document.getElementById('uso-preview-target'),courseName,'U.S. Open');
+      syncPvButtons();
     }else{
       el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
     }
@@ -6840,10 +6841,11 @@ function renderOpenTab(){
   const courseName='Royal Birkdale Golf Club';
   if(typeof COURSES_DATA!=='undefined'&&COURSES_DATA[courseName]){
     const toggle='<div style="display:flex;justify-content:center;gap:.4rem;margin:.4rem 0;padding:.3rem 0">'+
-      '<button id="open-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
-      '<button id="open-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
+      '<button id="open-basic-btn" class="pv-basic" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
+      '<button id="open-adv-btn" class="pv-adv" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
     el.innerHTML=toggle+'<div id="open-preview-target"></div>';
     renderPreview(document.getElementById('open-preview-target'),courseName,'The Open Championship');
+    syncPvButtons();
   }else{
     el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
   }
@@ -6861,8 +6863,8 @@ function renderMastersPreview(){
     renderPreview(el, courseName, 'PGA Championship');
     // Prepend Basic/Advanced toggle bar inside the rendered preview
     const toggleHTML='<div style="display:flex;justify-content:center;gap:.4rem;margin-bottom:.4rem;padding:.3rem 0">'+
-      '<button id="uc-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;transition:all .2s;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
-      '<button id="uc-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500;transition:all .2s">Advanced</button></div>';
+      '<button id="uc-basic-btn" class="pv-basic" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;transition:all .2s;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
+      '<button id="uc-adv-btn" class="pv-adv" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500;transition:all .2s">Advanced</button></div>';
     el.innerHTML=toggleHTML+el.innerHTML;
   }else{
     el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">PGA Championship preview data not available</div>';
@@ -7890,22 +7892,24 @@ function renderUpcomingSchedule(){
 }
 
 let _previewMode='basic';
+function _stylePvBtn(btn,on){
+  if(!btn)return;
+  if(on){btn.style.background='var(--gn)';btn.style.color='#fff';btn.style.fontWeight='700';btn.style.boxShadow='0 1px 4px rgba(82,183,136,.3)';}
+  else{btn.style.background='transparent';btn.style.color='var(--ts)';btn.style.fontWeight='500';btn.style.boxShadow='none';}
+}
 function setPreviewMode(mode){
   _previewMode=mode;
-  const basic=document.getElementById('uc-basic-btn');
-  const adv=document.getElementById('uc-adv-btn');
-  if(basic&&adv){
-    if(mode==='basic'){
-      basic.style.background='var(--gn)';basic.style.color='#fff';basic.style.fontWeight='700';basic.style.boxShadow='0 1px 4px rgba(82,183,136,.3)';
-      adv.style.background='transparent';adv.style.color='var(--ts)';adv.style.fontWeight='500';adv.style.boxShadow='none';
-    }else{
-      adv.style.background='var(--gn)';adv.style.color='#fff';adv.style.fontWeight='700';adv.style.boxShadow='0 1px 4px rgba(82,183,136,.3)';
-      basic.style.background='transparent';basic.style.color='var(--ts)';basic.style.fontWeight='500';basic.style.boxShadow='none';
-    }
-  }
+  // Update every Basic/Advanced toggle pair on the page (PGA archive, U.S. Open, The Open, live preview)
+  document.querySelectorAll('.pv-basic').forEach(b=>_stylePvBtn(b,mode==='basic'));
+  document.querySelectorAll('.pv-adv').forEach(b=>_stylePvBtn(b,mode==='advanced'));
   document.querySelectorAll('.uc-advanced').forEach(el=>{
     el.style.display=mode==='advanced'?'':'none';
   });
+}
+/* Sync the toggle buttons inside a freshly-rendered preview to the current mode */
+function syncPvButtons(){
+  document.querySelectorAll('.pv-basic').forEach(b=>_stylePvBtn(b,_previewMode==='basic'));
+  document.querySelectorAll('.pv-adv').forEach(b=>_stylePvBtn(b,_previewMode==='advanced'));
 }
 
 let _selectedUpcoming=-1;
@@ -7952,8 +7956,8 @@ function selectUpcoming(idx){
   if(courseData){
     let h='<div style="display:flex;justify-content:center;margin:.5rem 0">';
     h+='<div style="background:var(--bca);border:1px solid var(--br);border-radius:8px;padding:.3rem;display:inline-flex;gap:.2rem">';
-    h+='<button id="uc-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;transition:all .2s;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>';
-    h+='<button id="uc-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500;transition:all .2s">Advanced</button>';
+    h+='<button id="uc-basic-btn" class="pv-basic" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;transition:all .2s;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>';
+    h+='<button id="uc-adv-btn" class="pv-adv" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500;transition:all .2s">Advanced</button>';
     h+='</div></div>';
     // Valspar field preview + betting edge rendered after
     if(ev.name==='Valspar Championship'&&typeof VALSPAR_PREVIEW!=='undefined'){
