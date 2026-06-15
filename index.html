@@ -2786,6 +2786,101 @@ const AUGUSTA_HOLES = [
    memorable:"In 2004, Phil Mickelson's birdie putt on 18 clinched his first major — his iconic leap of joy is one of golf's most famous celebrations. Bubba Watson holed a putt on 18 to force the playoff in 2012. Rory McIlroy's winning putt here in 2025 completed the career Grand Slam."}
 ];
 
+/* ===== 2026 U.S. OPEN — STORYLINES & THINGS TO WATCH ===== */
+const USOPEN_2026_HEADLINES = [
+  {title:"Shinnecock Returns",text:"The U.S. Open is back at Shinnecock Hills for the sixth time — more than any active venue. The last visit, in 2018, saw Brooks Koepka win at +1 to become the first back-to-back champion since Curtis Strange in 1988–89."},
+  {title:"Will the USGA Hold the Course?",text:"Shinnecock has twice embarrassed the USGA: in 2004 the 7th green grew so firm officials hosed it between groups, and in 2018 a wind-scorched Saturday forced a public apology. The fairer modern setup philosophy faces its sternest test."},
+  {title:"Scheffler's Major Hunt",text:"World #1 Scottie Scheffler arrives as the game's most relentless force. A U.S. Open title would be his next step toward a career Grand Slam — and Shinnecock's premium on iron play and control fits his game perfectly."},
+  {title:"Bryson's Power vs. Precision",text:"Two-time U.S. Open champion Bryson DeChambeau (2020, 2024) brings raw power to a course that historically rewards accuracy and wind control. Can bombing overcome the fescue, or will Shinnecock demand restraint?"},
+  {title:"Rory After the Slam",text:"Having completed the career Grand Slam at the 2025 Masters, Rory McIlroy chases a second U.S. Open — 15 years after his record-breaking romp at Congressional in 2011."},
+  {title:"The Wind Is the Defense",text:"Shinnecock's exposed, treeless links routing sits on sandy soil four miles from the Atlantic. Afternoon breezes off Peconic Bay can swing scoring by five-plus shots and turn the firm fescue into the truest test in golf."},
+  {title:"Redan Roulette",text:"The par-3 7th — golf's most famous Redan — is the championship's swing hole: a firm green that falls from front-right to back-left and sheds anything not perfectly flighted. It has decided U.S. Opens and humbled the field."}
+];
+
+/* ===== SHINNECOCK HILLS — HOLE-BY-HOLE GUIDE (William Flynn, 1931; par 70) ===== */
+const SHINNECOCK_HOLES = [
+  {num:1,name:"Westward Ho",par:4,yds:394,named:"Flynn's 1931 routing heads west from the Stanford White clubhouse to open the round.",
+   facts:"A gentle downhill opener to a receptive green — one of the few early birdie looks before the course bares its teeth.",
+   history:"Flynn reversed and rebuilt the original nines in 1931, moving the start to this westward march.",
+   memorable:"A calm-morning birdie here is precious; the scoring window closes fast once the wind rises."},
+  {num:2,name:"Plateau",par:3,yds:252,named:"The green sits on a raised plateau, fully exposed to the wind.",
+   facts:"A brutally long par 3 that often demands a fairway wood or long iron. Bogey is a respectable score.",
+   history:"Among the longest par 3s in the U.S. Open rotation; a true examination of long-iron control.",
+   memorable:"In firm, breezy conditions it has repeatedly played as the hardest par 3 on the card."},
+  {num:3,name:"Peconic",par:4,yds:478,named:"Named for nearby Peconic Bay, whose breezes shape the hole.",
+   facts:"A demanding uphill two-shotter; the tee shot must hold a tilting fairway to leave any look at the green.",
+   history:"One of Flynn's quietly excellent par 4s — no single feature, just relentless quality.",
+   memorable:"A par-saving zone where contenders steady themselves early."},
+  {num:4,name:"Pump House",par:4,yds:475,named:"An old pump house once stood near the hole.",
+   facts:"A rolling, undulating fairway with fescue lining both sides; the approach plays to a green that repels off-line irons.",
+   history:"The 2013 Coore & Crenshaw work reclaimed sandy waste areas and restored Flynn's strategy here.",
+   memorable:"The fescue has swallowed many a championship hope on a windy afternoon."},
+  {num:5,name:"Montauk",par:5,yds:589,named:"Points east toward Montauk; one of only two par 5s on the course.",
+   facts:"A genuine birdie and eagle chance, but the narrow, sloping green guards the reward fiercely.",
+   history:"With only two par 5s on a par-70 layout, this is a must-capitalize hole for anyone charging.",
+   memorable:"Sunday eagles here have repeatedly shaken up the leaderboard."},
+  {num:6,name:"Pond",par:4,yds:504,named:"A small pond sits near the hole, a rarity on this links routing.",
+   facts:"A long par 4 that usually plays into the prevailing wind — frequently among the three hardest holes.",
+   history:"A bogey-magnet that quietly defines who controls their ball flight.",
+   memorable:"Few players walk off this green better than par on a breezy day."},
+  {num:7,name:"Redan",par:3,yds:189,named:"The classic 'Redan' template — green angled and falling from front-right to back-left behind a deep front bunker.",
+   facts:"Golf's most famous Redan. The firm, tilting green feeds good shots toward the flag and rejects the rest.",
+   history:"In 2004 the green grew so dry and fast on Sunday that the USGA hosed it between groups to keep it playable — a setup embarrassment that still shapes how officials prepare the course.",
+   memorable:"The 2004 Redan fiasco remains the cautionary tale of U.S. Open setup; in any year, a 3 here feels like a birdie."},
+  {num:8,name:"Lowlands",par:4,yds:419,named:"Played across the lower ground of the property.",
+   facts:"A shorter par 4 and a real scoring chance — but the tilted green punishes the greedy.",
+   history:"One of the few holes where aggression pays, provided the approach finds the correct level.",
+   memorable:"A momentum hole: birdies here have launched back-nine runs."},
+  {num:9,name:"Ben Nevis",par:4,yds:485,named:"Named for the uphill climb, after Scotland's highest peak.",
+   facts:"A long uphill par 4 to a green beneath the iconic clubhouse — a punishing way to finish the front nine.",
+   history:"The climb to the Stanford White clubhouse is one of the most photographed walks in American golf.",
+   memorable:"Closing the front with a par here, uphill and into the wind, is a small victory."},
+  {num:10,name:"Eastward Ho!",par:4,yds:415,named:"The back nine turns and heads east.",
+   facts:"A downhill tee shot fully exposed to the wind; placement matters more than power.",
+   history:"Flynn used the natural fall of the land to create width that the wind then takes away.",
+   memorable:"The view from the 10th tee, with the course rolling out below, is classic Shinnecock."},
+  {num:11,name:"Hill Head",par:3,yds:159,named:"The green is set into a hillside.",
+   facts:"A short par 3, but heavily bunkered and wind-exposed — deceptively treacherous club selection.",
+   history:"Proof that Shinnecock's short holes are as dangerous as its long ones.",
+   memorable:"A back pin in a crosswind here has produced its share of doubles."},
+  {num:12,name:"Tuckahoe",par:4,yds:472,named:"A local Long Island place name.",
+   facts:"A long, doglegging par 4 demanding two precise shots; the green falls away at the edges.",
+   history:"Part of a brutal middle stretch where the championship is often won or lost.",
+   memorable:"Quietly one of the toughest pars on the inward half."},
+  {num:13,name:"Road Side",par:4,yds:372,named:"Runs alongside Tuckahoe Road.",
+   facts:"The shortest par 4 and a birdie chance — but a small, firm green leaves little margin.",
+   history:"A risk-reward hole where a wedge in hand still doesn't guarantee a 3.",
+   memorable:"In 2018, Phil Mickelson hit a still-moving ball on this green and took a two-stroke penalty — one of the strangest moments in major-championship history."},
+  {num:14,name:"Thom's Elbow",par:4,yds:519,named:"For Charlie Thom, the club's pro for over 50 years; 'elbow' for the dogleg's sharp bend.",
+   facts:"A brutal long par 4 that bends hard — frequently the single hardest hole on the course.",
+   history:"Charlie Thom served Shinnecock from 1906 into the 1960s; the hole honors his decades of stewardship.",
+   memorable:"Surviving 14 at level par over four rounds is a quiet mark of a contender."},
+  {num:15,name:"Sebonack",par:4,yds:411,named:"Named for the neighboring Sebonac area.",
+   facts:"A mid-length par 4 to an exposed green; the wind dictates everything on the approach.",
+   history:"Begins the demanding closing stretch where nerves and gusts collide.",
+   memorable:"A par here steadies a wobbling round before the finish."},
+  {num:16,name:"Shinnecock",par:5,yds:616,named:"The club's namesake hole — its grandest.",
+   facts:"A long par 5, reachable for the biggest hitters and the last real birdie chance before the closing trio.",
+   history:"With the only other par 5 way back at the 5th, this is the final pressure-release valve.",
+   memorable:"Sunday eagles and birdies here have repeatedly reshuffled the leaderboard down the stretch."},
+  {num:17,name:"Eden",par:3,yds:179,named:"An 'Eden' template, modeled on the 11th at St Andrews — bunkered short and long.",
+   facts:"A short par 3 to a heavily bunkered green where wind makes club selection a guessing game.",
+   history:"One of golf's great template holes, placed perfectly to torment players chasing the lead.",
+   memorable:"A penultimate par 3 that has both saved and sunk championship hopes."},
+  {num:18,name:"Home",par:4,yds:450,named:"The finishing march back up to the clubhouse — simply, 'Home'.",
+   facts:"An uphill par 4 to a green beneath the Stanford White clubhouse — one of the most majestic finishing holes in golf.",
+   history:"The grandstand-framed climb has crowned champions for over a century.",
+   memorable:"Corey Pavin's running 4-wood to about five feet in 1995 sealed his only major; Brooks Koepka closed out back-to-back U.S. Opens here in 2018."}
+];
+
+/* ===== GENERALIZED PREVIEW DATASETS (any major can supply storylines + a hole guide) ===== */
+const EVENT_HEADLINES = { masters: (typeof MASTERS_2026_HEADLINES!=='undefined'?MASTERS_2026_HEADLINES:null), uso: USOPEN_2026_HEADLINES };
+const HOLE_GUIDES = {
+  masters: { holes:(typeof AUGUSTA_HOLES!=='undefined'?AUGUSTA_HOLES:null), src:'Augusta National media guides, Masters historical records, PGA Tour archives' },
+  uso:     { holes:SHINNECOCK_HOLES, src:'USGA championship records, Shinnecock Hills club history, U.S. Open archives' }
+};
+
+
 // Merge fun facts into COURSES_DATA
 Object.keys(COURSE_FUN_FACTS).forEach(function(k) {
   Object.keys(COURSES_DATA).forEach(function(ck) {
@@ -3015,16 +3110,16 @@ const PAST_WINNERS = {
     {yr:2016,nm:'Jimmy Walker',sc:'-14',r2:'Jason Day',cs:'Baltusrol'}
   ],
   uso: [
-    {yr:2025,nm:'J.J. Spaun',sc:'-1',r2:'Robert MacIntyre',cs:'Oakmont'},
-    {yr:2024,nm:'Bryson DeChambeau',sc:'-6',r2:'Rory McIlroy',cs:'Pinehurst No. 2'},
-    {yr:2023,nm:'Wyndham Clark',sc:'-10',r2:'Rory McIlroy',cs:'Los Angeles CC'},
-    {yr:2022,nm:'Matt Fitzpatrick',sc:'-6',r2:'Will Zalatoris/Scottie Scheffler',cs:'The Country Club'},
-    {yr:2021,nm:'Jon Rahm',sc:'-6',r2:'Louis Oosthuizen',cs:'Torrey Pines'},
-    {yr:2020,nm:'Bryson DeChambeau',sc:'-6',r2:'Matthew Wolff',cs:'Winged Foot'},
-    {yr:2019,nm:'Gary Woodland',sc:'-13',r2:'Brooks Koepka',cs:'Pebble Beach'},
-    {yr:2018,nm:'Brooks Koepka',sc:'+1',r2:'Tommy Fleetwood',cs:'Shinnecock Hills'},
-    {yr:2017,nm:'Brooks Koepka',sc:'-16',r2:'Brian Harman/Tommy Fleetwood',cs:'Erin Hills'},
-    {yr:2016,nm:'Dustin Johnson',sc:'-4',r2:'Jim Furyk/Scott Piercy/Shane Lowry',cs:'Oakmont'}
+    {yr:2025,nm:'J.J. Spaun',sc:'-1',r2:'Robert MacIntyre',cs:'Oakmont',story:"Spaun closed with a 64-foot birdie putt on the 72nd hole in the rain to win his first major by two at brutal Oakmont — the only player to finish under par."},
+    {yr:2024,nm:'Bryson DeChambeau',sc:'-6',r2:'Rory McIlroy',cs:'Pinehurst No. 2',story:"DeChambeau holed a 55-yard bunker shot to four feet on the 72nd hole to beat Rory McIlroy by one, after McIlroy missed short putts on 16 and 18 down the stretch."},
+    {yr:2023,nm:'Wyndham Clark',sc:'-10',r2:'Rory McIlroy',cs:'Los Angeles CC',story:"Clark held off McIlroy for his first major in just his second U.S. Open start, at LACC's championship debut."},
+    {yr:2022,nm:'Matt Fitzpatrick',sc:'-6',r2:'Will Zalatoris/Scottie Scheffler',cs:'The Country Club',story:"Fitzpatrick won at the same course where he claimed the 2013 U.S. Amateur, sealing it with a stunning fairway-bunker approach on 18."},
+    {yr:2021,nm:'Jon Rahm',sc:'-6',r2:'Louis Oosthuizen',cs:'Torrey Pines',story:"Two weeks after a COVID withdrawal while leading at the Memorial, Rahm birdied 17 and 18 to win his first major."},
+    {yr:2020,nm:'Bryson DeChambeau',sc:'-6',r2:'Matthew Wolff',cs:'Winged Foot',story:"DeChambeau overpowered fabled Winged Foot — the only player under par — validating his bulked-up, bomb-and-gouge experiment."},
+    {yr:2019,nm:'Gary Woodland',sc:'-13',r2:'Brooks Koepka',cs:'Pebble Beach',story:"Woodland held off two-time defending champ Koepka, capped by a deft chip from the 17th green's edge and a closing birdie."},
+    {yr:2018,nm:'Brooks Koepka',sc:'+1',r2:'Tommy Fleetwood',cs:'Shinnecock Hills',story:"At Shinnecock, Koepka became the first back-to-back U.S. Open champion since Curtis Strange (1988–89), surviving a wind-scorched Saturday that prompted a USGA apology. Fleetwood's closing 63 fell one short."},
+    {yr:2017,nm:'Brooks Koepka',sc:'-16',r2:'Brian Harman/Tommy Fleetwood',cs:'Erin Hills',story:"Koepka tied the U.S. Open scoring record at -16 in his breakthrough major at Erin Hills."},
+    {yr:2016,nm:'Dustin Johnson',sc:'-4',r2:'Jim Furyk/Scott Piercy/Shane Lowry',cs:'Oakmont',story:"DJ won his first major despite a controversial one-shot penalty assessed mid-round for a ball that moved on the 5th green — he won by enough to render it moot."}
   ],
   open: [
     {yr:2025,nm:'Scottie Scheffler',sc:'-17',r2:'Harris English',cs:'Royal Portrush'},
@@ -3263,6 +3358,27 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
     }
   }
 
+  // Storylines + hole guide (generalized — any major can supply them)
+  var _evHL = (typeof EVENT_HEADLINES!=='undefined' && pwKey && EVENT_HEADLINES[pwKey]) ? EVENT_HEADLINES[pwKey] : null;
+  var _holeGuide = (typeof HOLE_GUIDES!=='undefined' && pwKey && HOLE_GUIDES[pwKey] && HOLE_GUIDES[pwKey].holes) ? HOLE_GUIDES[pwKey] : null;
+  var _hlTitle = '2026 Storylines & Things To Watch';
+  function _hlCard(h){return '<div style="margin-bottom:.4rem"><div style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.7rem">'+h.title+'</div><div style="color:var(--tp);line-height:1.45;margin-top:.1rem">'+h.text+'</div></div>';}
+  function _holeRow(h){
+    return '<details style="border-bottom:1px solid var(--br);padding:.25rem 0">' +
+      '<summary style="cursor:pointer;font-size:.65rem;display:flex;align-items:center;gap:.4rem">' +
+        '<span style="color:var(--go);font-family:var(--fm);font-weight:700;min-width:1.4rem">#'+h.num+'</span>' +
+        '<span style="color:var(--tb);font-weight:600;flex:1">'+(h.name||('Hole '+h.num))+'</span>' +
+        '<span style="color:var(--ts);font-family:var(--fm);font-size:.58rem">Par '+h.par+' · '+h.yds+' yds</span>' +
+      '</summary>' +
+      '<div style="padding:.3rem .2rem .3rem 1.8rem;font-size:.6rem;line-height:1.5">' +
+        (h.named?'<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Why &ldquo;'+(h.name||'')+'&rdquo;</span><div style="color:var(--tp)">'+h.named+'</div></div>':'') +
+        (h.facts?'<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">The Hole</span><div style="color:var(--tp)">'+h.facts+'</div></div>':'') +
+        (h.history?'<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Changes &amp; History</span><div style="color:var(--tp)">'+h.history+'</div></div>':'') +
+        (h.memorable?'<div><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Memorable Moments</span><div style="color:var(--tp)">'+h.memorable+'</div></div>':'') +
+      '</div>' +
+    '</details>';
+  }
+
   el.innerHTML =
     // Hero + Course Profile + expandable More Details inside
     '<div class="cf-block">' +
@@ -3294,41 +3410,27 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
         notesHTML) +
     '</div>' +
 
-    // 2026 Headlines (Masters only)
-    (typeof MASTERS_2026_HEADLINES!=='undefined'&&pwKey==='masters'?
+    // Storylines & Things To Watch (any major with headlines data)
+    (_evHL && _evHL.length ?
       '<div class="cf-block">' +
-        '<div class="cf-section-title">2026 Headlines & Things To Watch</div>' +
+        '<div class="cf-section-title">' + _hlTitle + '</div>' +
         '<div style="font-size:.65rem">' +
-        MASTERS_2026_HEADLINES.slice(0,2).map(function(h){return '<div style="margin-bottom:.4rem"><div style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.7rem">'+h.title+'</div><div style="color:var(--tp);line-height:1.45;margin-top:.1rem">'+h.text+'</div></div>';}).join('') +
-        (MASTERS_2026_HEADLINES.length>2?
-          '<details class="uc-advanced" style="margin-top:.2rem;'+(_previewMode==='basic'?'display:none':'')+'"><summary style="font-size:.55rem;color:var(--rd);cursor:pointer;font-family:var(--fb)">Show all '+MASTERS_2026_HEADLINES.length+' storylines ▸</summary>'+
-          '<div style="padding-top:.3rem">'+MASTERS_2026_HEADLINES.slice(2).map(function(h){return '<div style="margin-bottom:.4rem"><div style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.7rem">'+h.title+'</div><div style="color:var(--tp);line-height:1.45;margin-top:.1rem">'+h.text+'</div></div>';}).join('')+'</div></details>':'') +
+        _evHL.slice(0,2).map(_hlCard).join('') +
+        (_evHL.length>2?
+          '<details class="uc-advanced" style="margin-top:.2rem;'+(_previewMode==='basic'?'display:none':'')+'"><summary style="font-size:.55rem;color:var(--rd);cursor:pointer;font-family:var(--fb)">Show all '+_evHL.length+' storylines ▸</summary>'+
+          '<div style="padding-top:.3rem">'+_evHL.slice(2).map(_hlCard).join('')+'</div></details>':'') +
         '</div>' +
       '</div>':'') +
 
-    // Hole-by-hole guide (Masters only)
-    (typeof AUGUSTA_HOLES!=='undefined'&&pwKey==='masters'?
+    // Hole-by-hole guide (any major with a hole guide)
+    (_holeGuide ?
       '<div class="cf-block">' +
         '<details class="cf-details">' +
-          '<summary class="cf-details-sum">Hole-by-Hole Guide <span style="font-size:.5rem;color:var(--td);font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--fb)">18 holes</span></summary>' +
+          '<summary class="cf-details-sum">Hole-by-Hole Guide <span style="font-size:.5rem;color:var(--td);font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--fb)">'+_holeGuide.holes.length+' holes</span></summary>' +
           '<div class="cf-details-body" style="padding:.3rem .4rem">' +
             '<div style="font-size:.55rem;color:var(--ts);margin-bottom:.3rem;font-family:var(--fb)">Tap any hole for history, memorable shots & more</div>' +
-            AUGUSTA_HOLES.map(function(h){
-              return '<details style="border-bottom:1px solid var(--br);padding:.25rem 0">' +
-                '<summary style="cursor:pointer;font-size:.65rem;display:flex;align-items:center;gap:.4rem">' +
-                  '<span style="color:var(--go);font-family:var(--fm);font-weight:700;min-width:1.4rem">#'+h.num+'</span>' +
-                  '<span style="color:var(--tb);font-weight:600;flex:1">'+h.name+'</span>' +
-                  '<span style="color:var(--ts);font-family:var(--fm);font-size:.58rem">Par '+h.par+' · '+h.yds+' yds</span>' +
-                '</summary>' +
-                '<div style="padding:.3rem .2rem .3rem 1.8rem;font-size:.6rem;line-height:1.5">' +
-                  '<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Why "'+h.name+'"</span><div style="color:var(--tp)">'+h.named+'</div></div>' +
-                  '<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">The Hole</span><div style="color:var(--tp)">'+h.facts+'</div></div>' +
-                  '<div style="margin-bottom:.25rem"><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Changes & History</span><div style="color:var(--tp)">'+h.history+'</div></div>' +
-                  '<div><span style="color:var(--go);font-weight:600;font-family:var(--fd);font-size:.58rem">Memorable Moments</span><div style="color:var(--tp)">'+h.memorable+'</div></div>' +
-                '</div>' +
-              '</details>';
-            }).join('') +
-            '<div class="cf-source" style="margin-top:.3rem">Sources: Augusta National media guides, Masters historical records, PGA Tour archives</div>' +
+            _holeGuide.holes.map(_holeRow).join('') +
+            '<div class="cf-source" style="margin-top:.3rem">Sources: '+_holeGuide.src+'</div>' +
           '</div>' +
         '</details>' +
       '</div>':'') +
