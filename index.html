@@ -63,6 +63,15 @@ body>*{position:relative;z-index:1}
 .up-banner{display:flex;align-items:center;justify-content:center;gap:.45rem;margin:.5rem .6rem;padding:.45rem .8rem;background:linear-gradient(135deg,rgba(58,134,168,.06),rgba(58,134,168,.12));border:1px solid rgba(58,134,168,.25);border-radius:6px;font-family:var(--fb);font-size:.62rem;color:#2960a8;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
 .up-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3a86a8;box-shadow:0 0 0 3px rgba(58,134,168,.25);animation:up-pulse 2.5s ease-in-out infinite}
 @keyframes up-pulse{0%,100%{box-shadow:0 0 0 3px rgba(58,134,168,.25)}50%{box-shadow:0 0 0 5px rgba(58,134,168,.08)}}
+/* Active / live event treatment */
+.nav button.live-tab{color:#9a7e28;font-weight:600}
+.nav button.live-tab::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:#c9a227;box-shadow:0 0 0 2px rgba(196,160,53,.25);margin-right:.3rem;vertical-align:.08em;animation:up-pulse 2.2s ease-in-out infinite}
+.nav button.live-tab:hover{color:#7d6620;background:rgba(196,160,53,.08)}
+.nav button.live-tab:hover::after{background:var(--go)}
+.nav button.live-tab.active{color:#7d6620;background:rgba(196,160,53,.1);box-shadow:inset 0 -2px 0 var(--go);font-weight:600}
+.nav button.live-tab.active::after{background:var(--go)}
+.live-banner{display:flex;align-items:center;justify-content:center;gap:.5rem;margin:.5rem .6rem;padding:.5rem .85rem;background:linear-gradient(135deg,rgba(196,160,53,.08),rgba(196,160,53,.16));border:1px solid rgba(196,160,53,.35);border-radius:7px;font-family:var(--fb);font-size:.64rem;color:#7d6620;font-weight:700;letter-spacing:.05em;text-transform:uppercase;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 0 16px rgba(196,160,53,.1)}
+.live-banner-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#e6c847,#c9a227);box-shadow:0 0 0 3px rgba(196,160,53,.3),0 0 8px rgba(196,160,53,.5);animation:up-pulse 2s ease-in-out infinite;flex-shrink:0}
 .ctrl{display:flex;gap:.35rem;align-items:center;padding:.4rem .7rem;flex-wrap:wrap}
 .ctrl select,.ctrl input{font-family:var(--fb);font-size:.62rem;padding:.22rem .42rem;background:var(--bc);color:var(--tp);border:1px solid rgba(0,0,0,.06);border-radius:4px;outline:0;transition:border-color .2s,background .2s,box-shadow .2s;height:24px;line-height:1}
 .ctrl select:hover,.ctrl input:hover{border-color:rgba(196,160,53,.35)}
@@ -568,6 +577,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .splash-link:hover{color:#b04535;letter-spacing:.07em}
 .preview-link.uso{color:#3a86a8}
 .preview-link.uso:hover{color:#2960a8;letter-spacing:.07em}
+.preview-link.uso.live{color:#9a7e28}
+.preview-link.uso.live::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:#c9a227;box-shadow:0 0 0 2px rgba(196,160,53,.25);margin-right:.3rem;animation:up-pulse 2.2s ease-in-out infinite}
+.preview-link.uso.live:hover{color:#7d6620;letter-spacing:.07em}
 .preview-link.open{color:#6b4e8e}
 .preview-link.open:hover{color:#4f3870;letter-spacing:.07em}
 .preview-link::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:1px;background:currentColor;transition:right .25s ease;opacity:.5}
@@ -775,10 +787,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 <nav class="nav">
 <button class="active" onclick="go('history')">YTD &amp; Hist.</button>
+<button class="live-tab" onclick="go('uso-tab')">U.S. Open</button>
 <button onclick="go('upcoming')">PGA</button>
 <button onclick="go('masters-results')">Masters</button>
 <button onclick="go('players-results')">Players</button>
-<button class="up-tab" onclick="go('uso-tab')">U.S. Open</button>
 <button class="up-tab" onclick="go('open-tab')">The Open</button>
 <button onclick="go('rules')">Rules</button>
 </nav>
@@ -793,7 +805,7 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </div>
 <div class="quick-links">
 <a href="https://splashsports.com" target="_blank" class="splash-link">Splash Sports ↗</a>
-<a href="javascript:go('uso-tab')" class="preview-link uso">Shinnecock Preview →</a>
+<a href="javascript:go('uso-tab')" class="preview-link uso live">U.S. Open — This Week →</a>
 <a href="javascript:go('open-tab')" class="preview-link open">Royal Birkdale Preview →</a>
 </div>
 <div id="h-body"></div>
@@ -854,8 +866,39 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   </div>
 </details>
 
-<!-- Live Field (hidden pre-tournament — shown once major is in-play) -->
-<div class="cd" id="pred-market-panel" style="margin-top:.2rem;display:none">
+<div class="cd" id="upcoming-sched" style="display:none"></div>
+<div id="live-preview-wrap" style="display:none"><div id="live-preview"></div></div>
+
+<div class="cd" id="odds-panel" style="display:none">
+  <div id="live-odds"></div>
+</div>
+
+<!-- Hidden leaderboard container (used by rLB/rLBS internally) -->
+<div id="lb-wrap" style="display:none">
+  <span id="lb-tt"></span><span id="lb-mt"></span><button id="lb-rb" style="display:none"></button>
+  <div id="lb-bd"></div>
+</div>
+
+
+
+</section>
+<section id="uso-tab" class="pn2">
+<div class="live-banner"><span class="live-banner-dot"></span><span id="uso-banner-txt">This Week · 126th U.S. Open · Shinnecock Hills · June 18–21</span></div>
+
+<!-- Course preview -->
+<div id="uso-preview"></div>
+
+<!-- U.S. Open Outright Odds — pre-tournament -->
+<div class="cd" id="uso-odds-panel" style="margin-top:.4rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">
+    <div class="cf-section-title" style="margin:0">U.S. Open Outright Odds</div>
+    <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20 · DG Model vs Sportsbooks</span>
+  </div>
+  <div id="uso-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading U.S. Open odds...</div></div>
+</div>
+
+<!-- Live Field (hidden pre-tournament — shown once the U.S. Open is in-play) -->
+<div class="cd" id="pred-market-panel" style="margin-top:.4rem;display:none">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.15rem">
     <div class="cf-section-title" style="margin:0" id="ih-title">Live Field</div>
     <div style="display:flex;align-items:center;gap:.25rem">
@@ -874,26 +917,6 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
   <div id="sg-ranks-body" style="display:none"><div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading SG data...</div></div>
   <div id="pred-market-footer" style="margin-top:.3rem"></div>
 </div>
-
-<div class="cd" id="upcoming-sched" style="display:none"></div>
-<div id="live-preview-wrap" style="display:none"><div id="live-preview"></div></div>
-
-<div class="cd" id="odds-panel" style="display:none">
-  <div id="live-odds"></div>
-</div>
-
-<!-- Hidden leaderboard container (used by rLB/rLBS internally) -->
-<div id="lb-wrap" style="display:none">
-  <span id="lb-tt"></span><span id="lb-mt"></span><button id="lb-rb" style="display:none"></button>
-  <div id="lb-bd"></div>
-</div>
-
-
-
-</section>
-<section id="uso-tab" class="pn2 upcoming-tab">
-<div class="up-banner"><span class="up-dot"></span>Upcoming — June 18–21, 2026 · Shinnecock Hills</div>
-<div id="uso-preview"></div>
 </section>
 <section id="open-tab" class="pn2 upcoming-tab">
 <div class="up-banner"><span class="up-dot"></span>Upcoming — July 16–19, 2026 · Royal Birkdale</div>
@@ -1341,7 +1364,7 @@ function yrCard(y,s){
 function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
-  ['history','upcoming','masters-results','players-results','uso-tab','open-tab','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
+  ['history','uso-tab','upcoming','masters-results','players-results','open-tab','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
   var meb=document.querySelector('.me-bar');if(meb)meb.style.display='none';
   if(t==='history'){populateHFilters();rHistory();}
   else if(t==='upcoming')rLive();
@@ -6537,9 +6560,12 @@ async function renderPgaResults(){
       el.insertAdjacentHTML('afterbegin',note);
     }
   }
-  // Lazy-load the archived preview/odds
+  // Lazy-load the archived course preview (static data)
   renderMastersPreview();
-  fetchMastersOdds();
+  // Pre-tournament odds are NOT re-fetched — DG's outrights endpoint now serves the
+  // current event (U.S. Open), which would mislabel as PGA. Show an archive note instead.
+  const oddsBody=document.getElementById('masters-odds-body');
+  if(oddsBody)oddsBody.innerHTML='<div style="text-align:center;padding:.55rem;font-size:.6rem;color:var(--td);font-style:italic;line-height:1.5">Pre-tournament outright odds aren\'t archived — DataGolf\'s live odds feed only serves the current event. See the <b style="color:var(--go);font-style:normal">PGA pool standings &amp; recap</b> above for final results.</div>';
 }
 
 /* PGA Field Recap — multi-tab panel mirroring Masters tournament panel */
@@ -6689,22 +6715,121 @@ function renderMastersResults(){
   }
 }
 
-/* ===== UPCOMING MAJOR TABS (U.S. Open / The Open) ===== */
+/* ===== U.S. OPEN — ACTIVE MAJOR TAB (preview + odds + live field) ===== */
 let _usoTabRendered=false,_openTabRendered=false;
 function renderUsoTab(){
+  // Banner state always refreshes; heavy content renders once
+  updateUsoBanner();
+  checkUsoLive();
   if(_usoTabRendered)return;
   _usoTabRendered=true;
   const el=document.getElementById('uso-preview');
-  if(!el)return;
-  const courseName='Shinnecock Hills Golf Club';
-  if(typeof COURSES_DATA!=='undefined'&&COURSES_DATA[courseName]){
-    const toggle='<div style="display:flex;justify-content:center;gap:.4rem;margin:.4rem 0;padding:.3rem 0">'+
-      '<button id="uso-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
-      '<button id="uso-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
-    el.innerHTML=toggle+'<div id="uso-preview-target"></div>';
-    renderPreview(document.getElementById('uso-preview-target'),courseName,'U.S. Open');
+  if(el){
+    const courseName='Shinnecock Hills Golf Club';
+    if(typeof COURSES_DATA!=='undefined'&&COURSES_DATA[courseName]){
+      const toggle='<div style="display:flex;justify-content:center;gap:.4rem;margin:.4rem 0;padding:.3rem 0">'+
+        '<button id="uso-basic-btn" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
+        '<button id="uso-adv-btn" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
+      el.innerHTML=toggle+'<div id="uso-preview-target"></div>';
+      renderPreview(document.getElementById('uso-preview-target'),courseName,'U.S. Open');
+    }else{
+      el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
+    }
+  }
+  fetchUsoOdds();
+}
+function updateUsoBanner(){
+  const el=document.getElementById('uso-banner-txt');if(!el)return;
+  const now=new Date();
+  const start=new Date(2026,5,18),end=new Date(2026,5,22);// Jun 18 → Jun 21 + buffer
+  if(now>=start&&now<end){
+    el.textContent='● LIVE · 126th U.S. Open · Shinnecock Hills';
+  }else if(now<start){
+    const days=Math.ceil((start-now)/86400000);
+    const lead=days<=0?'Tees off today':days===1?'Tees off tomorrow':'Tees off in '+days+' days';
+    el.textContent=lead+' · 126th U.S. Open · Shinnecock Hills · June 18–21';
   }else{
-    el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
+    el.textContent='126th U.S. Open · Shinnecock Hills · June 18–21';
+  }
+}
+let _usoOddsFetched=false;
+async function fetchUsoOdds(){
+  if(_usoOddsFetched)return;
+  _usoOddsFetched=true;
+  const el=document.getElementById('uso-odds-body');
+  if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading U.S. Open odds from sportsbooks...</div>';
+  try{
+    const data=await dgF('betting-tools/outrights',{tour:'pga',market:'win',odds_format:'decimal'});
+    let players=[];
+    if(Array.isArray(data))players=data;
+    else if(data?.odds&&Array.isArray(data.odds))players=data.odds;
+    else{for(const k of Object.keys(data||{})){if(Array.isArray(data[k])){players=data[k];break;}}}
+    if(!players.length){el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">No U.S. Open odds available yet</div>';return;}
+    const BOOKS=[
+      {key:'draftkings',label:'DK'},
+      {key:'fanduel',label:'FD'},
+      {key:'betmgm',label:'MGM'},
+      {key:'caesars',label:'CZR'},
+      {key:'pointsbet',label:'PB'},
+      {key:'bet365',label:'365'}
+    ];
+    const decToAm=d=>{if(!d)return null;return d>=2?'+'+(Math.round((d-1)*100)):'-'+Math.round(100/(d-1));};
+    function getDgOdds(p){
+      if(p.datagolf&&typeof p.datagolf==='object'){return p.datagolf.baseline_history_fit||p.datagolf.baseline||null;}
+      if(typeof p.datagolf_base_history_fit==='number')return p.datagolf_base_history_fit;
+      if(typeof p.baseline_history_fit==='number')return p.baseline_history_fit;
+      return null;
+    }
+    players.sort((a,b)=>(getDgOdds(a)||999)-(getDgOdds(b)||999));
+    const top20=players.slice(0,20);
+    let h='<table class="pm-table"><thead><tr>';
+    h+='<th style="text-align:left">#</th><th style="text-align:left">Player</th>';
+    h+='<th title="DataGolf model implied probability">DG Win%</th>';
+    BOOKS.forEach(b=>{h+='<th title="'+b.key+'">'+b.label+'</th>';});
+    h+='</tr></thead><tbody>';
+    top20.forEach((p,i)=>{
+      const nm=typeof fmN==='function'?fmN(p.player_name||''):p.player_name||'';
+      const dgDec=getDgOdds(p);
+      const dgPct=dgDec?(100/dgDec).toFixed(1)+'%':'–';
+      const ip=typeof inPool==='function'&&inPool(p.player_name||'');
+      const bookOdds=BOOKS.map(b=>{const o=typeof p[b.key]==='number'?p[b.key]:(p[b.key]?.odds||null);return{key:b.key,label:b.label,dec:o,am:decToAm(o)};});
+      const decVals=bookOdds.filter(b=>b.dec&&b.dec>1).map(b=>b.dec);
+      const maxDec=decVals.length?Math.max(...decVals):null,minDec=decVals.length?Math.min(...decVals):null;
+      const range=maxDec&&minDec?maxDec-minDec:0;
+      h+='<tr>';
+      h+='<td style="color:var(--td);font-size:.55rem">'+(i+1)+'</td>';
+      h+='<td style="text-align:left;font-family:var(--fb);font-weight:500">'+(ip?'<span style="color:var(--go)">'+nm+'</span>':nm)+(typeof playerIcons==='function'?playerIcons(p.player_name||''):'')+'</td>';
+      h+='<td style="color:var(--gl);font-weight:600;font-size:.62rem">'+dgPct+'</td>';
+      bookOdds.forEach(b=>{
+        if(!b.am){h+='<td style="color:var(--td)">–</td>';return;}
+        let shade='';
+        if(range>0&&b.dec){const t=(b.dec-minDec)/range;if(t>0.85)shade='background:rgba(20,180,80,.10);color:#0d7a3a;font-weight:600';else if(t<0.15)shade='background:rgba(210,60,40,.08);color:#b84020';}
+        h+='<td style="font-size:.58rem;font-family:var(--fm);'+shade+'">'+b.am+'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table>';
+    h+='<div style="text-align:right;font-size:.48rem;color:var(--td);margin-top:.15rem">Sportsbook outrights via DataGolf · Updated '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})+' ET</div>';
+    el.innerHTML=h;
+  }catch(e){
+    el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--rd)">Failed to load odds: '+e.message+'</div>';
+  }
+}
+// Show the Live Field panel once the U.S. Open is actually in-play (Jun 18–21)
+let _usoLiveChecked=false;
+function checkUsoLive(){
+  const panel=document.getElementById('pred-market-panel');
+  if(!panel)return;
+  const now=new Date();
+  const start=new Date(2026,5,18),end=new Date(2026,5,22);// Jun 18 → 21 + buffer
+  if(now>=start&&now<end){
+    panel.style.display='';
+    const preOdds=document.getElementById('uso-odds-panel');
+    if(preOdds)preOdds.style.display='none';
+    if(!_usoLiveChecked&&typeof fetchPredictionMarkets==='function'){_usoLiveChecked=true;fetchPredictionMarkets();}
+  }else{
+    panel.style.display='none';
   }
 }
 function renderOpenTab(){
