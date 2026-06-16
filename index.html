@@ -528,6 +528,17 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-wx-val{font-family:var(--fm);font-size:.55rem;color:var(--tb);font-weight:500}
 .cf-wx-lbl{font-size:.48rem;text-transform:uppercase;color:var(--ts);margin-left:.1rem}
 .cf-wx-link{display:block;text-align:center;margin-top:.25rem;font-size:.55rem}
+/* Players to Watch — contender cards */
+.ctd-list{display:flex;flex-direction:column;gap:.35rem}
+.ctd{display:flex;gap:.5rem;align-items:flex-start;padding:.4rem .45rem;border-radius:7px;background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(240,239,235,.45));border:1px solid rgba(212,210,202,.4);transition:transform .2s ease,box-shadow .2s ease}
+.ctd:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,32,91,.07);border-color:rgba(196,160,53,.35)}
+.ctd-rk{flex-shrink:0;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#c9a227,#9a7e28);color:#fff;font-family:var(--fd);font-weight:700;font-size:.66rem;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.ctd-main{flex:1;min-width:0}
+.ctd-top{display:flex;align-items:baseline;gap:.4rem;flex-wrap:wrap;margin-bottom:.12rem}
+.ctd-nm{font-family:var(--fd);font-size:.84rem;font-weight:700;color:var(--tb);line-height:1.1}
+.ctd-tag{font-size:.5rem;font-family:var(--fb);font-weight:600;color:var(--go);text-transform:uppercase;letter-spacing:.04em;border-left:2px solid var(--go);padding-left:5px}
+.ctd-fit{font-size:.48rem;font-family:var(--fb);font-weight:600;text-transform:uppercase;letter-spacing:.04em;border:1px solid;border-radius:3px;padding:0 4px;margin-left:auto}
+.ctd-blurb{font-size:.63rem;color:var(--tp);line-height:1.45;font-family:var(--fb)}
 /* Multi-day forecast strip */
 .cf-fc-title{margin:.55rem 0 .25rem;font-size:.52rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ts);font-family:var(--fb);font-weight:600;text-align:center}
 .cf-fc-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(46px,1fr);gap:.25rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.1rem;scrollbar-width:thin}
@@ -897,6 +908,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </section>
 <section id="uso-tab" class="pn2 active">
 <div class="live-banner"><span class="live-banner-dot"></span><span id="uso-banner-txt">This Week · 126th U.S. Open · Shinnecock Hills · June 18–21</span></div>
+
+<!-- Players to Watch -->
+<div class="cd" id="uso-contenders"></div>
 
 <!-- Course preview -->
 <div id="uso-preview"></div>
@@ -2887,6 +2901,20 @@ const SHINNECOCK_HOLES = [
 ];
 
 /* ===== GENERALIZED PREVIEW DATASETS (any major can supply storylines + a hole guide) ===== */
+/* ===== 2026 U.S. OPEN — PLAYERS TO WATCH (curated contender previews) ===== */
+const USOPEN_2026_CONTENDERS = [
+  {nm:"Scottie Scheffler",tag:"The Favorite",fit:"Elite",blurb:"World #1 and the most complete ball-striker in the game. Shinnecock's premium on iron control and scrambling plays straight into his hands — the man to beat, chasing the next leg of a career Grand Slam."},
+  {nm:"Rory McIlroy",tag:"Grand Slam Champ",fit:"High",blurb:"Fresh off completing the career Grand Slam at the 2025 Masters, Rory's wind-tested links pedigree and raw speed make him dangerous. The question is the putter under U.S. Open pressure."},
+  {nm:"Bryson DeChambeau",tag:"2x U.S. Open Champ",fit:"Wildcard",blurb:"Won the U.S. Open in 2020 and 2024 with brute force. Shinnecock asks the opposite — accuracy and wind control over power. If he can rein it in, he contends; if not, the fescue waits."},
+  {nm:"Xander Schauffele",tag:"Major Closer",fit:"High",blurb:"Among the steadiest big-game players in golf, with a flat, wind-piercing ball flight built for the coast. Rarely beats himself — exactly the profile that survives a U.S. Open."},
+  {nm:"Ludvig Åberg",tag:"Rising Star",fit:"Elite",blurb:"The young Swede's pure, controlled ball-striking is tailor-made for firm-and-fast fescue. Already a major contender at 26; Shinnecock's shotmaking test could be his breakthrough stage."},
+  {nm:"Collin Morikawa",tag:"Iron Maestro",fit:"Elite",blurb:"Arguably the best iron player alive — and Shinnecock is the ultimate iron-play examination. If the putter cooperates, his approach precision into these small, firm greens is a genuine edge."},
+  {nm:"Tommy Fleetwood",tag:"Shinnecock Runner-Up",fit:"High",blurb:"Closed with a Sunday 63 here in 2018 to finish one shy of Koepka. Loves wind, links and a grind — few players are more comfortable when a U.S. Open turns brutal."},
+  {nm:"Jon Rahm",tag:"2021 U.S. Open Champ",fit:"High",blurb:"A blend of power and touch with the temperament for a war of attrition. Won at Torrey in '21 and remains one of the best bad-weather players in the world."},
+  {nm:"Russell Henley",tag:"Precision Play",fit:"High",blurb:"Quietly one of the most accurate drivers and sharpest short games on Tour — the unglamorous skill set that wins U.S. Opens. A classic dark-horse fit for Shinnecock."},
+  {nm:"Shane Lowry",tag:"Wind Whisperer",fit:"Sleeper",blurb:"An Open Championship winner who thrives when the wind howls and scoring climbs. If Shinnecock bares its teeth, Lowry's creativity and ball flight become weapons."}
+];
+const EVENT_CONTENDERS = { uso: USOPEN_2026_CONTENDERS };
 const EVENT_HEADLINES = { masters: (typeof MASTERS_2026_HEADLINES!=='undefined'?MASTERS_2026_HEADLINES:null), uso: USOPEN_2026_HEADLINES };
 const HOLE_GUIDES = {
   masters: { holes:(typeof AUGUSTA_HOLES!=='undefined'?AUGUSTA_HOLES:null), src:'Augusta National media guides, Masters historical records, PGA Tour archives' },
@@ -3264,14 +3292,6 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName, wxWindow) {
     {l:'Elevation', v:course.elevation ? course.elevation.replace(' feet',' ft') : (course.elevationChange || '-')}
   ];
 
-  // Score projections under TOUR conditions
-  // Tour adj: +3 strokes for tour setup (13+ stimp, 4" rough, narrow FW, tucked pins)
-  var tourAdj = 3;
-  var projScratch = null, proj10 = null;
-  if (course.courseRating && course.slopeRating) {
-    projScratch = (course.courseRating + tourAdj).toFixed(1);
-    proj10 = (course.courseRating + (course.slopeRating / 113) * 10 + tourAdj).toFixed(1);
-  }
   var profHTML = '<div class="cf-profile-grid">';
   profileStats.forEach(function(s) {
     if (STAT_CHART_MAP[s.l]) {
@@ -3285,14 +3305,24 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName, wxWindow) {
     }
   });
   profHTML += '</div>';
-  if (projScratch && proj10) {
-    var sLow = (parseFloat(projScratch) - 2).toFixed(0);
-    var sHigh = (parseFloat(projScratch) + 3).toFixed(0);
-    var tLow = (parseFloat(proj10) - 2).toFixed(0);
-    var tHigh = (parseFloat(proj10) + 3).toFixed(0);
+  // Pro scoring context — accurate, data-driven (replaces the old amateur scratch/10-HCP projection)
+  var proStats = [];
+  if (course.scoreRTP != null && course.par != null) {
+    var fAvg = (course.par + course.scoreRTP).toFixed(1);
+    var rtp = (course.scoreRTP > 0 ? '+' : '') + course.scoreRTP;
+    var hardWord = course.scoreRTP>=1.5?'plays well over par':course.scoreRTP>=0.4?'plays over par':course.scoreRTP>-0.4?'plays right around par':course.scoreRTP>-1.5?'plays under par':'plays well under par';
+    proStats.push({l:'Field Scoring Avg', v:fAvg + ' (' + rtp + ')',
+      tip:'Field Scoring Average: ' + fAvg + ' per round (' + rtp + ' to par).\\n\\nFrom DataGolf historical scoring — the whole field averages ' + rtp + ' relative to par here, so the course ' + hardWord + '. (Par ' + course.par + '.)\\n\\nThis is the FIELD average, not the winner — contenders typically finish several shots better.'});
+  }
+  if (course.difficultyRank) {
+    proStats.push({l:'Difficulty Rank', v:course.difficultyRank,
+      tip:'Course Difficulty Rank: ' + course.difficultyRank + '\\n\\nHow this venue ranks among the courses on the PGA Tour rotation by scoring difficulty (DataGolf, scoring vs par).'});
+  }
+  if (proStats.length) {
     profHTML += '<div style="display:flex;justify-content:center;gap:1.2rem;margin-top:.7rem;flex-wrap:wrap">';
-    profHTML += '<div style="font-size:.75rem;color:var(--ts);cursor:pointer" onclick="alert(\'Scratch Golfer Tour Projection: ' + projScratch + '\\n\\nCourse Rating: ' + course.courseRating + ' (scratch baseline)\\nTour Setup Adjustment: +' + tourAdj + '\\n\\nFormula: CR + Tour Adj\\n= ' + course.courseRating + ' + ' + tourAdj + ' = ' + projScratch + '\\n\\nRange: ' + sLow + '–' + sHigh + ' (±2-3 for conditions)\\n\\nWhy +' + tourAdj + '? Tour setups are harder than\\nmember play: 13+ stimp greens, 4+ inch rough,\\nnarrowed fairways, and tucked pin positions.\')">Scratch w/ Tour Conditions: <span style="color:var(--tb);font-family:var(--fm)">' + sLow + '–' + sHigh + '</span></div>';
-    profHTML += '<div style="font-size:.75rem;color:var(--ts);cursor:pointer" onclick="alert(\'10-HCP Tour Projection: ' + proj10 + '\\n\\nCourse Rating: ' + course.courseRating + '\\nSlope Rating: ' + course.slopeRating + '\\nTour Setup Adjustment: +' + tourAdj + '\\n\\nFormula: CR + (Slope ÷ 113) × HCP + Tour Adj\\n= ' + course.courseRating + ' + (' + course.slopeRating + ' ÷ 113) × 10 + ' + tourAdj + '\\n= ' + proj10 + '\\n\\nRange: ' + tLow + '–' + tHigh + ' (±2-3 for conditions)\\n\\nWhy +' + tourAdj + '? Tour setups are harder than\\nmember play: 13+ stimp greens, 4+ inch rough,\\nnarrowed fairways, and tucked pin positions.\')">10-HCP w/ Tour Conditions: <span style="color:var(--tb);font-family:var(--fm)">' + tLow + '–' + tHigh + '</span></div>';
+    proStats.forEach(function(s){
+      profHTML += '<div style="font-size:.75rem;color:var(--ts);cursor:pointer" onclick="alert(\'' + s.tip + '\')">' + s.l + ': <span style="color:var(--tb);font-family:var(--fm)">' + s.v + '</span></div>';
+    });
     profHTML += '</div>';
   }
 
@@ -6876,12 +6906,37 @@ function renderMastersResults(){
 
 /* ===== U.S. OPEN — ACTIVE MAJOR TAB (preview + odds + live field) ===== */
 let _usoTabRendered=false,_openTabRendered=false;
+function renderContenders(targetId, eventKey){
+  const el=document.getElementById(targetId);if(!el)return;
+  const list=(typeof EVENT_CONTENDERS!=='undefined'&&EVENT_CONTENDERS[eventKey])?EVENT_CONTENDERS[eventKey]:null;
+  if(!list||!list.length){el.style.display='none';return;}
+  const fitColor={Elite:'#006747',High:'#2a7d52',Wildcard:'#9a7e28',Sleeper:'#3a86a8'};
+  let h='<div class="cf-section-title" style="margin:0 0 .15rem">Players to Watch <span style="font-size:.6rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:500">10 names for Shinnecock ▸</span></div>';
+  h+='<div style="font-size:.58rem;color:var(--td);font-style:italic;font-family:var(--fb);margin-bottom:.5rem">Who fits the firm fescue, the wind, and a U.S. Open grind</div>';
+  h+='<div class="ctd-list">';
+  list.forEach(function(p,i){
+    var fc=fitColor[p.fit]||'var(--ts)';
+    h+='<div class="ctd">'+
+      '<div class="ctd-rk">'+(i+1)+'</div>'+
+      '<div class="ctd-main">'+
+        '<div class="ctd-top"><span class="ctd-nm">'+p.nm+'</span><span class="ctd-tag">'+p.tag+'</span>'+
+          '<span class="ctd-fit" style="color:'+fc+';border-color:'+fc+'33">'+p.fit+' fit</span></div>'+
+        '<div class="ctd-blurb">'+p.blurb+'</div>'+
+      '</div>'+
+    '</div>';
+  });
+  h+='</div>';
+  h+='<div style="font-size:.5rem;color:var(--td);font-family:var(--fb);text-align:right;margin-top:.35rem">Live betting odds for the full field below ↓</div>';
+  el.style.display='';
+  el.innerHTML=h;
+}
 function renderUsoTab(){
   // Banner state always refreshes; heavy content renders once
   updateUsoBanner();
   checkUsoLive();
   if(_usoTabRendered)return;
   _usoTabRendered=true;
+  renderContenders('uso-contenders','uso');
   const el=document.getElementById('uso-preview');
   if(el){
     const courseName='Shinnecock Hills Golf Club';
