@@ -528,6 +528,19 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .cf-wx-val{font-family:var(--fm);font-size:.55rem;color:var(--tb);font-weight:500}
 .cf-wx-lbl{font-size:.48rem;text-transform:uppercase;color:var(--ts);margin-left:.1rem}
 .cf-wx-link{display:block;text-align:center;margin-top:.25rem;font-size:.55rem}
+/* Multi-day forecast strip */
+.cf-fc-title{margin:.55rem 0 .25rem;font-size:.52rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ts);font-family:var(--fb);font-weight:600;text-align:center}
+.cf-fc-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(46px,1fr);gap:.25rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.1rem;scrollbar-width:thin}
+.cf-fc-day{display:flex;flex-direction:column;align-items:center;gap:1px;padding:.3rem .15rem;border-radius:7px;background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(240,239,235,.5));border:1px solid rgba(212,210,202,.4);min-width:46px}
+.cf-fc-day.tourney{background:linear-gradient(180deg,rgba(196,160,53,.1),rgba(196,160,53,.04));border-color:rgba(196,160,53,.45);box-shadow:0 0 0 1px rgba(196,160,53,.12) inset}
+.cf-fc-dow{font-size:.5rem;font-family:var(--fb);font-weight:700;color:var(--tp);text-transform:uppercase;letter-spacing:.03em;display:flex;align-items:center;gap:2px}
+.cf-fc-day.tourney .cf-fc-dow{color:#7d6620}
+.cf-fc-flag{font-size:.4rem;background:var(--go);color:#fff;border-radius:3px;padding:0 2px;font-weight:700;line-height:1.3}
+.cf-fc-ic{font-size:.85rem;line-height:1.1}
+.cf-fc-hi{font-family:var(--fm);font-size:.6rem;font-weight:700;color:var(--tb)}
+.cf-fc-lo{font-family:var(--fm);font-size:.55rem;color:var(--td);margin-top:-2px}
+.cf-fc-rain{font-size:.46rem;font-family:var(--fm);color:#2960a8;margin-top:1px}
+.cf-fc-wind{font-size:.46rem;font-family:var(--fm);color:var(--ts)}
 @media(max-width:600px){.tour-modal{width:96vw;max-height:90vh;padding:.5rem}.tour-chart-wrap{height:72vh}}
 
 
@@ -2012,7 +2025,7 @@ function togAR(){const cb=document.getElementById('ar-cb');
   if(cb.checked){DG.ar=setInterval(()=>{dgLive();fetchPreviewOdds();},900000);DG.arPM=setInterval(()=>{refreshPredMarkets();},1800000);}else{clearInterval(DG.ar);DG.ar=null;clearInterval(DG.arPM);DG.arPM=null;}}
 // Weather refresh every hour
 let _wxInterval=null;
-function startWxRefresh(course){if(_wxInterval)clearInterval(_wxInterval);_wxInterval=setInterval(()=>fetchLiveWeather(course),2700000);}
+function startWxRefresh(course,scope,win){if(_wxInterval)clearInterval(_wxInterval);_wxInterval=setInterval(()=>fetchLiveWeather(course,scope,win),2700000);}
 
 /* === EDGE ENGINE — DG vs Vegas === */
 function buildEdgeMap(odds,inPlayData){
@@ -3164,7 +3177,8 @@ function getDateEvent() {
 /** Renders the course profile preview panel (SG bars, past winners, stats).
  *  When overrideCourseName/overrideEvName are set, renders for that course
  *  instead of the current live event (used by upcoming-event cards). */
-function renderPreview(targetEl, overrideCourseName, overrideEvName) {
+let _wxEventWindow=null;
+function renderPreview(targetEl, overrideCourseName, overrideEvName, wxWindow) {
   const el = targetEl || document.getElementById('live-preview');
   if (!el) return;
   // Show the collapsible wrapper if rendering into the default location
@@ -3173,6 +3187,7 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
     if (wrap) wrap.style.display = '';
   }
   _overrideCourse = overrideCourseName || null;
+  _wxEventWindow = wxWindow || null;
   const ev = overrideCourseName ? null : getCurrentEvent();
   const courseName = overrideCourseName || COURSE_MAP[ev];
   const course = COURSES_DATA[courseName];
@@ -3479,24 +3494,26 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName) {
       '<summary class="cf-details-sum">Conditions <span id="wx-time" style="font-size:.48rem;color:var(--td);font-family:var(--fm);font-weight:400;text-transform:none;letter-spacing:0"></span></summary>' +
       '<div class="cf-details-body" style="padding:.3rem .5rem">' +
         '<div id="wx-live" style="text-align:center;font-size:.6rem;color:var(--ts);padding:.5rem">Loading live weather...</div>' +
-        '<a class="cf-wx-link" href="https://weather.com/weather/tenday/l/' + (course.weatherSlug || course.latitude + ',' + course.longitude) + '" target="_blank" style="color:#00205b">📡 10-Day Forecast →</a>' +
+        '<a class="cf-wx-link" href="https://www.windy.com/?' + course.latitude + ',' + course.longitude + ',11" target="_blank" rel="noopener" style="color:#00205b">💨 Full wind &amp; weather radar (Windy) →</a>' +
       '</div>' +
     '</details>';
 
-  // Auto-load odds + live weather
+  // Auto-load odds + live weather (scope weather to THIS preview — wx-live id is duplicated across previews)
   setTimeout(fetchPreviewOdds, 800);
-  setTimeout(function(){ fetchLiveWeather(course); startWxRefresh(course); }, 200);
+  setTimeout(function(){ fetchLiveWeather(course, el, wxWindow); startWxRefresh(course, el, wxWindow); }, 200);
 }
 
-async function fetchLiveWeather(course) {
-  const el = document.getElementById('wx-live');
+async function fetchLiveWeather(course, scope, win) {
+  const root = scope || document;
+  if(win===undefined) win = (typeof _wxEventWindow!=='undefined'?_wxEventWindow:null);
+  const el = root.querySelector ? root.querySelector('#wx-live') : document.getElementById('wx-live');
   if (!el || !course.latitude || !course.longitude) return;
   try {
     const lat = course.latitude, lon = course.longitude;
     const url = 'https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+
       '&current=temperature_2m,relative_humidity_2m,precipitation_probability,wind_speed_10m,weather_code,is_day'+
-      '&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max'+
-      '&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=1';
+      '&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max'+
+      '&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto&forecast_days=8';
     const r = await fetch(url);
     const d = await r.json();
     const c = d.current, dy = d.daily;
@@ -3522,6 +3539,45 @@ async function fetchLiveWeather(course) {
     // Sunrise/sunset
     const fmTime=t=>{const d=new Date(t);let h=d.getHours(),m=d.getMinutes(),ap='AM';if(h>=12){ap='PM';if(h>12)h-=12;}if(h===0)h=12;return h+':'+(m<10?'0':'')+m+' '+ap;};
     const rise = fmTime(dy.sunrise[0]), set = fmTime(dy.sunset[0]);
+    // weather-code → emoji
+    function wcEmoji(code,day){
+      if(code===0)return day===false?'🌙':'☀️';
+      if(code<=3)return '⛅';
+      if(code<=48)return '🌫️';
+      if(code<=57)return '🌦️';
+      if(code<=67)return '🌧️';
+      if(code<=77)return '🌨️';
+      if(code<=82)return '🌧️';
+      if(code<=86)return '🌨️';
+      return '⛈️';
+    }
+    // Multi-day forecast strip (tournament days highlighted if _wxEventWindow set)
+    var fcHTML='';
+    if(dy.time&&dy.time.length>1){
+      var days='';
+      var _t=new Date();
+      var todayStr=_t.getFullYear()+'-'+String(_t.getMonth()+1).padStart(2,'0')+'-'+String(_t.getDate()).padStart(2,'0');
+      for(var i=0;i<dy.time.length;i++){
+        var dt=new Date(dy.time[i]+'T12:00:00');
+        var dowFull=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getDay()];
+        var isToday=dy.time[i]===todayStr;
+        var inWin=win&&dy.time[i]>=win.start&&dy.time[i]<=win.end;
+        var dHi=Math.round(dy.temperature_2m_max[i]),dLo=Math.round(dy.temperature_2m_min[i]);
+        var dRain=dy.precipitation_probability_max[i]||0;
+        var dWind=Math.round(dy.wind_speed_10m_max?dy.wind_speed_10m_max[i]:0);
+        var dGust=dy.wind_gusts_10m_max?Math.round(dy.wind_gusts_10m_max[i]):0;
+        var lbl=isToday?'Today':dowFull;
+        days+='<div class="cf-fc-day'+(inWin?' tourney':'')+'">'+
+          '<div class="cf-fc-dow">'+lbl+(inWin?'<span class="cf-fc-flag">R'+(win.rounds?win.rounds[dy.time[i]]||'':'')+'</span>':'')+'</div>'+
+          '<div class="cf-fc-ic">'+wcEmoji(dy.weather_code?dy.weather_code[i]:0)+'</div>'+
+          '<div class="cf-fc-hi">'+dHi+'°</div><div class="cf-fc-lo">'+dLo+'°</div>'+
+          '<div class="cf-fc-rain">💧'+dRain+'%</div>'+
+          '<div class="cf-fc-wind">💨'+dWind+(dGust&&dGust>dWind+8?'-'+dGust:'')+'</div>'+
+          '</div>';
+      }
+      var winLbl=win?win.label+' forecast highlighted':'7-day outlook';
+      fcHTML='<div class="cf-fc-title">'+winLbl+'</div><div class="cf-fc-strip">'+days+'</div>';
+    }
     el.innerHTML =
       '<div class="cf-wx">' +
         '<div class="cf-wx-card"><div class="cf-wx-icon">🌡️</div><div class="cf-wx-val">' + curT + '°F</div><div class="cf-wx-lbl">Now</div></div>' +
@@ -3534,9 +3590,10 @@ async function fetchLiveWeather(course) {
       '<div style="display:flex;justify-content:center;gap:1rem;margin-top:.3rem;font-size:.58rem;color:var(--ts)">' +
         '<span>🌡️ ' + lo + '–' + hi + '°F today</span><span>🌅 ' + rise + '</span><span>🌇 ' + set + '</span>' +
       '</div>' +
-      '<div class="cf-source">Live weather via Open-Meteo · Refreshes every 45 min</div>';
+      fcHTML +
+      '<div class="cf-source">Live weather &amp; forecast via Open-Meteo · Refreshes every 45 min · 💨 mph (gusts shown when notable)</div>';
     // Show "as of" timestamp
-    const wxTime=document.getElementById('wx-time');
+    const wxTime=(root.querySelector?root.querySelector('#wx-time'):document.getElementById('wx-time'));
     if(wxTime){const now=new Date();let h=now.getHours(),m=now.getMinutes(),ap='AM';if(h>=12){ap='PM';if(h>12)h-=12;}if(h===0)h=12;wxTime.textContent='as of '+h+':'+(m<10?'0':'')+m+' '+ap+' local';}
   } catch(e) {
     console.error('Weather error:', e);
@@ -6833,7 +6890,7 @@ function renderUsoTab(){
         '<button id="uso-basic-btn" class="pv-basic" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
         '<button id="uso-adv-btn" class="pv-adv" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
       el.innerHTML=toggle+'<div id="uso-preview-target"></div>';
-      renderPreview(document.getElementById('uso-preview-target'),courseName,'U.S. Open');
+      renderPreview(document.getElementById('uso-preview-target'),courseName,'U.S. Open',{start:'2026-06-18',end:'2026-06-21',label:'Tournament',rounds:{'2026-06-18':'1','2026-06-19':'2','2026-06-20':'3','2026-06-21':'4'}});
       syncPvButtons();
     }else{
       el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
@@ -6946,7 +7003,7 @@ function renderOpenTab(){
       '<button id="open-basic-btn" class="pv-basic" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
       '<button id="open-adv-btn" class="pv-adv" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
     el.innerHTML=toggle+'<div id="open-preview-target"></div>';
-    renderPreview(document.getElementById('open-preview-target'),courseName,'The Open Championship');
+    renderPreview(document.getElementById('open-preview-target'),courseName,'The Open Championship',{start:'2026-07-16',end:'2026-07-19',label:'Championship',rounds:{'2026-07-16':'1','2026-07-17':'2','2026-07-18':'3','2026-07-19':'4'}});
     syncPvButtons();
   }else{
     el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
