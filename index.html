@@ -909,9 +909,6 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <section id="uso-tab" class="pn2 active">
 <div class="live-banner"><span class="live-banner-dot"></span><span id="uso-banner-txt">This Week · 126th U.S. Open · Shinnecock Hills · June 18–21</span></div>
 
-<!-- Players to Watch -->
-<div class="cd" id="uso-contenders"></div>
-
 <!-- Course preview -->
 <div id="uso-preview"></div>
 
@@ -6936,7 +6933,6 @@ function renderUsoTab(){
   checkUsoLive();
   if(_usoTabRendered)return;
   _usoTabRendered=true;
-  renderContenders('uso-contenders','uso');
   const el=document.getElementById('uso-preview');
   if(el){
     const courseName='Shinnecock Hills Golf Club';
@@ -6985,9 +6981,7 @@ async function fetchUsoOdds(){
       {key:'draftkings',label:'DK'},
       {key:'fanduel',label:'FD'},
       {key:'betmgm',label:'MGM'},
-      {key:'caesars',label:'CZR'},
-      {key:'pointsbet',label:'PB'},
-      {key:'bet365',label:'365'}
+      {key:'caesars',label:'CZR'}
     ];
     const decToAm=d=>{if(!d)return null;return d>=2?'+'+(Math.round((d-1)*100)):'-'+Math.round(100/(d-1));};
     function getDgOdds(p){
