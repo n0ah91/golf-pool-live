@@ -7153,7 +7153,7 @@ const USO_ROSTERS=[
 function _lnKey(full){if(!full)return'';var s=String(full).indexOf(',')>=0?String(full).split(',')[0]:String(full);return s.toLowerCase().replace(/[^a-z]/g,'');}
 function _parsePos(ps){if(ps==null)return{pos:null,cut:false};var s=String(ps).toUpperCase();if(s.indexOf('CUT')>=0||s.indexOf('WD')>=0||s.indexOf('DQ')>=0)return{pos:null,cut:true};var m=s.match(/\d+/);return{pos:m?parseInt(m[0],10):null,cut:false};}
 function _posBonus(pos){return(pos!=null&&pos>=1&&pos<=10)?(11-pos):0;}
-function _winOdds(w){if(!w||w<=0)return'–';var dec=1/w;return dec>=2?'+'+Math.round((dec-1)*100):'-'+Math.round(100/(dec-1));}
+function _winOdds(w){if(!w||w<=0)return'–';var dec=1/w;var v=dec>=2?(dec-1)*100:-100/(dec-1);v=Math.round(v/5)*5;return(v>0?'+':'')+v;}
 function _ytdMap(){var out=[];if(typeof DB!=='undefined'&&DB.participants)DB.participants.forEach(function(p){var s=p.seasons&&p.seasons['2026'];if(!s)return;if(Array.isArray(s))s.forEach(function(x){if(x.total!=null)out.push({nm:x.entry_used,total:x.total});});else if(s.total!=null)out.push({nm:s.entry_used,total:s.total});});out.sort(function(a,b){return a.total-b.total;});var m={};out.forEach(function(e,i){e.rk=i+1;m[e.nm.toLowerCase()]=e;});return{list:out,byName:m};}
 const USO_PAYOUTS=[{p:'1st',v:500},{p:'2nd',v:325},{p:'3rd',v:200},{p:'4th',v:125},{p:'5th',v:75}];
 
@@ -7245,10 +7245,42 @@ function _usoLpRow(s){
 window.filterUsoLivePool=function(){var q=(document.getElementById('usolp-search')||{}).value;var qq=(q||'').toLowerCase();var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var rows=qq?window._usoLpStandings.filter(function(s){return s.nm.toLowerCase().includes(qq);}):window._usoLpStandings.slice(0,25);var h='';rows.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
 window.expandUsoLivePool=function(){var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
 
-/* ---------- 2) LIVE FIELD (Simple = score/pos/odds/SG · Advanced = sportsbook odds) ---------- */
+/* ---------- 2) LIVE FIELD (Simple = rank-vs-field + scoring · Advanced = sportsbook odds) ---------- */
 let _usoFieldView='simple',_usoFieldTimer=null,_usoFieldBooks={draftkings:1,fanduel:1,betmgm:1,caesars:1,pointsbet:0,bet365:0};
 window.setUsoFieldView=function(v){_usoFieldView=v;renderUsoField();};
 window.toggleUsoBook=function(k){_usoFieldBooks[k]=_usoFieldBooks[k]?0:1;renderUsoField();};
+/* conditional-format helpers */
+function _pctColor(p){if(p==null)return'var(--td)';var hue=Math.round(p*132);var lt=58+Math.round((1-Math.abs(p-0.5)*2)*4);return'hsl('+hue+',64%,'+lt+'%)';}
+function _ordSuf(n){var v=n%100;if(v>=11&&v<=13)return'th';switch(n%10){case 1:return'st';case 2:return'nd';case 3:return'rd';default:return'th';}}
+function _rankField(rows,specs){specs.forEach(function(sp){var arr=rows.filter(function(r){return r[sp.key]!=null;}).slice().sort(function(a,b){return sp.hb?b[sp.key]-a[sp.key]:a[sp.key]-b[sp.key];});var n=arr.length;arr.forEach(function(r,i){r['_rk_'+sp.key]=i+1;r['_pct_'+sp.key]=n>1?1-(i/(n-1)):1;});});}
+/* ESPN per-player scoring (pars / birdies+ / bogeys+) — concurrency-limited, 4.5-min cache */
+let _espnScore={ts:0,by:{}},_espnLoading=false;
+function _espnKey(dn){if(!dn)return'';var p=String(dn).trim().split(/\s+/);return p[p.length-1].toLowerCase().replace(/[^a-z]/g,'')+'|'+((p[0]||'')[0]||'').toLowerCase();}
+function _dgScoreKey(nm){var s=String(nm||'');if(s.indexOf(',')>=0){var a=s.split(',');return a[0].trim().toLowerCase().replace(/[^a-z]/g,'')+'|'+((a[1]||'').trim()[0]||'').toLowerCase();}var p=s.trim().split(/\s+/);return p[p.length-1].toLowerCase().replace(/[^a-z]/g,'')+'|'+((p[0]||'')[0]||'').toLowerCase();}
+async function fetchEspnScoring(force){
+  if(_espnLoading)return _espnScore.by;
+  if(!force&&_espnScore.ts&&Date.now()-_espnScore.ts<270000&&Object.keys(_espnScore.by).length)return _espnScore.by;
+  _espnLoading=true;
+  try{
+    var lb=await(await fetch('https://site.api.espn.com/apis/site/v2/sports/golf/leaderboard')).json();
+    var ev=lb.events&&lb.events[0];
+    if(!ev||!/u\.?s\.?\s*open/i.test(ev.name||'')){_espnLoading=false;return _espnScore.by;}
+    var eventId=ev.id;
+    var comps=(ev.competitions&&ev.competitions[0]&&ev.competitions[0].competitors)||[];
+    var started=comps.filter(function(c){return c.athlete&&((c.status&&c.status.thru>0)||(c.linescores&&c.linescores.length));});
+    var by={},queue=started.slice();
+    async function worker(){while(queue.length){var c=queue.shift();var aid=c.athlete.id;try{
+      var u='https://sports.core.api.espn.com/v2/sports/golf/leagues/pga/events/'+eventId+'/competitions/'+eventId+'/competitors/'+aid+'/linescores';
+      var j=await(await fetch(u)).json();var e=0,b=0,p=0,bog=0;
+      (j.items||[]).forEach(function(rd){(rd.linescores||[]).forEach(function(h){var n=h.scoreType&&h.scoreType.name;if(!n)return;n=String(n).toUpperCase();
+        if(/EAGLE|ALBATROSS|DOUBLE_EAGLE/.test(n))e++;else if(n==='BIRDIE')b++;else if(n==='PAR')p++;else if(/BOGEY/.test(n))bog++;});});
+      by[_espnKey(c.athlete.displayName)]={birdiePlus:b+e,pars:p,bogeyPlus:bog,thru:(p+b+e+bog)};
+    }catch(err){}}}
+    var ws=[];for(var i=0;i<8;i++)ws.push(worker());await Promise.all(ws);
+    if(Object.keys(by).length)_espnScore={ts:Date.now(),by:by};
+  }catch(e){}
+  _espnLoading=false;return _espnScore.by;
+}
 async function renderUsoField(){
   const el=document.getElementById('pred-market-panel');if(!el)return;el.style.display='';
   let ip=null,sg=null,odds=null;
@@ -7265,37 +7297,47 @@ async function renderUsoField(){
   const rows=ip.data.map(function(p){var s=sgById[p.dg_id]||{};return{nm:(typeof fmN==='function'?fmN(p.player_name):p.player_name),raw:p.player_name,score:p.current_score,pos:p.current_pos,thru:p.thru,win:p.win,t5:p.top_5,t10:p.top_10,sgTot:s.sg_total,ott:s.sg_ott,app:s.sg_app,arg:s.sg_arg,putt:s.sg_putt,t2g:s.sg_t2g,dist:s.distance,acc:s.accuracy,gir:s.gir,prox:s.prox_fw,ip:(typeof inPool==='function'&&inPool(p.player_name))};});
   rows.sort(function(a,b){var pa=_parsePos(a.pos).pos||999,pb=_parsePos(b.pos).pos||999;if(pa!==pb)return pa-pb;return (a.score==null?99:a.score)-(b.score==null?99:b.score);});
   if(_usoFieldView==='simple'){
-    function sgc(v){if(v==null)return'<td style="color:var(--td)">–</td>';var c=v>0?'var(--gl)':v<0?'var(--rd)':'var(--tp)';return'<td style="font-family:var(--fm);color:'+c+'">'+(v>0?'+':'')+v.toFixed(2)+'</td>';}
-    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par">Score</th><th>Pos</th><th title="DataGolf model win odds">Win</th><th title="SG: Total">Tot</th><th title="Off the Tee">OTT</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Driving distance">DIST</th><th title="Driving accuracy">ACC</th><th title="Greens in reg">GIR</th></tr></thead><tbody>';
+    // rank vs field
+    _rankField(rows,[{key:'sgTot',hb:true},{key:'ott',hb:true},{key:'app',hb:true},{key:'arg',hb:true},{key:'putt',hb:true},{key:'t2g',hb:true},{key:'dist',hb:true},{key:'acc',hb:true},{key:'gir',hb:true}]);
+    var maxWin=Math.max.apply(null,rows.map(function(r){return r.win||0;}).concat([0.0001]));
+    // kick ESPN scoring (async) and re-render once when it arrives
+    var esBy=_espnScore.by||{};
+    if((!_espnScore.ts||Date.now()-_espnScore.ts>270000)&&!_espnLoading){fetchEspnScoring().then(function(){if(_usoFieldView==='simple')renderUsoField();});}
+    function rkCell(r,key){var rk=r['_rk_'+key];if(rk==null)return'<td style="color:var(--td)">–</td>';var c=_pctColor(r['_pct_'+key]);return'<td style="font-family:var(--fm);color:'+c+';font-weight:600">'+rk+'<span style="font-size:.48rem;opacity:.65">'+_ordSuf(rk)+'</span></td>';}
+    function valCell(r,key,fmt){if(r[key]==null)return'<td style="color:var(--td)">–</td>';var c=_pctColor(r['_pct_'+key]);return'<td style="font-family:var(--fm);color:'+c+';font-weight:600">'+fmt(r[key])+'</td>';}
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par">Score</th><th>Pos</th><th title="Pars · Birdies+ (incl. eagles) · Bogeys+">P·B⁺·Bog⁺</th><th title="DataGolf model win odds (rounded to 5)">Win</th><th title="rank vs field — Strokes Gained Total">SG&nbsp;Tot</th><th title="rank — Off the Tee">OTT</th><th title="rank — Approach">APP</th><th title="rank — Around Green">ARG</th><th title="rank — Putting">PUTT</th><th title="rank — Tee to Green">T2G</th><th title="rank — Driving distance">DIST</th><th title="rank — Driving accuracy">ACC</th><th title="rank — Greens in reg">GIR</th></tr></thead><tbody>';
     rows.forEach(function(r){
       var scC=r.score==null?'var(--td)':r.score<0?'var(--gl)':r.score>0?'var(--rd)':'var(--tp)';
       var scT=r.score==null?'–':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
+      var wp=r.win||0,bw=Math.min(100,Math.round(wp/maxWin*100));
+      var sc=esBy[_dgScoreKey(r.raw)];
+      var scoreCell=sc&&(sc.pars+sc.birdiePlus+sc.bogeyPlus)>0?('<span style="color:var(--ts)">'+sc.pars+'</span><span style="color:var(--td)"> / </span><span style="color:var(--gl);font-weight:600">'+sc.birdiePlus+'</span><span style="color:var(--td)"> / </span><span style="color:var(--rd);font-weight:600">'+sc.bogeyPlus+'</span>'):'<span style="color:var(--td)">–</span>';
       h+='<tr><td class="nc" style="font-size:.64rem">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</td>'+
         '<td style="font-family:var(--fm);font-weight:700;color:'+scC+'">'+scT+'</td>'+
         '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
-        '<td style="font-family:var(--fm);color:var(--gl);font-weight:600">'+_winOdds(r.win)+'</td>'+
-        sgc(r.sgTot)+sgc(r.ott)+sgc(r.app)+sgc(r.arg)+sgc(r.putt)+sgc(r.t2g)+
-        '<td style="font-family:var(--fm);color:var(--td)">'+(r.dist!=null?Math.round(r.dist):'–')+'</td>'+
-        '<td style="font-family:var(--fm);color:var(--td)">'+(r.acc!=null?Math.round(r.acc*100)+'%':'–')+'</td>'+
-        '<td style="font-family:var(--fm);color:var(--td)">'+(r.gir!=null?Math.round(r.gir*100)+'%':'–')+'</td></tr>';
+        '<td style="font-family:var(--fm);font-size:.58rem;white-space:nowrap">'+scoreCell+'</td>'+
+        '<td style="position:relative;font-family:var(--fm);color:var(--gl);font-weight:600;min-width:46px"><span style="position:absolute;left:1px;right:1px;top:3px;bottom:3px;width:'+bw+'%;background:rgba(122,205,140,.20);border-radius:2px"></span><span style="position:relative">'+_winOdds(r.win)+'</span></td>'+
+        rkCell(r,'sgTot')+rkCell(r,'ott')+rkCell(r,'app')+rkCell(r,'arg')+rkCell(r,'putt')+rkCell(r,'t2g')+
+        valCell(r,'dist',function(v){return Math.round(v);})+
+        valCell(r,'acc',function(v){return Math.round(v*100)+'%';})+
+        valCell(r,'gir',function(v){return Math.round(v*100)+'%';})+'</tr>';
     });
-    h+='</tbody></table></div><div style="font-size:.48rem;color:var(--td);text-align:right;margin-top:.15rem">Win = DG model odds · SG = strokes gained (event avg) · scroll → for all stats · '+rows.length+' players</div>';
+    h+='</tbody></table></div><div style="font-size:.48rem;color:var(--td);text-align:right;margin-top:.15rem">Win = DG model odds · SG/DIST/ACC/GIR shown as rank vs field (1st = best) · P·B⁺·Bog⁺ = pars / birdies+ / bogeys+ (ESPN) · scroll → · '+rows.length+' players</div>';
   } else {
-    // Advanced — sportsbook odds comparison with book toggles
     var ALLBOOKS=[{k:'draftkings',l:'DK'},{k:'fanduel',l:'FD'},{k:'betmgm',l:'MGM'},{k:'caesars',l:'CZR'},{k:'pointsbet',l:'PB'},{k:'bet365',l:'365'}];
     var books=ALLBOOKS.filter(function(b){return _usoFieldBooks[b.k];});
     h+='<div style="margin-bottom:.35rem;font-size:.55rem;color:var(--td);font-family:var(--fb)">Sportsbooks: '+ALLBOOKS.map(function(b){return '<button onclick="toggleUsoBook(\''+b.k+'\')" style="font-family:var(--fb);font-size:.55rem;border:1px solid '+(_usoFieldBooks[b.k]?'var(--go)':'var(--br)')+';background:'+(_usoFieldBooks[b.k]?'rgba(196,160,53,.12)':'var(--bc)')+';color:'+(_usoFieldBooks[b.k]?'var(--go)':'var(--ts)')+';border-radius:4px;padding:.1rem .4rem;margin-right:.2rem;cursor:pointer">'+b.l+'</button>';}).join('')+'</div>';
     var op=[];if(odds){if(Array.isArray(odds))op=odds;else if(odds.odds&&Array.isArray(odds.odds))op=odds.odds;else for(var k in odds){if(Array.isArray(odds[k])){op=odds[k];break;}}}
     var dgById={};rows.forEach(function(r){dgById[_lnKey(r.raw)]=r;});
     function getDg(p){if(p.datagolf&&typeof p.datagolf==='object')return p.datagolf.baseline_history_fit||p.datagolf.baseline||null;if(typeof p.datagolf_base_history_fit==='number')return p.datagolf_base_history_fit;if(typeof p.baseline_history_fit==='number')return p.baseline_history_fit;return null;}
-    var decToAm=function(d){if(!d)return'–';return d>=2?'+'+Math.round((d-1)*100):'-'+Math.round(100/(d-1));};
+    var decToAm=function(d){if(!d)return'–';var v=d>=2?(d-1)*100:-100/(d-1);v=Math.round(v/5)*5;return(v>0?'+':'')+v;};
     op.sort(function(a,b){return (getDg(a)||999)-(getDg(b)||999);});
     h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="DG model win%">DG%</th><th>Score</th><th>Pos</th>'+books.map(function(b){return '<th>'+b.l+'</th>';}).join('')+'</tr></thead><tbody>';
-    op.slice(0,40).forEach(function(p){var nm=(typeof fmN==='function'?fmN(p.player_name):p.player_name);var live=dgById[_lnKey(p.player_name)]||{};var dgd=getDg(p);var dgp=dgd?(100/dgd).toFixed(1)+'%':'–';var ipool=(typeof inPool==='function'&&inPool(p.player_name));var scT=live.score==null?'–':(live.score>0?'+'+live.score:live.score===0?'E':live.score);
-      h+='<tr><td class="nc" style="font-size:.64rem">'+(ipool?'<span style="color:var(--go)">'+nm+'</span>':nm)+'</td><td style="font-family:var(--fm);color:var(--gl);font-weight:600">'+dgp+'</td><td style="font-family:var(--fm);color:'+(live.score<0?'var(--gl)':live.score>0?'var(--rd)':'var(--tp)')+'">'+scT+'</td><td style="font-family:var(--fm);color:var(--ts)">'+(live.pos||'–')+'</td>';
+    op.slice(0,40).forEach(function(p){var nm=(typeof fmN==='function'?fmN(p.player_name):p.player_name);var lv=dgById[_lnKey(p.player_name)]||{};var dgd=getDg(p);var dgp=dgd?(100/dgd).toFixed(1)+'%':'–';var ipool=(typeof inPool==='function'&&inPool(p.player_name));var scT=lv.score==null?'–':(lv.score>0?'+'+lv.score:lv.score===0?'E':lv.score);
+      h+='<tr><td class="nc" style="font-size:.64rem">'+(ipool?'<span style="color:var(--go)">'+nm+'</span>':nm)+'</td><td style="font-family:var(--fm);color:var(--gl);font-weight:600">'+dgp+'</td><td style="font-family:var(--fm);color:'+(lv.score<0?'var(--gl)':lv.score>0?'var(--rd)':'var(--tp)')+'">'+scT+'</td><td style="font-family:var(--fm);color:var(--ts)">'+(lv.pos||'–')+'</td>';
       books.forEach(function(b){var o=typeof p[b.k]==='number'?p[b.k]:(p[b.k]&&p[b.k].odds||null);h+='<td style="font-family:var(--fm);font-size:.58rem">'+decToAm(o)+'</td>';});
       h+='</tr>';});
-    h+='</tbody></table></div><div style="font-size:.48rem;color:var(--td);text-align:right;margin-top:.15rem">Sportsbook outrights + DG model via DataGolf · tap books to toggle</div>';
+    h+='</tbody></table></div><div style="font-size:.48rem;color:var(--td);text-align:right;margin-top:.15rem">Sportsbook outrights + DG model via DataGolf · odds rounded to 5 · tap books to toggle</div>';
   }
   el.innerHTML=h;_applySecSize('pred-market-panel');
 }
