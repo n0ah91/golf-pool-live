@@ -824,6 +824,8 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .nav button.live-tab.active{color:var(--uso);background:rgba(110,42,62,.08);box-shadow:inset 0 -2px 0 var(--uso)}
 .nav button.live-tab.active::after,.nav button.live-tab:hover::after{background:var(--uso)}
 .nav button.live-tab:hover{color:var(--uso2);background:rgba(110,42,62,.06)}
+
+.ts-btn[data-ts="sm"]{font-size:.6rem}.ts-btn[data-ts="md"]{font-size:.75rem}.ts-btn[data-ts="lg"]{font-size:.9rem}
 </style>
 </head>
 <body>
@@ -7147,39 +7149,28 @@ const USO_ROSTERS=[
 ];
 
 
-/* ===== U.S. OPEN — LIVE POOL LEADERBOARD (best 4 of 6 + position bonus, from DG in-play) ===== */
-function _lnKey(full){
-  if(!full)return'';
-  var s=String(full).indexOf(',')>=0?String(full).split(',')[0]:String(full);
-  return s.toLowerCase().replace(/[^a-z]/g,'');
-}
-function _parsePos(ps){
-  if(ps==null)return{pos:null,cut:false};
-  var s=String(ps).toUpperCase();
-  if(s.indexOf('CUT')>=0||s.indexOf('WD')>=0||s.indexOf('DQ')>=0)return{pos:null,cut:true};
-  var m=s.match(/\d+/);return{pos:m?parseInt(m[0],10):null,cut:false};
-}
+/* ===== U.S. OPEN LIVE SUITE — pool leaderboard, live field, pool picks ===== */
+function _lnKey(full){if(!full)return'';var s=String(full).indexOf(',')>=0?String(full).split(',')[0]:String(full);return s.toLowerCase().replace(/[^a-z]/g,'');}
+function _parsePos(ps){if(ps==null)return{pos:null,cut:false};var s=String(ps).toUpperCase();if(s.indexOf('CUT')>=0||s.indexOf('WD')>=0||s.indexOf('DQ')>=0)return{pos:null,cut:true};var m=s.match(/\d+/);return{pos:m?parseInt(m[0],10):null,cut:false};}
 function _posBonus(pos){return(pos!=null&&pos>=1&&pos<=10)?(11-pos):0;}
-// Current full-pool YTD (2026) standings from DB → name -> {total, rk}
-function _ytdMap(){
-  var out=[];
-  if(typeof DB!=='undefined'&&DB.participants)DB.participants.forEach(function(p){
-    var s=p.seasons&&p.seasons['2026'];if(!s)return;
-    if(Array.isArray(s))s.forEach(function(x){if(x.total!=null)out.push({nm:x.entry_used,total:x.total});});
-    else if(s.total!=null)out.push({nm:s.entry_used,total:s.total});
-  });
-  out.sort(function(a,b){return a.total-b.total;});
-  var m={};out.forEach(function(e,i){e.rk=i+1;m[e.nm.toLowerCase()]=e;});
-  return{list:out,byName:m};
-}
+function _winOdds(w){if(!w||w<=0)return'–';var dec=1/w;return dec>=2?'+'+Math.round((dec-1)*100):'-'+Math.round(100/(dec-1));}
+function _ytdMap(){var out=[];if(typeof DB!=='undefined'&&DB.participants)DB.participants.forEach(function(p){var s=p.seasons&&p.seasons['2026'];if(!s)return;if(Array.isArray(s))s.forEach(function(x){if(x.total!=null)out.push({nm:x.entry_used,total:x.total});});else if(s.total!=null)out.push({nm:s.entry_used,total:s.total});});out.sort(function(a,b){return a.total-b.total;});var m={};out.forEach(function(e,i){e.rk=i+1;m[e.nm.toLowerCase()]=e;});return{list:out,byName:m};}
 const USO_PAYOUTS=[{p:'1st',v:500},{p:'2nd',v:325},{p:'3rd',v:200},{p:'4th',v:125},{p:'5th',v:75}];
+
+/* Reusable per-section text-size control (zoom-based) */
+const _SEC_ZOOM={sm:0.85,md:1,lg:1.18};
+function setSecSize(id,sz){var el=document.getElementById(id);if(!el)return;el.style.zoom=_SEC_ZOOM[sz]||1;el.querySelectorAll('.ts-btn[data-ts]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-ts')===sz);});try{localStorage.setItem('secSize_'+id,sz);}catch(e){}}
+function _secSizeGet(id){try{return localStorage.getItem('secSize_'+id)||'md';}catch(e){return'md';}}
+function tsToggleHTML(id){var cur=_secSizeGet(id);return '<div class="ts-toggle" role="group" aria-label="Text size">'+['sm','md','lg'].map(function(s){return '<button class="ts-btn'+(s===cur?' active':'')+'" data-ts="'+s+'" onclick="setSecSize(\''+id+'\',\''+s+'\')">A</button>';}).join('')+'</div>';}
+function _applySecSize(id){var el=document.getElementById(id);if(!el)return;el.style.zoom=_SEC_ZOOM[_secSizeGet(id)]||1;}
+
+/* ---------- 1) LIVE POOL LEADERBOARD ---------- */
 let _usoPoolTimer=null;
 async function renderUsoLivePool(){
   const el=document.getElementById('uso-live-pool');if(!el)return;
   if(typeof USO_ROSTERS==='undefined'||!USO_ROSTERS.length){el.style.display='none';return;}
   el.style.display='';
-  let inplay=null;
-  try{inplay=await dgF('preds/in-play',{tour:'pga'});}catch(e){inplay=null;}
+  let inplay=null;try{inplay=await dgF('preds/in-play',{tour:'pga'});}catch(e){}
   const evName=(inplay&&(inplay.info&&inplay.info.event_name||inplay.event_name))||'';
   const rnd=(inplay&&inplay.info&&inplay.info.current_round)||'';
   const data=Array.isArray(inplay&&inplay.data)?inplay.data:[];
@@ -7187,125 +7178,59 @@ async function renderUsoLivePool(){
   const updated=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
   const payH='<div class="usolp-pay"><b>In the money:</b> '+USO_PAYOUTS.map(function(x){return '<span>'+x.p+' $'+x.v+'</span>';}).join('')+' <span class="usolp-pay-dh">+ Dark Horse bonuses</span></div>';
   if(!isUsoLive){
-    el.innerHTML='<div class="usolp-head"><h3 style="margin:0">Live Pool Leaderboard</h3>'+
-      '<span style="font-size:.55rem;color:var(--td);font-family:var(--fb)">'+USO_ROSTERS.length+' entries · best 4 of 6 + bonus</span></div>'+
-      payH+
-      '<div style="text-align:center;padding:1rem .5rem;font-size:.66rem;color:var(--ts);line-height:1.6">'+
-      '<div style="font-size:1.1rem;margin-bottom:.2rem">⛳</div>'+
-      '<b style="color:var(--tb)">'+USO_ROSTERS.length+' rosters locked &amp; loaded.</b><br>'+
-      'Live scoring begins when the U.S. Open tees off — best 4 of 6 to par plus leaderboard bonus (1st = 10 … 10th = 1), ranked in real time with a live projection of your year-to-date standing. Refreshes every 5 minutes.'+
-      (evName?'<div style="font-size:.5rem;color:var(--td);margin-top:.4rem">DataGolf live feed currently on: '+evName+'</div>':'')+
-      '</div>';
-    return;
+    el.innerHTML='<div class="usolp-head"><h3 style="margin:0">Live Pool Leaderboard</h3>'+tsToggleHTML('uso-live-pool')+'</div>'+payH+
+      '<div style="text-align:center;padding:1rem .5rem;font-size:.66rem;color:var(--ts);line-height:1.6"><div style="font-size:1.1rem;margin-bottom:.2rem">⛳</div><b style="color:var(--tb)">'+USO_ROSTERS.length+' rosters locked &amp; loaded.</b><br>Live scoring begins when the U.S. Open tees off — best 4 of 6 to par plus leaderboard bonus (1st = 10 … 10th = 1), ranked live with a year-to-date projection. Refreshes every 5 min.'+(evName?'<div style="font-size:.5rem;color:var(--td);margin-top:.4rem">DataGolf feed on: '+evName+'</div>':'')+'</div>';
+    _applySecSize('uso-live-pool');return;
   }
-  // score map
-  // Build a per-last-name LIST of field players (handles entries that picked two of the
-  // same surname, e.g. Matt + Alex Fitzpatrick — distribute them to distinct players).
   const smMulti={};
-  data.forEach(function(p){
-    const k=_lnKey(p.player_name);if(!k)return;
-    const pp=_parsePos(p.current_pos!=null?p.current_pos:p.position);
-    const rec={s:p.current_score!=null?p.current_score:(p.total!=null?p.total:null),pos:pp.pos,cut:pp.cut||p.make_cut===0,thru:(p.thru!=null?p.thru:0),started:(p.thru>0),nm:p.player_name};
-    (smMulti[k]=smMulti[k]||[]).push(rec);
-  });
-  // Order each surname group so the higher-field-ownership player (per meta) leads single picks
-  var _metaByKey={};
-  if(typeof USO_PLAYER_META!=='undefined')Object.keys(USO_PLAYER_META).forEach(function(rn){var m=USO_PLAYER_META[rn];_metaByKey[_lnKey(rn)]={fn:(m.nm||'').toLowerCase().replace(/[^a-z]/g,'')};});
-  Object.keys(smMulti).forEach(function(k){
-    var pref=_metaByKey[k]?_metaByKey[k].fn:null;
-    smMulti[k].sort(function(a,b){
-      if(pref){var an=a.nm.toLowerCase().replace(/[^a-z]/g,''),bn=b.nm.toLowerCase().replace(/[^a-z]/g,'');
-        // prefer the player whose first name matches the higher-owned meta pick
-        var am=pref.indexOf(an.replace(k,''))>=0||an.indexOf(pref.replace(k,''))>=0,bm=pref.indexOf(bn.replace(k,''))>=0||bn.indexOf(pref.replace(k,''))>=0;
-        if(am!==bm)return am?-1:1;}
-      if((a.s!=null)!==(b.s!=null))return a.s!=null?-1:1;
-      return (a.pos||999)-(b.pos||999);
-    });
-  });
+  data.forEach(function(p){const k=_lnKey(p.player_name);if(!k)return;const pp=_parsePos(p.current_pos!=null?p.current_pos:p.position);const rec={s:p.current_score!=null?p.current_score:(p.total!=null?p.total:null),pos:pp.pos,cut:pp.cut||p.make_cut===0,thru:(p.thru!=null?p.thru:0),started:(p.thru>0),nm:p.player_name};(smMulti[k]=smMulti[k]||[]).push(rec);});
+  var _metaByKey={};if(typeof USO_PLAYER_META!=='undefined')Object.keys(USO_PLAYER_META).forEach(function(rn){_metaByKey[_lnKey(rn)]={fn:(USO_PLAYER_META[rn].nm||'').toLowerCase().replace(/[^a-z]/g,'')};});
+  Object.keys(smMulti).forEach(function(k){var pref=_metaByKey[k]?_metaByKey[k].fn:null;smMulti[k].sort(function(a,b){if(pref){var an=a.nm.toLowerCase().replace(/[^a-z]/g,''),bn=b.nm.toLowerCase().replace(/[^a-z]/g,'');var am=pref.indexOf(an.replace(k,''))>=0||an.indexOf(pref.replace(k,''))>=0,bm=pref.indexOf(bn.replace(k,''))>=0||bn.indexOf(pref.replace(k,''))>=0;if(am!==bm)return am?-1:1;}if((a.s!=null)!==(b.s!=null))return a.s!=null?-1:1;return (a.pos||999)-(b.pos||999);});});
   const BEST=4;
-  // pick counts → dark horses (picked by exactly 1 entry)
   const cnt={};USO_ROSTERS.forEach(function(e){e.g.forEach(function(g){cnt[g]=(cnt[g]||0)+1;});});
   const dhSet={};Object.keys(cnt).forEach(function(g){if(cnt[g]===1)dhSet[g]=true;});
   const standings=USO_ROSTERS.map(function(entry){
     const _used={};
-    const gs=entry.g.map(function(g){
-      var k=_lnKey(g),arr=smMulti[k]||[],idx=_used[k]||0;_used[k]=idx+1;
-      var d=arr[idx]||arr[0]||{};
-      return{name:g,score:d.s!=null?d.s:null,pos:d.pos!=null?d.pos:null,cut:!!d.cut,thru:d.thru||0,started:!!d.started,bonus:_posBonus(d.pos),dh:!!dhSet[g],counted:false};
-    });
+    const gs=entry.g.map(function(g){var k=_lnKey(g),arr=smMulti[k]||[],idx=_used[k]||0;_used[k]=idx+1;var d=arr[idx]||arr[0]||{};return{name:g,score:d.s!=null?d.s:null,pos:d.pos!=null?d.pos:null,cut:!!d.cut,thru:d.thru||0,started:!!d.started,bonus:_posBonus(d.pos),dh:!!dhSet[g],counted:false};});
     const withS=gs.filter(function(g){return g.score!==null;}).sort(function(a,b){return a.score-b.score;});
     const counted=withS.slice(0,BEST);counted.forEach(function(g){g.counted=true;});
-    const dropped=withS.slice(BEST);
-    const noS=gs.filter(function(g){return g.score===null;});
-    const rp=counted.reduce(function(s,g){return s+g.score;},0);
-    const bonus=gs.reduce(function(s,g){return s+g.bonus;},0);
-    const startedN=gs.filter(function(g){return g.started;}).length;
-    return{nm:entry.nm,tb:entry.tb,rp:rp,bonus:bonus,total:rp-bonus,countedN:counted.length,startedN:startedN,golfers:gs,sortGolfers:counted.concat(dropped,noS)};
+    const dropped=withS.slice(BEST);const noS=gs.filter(function(g){return g.score===null;});
+    const rp=counted.reduce(function(s,g){return s+g.score;},0);const bonus=gs.reduce(function(s,g){return s+g.bonus;},0);const startedN=gs.filter(function(g){return g.started;}).length;
+    return{nm:entry.nm,tb:entry.tb,rp:rp,bonus:bonus,total:rp-bonus,countedN:counted.length,startedN:startedN,sortGolfers:counted.concat(dropped,noS)};
   });
   standings.sort(function(a,b){if(a.total!==b.total)return a.total-b.total;return b.bonus-a.bonus;});
   standings.forEach(function(s,i){if(i>0&&standings[i-1].total===s.total)s.rk=standings[i-1].rk;else s.rk=i+1;});
-  // ---- live YTD projection ----
-  const ytd=_ytdMap();
-  const liveByName={};standings.forEach(function(s){liveByName[s.nm.toLowerCase()]=s.total;});
-  const proj=ytd.list.map(function(e){return{nm:e.nm,pt:e.total+(liveByName[e.nm.toLowerCase()]||0)};});
-  proj.sort(function(a,b){return a.pt-b.pt;});
+  const ytd=_ytdMap();const liveByName={};standings.forEach(function(s){liveByName[s.nm.toLowerCase()]=s.total;});
+  const proj=ytd.list.map(function(e){return{nm:e.nm,pt:e.total+(liveByName[e.nm.toLowerCase()]||0)};});proj.sort(function(a,b){return a.pt-b.pt;});
   const projRank={};proj.forEach(function(e,i){projRank[e.nm.toLowerCase()]=i+1;});
-  standings.forEach(function(s){
-    var y=ytd.byName[s.nm.toLowerCase()];
-    s.ytdRank=y?y.rk:null;
-    s.projRank=projRank[s.nm.toLowerCase()]||null;
-    s.ytdMove=(s.ytdRank!=null&&s.projRank!=null)?(s.ytdRank-s.projRank):null;
-  });
-  // ---- dark horse leader ----
-  var dhList=Object.keys(dhSet).map(function(g){
-    var _arr=smMulti[_lnKey(g)]||[];var d=_arr[0]||{};
-    var owner=USO_ROSTERS.find(function(e){return e.g.indexOf(g)>=0;});
-    var meta=(typeof USO_PLAYER_META!=='undefined'&&USO_PLAYER_META[g])?USO_PLAYER_META[g]:{};
-    return{g:g,nm:meta.nm||g,score:d.s!=null?d.s:null,pos:d.pos!=null?d.pos:null,posRaw:d.nm?(d.pos!=null?d.pos:null):null,started:!!d.started,cut:!!d.cut,owner:owner?owner.nm:'?'};
-  });
-  var dhScored=dhList.filter(function(x){return x.score!=null&&!x.cut;}).sort(function(a,b){return a.score-b.score;});
-  var dhLeader=dhScored[0]||null;
-  window._usoLpCtx={ml:Math.ceil(standings.length*.33)};
+  const ytdN=ytd.list.length;
+  standings.forEach(function(s){var y=ytd.byName[s.nm.toLowerCase()];s.ytdRank=y?y.rk:null;s.projRank=projRank[s.nm.toLowerCase()]||null;s.ytdMove=(s.ytdRank!=null&&s.projRank!=null)?(s.ytdRank-s.projRank):null;});
+  var dhList=Object.keys(dhSet).map(function(g){var _arr=smMulti[_lnKey(g)]||[];var d=_arr[0]||{};var owner=USO_ROSTERS.find(function(e){return e.g.indexOf(g)>=0;});var meta=(typeof USO_PLAYER_META!=='undefined'&&USO_PLAYER_META[g])?USO_PLAYER_META[g]:{};return{nm:meta.nm||g,score:d.s!=null?d.s:null,pos:d.pos!=null?d.pos:null,cut:!!d.cut,owner:owner?owner.nm:'?'};});
+  var dhLeader=dhList.filter(function(x){return x.score!=null&&!x.cut;}).sort(function(a,b){return a.score-b.score;})[0]||null;
+  window._usoLpCtx={ml:Math.ceil(standings.length*.33),ytdN:ytdN};
   const ml=window._usoLpCtx.ml;
   const fieldStarted=data.filter(function(p){return p.thru>0;}).length;
-  // ---- render ----
-  let h='<div class="usolp-head"><h3 style="margin:0"><span class="ls-live-dot" style="background:var(--uso);display:inline-block;margin-right:.3rem"></span>Live Pool Leaderboard</h3>'+
-    '<span style="font-size:.55rem;color:var(--td);font-family:var(--fb)">'+(rnd?'Round '+rnd+' · ':'')+fieldStarted+'/'+data.length+' golfers started · <span style="color:var(--gl)">'+updated+'</span> <button onclick="renderUsoLivePool()" title="Refresh now" style="border:1px solid var(--br);background:var(--bc);border-radius:4px;cursor:pointer;font-size:.6rem;padding:0 .35rem;color:var(--uso)">⟳</button></span></div>';
-  // dark horse leader + payouts strip
+  let h='<div class="usolp-head"><h3 style="margin:0"><span class="ls-live-dot" style="background:var(--uso);display:inline-block;margin-right:.3rem"></span>Live Pool Leaderboard</h3>'+tsToggleHTML('uso-live-pool')+'</div>';
+  h+='<div style="font-size:.55rem;color:var(--td);font-family:var(--fb);margin-bottom:.3rem">'+(rnd?'Round '+rnd+' · ':'')+fieldStarted+'/'+data.length+' golfers started · <span style="color:var(--gl)">'+updated+'</span> <button onclick="renderUsoLivePool()" title="Refresh now" style="border:1px solid var(--br);background:var(--bc);border-radius:4px;cursor:pointer;font-size:.6rem;padding:0 .35rem;color:var(--uso)">⟳</button></div>';
   h+='<div class="usolp-strip">';
-  if(dhLeader){
-    h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>Dark Horse leader:</b> '+dhLeader.nm+' <span class="usolp-dh-sc">'+(dhLeader.score>0?'+':'')+(dhLeader.score===0?'E':dhLeader.score)+(dhLeader.pos?' · T'+dhLeader.pos:'')+'</span> <span class="usolp-dh-own">— '+dhLeader.owner+'</span></div>';
-  } else {
-    h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>'+Object.keys(dhSet).length+' dark horses</b> in play — single-pick longshots to root for</div>';
-  }
+  if(dhLeader)h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>Dark Horse leader:</b> '+dhLeader.nm+' <span class="usolp-dh-sc">'+(dhLeader.score>0?'+':'')+(dhLeader.score===0?'E':dhLeader.score)+(dhLeader.pos?' · T'+dhLeader.pos:'')+'</span> <span class="usolp-dh-own">— '+dhLeader.owner+'</span></div>';
+  else h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>'+Object.keys(dhSet).length+' dark horses</b> in play — single-pick longshots to root for</div>';
   h+=payH+'</div>';
-  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem;gap:.4rem;flex-wrap:wrap">'+
-    '<input id="usolp-search" placeholder="Search entry..." oninput="filterUsoLivePool()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:130px">'+
-    '<span style="font-size:.5rem;color:var(--td);font-family:var(--fb)">Best 4 of 6 to par − position bonus · auto every 5 min</span></div>';
-  h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>'+
-    '<th style="width:24px">#</th><th>Entry</th><th style="width:44px">Total</th><th style="width:34px" title="leaderboard position bonus">Bon</th>'+
-    '<th style="width:62px" title="projected year-to-date rank after the U.S. Open">YTD&nbsp;Proj</th>'+
-    '<th>Best 4 of 6 — counted bold · dropped faded · 🐎 dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
+  h+='<div style="margin-bottom:.3rem"><input id="usolp-search" placeholder="Search entry..." oninput="filterUsoLivePool()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:130px"> <span style="font-size:.5rem;color:var(--td);font-family:var(--fb)">best 4 of 6 to par − position bonus</span></div>';
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr><th style="width:24px">#</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th style="width:58px" title="projected year-to-date rank">YTD</th><th>Best 4 of 6 — counted bold · dropped faded · 🐎 dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
   standings.slice(0,25).forEach(function(s){h+=_usoLpRow(s);});
-  h+='</tbody></table></div>';
-  h+='<div style="text-align:center;padding:.4rem"><button class="btn-pill" onclick="expandUsoLivePool()">Show all '+standings.length+' entries ↓</button></div>';
-  el.innerHTML=h;
-  window._usoLpStandings=standings;
+  h+='</tbody></table></div><div style="text-align:center;padding:.4rem"><button class="btn-pill" onclick="expandUsoLivePool()">Show all '+standings.length+' entries ↓</button></div>';
+  el.innerHTML=h;window._usoLpStandings=standings;_applySecSize('uso-live-pool');
 }
-function _holesBar(golfers){
-  var segs=golfers.slice(0,6).map(function(g){
-    var pct=Math.round(Math.min(18,g.thru||0)/18*100);
-    return '<span class="hb-seg"><span class="hb-fill" style="width:'+pct+'%"></span></span>';
-  }).join('');
-  return '<span class="hb" title="holes played by each of the 6 golfers">'+segs+'</span>';
-}
-function _ytdProjTag(s){
-  if(s.projRank==null)return'';
-  var arrow='',cls='';
-  if(s.ytdMove>0){arrow='▲'+s.ytdMove;cls='up';}
-  else if(s.ytdMove<0){arrow='▼'+Math.abs(s.ytdMove);cls='dn';}
-  else{arrow='=';cls='eq';}
-  return '<span class="ytdproj '+cls+'" title="Projected year-to-date rank after the U.S. Open (was #'+(s.ytdRank!=null?s.ytdRank:'?')+')">#'+s.projRank+' <span class="ytdproj-a">'+arrow+'</span></span>';
+function _ytdTag(s){
+  if(s.projRank==null)return'<span style="color:var(--td)">–</span>';
+  var r=s.projRank,n=(window._usoLpCtx&&window._usoLpCtx.ytdN)||108;
+  var col=r<=3?'#9a7e28':r<=10?'#2a7d52':r<=25?'#4a9e6e':r<=Math.ceil(n*0.55)?'var(--tp)':r<=Math.ceil(n*0.8)?'#c07a4a':'#b03b48';
+  var arrow,acol;
+  if(s.ytdMove>0){arrow='▲'+s.ytdMove;acol='var(--gl)';}
+  else if(s.ytdMove<0){arrow='▼'+Math.abs(s.ytdMove);acol='var(--rd)';}
+  else{arrow='=';acol='var(--td)';}
+  return '<span style="font-family:var(--fm);font-weight:700;color:'+col+'">#'+r+'</span> <span style="font-size:.52rem;font-family:var(--fm);color:'+acol+'">'+arrow+'</span>';
 }
 function _usoLpRow(s){
   const ml=(window._usoLpCtx&&window._usoLpCtx.ml)||35;
@@ -7313,64 +7238,115 @@ function _usoLpRow(s){
   const sv=s.countedN>0?(s.total>0?'+'+s.total:s.total===0?'E':s.total):'–';
   const me=(typeof loadMe==='function'&&loadMe()&&s.nm.toLowerCase().includes(loadMe().toLowerCase()))?'me':'';
   const rw=[s.rk<=3?'t3':'',s.rk<=ml?'im':'',me].filter(Boolean).join(' ');
-  const gTags=s.sortGolfers.map(function(g){
-    const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');
-    let label=(g.dh?'🐎':'')+g.name;
-    if(g.score!=null)label+=' ('+(g.score>0?'+':'')+(g.score===0?'E':g.score)+')';
-    else if(g.cut)label+=' (CUT)';
-    else label+=' (—)';
-    const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';
-    const hl=g.bonus>0?'background:rgba(196,160,53,.12);border-radius:3px;padding:0 2px':(g.dh?'background:rgba(110,42,62,.08);border-radius:3px;padding:0 2px':'');
-    return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
+  const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'🐎':'')+g.name;if(g.score!=null)label+=' ('+(g.score>0?'+':'')+(g.score===0?'E':g.score)+')';else if(g.cut)label+=' (CUT)';else label+=' (—)';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';const hl=g.bonus>0?'background:rgba(196,160,53,.12);border-radius:3px;padding:0 2px':(g.dh?'background:rgba(110,42,62,.08);border-radius:3px;padding:0 2px':'');return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
   const bonTxt=s.bonus>0?'<span style="color:var(--go);font-family:var(--fm)">−'+s.bonus+'</span>':'<span style="color:var(--td)">0</span>';
-  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'">'+s.rk+'</td>'+
-    '<td class="nc"><div style="display:flex;align-items:center;gap:.3rem;flex-wrap:wrap">'+s.nm+_holesBar(s.golfers)+'</div></td>'+
-    '<td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td>'+
-    '<td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td>'+
-    '<td>'+_ytdProjTag(s)+'</td>'+
-    '<td style="font-size:.56rem">'+gTags+'</td></tr>';
+  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'">'+s.rk+'</td><td class="nc">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td>'+_ytdTag(s)+'</td><td style="font-size:.56rem">'+gTags+'</td></tr>';
 }
-window.filterUsoLivePool=function(){
-  const q=(document.getElementById('usolp-search')||{}).value;const qq=(q||'').toLowerCase();
-  const tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;
-  const rows=qq?window._usoLpStandings.filter(function(s){return s.nm.toLowerCase().includes(qq);}):window._usoLpStandings.slice(0,25);
-  let h='';rows.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;
-};
-window.expandUsoLivePool=function(){
-  const tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;
-  let h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;
-};
-/* Pool Picks — who our 104 entries backed, with salary + field ownership + dark-horse flag */
-let _usoPicksRendered=false;
+window.filterUsoLivePool=function(){var q=(document.getElementById('usolp-search')||{}).value;var qq=(q||'').toLowerCase();var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var rows=qq?window._usoLpStandings.filter(function(s){return s.nm.toLowerCase().includes(qq);}):window._usoLpStandings.slice(0,25);var h='';rows.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
+window.expandUsoLivePool=function(){var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
+
+/* ---------- 2) LIVE FIELD (Simple = score/pos/odds/SG · Advanced = sportsbook odds) ---------- */
+let _usoFieldView='simple',_usoFieldTimer=null,_usoFieldBooks={draftkings:1,fanduel:1,betmgm:1,caesars:1,pointsbet:0,bet365:0};
+window.setUsoFieldView=function(v){_usoFieldView=v;renderUsoField();};
+window.toggleUsoBook=function(k){_usoFieldBooks[k]=_usoFieldBooks[k]?0:1;renderUsoField();};
+async function renderUsoField(){
+  const el=document.getElementById('pred-market-panel');if(!el)return;el.style.display='';
+  let ip=null,sg=null,odds=null;
+  try{var calls=[dgF('preds/in-play',{tour:'pga'}),dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt,sg_t2g,sg_total,distance,accuracy,gir,prox_fw',round:'event_avg',display:'value'})];
+    if(_usoFieldView==='advanced')calls.push(dgF('betting-tools/outrights',{tour:'pga',market:'win',odds_format:'decimal'}).catch(function(){return null;}));
+    var res=await Promise.all(calls);ip=res[0];sg=res[1];odds=res[2]||null;}catch(e){}
+  const evName=(ip&&ip.info&&ip.info.event_name)||'';
+  const live=/u\.?\s*s\.?\s*open/i.test(evName)&&ip&&ip.data&&ip.data.length;
+  const updated=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  let h='<div class="usolp-head"><h3 style="margin:0"><span class="ls-live-dot" style="background:var(--uso);display:inline-block;margin-right:.3rem"></span>Live Field</h3>'+tsToggleHTML('pred-market-panel')+'</div>';
+  h+='<div class="ih-tabs" style="margin-bottom:.35rem"><button class="ih-tab'+(_usoFieldView==='simple'?' active':'')+'" onclick="setUsoFieldView(\'simple\')">Simple</button><button class="ih-tab'+(_usoFieldView==='advanced'?' active':'')+'" onclick="setUsoFieldView(\'advanced\')">Advanced</button><span style="margin-left:auto;font-size:.5rem;color:var(--td);align-self:center">updated '+updated+'</span></div>';
+  if(!live){el.innerHTML=h+'<div style="text-align:center;padding:1rem;font-size:.66rem;color:var(--ts)">Live field stats appear once the U.S. Open is underway.</div>';_applySecSize('pred-market-panel');return;}
+  const sgById={};if(sg&&sg.live_stats)sg.live_stats.forEach(function(p){sgById[p.dg_id]=p;});
+  const rows=ip.data.map(function(p){var s=sgById[p.dg_id]||{};return{nm:(typeof fmN==='function'?fmN(p.player_name):p.player_name),raw:p.player_name,score:p.current_score,pos:p.current_pos,thru:p.thru,win:p.win,t5:p.top_5,t10:p.top_10,sgTot:s.sg_total,ott:s.sg_ott,app:s.sg_app,arg:s.sg_arg,putt:s.sg_putt,t2g:s.sg_t2g,dist:s.distance,acc:s.accuracy,gir:s.gir,prox:s.prox_fw,ip:(typeof inPool==='function'&&inPool(p.player_name))};});
+  rows.sort(function(a,b){var pa=_parsePos(a.pos).pos||999,pb=_parsePos(b.pos).pos||999;if(pa!==pb)return pa-pb;return (a.score==null?99:a.score)-(b.score==null?99:b.score);});
+  if(_usoFieldView==='simple'){
+    function sgc(v){if(v==null)return'<td style="color:var(--td)">–</td>';var c=v>0?'var(--gl)':v<0?'var(--rd)':'var(--tp)';return'<td style="font-family:var(--fm);color:'+c+'">'+(v>0?'+':'')+v.toFixed(2)+'</td>';}
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par">Score</th><th>Pos</th><th title="DataGolf model win odds">Win</th><th title="SG: Total">Tot</th><th title="Off the Tee">OTT</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Driving distance">DIST</th><th title="Driving accuracy">ACC</th><th title="Greens in reg">GIR</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      var scC=r.score==null?'var(--td)':r.score<0?'var(--gl)':r.score>0?'var(--rd)':'var(--tp)';
+      var scT=r.score==null?'–':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
+      h+='<tr><td class="nc" style="font-size:.64rem">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</td>'+
+        '<td style="font-family:var(--fm);font-weight:700;color:'+scC+'">'+scT+'</td>'+
+        '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
+        '<td style="font-family:var(--fm);color:var(--gl);font-weight:600">'+_winOdds(r.win)+'</td>'+
+        sgc(r.sgTot)+sgc(r.ott)+sgc(r.app)+sgc(r.arg)+sgc(r.putt)+sgc(r.t2g)+
+        '<td style="font-family:var(--fm);color:var(--td)">'+(r.dist!=null?Math.round(r.dist):'–')+'</td>'+
+        '<td style="font-family:var(--fm);color:var(--td)">'+(r.acc!=null?Math.round(r.acc*100)+'%':'–')+'</td>'+
+        '<td style="font-family:var(--fm);color:var(--td)">'+(r.gir!=null?Math.round(r.gir*100)+'%':'–')+'</td></tr>';
+    });
+    h+='</tbody></table></div><div style="font-size:.48rem;color:var(--td);text-align:right;margin-top:.15rem">Win = DG model odds · SG = strokes gained (event avg) · scroll → for all stats · '+rows.length+' players</div>';
+  } else {
+    // Advanced — sportsbook odds comparison with book toggles
+    var ALLBOOKS=[{k:'draftkings',l:'DK'},{k:'fanduel',l:'FD'},{k:'betmgm',l:'MGM'},{k:'caesars',l:'CZR'},{k:'pointsbet',l:'PB'},{k:'bet365',l:'365'}];
+    var books=ALLBOOKS.filter(function(b){return _usoFieldBooks[b.k];});
+    h+='<div style="margin-bottom:.35rem;font-size:.55rem;color:var(--td);font-family:var(--fb)">Sportsbooks: '+ALLBOOKS.map(function(b){return '<button onclick="toggleUsoBook(\''+b.k+'\')" style="font-family:var(--fb);font-size:.55rem;border:1px solid '+(_usoFieldBooks[b.k]?'var(--go)':'var(--br)')+';background:'+(_usoFieldBooks[b.k]?'rgba(196,160,53,.12)':'var(--bc)')+';color:'+(_usoFieldBooks[b.k]?'var(--go)':'var(--ts)')+';border-radius:4px;padding:.1rem .4rem;margin-right:.2rem;cursor:pointer">'+b.l+'</button>';}).join('')+'</div>';
+    var op=[];if(odds){if(Array.isArray(odds))op=odds;else if(odds.odds&&Array.isArray(odds.odds))op=odds.odds;else for(var k in odds){if(Array.isArray(odds[k])){op=odds[k];break;}}}
+    var dgById={};rows.forEach(function(r){dgById[_lnKey(r.raw)]=r;});
+    function getDg(p){if(p.datagolf&&typeof p.datagolf==='object')return p.datagolf.baseline_history_fit||p.datagolf.baseline||null;if(typeof p.datagolf_base_history_fit==='number')return p.datagolf_base_history_fit;if(typeof p.baseline_history_fit==='number')return p.baseline_history_fit;return null;}
+    var decToAm=function(d){if(!d)return'–';return d>=2?'+'+Math.round((d-1)*100):'-'+Math.round(100/(d-1));};
+    op.sort(function(a,b){return (getDg(a)||999)-(getDg(b)||999);});
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="DG model win%">DG%</th><th>Score</th><th>Pos</th>'+books.map(function(b){return '<th>'+b.l+'</th>';}).join('')+'</tr></thead><tbody>';
+    op.slice(0,40).forEach(function(p){var nm=(typeof fmN==='function'?fmN(p.player_name):p.player_name);var live=dgById[_lnKey(p.player_name)]||{};var dgd=getDg(p);var dgp=dgd?(100/dgd).toFixed(1)+'%':'–';var ipool=(typeof inPool==='function'&&inPool(p.player_name));var scT=live.score==null?'–':(live.score>0?'+'+live.score:live.score===0?'E':live.score);
+      h+='<tr><td class="nc" style="font-size:.64rem">'+(ipool?'<span style="color:var(--go)">'+nm+'</span>':nm)+'</td><td style="font-family:var(--fm);color:var(--gl);font-weight:600">'+dgp+'</td><td style="font-family:var(--fm);color:'+(live.score<0?'var(--gl)':live.score>0?'var(--rd)':'var(--tp)')+'">'+scT+'</td><td style="font-family:var(--fm);color:var(--ts)">'+(live.pos||'–')+'</td>';
+      books.forEach(function(b){var o=typeof p[b.k]==='number'?p[b.k]:(p[b.k]&&p[b.k].odds||null);h+='<td style="font-family:var(--fm);font-size:.58rem">'+decToAm(o)+'</td>';});
+      h+='</tr>';});
+    h+='</tbody></table></div><div style="font-size:.48rem;color:var(--td);text-align:right;margin-top:.15rem">Sportsbook outrights + DG model via DataGolf · tap books to toggle</div>';
+  }
+  el.innerHTML=h;_applySecSize('pred-market-panel');
+}
+
+/* ---------- 3) POOL PICKS (+ live value & round data) ---------- */
 function renderUsoPicks(){
-  if(_usoPicksRendered)return;
   const el=document.getElementById('uso-picks');if(!el||typeof USO_ROSTERS==='undefined')return;
-  _usoPicksRendered=true;
+  el.style.display='';
+  dgF('preds/in-play',{tour:'pga'}).then(function(ip){_renderUsoPicks(ip);}).catch(function(){_renderUsoPicks(null);});
+}
+function _renderUsoPicks(ip){
+  const el=document.getElementById('uso-picks');if(!el)return;
+  const evName=(ip&&ip.info&&ip.info.event_name)||'';const live=/u\.?\s*s\.?\s*open/i.test(evName)&&ip&&ip.data&&ip.data.length;
+  const sm={};if(live)ip.data.forEach(function(p){var k=_lnKey(p.player_name);var pp=_parsePos(p.current_pos);if(!sm[k]||(sm[k].s==null&&p.current_score!=null))sm[k]={s:p.current_score,pos:pp.pos,cut:pp.cut||p.make_cut===0,thru:p.thru};});
   const cnt={};USO_ROSTERS.forEach(function(e){e.g.forEach(function(g){cnt[g]=(cnt[g]||0)+1;});});
   const meta=(typeof USO_PLAYER_META!=='undefined')?USO_PLAYER_META:{};
-  const list=Object.keys(cnt).map(function(g){var m=meta[g]||{};return{g:g,nm:m.nm||g,n:cnt[g],pct:Math.round(cnt[g]/USO_ROSTERS.length*100),sal:m.sal||null,own:m.own!=null?m.own:null,dh:cnt[g]===1};});
+  const N=USO_ROSTERS.length;
+  const list=Object.keys(cnt).map(function(g){var m=meta[g]||{};var d=sm[_lnKey(g)]||{};
+    var sal=m.sal||null;var pos=d.pos!=null?d.pos:null;
+    // live value: better position + lower salary = higher value. valuePts = max(0,71-pos); value = pts / (sal/1000)
+    var val=null;if(live&&!d.cut&&pos!=null&&sal){var pts=Math.max(0,71-pos);val=pts/(sal/1000);}
+    return{g:g,nm:m.nm||g,n:cnt[g],pct:Math.round(cnt[g]/N*100),sal:sal,own:m.own!=null?m.own:null,dh:cnt[g]===1,score:d.s,pos:pos,cut:!!d.cut,thru:d.thru,val:val};
+  });
   list.sort(function(a,b){return b.n-a.n;});
   const dhCount=list.filter(function(p){return p.dh;}).length;
-  let h='<div class="cf-section-title" style="margin:0 0 .15rem">Pool Picks <span style="font-size:.6rem;color:var(--gl);text-transform:none;font-family:var(--fb);font-weight:500">who the '+USO_ROSTERS.length+' entries backed ▸</span></div>';
-  h+='<div style="font-size:.55rem;color:var(--td);font-style:italic;font-family:var(--fb);margin-bottom:.4rem">Most-picked golfers with DraftKings salary &amp; field ownership · '+dhCount+' dark horses (🐎, picked by one entry)</div>';
-  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th>Golfer</th><th style="width:64px">Our Picks</th><th style="width:54px">Salary</th><th style="width:52px">Field</th></tr></thead><tbody>';
+  let h='<div class="usolp-head"><h3 style="margin:0">Pool Picks</h3>'+tsToggleHTML('uso-picks')+'</div>';
+  h+='<div style="font-size:.55rem;color:var(--td);font-style:italic;font-family:var(--fb);margin-bottom:.4rem">Who the '+N+' entries backed · live score, salary, ownership &amp; current value · '+dhCount+' dark horses (🐎)</div>';
+  // best value chips (live)
+  if(live){var vl=list.filter(function(p){return p.val!=null;}).sort(function(a,b){return b.val-a.val;}).slice(0,4);
+    if(vl.length){h+='<div class="usolp-strip" style="margin-bottom:.4rem"><div class="usolp-pay" style="background:linear-gradient(135deg,rgba(42,125,82,.08),rgba(42,125,82,.03));border-color:rgba(42,125,82,.25)"><b style="color:var(--gl)">Best value now:</b> '+vl.map(function(p){return p.nm+' <span style="font-family:var(--fm);color:var(--gl)">'+p.val.toFixed(1)+'</span>';}).join(' · ')+'</div></div>';}}
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Golfer</th><th title="picked by N of our entries">Picks</th><th>Score</th><th>Pos</th><th>Salary</th><th title="field ownership">Field</th><th title="live value: position vs salary">Value</th></tr></thead><tbody>';
   function rows(arr){return arr.map(function(p){
-    return'<tr><td class="nc" style="font-size:.66rem">'+(p.dh?'🐎 ':'')+p.nm+'</td>'+
-      '<td style="font-family:var(--fm)"><b style="color:var(--go)">'+p.n+'</b> <span style="color:var(--td);font-size:.55rem">'+p.pct+'%</span></td>'+
+    var scT=p.score==null?'–':(p.score>0?'+'+p.score:p.score===0?'E':p.score);var scC=p.cut?'var(--td)':p.score<0?'var(--gl)':p.score>0?'var(--rd)':'var(--tp)';
+    var valC=p.val==null?'var(--td)':p.val>=6?'var(--gl)':p.val>=3?'var(--tp)':'var(--ts)';
+    return'<tr><td class="nc" style="font-size:.64rem">'+(p.dh?'🐎 ':'')+p.nm+'</td>'+
+      '<td style="font-family:var(--fm)"><b style="color:var(--go)">'+p.n+'</b> <span style="color:var(--td);font-size:.52rem">'+p.pct+'%</span></td>'+
+      '<td style="font-family:var(--fm);color:'+scC+'">'+(p.cut?'CUT':scT)+'</td>'+
+      '<td style="font-family:var(--fm);color:var(--ts)">'+(p.pos!=null?'T'+p.pos:'–')+'</td>'+
       '<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'–')+'</td>'+
-      '<td style="font-family:var(--fm);color:var(--ts)">'+(p.own!=null?p.own+'%':'–')+'</td></tr>';}).join('');}
-  h+=rows(list.slice(0,15));
-  h+='</tbody></table></div>';
-  h+='<details style="margin-top:.3rem"><summary style="cursor:pointer;font-size:.6rem;color:var(--go);font-family:var(--fb);padding:.25rem 0">Show all '+list.length+' picked golfers ▸</summary>'+
-     '<div class="tw" style="margin:.3rem 0 0;border-radius:5px;max-height:360px;overflow-y:auto"><table class="tc"><tbody>'+rows(list.slice(15))+'</tbody></table></div></details>';
-  el.style.display='';
-  el.innerHTML=h;
+      '<td style="font-family:var(--fm);color:var(--ts)">'+(p.own!=null?p.own+'%':'–')+'</td>'+
+      '<td style="font-family:var(--fm);font-weight:600;color:'+valC+'">'+(p.val!=null?p.val.toFixed(1):'–')+'</td></tr>';}).join('');}
+  h+=rows(list.slice(0,15))+'</tbody></table></div>';
+  h+='<details style="margin-top:.3rem"><summary style="cursor:pointer;font-size:.6rem;color:var(--go);font-family:var(--fb);padding:.25rem 0">Show all '+list.length+' picked golfers ▸</summary><div class="tw" style="margin:.3rem 0 0;border-radius:5px;max-height:360px;overflow-y:auto"><table class="tc"><tbody>'+rows(list.slice(15))+'</tbody></table></div></details>';
+  el.innerHTML=h;_applySecSize('uso-picks');
 }
 function startUsoLivePool(){
-  renderUsoPicks();
-  renderUsoLivePool();
+  // order: live pool leaderboard → live field → pool picks
+  try{var lp=document.getElementById('uso-live-pool'),pf=document.getElementById('pred-market-panel'),pk=document.getElementById('uso-picks');if(lp&&pf)lp.after(pf);if(pf&&pk)pf.after(pk);}catch(e){}
+  renderUsoLivePool();renderUsoField();renderUsoPicks();
   if(_usoPoolTimer)clearInterval(_usoPoolTimer);
-  _usoPoolTimer=setInterval(renderUsoLivePool,300000);
+  _usoPoolTimer=setInterval(function(){renderUsoLivePool();renderUsoField();renderUsoPicks();},300000);
 }
 
 /* ===== U.S. OPEN — POOL STANDINGS + LIVE SG (wired for go-live Jun 18) ===== */
@@ -7556,19 +7532,10 @@ async function fetchUsoOdds(){
 // Show the Live Field panel once the U.S. Open is actually in-play (Jun 18–21)
 let _usoLiveChecked=false;
 function checkUsoLive(){
-  const panel=document.getElementById('pred-market-panel');
-  if(!panel)return;
-  const now=new Date();
-  const start=new Date(2026,5,18),end=new Date(2026,5,22);// Jun 18 → 21 + buffer
-  if(now>=start&&now<end){
-    panel.style.display='';
-    const preOdds=document.getElementById('uso-odds-panel');
-    if(preOdds)preOdds.style.display='none';
-    if(!_usoLiveChecked&&typeof fetchPredictionMarkets==='function'){_usoLiveChecked=true;fetchPredictionMarkets();}
-    if(typeof startUsoLiveStats==='function'&&!window._usoLiveStatsStarted){window._usoLiveStatsStarted=true;startUsoLiveStats();}
-  }else{
-    panel.style.display='none';
-  }
+  var now=new Date();var start=new Date(2026,5,18),end=new Date(2026,5,22);
+  var liveWin=now>=start&&now<end;
+  var preOdds=document.getElementById('uso-odds-panel');if(preOdds)preOdds.style.display=liveWin?'none':'';
+  if(liveWin&&typeof startUsoLiveStats==='function'&&!window._usoLiveStatsStarted){window._usoLiveStatsStarted=true;startUsoLiveStats();}
 }
 function renderOpenTab(){
   if(_openTabRendered)return;
