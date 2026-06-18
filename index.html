@@ -909,6 +909,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 <section id="uso-tab" class="pn2 active">
 <div class="live-banner"><span class="live-banner-dot"></span><span id="uso-banner-txt">This Week · 126th U.S. Open · Shinnecock Hills · June 18–21</span></div>
 
+<!-- LIVE pool leaderboard (rosters loaded; scores compute during play) -->
+<div class="cd" id="uso-live-pool"></div>
+
 <!-- Live pool standings + insights + live SG (populate during/after play) -->
 <div class="cd" id="uso-standings" style="display:none"></div>
 <div class="cd" id="uso-insights" style="display:none"></div>
@@ -6932,6 +6935,217 @@ function renderContenders(targetId, eventKey){
   el.style.display='';
   el.innerHTML=h;
 }
+/* ===== 2026 U.S. OPEN POOL ROSTERS (104 entries · 6 picks each, last names) ===== */
+const USO_ROSTERS=[
+  {nm:"Aldo",tb:276,g:["Clark","Fleetwood","Hatton","Rose","Spaun","Young"]},
+  {nm:"andersanders",tb:290,g:["Clark","Hisatsune","Im","Lowry","Schauffele","Spaun"]},
+  {nm:"Andrew Pikul",tb:267,g:["Clark","Fleetwood","Repetto Taylor","Rose","Scheffler","Straka"]},
+  {nm:"apslotnick",tb:290,g:["James","Kim","Rai","Schauffele","Scheffler","Woodland"]},
+  {nm:"Big Al",tb:278,g:["Hatton","Henley","Kitayama","Ortiz","Schauffele","Young"]},
+  {nm:"big-sled-6647",tb:269,g:["Bridgeman","Clark","Im","McIlroy","Rahm","Reed"]},
+  {nm:"BigRicks",tb:270,g:["Burns","Cantlay","Clark","Matsuyama","McIlroy","Scott"]},
+  {nm:"BillHoffman",tb:281,g:["Cantlay","Koepka","Niemann","Rahm","Reitan","Schauffele"]},
+  {nm:"Bobby Beeman",tb:282,g:["Bradley","Clark","Gerard","Henley","Scheffler","Smith"]},
+  {nm:"Bpratt",tb:281,g:["Brennan","Fitzpatrick","Fitzpatrick","Gotterup","McIlroy","Young"]},
+  {nm:"Bridget Stancampiano",tb:279,g:["Clark","Fitzpatrick","Hovland","Morikawa","Rose","Smalley"]},
+  {nm:"Broadway",tb:280,g:["Cantlay","Fitzpatrick","Horschel","MacIntyre","Scheffler","Woodland"]},
+  {nm:"Bstancam",tb:272,g:["Hovland","Kim","Koepka","Scheffler","Spieth","Thomas"]},
+  {nm:"BTR",tb:282,g:["Aberg","Cantlay","Clark","Koepka","Spaun","Young"]},
+  {nm:"Burkey's Bogeys",tb:280,g:["Burns","Clark","English","Fleetwood","Gotterup","Hatton"]},
+  {nm:"Chris Edwards",tb:280,g:["Day","Gotterup","Koepka","Matsuyama","Rahm","Young"]},
+  {nm:"Chris McLeod",tb:283,g:["Aberg","Cantlay","DeChambeau","Gotterup","McNealy","Morikawa"]},
+  {nm:"chrobb",tb:284,g:["Aberg","Clark","Gotterup","Matsuyama","McNealy","Rahm"]},
+  {nm:"Chuck Jackson",tb:285,g:["Fitzpatrick","Gotterup","Hatton","MacIntyre","Morikawa","Spieth"]},
+  {nm:"CKobis",tb:284,g:["Clark","Greyserman","Hovland","Koepka","Scheffler","Woodland"]},
+  {nm:"Commish",tb:278,g:["Aberg","Burns","Cauley","Henley","McIlroy","Scott"]},
+  {nm:"CornerstoneCowboy",tb:281,g:["English","Fitzpatrick","James","Knapp","Matsuyama","Scheffler"]},
+  {nm:"CowboyMonkey",tb:267,g:["English","Fitzpatrick","Fitzpatrick","Hatton","Henley","Rahm"]},
+  {nm:"Crying Koepkas",tb:281,g:["DeChambeau","McIlroy","Rahm","Rai","Smith","Theegala"]},
+  {nm:"dan_firth",tb:280,g:["Aberg","Burns","Fleetwood","Hovland","Reed","Spaun"]},
+  {nm:"David Wheeler",tb:270,g:["Clark","Fitzpatrick","Henley","McIlroy","Puig","Woodland"]},
+  {nm:"DavidAke",tb:277,g:["Cantlay","Clark","Henley","Matsuyama","Schauffele","Thomas"]},
+  {nm:"dfirth",tb:283,g:["Berger","Hatton","Matsuyama","Morikawa","Rai","Scheffler"]},
+  {nm:"Dude, Where's My Par",tb:282,g:["Clark","Henley","Kim","McNealy","Schauffele","Smalley"]},
+  {nm:"Duder",tb:280,g:["Cantlay","McIlroy","McNealy","Morikawa","Niemann","Spaun"]},
+  {nm:"dwilhelm",tb:275,g:["Burns","Cauley","Clark","Hatton","Henley","McIlroy"]},
+  {nm:"Dylan Smith",tb:281,g:["Burns","Hovland","MacIntyre","Scheffler","Straka","Theegala"]},
+  {nm:"EddieZdo",tb:280,g:["Aberg","Burns","Gotterup","Im","Koepka","Rahm"]},
+  {nm:"Firth",tb:279,g:["Hatton","Rai","Schauffele","Scheffler","Spaun","Van Paris"]},
+  {nm:"Fluffyhead",tb:282,g:["Aberg","Fitzpatrick","Harrington","Hatton","Rahm","Smith"]},
+  {nm:"Greyson",tb:274,g:["Clark","DeChambeau","Fleetwood","Koepka","Reed","Thomas"]},
+  {nm:"Heartherors",tb:270,g:["Clark","McIlroy","Rose","Schauffele","Smalley","Spieth"]},
+  {nm:"Howie",tb:273,g:["Clark","Griffin","Henley","Hovland","Rahm","Spaun"]},
+  {nm:"Ian Rapp",tb:282,g:["Bridgeman","Fitzpatrick","Fleetwood","Henley","McNealy","Thomas"]},
+  {nm:"Jennings",tb:282,g:["Clark","Fleetwood","Greyserman","Kim","Scheffler","Thomas"]},
+  {nm:"jfirth",tb:282,g:["Aberg","Conners","Hatton","Noren","Rahm","Smith"]},
+  {nm:"Jhamlin",tb:278,g:["Fitzpatrick","Gotterup","Harrington","Scheffler","Smith","Thomas"]},
+  {nm:"Jmeesh27",tb:278,g:["Burns","Clark","Fleetwood","Johnson","McIlroy","Niemann"]},
+  {nm:"Jordan Brock",tb:272,g:["Aberg","Burns","Fox","Hisatsune","Scheffler","Spieth"]},
+  {nm:"Jordman8",tb:280,g:["Cauley","Clark","DeChambeau","Koepka","MacIntyre","McIlroy"]},
+  {nm:"Justin Alves",tb:279,g:["Burns","English","Hojgaard","Hovland","Noren","Scheffler"]},
+  {nm:"JWIII",tb:282,g:["Hojgaard","McNealy","Rahm","Rose","Spaun","Young"]},
+  {nm:"JWIII #2",tb:282,g:["Burns","Fitzpatrick","Kitayama","Rai","Rose","Scheffler"]},
+  {nm:"keen-arm-9499",tb:278,g:["Cantlay","Conners","McIlroy","Rahm","Rai","Thomas"]},
+  {nm:"Kengolf",tb:285,g:["Burns","Clark","Hatton","Henley","Hovland","Kim"]},
+  {nm:"Kevin Struempfler",tb:276,g:["Gotterup","Kim","Kitayama","Scheffler","Spaun","Woodland"]},
+  {nm:"KlinkbeilJr",tb:276,g:["Harman","Hatton","Herbert","MacIntyre","Schauffele","Scheffler"]},
+  {nm:"kmo",tb:276,g:["Burns","Clark","Henley","Kim","Lowry","Spaun"]},
+  {nm:"krgolfer18",tb:275,g:["Burns","Clark","Fitzpatrick","Gotterup","Woodland","Young"]},
+  {nm:"Kyle K",tb:262,g:["Fitzpatrick","Hatton","Koepka","Rahm","Spaun","Theegala"]},
+  {nm:"Lewy",tb:275,g:["Burns","Clark","Henley","Morikawa","Rose","Thomas"]},
+  {nm:"long-draw-1117",tb:280,g:["Cantlay","Clark","Fitzpatrick","Hovland","Rose","Schauffele"]},
+  {nm:"Luckyducks",tb:278,g:["Cantlay","Clark","Fitzpatrick","Kim","Koepka","Spaun"]},
+  {nm:"m.manilla",tb:276,g:["Gotterup","Griffin","Rahm","Schauffele","Spaun","Thomas"]},
+  {nm:"Mark Regan",tb:280,g:["Burns","Clark","Griffin","Poston","Rai","Scheffler"]},
+  {nm:"Max Prosser",tb:272,g:["Clark","Fitzpatrick","Griffin","MacIntyre","Repetto Taylor","Scheffler"]},
+  {nm:"Mike Miller",tb:277,g:["Cantlay","Fitzpatrick","Gotterup","Hatton","Rahm","Smith"]},
+  {nm:"Mister Pimento",tb:262,g:["Burns","Gotterup","Hatton","MacIntyre","Schauffele","Young"]},
+  {nm:"Modesti",tb:279,g:["Burns","Clark","Fitzpatrick","Gotterup","Matsuyama","Schauffele"]},
+  {nm:"MoWil",tb:278,g:["Burns","Clark","DeChambeau","MacIntyre","Smith","Thomas"]},
+  {nm:"MParekh10",tb:276,g:["Aberg","Cantlay","Griffin","Kim","Lowry","McIlroy"]},
+  {nm:"mtown10",tb:280,g:["Burns","Clark","DeChambeau","Hovland","Schauffele","Thomas"]},
+  {nm:"My Favorite Fairportian",tb:276,g:["Clark","Fitzpatrick","Hatton","Puig","Smalley","Smith"]},
+  {nm:"Neill Stokes",tb:280,g:["Burns","DeChambeau","Hovland","Koepka","Rahm","Smalley"]},
+  {nm:"Ollie Janzen",tb:281,g:["Fleetwood","Henley","Hovland","Rose","Schauffele","Thomas"]},
+  {nm:"PapaDaws",tb:280,g:["Aberg","Burns","Day","Hovland","McIlroy","Thomas"]},
+  {nm:"Pewey31",tb:282,g:["Berger","DeChambeau","Hovland","Reed","Schauffele","Yellamaraju"]},
+  {nm:"Putt Before U Nut",tb:268,g:["Clark","Day","DeChambeau","Fitzpatrick","Kim","Lee"]},
+  {nm:"Putt4Dough",tb:273,g:["English","McIlroy","McNealy","Reed","Schauffele","Smith"]},
+  {nm:"Reid30",tb:284,g:["Aberg","Gotterup","Harman","Schauffele","Smith","Thomas"]},
+  {nm:"rjm",tb:267,g:["Bridgeman","Harman","Henley","McIlroy","Rahm","Rose"]},
+  {nm:"Ronners",tb:276,g:["Burns","Fleetwood","MacIntyre","Rai","Roy","Scheffler"]},
+  {nm:"Ryan Reddy",tb:280,g:["Clark","Gotterup","Hatton","Rahm","Rose","Spieth"]},
+  {nm:"Ryan Smith",tb:284,g:["Clark","Henley","Im","Rahm","Schauffele","Thomas"]},
+  {nm:"ryankozack",tb:279,g:["Bradley","Gotterup","Hatton","Scheffler","Smith","Thomas"]},
+  {nm:"Schad",tb:279,g:["Burns","Fleetwood","Henley","Putnam","Reed","Schauffele"]},
+  {nm:"Scharf's Horseman",tb:276,g:["Burns","Jordan","Rahm","Scheffler","Smith","Theegala"]},
+  {nm:"ScottSummerson",tb:277,g:["Burns","Clark","English","Fitzpatrick","Kim","Young"]},
+  {nm:"sdh4",tb:279,g:["Burns","Gotterup","Hovland","Kim","McIlroy","Reed"]},
+  {nm:"smak",tb:282,g:["Burns","Clark","Koepka","McIlroy","McNealy","Spaun"]},
+  {nm:"SOStancamp",tb:274,g:["Aberg","Cantlay","McIlroy","Puig","Reed","Rose"]},
+  {nm:"tbane22",tb:260,g:["Clark","Hovland","Koepka","Lee","Reed","Thomas"]},
+  {nm:"tbi020309",tb:280,g:["DeChambeau","Fleetwood","Henley","Lee","Spaun","Thomas"]},
+  {nm:"tbi020309 #2",tb:278,g:["Matsuyama","Schauffele","Scheffler","Spieth","Theegala","Woodland"]},
+  {nm:"TBrown",tb:280,g:["Clark","DeChambeau","Gotterup","McNealy","Rahm","Reed"]},
+  {nm:"Team Lowe",tb:284,g:["Aberg","Burns","Clark","Fitzpatrick","Koepka","Theegala"]},
+  {nm:"The Pelican",tb:275,g:["Clark","Fitzpatrick","Henley","Koepka","Matsuyama","Reed"]},
+  {nm:"THE-SUPERB-OWL-142",tb:278,g:["Burns","Clark","Matsuyama","McIlroy","Morikawa","Thomas"]},
+  {nm:"TheGunners",tb:270,g:["Burns","Fleetwood","Hovland","Rahm","Reed","Straka"]},
+  {nm:"tjnovak11",tb:278,g:["Burns","Clark","Fleetwood","Hovland","Spaun","Young"]},
+  {nm:"Toastking12",tb:270,g:["Aberg","Clark","DeChambeau","Harman","Lee","McIlroy"]},
+  {nm:"Travis Shevlin",tb:279,g:["DeChambeau","Koepka","Lee","McIlroy","Reed","Scott"]},
+  {nm:"Vandelay Industries",tb:279,g:["Clark","Gotterup","Harman","Hisatsune","Kim","Scheffler"]},
+  {nm:"wbetts",tb:280,g:["Burns","Cauley","Clark","Fleetwood","Koepka","Spieth"]},
+  {nm:"We've Got Balls",tb:280,g:["Burns","Clark","Fitzpatrick","Fleetwood","Matsuyama","Rose"]},
+  {nm:"WilkinsFam",tb:280,g:["Clark","Im","Kim","McIlroy","McNealy","Schauffele"]},
+  {nm:"Will Tennant",tb:280,g:["Clark","Day","Fleetwood","Morikawa","Repetto Taylor","Scheffler"]},
+  {nm:"Young_Falcon",tb:287,g:["Fox","Hovland","Johnson","Schauffele","Scheffler","Woodland"]},
+  {nm:"Zebo15",tb:263,g:["Fowler","Koepka","Lee","Lowry","Reed","Spaun"]}
+];
+
+
+/* ===== U.S. OPEN — LIVE POOL LEADERBOARD (best 4 of 6, from DG in-play) ===== */
+// Normalize a name to a last-name key. DG in-play uses "Last, First"; rosters are last names.
+function _lnKey(full){
+  if(!full)return'';
+  var s=String(full).indexOf(',')>=0?String(full).split(',')[0]:String(full);
+  return s.toLowerCase().replace(/[^a-z]/g,'');
+}
+let _usoPoolTimer=null,_usoPoolSort='score';
+async function renderUsoLivePool(){
+  const el=document.getElementById('uso-live-pool');if(!el)return;
+  if(typeof USO_ROSTERS==='undefined'||!USO_ROSTERS.length){el.style.display='none';return;}
+  el.style.display='';
+  let inplay=null;
+  try{inplay=await dgF('preds/in-play',{tour:'pga'});}catch(e){inplay=null;}
+  const evName=(inplay&&(inplay.info&&inplay.info.event_name||inplay.event_name))||'';
+  const isUsoLive=/u\.?\s*s\.?\s*open/i.test(evName)&&Array.isArray(inplay&&inplay.data)&&inplay.data.length;
+  const updated=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+  if(!isUsoLive){
+    // Pre-tournament / not yet live — show rosters-loaded placeholder
+    el.innerHTML='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.15rem">'+
+      '<h3 style="margin:0">Live Pool Leaderboard</h3>'+
+      '<span style="font-size:.55rem;color:var(--td);font-family:var(--fb)">'+USO_ROSTERS.length+' entries · best 4 of 6</span></div>'+
+      '<div style="text-align:center;padding:1rem .5rem;font-size:.66rem;color:var(--ts);line-height:1.6">'+
+      '<div style="font-size:1.1rem;margin-bottom:.2rem">⛳</div>'+
+      '<b style="color:var(--tb)">'+USO_ROSTERS.length+' rosters locked &amp; loaded.</b><br>'+
+      'Live pool scoring begins the moment the U.S. Open tees off Thursday — each entry’s best 4 of 6 golfers, scored to par, ranked in real time and auto-refreshing every 5 minutes.'+
+      (evName?'<div style="font-size:.5rem;color:var(--td);margin-top:.4rem">DataGolf live feed currently on: '+evName+'</div>':'')+
+      '</div>';
+    return;
+  }
+  // Build last-name → score map from in-play
+  const sm={};
+  inplay.data.forEach(function(p){
+    const k=_lnKey(p.player_name);if(!k)return;
+    const s=p.current_score!=null?p.current_score:(p.total!=null?p.total:null);
+    // if duplicate last names, keep the one with a score / better position
+    const prev=sm[k];
+    const rec={s:s,pos:p.current_pos!=null?p.current_pos:(p.position!=null?p.position:'-'),thru:p.thru||p.end_hole||'-',cut:p.make_cut===0,nm:p.player_name};
+    if(!prev||(prev.s==null&&s!=null))sm[k]=rec;
+  });
+  const BEST=4;
+  const standings=USO_ROSTERS.map(function(entry){
+    const gs=entry.g.map(function(g){var d=sm[_lnKey(g)];return{name:g,score:d&&d.s!=null?d.s:null,thru:d?d.thru:'-',cut:d?d.cut:false,counted:false};});
+    const withS=gs.filter(function(g){return g.score!==null;}).sort(function(a,b){return a.score-b.score;});
+    const counted=withS.slice(0,BEST);counted.forEach(function(g){g.counted=true;});
+    const dropped=withS.slice(BEST);
+    const noS=gs.filter(function(g){return g.score===null;});
+    const total=counted.reduce(function(s,g){return s+g.score;},0);
+    return{nm:entry.nm,tb:entry.tb,total:total,countedN:counted.length,golfers:counted.concat(dropped,noS)};
+  });
+  // rank: entries with counted golfers first, by total asc; ties broken by tiebreak (closest predicted total — keep stable)
+  standings.sort(function(a,b){
+    if(a.countedN===0&&b.countedN===0)return 0;
+    if(a.countedN===0)return 1;if(b.countedN===0)return -1;
+    if(a.total!==b.total)return a.total-b.total;
+    return 0;
+  });
+  let rank=1;standings.forEach(function(s,i){if(i>0&&standings[i-1].total===s.total&&s.countedN>0&&standings[i-1].countedN>0)s.rk=standings[i-1].rk;else s.rk=i+1;});
+  const ml=Math.ceil(standings.length*.33);
+  let h='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.15rem">'+
+    '<h3 style="margin:0"><span class="ls-live-dot" style="background:#c9a227;display:inline-block;margin-right:.3rem"></span>Live Pool Leaderboard</h3>'+
+    '<span style="font-size:.55rem;color:var(--td);font-family:var(--fb)">'+evName+' · best 4 of 6 · '+updated+'</span></div>';
+  h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">'+
+    '<input id="usolp-search" placeholder="Search entry..." oninput="filterUsoLivePool()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:140px">'+
+    '<span style="font-size:.55rem;color:var(--td)">Money line: top '+ml+' · scored to par</span></div>';
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr>'+
+    '<th style="width:26px">#</th><th>Entry</th><th style="width:52px">To Par</th><th>Best 4 of 6 (counted bold · dropped faded)</th></tr></thead><tbody id="usolp-body">';
+  standings.slice(0,25).forEach(function(s){h+=_usoLpRow(s,ml);});
+  h+='</tbody></table></div>';
+  h+='<div style="text-align:center;padding:.4rem"><button class="btn-pill" onclick="expandUsoLivePool()">Show all '+standings.length+' entries ↓</button></div>';
+  el.innerHTML=h;
+  window._usoLpStandings=standings;window._usoLpMl=ml;
+}
+function _usoLpRow(s,ml){
+  const sc=s.countedN>0?(s.total<0?'sg':s.total>0?'sb':''):'';
+  const sv=s.countedN>0?(s.total>0?'+'+s.total:s.total===0?'E':s.total):'–';
+  const me=(typeof loadMe==='function'&&loadMe()&&s.nm.toLowerCase().includes(loadMe().toLowerCase()))?'me':'';
+  const rw=[s.rk<=3?'t3':'',s.rk<=ml?'im':'',me].filter(Boolean).join(' ');
+  const gTags=s.golfers.map(function(g){
+    const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');
+    const sc2=g.score!=null?' ('+(g.score>0?'+':'')+(g.score===0?'E':g.score)+')':(g.cut?' (CUT)':'');
+    return'<span class="'+cls+(g.cut?' cut':'')+'">'+g.name+sc2+'</span>';}).join(' ');
+  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'">'+s.rk+'</td><td class="nc">'+s.nm+'</td>'+
+    '<td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td>'+
+    '<td style="font-size:.56rem">'+gTags+'</td></tr>';
+}
+window.filterUsoLivePool=function(){
+  const q=(document.getElementById('usolp-search')||{}).value;const qq=(q||'').toLowerCase();
+  const tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;
+  const rows=qq?window._usoLpStandings.filter(function(s){return s.nm.toLowerCase().includes(qq);}):window._usoLpStandings.slice(0,25);
+  let h='';rows.forEach(function(s){h+=_usoLpRow(s,window._usoLpMl);});tb.innerHTML=h;
+};
+window.expandUsoLivePool=function(){
+  const tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;
+  let h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s,window._usoLpMl);});tb.innerHTML=h;
+};
+function startUsoLivePool(){
+  renderUsoLivePool();
+  if(_usoPoolTimer)clearInterval(_usoPoolTimer);
+  _usoPoolTimer=setInterval(renderUsoLivePool,300000); // refresh every 5 min
+}
+
 /* ===== U.S. OPEN — POOL STANDINGS + LIVE SG (wired for go-live Jun 18) ===== */
 /* Final pool standings (populated from POOL_RESULTS[26] once entry picks/scores land) */
 function _usoRenderRow(e,me){
@@ -7017,6 +7231,7 @@ function renderUsoTab(){
   updateUsoBanner();
   checkUsoLive();
   if(typeof renderUsoResults==='function')renderUsoResults();
+  if(typeof startUsoLivePool==='function')startUsoLivePool();
   if(_usoTabRendered)return;
   _usoTabRendered=true;
   const el=document.getElementById('uso-preview');
