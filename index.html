@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v27 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v28 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7353,7 +7353,7 @@ async function renderUsoLivePool(){
   try{h+=_rosterWatch(standings,cnt,smMulti,ml);}catch(e){}
   h+='<div style="margin-bottom:.3rem"><input id="usolp-search" placeholder="Search entry..." oninput="filterUsoLivePool()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:130px"> <span style="font-size:.5rem;color:var(--td);font-family:var(--fb)">best 4 of 6 to par − position bonus</span></div>';
   h+='<div style="font-size:.5rem;color:var(--td);font-family:var(--fb);margin:0 0 .3rem"><b style="color:var(--ts)">YTD</b> = projected season rank if the event ended now · <span style="color:var(--gl)">▲</span>/<span style="color:var(--rd)">▼</span> = spots moved vs your current season rank</div>';
-  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc usolp-tight"><thead><tr><th style="width:24px">#</th><th style="width:58px;text-align:center" title="Projected season rank if the event ended now; arrow = spots moved vs current rank">YTD</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th>Best 4 of 6 — counted bold · dropped faded · DH = dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc usolp-tight"><thead><tr><th style="width:24px">#</th><th style="width:46px;text-align:center" title="Projected season rank if the event ended now; arrow = spots moved vs current rank">YTD</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th>Best 4 of 6 — counted bold · dropped faded · DH = dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
   standings.slice(0,25).forEach(function(s){h+=_usoLpRow(s);});
   h+='</tbody></table></div><div style="text-align:center;padding:.4rem"><button class="btn-pill" onclick="expandUsoLivePool()">Show all '+standings.length+' entries ↓</button></div>';
   el.innerHTML=h;window._usoLpStandings=standings;_applySecSize('uso-live-pool');
@@ -7361,14 +7361,14 @@ async function renderUsoLivePool(){
 function _ytdTag(s){
   if(s.projRank==null)return'<span style="color:var(--td)">–</span>';
   var arrow,acol;
-  if(s.ytdMove>0){arrow='▲ '+s.ytdMove;acol='var(--gl)';}
-  else if(s.ytdMove<0){arrow='▼ '+Math.abs(s.ytdMove);acol='var(--rd)';}
+  if(s.ytdMove>0){arrow='▲'+s.ytdMove;acol='var(--gl)';}
+  else if(s.ytdMove<0){arrow='▼'+Math.abs(s.ytdMove);acol='var(--rd)';}
   else{arrow='–';acol='var(--td)';}
   var r=s.projRank,N=(window._usoLpCtx&&window._usoLpCtx.ytdN)||108,third=Math.max(12,Math.ceil(N/3)),rc,rw;
   if(r<=3){rc='var(--gn)';rw='600';}
-  else if(r<=third){var t=Math.min(1,(r-3)/Math.max(1,(third-3))),g=[42,125,82],sl=[125,132,144];rc='rgb('+Math.round(g[0]+(sl[0]-g[0])*t)+','+Math.round(g[1]+(sl[1]-g[1])*t)+','+Math.round(g[2]+(sl[2]-g[2])*t)+')';rw='500';}
+  else if(r<=third){var t=Math.min(1,(r-3)/Math.max(1,(third-3))),g=[60,112,86],sl=[132,140,150];rc='rgb('+Math.round(g[0]+(sl[0]-g[0])*t)+','+Math.round(g[1]+(sl[1]-g[1])*t)+','+Math.round(g[2]+(sl[2]-g[2])*t)+')';rw='400';}
   else{rc='var(--td)';rw='400';}
-  return '<span style="font-family:var(--fm);font-weight:'+rw+';font-size:.52rem;color:'+rc+'">#'+r+'</span> <span style="font-family:var(--fm);font-weight:600;font-size:.55rem;color:'+acol+'">'+arrow+'</span>';
+  return '<span style="font-family:var(--fm);font-weight:'+rw+';font-size:.5rem;color:'+rc+'">#'+r+'</span><span style="font-family:var(--fm);font-weight:500;font-size:.5rem;color:'+acol+';margin-left:2px">'+arrow+'</span>';
 }
 function _usoLpRow(s){
   const ml=(window._usoLpCtx&&window._usoLpCtx.ml)||35;
