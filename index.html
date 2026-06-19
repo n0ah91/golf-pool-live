@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v33 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v34 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7467,7 +7467,7 @@ async function renderUsoField(){
       if(ap!=null&&ap>=0.8)o+='<span class="ptag pt-a" title="Accurate driver">A</span>';else if(ap!=null&&ap<=0.2)o+='<span class="ptag pt-i" title="Inaccurate driver">I</span>';
       return o?' '+o:'';}
     h+='<div style="font-size:.5rem;color:var(--td);font-family:var(--fb);margin-bottom:.25rem">Tap any player for bio, rankings &amp; form · SG = strokes gained vs field (cumulative)</div>';
-    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc fld"><thead><tr><th style="text-align:left">Player</th><th title="score to par">Score</th><th>Pos</th><th title="Win / Top-10 odds (DataGolf): dark = win, light = top-10">Odds</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P·B⁺·Bog⁺</th><th title="Driving distance (rank vs field)">DIST</th><th title="Driving accuracy">ACC</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Off the Tee">OTT</th><th title="Strokes Gained Total (cumulative)">SG Tot</th></tr></thead><tbody>';
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc fld"><thead><tr><th style="text-align:left">Player</th><th title="score to par">Score</th><th>Pos</th><th title="Win / Top-10 odds (DataGolf): dark = win, light = top-10">Odds</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P·B⁺·Bog⁺</th><th title="Driving distance (rank vs field)">DIST</th><th title="Driving accuracy">ACC</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Off the Tee">OTT</th><th title="Strokes Gained Total (cumulative)">SG</th></tr></thead><tbody>';
     rows.forEach(function(r){
       var scC=r.score==null?'var(--td)':r.score<0?'var(--gn)':r.score>0?'var(--rd)':'var(--tb)';
       var scT=r.score==null?'–':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
@@ -7475,8 +7475,8 @@ async function renderUsoField(){
       var wpct=wp>0?(wp*100>=10?Math.round(wp*100)+'%':(wp*100).toFixed(1)+'%'):'<1%';var t10p=t10>0?Math.round(t10*100)+'%':'–';
       var sc=esBy[_dgScoreKey(r.raw)];
       var scoreBreak=sc&&(sc.pars+sc.birdiePlus+sc.bogeyPlus)>0?('<span style="color:var(--ts)">'+sc.pars+'</span><span style="color:var(--td)">/</span><span style="color:var(--gl);font-weight:600">'+sc.birdiePlus+'</span><span style="color:var(--td)">/</span><span style="color:var(--rd);font-weight:600">'+sc.bogeyPlus+'</span>'):'<span style="color:var(--td)">–</span>';
-      var rkRec=rkd[r.dgId]||{};var ctry=r.country||rkRec.country;var isAm=(rkRec.am===1)||((dcp[r.dgId]&&dcp[r.dgId].am)===1);
-      h+='<tr><td class="nc" style="font-size:.64rem;white-space:nowrap">'+flag(ctry)+'<span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</span>'+(isAm?'<span class="am-tag" title="Amateur">a</span>':'')+badges(r)+'</td>'+
+      var rkRec=rkd[r.dgId]||{};var ctry=r.country||rkRec.country;var isAm=(rkRec.am===1)||((dcp[r.dgId]&&dcp[r.dgId].am)===1);var dn=(r.raw&&r.raw.indexOf(',')>=0)?((r.raw.split(',')[1]||'').trim().charAt(0)+'. '+r.raw.split(',')[0].trim()):r.nm;
+      h+='<tr><td class="nc" style="font-size:.6rem;white-space:nowrap">'+flag(ctry)+'<span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+dn+'</span>':dn)+'</span>'+(isAm?'<span class="am-tag" title="Amateur">a</span>':'')+badges(r)+'</td>'+
         '<td style="font-family:var(--fm);font-weight:700;font-size:.7rem;color:'+scC+'">'+scT+'</td>'+
         '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
         '<td title="Win '+wpct+' · Top-10 '+t10p+' (DataGolf)" style="text-align:center"><span style="display:inline-block;position:relative;width:30px;height:5px;border-radius:3px;background:rgba(120,80,95,.12);vertical-align:middle"><span style="position:absolute;left:0;top:0;bottom:0;width:'+t10W+'%;background:rgba(138,58,82,.28);border-radius:3px"></span><span style="position:absolute;left:0;top:0;bottom:0;width:'+winW+'%;background:rgba(138,58,82,.78);border-radius:3px"></span></span></td>'+
