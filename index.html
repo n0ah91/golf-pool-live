@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v11 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v12 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -887,6 +887,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 /* Live Field player-type badges */
 .ptag{display:inline-block;font-family:var(--fm);font-size:.46rem;font-weight:700;line-height:1;padding:1px 2px;border-radius:2px;margin-left:1px;vertical-align:1px;color:#fff}
 .pt-l{background:#2a7d52}.pt-s{background:#c4682a}.pt-a{background:#2960a8}.pt-i{background:#8b2332}
+
+/* Classy markers (replace emojis) */
+.dh-tag{display:inline-block;font-family:var(--fb);font-size:.46rem;font-weight:700;letter-spacing:.02em;color:var(--uso);border:1px solid rgba(110,42,62,.4);border-radius:3px;padding:0 2px;vertical-align:1px;line-height:1.45}
+.am-tag{display:inline-block;font-family:var(--fm);font-size:.44rem;font-weight:700;color:#fff;background:var(--go);border-radius:2px;padding:0 2px;margin-left:2px;vertical-align:1px}
 </style>
 </head>
 <body>
@@ -7259,9 +7263,9 @@ function _seasonSidePots(standings){
 }
 function _sidePotsHTML(sp){
   if(!sp)return'';var c='';
-  if(sp.money)c+='<div class="usolp-sp sp-money" title="Season money list leader — event payouts so far plus projected U.S. Open payout. Money List award: $75."><span class="sp-ic">💰</span><b>Money List</b> '+sp.money.nm+'<span class="sp-v">$'+Math.round(sp.money.amt).toLocaleString()+'</span><i>$75</i></div>';
-  if(sp.bb)c+='<div class="usolp-sp sp-bb" title="Bounce-Back — biggest climb from a poor early-season start (Masters/Players/PGA) into the live pool. Award: $100."><span class="sp-ic">📈</span><b>Bounce-Back</b> '+sp.bb.nm+'<span class="sp-v">#'+sp.bb.from+'→#'+sp.bb.to+'</span><i>$100</i></div>';
-  if(sp.dfl)c+='<div class="usolp-sp sp-dfl" title="Dead F\'n Last watch — current bottom of the live pool. Award: $100."><span class="sp-ic">💀</span><b>DFL watch</b> '+sp.dfl.nm+'<span class="sp-v">#'+sp.dfl.rk+'</span><i>$100</i></div>';
+  if(sp.money)c+='<div class="usolp-sp sp-money" title="Season money list leader — event payouts so far plus projected U.S. Open payout. Money List award: $75."><b>Money List</b> '+sp.money.nm+'<span class="sp-v">$'+Math.round(sp.money.amt).toLocaleString()+'</span><i>$75</i></div>';
+  if(sp.bb)c+='<div class="usolp-sp sp-bb" title="Bounce-Back — biggest climb from a poor early-season start (Masters/Players/PGA) into the live pool. Award: $100."><b>Bounce-Back</b> '+sp.bb.nm+'<span class="sp-v">#'+sp.bb.from+'→#'+sp.bb.to+'</span><i>$100</i></div>';
+  if(sp.dfl)c+='<div class="usolp-sp sp-dfl" title="Dead F\'n Last watch — current bottom of the live pool. Award: $100."><b>DFL watch</b> '+sp.dfl.nm+'<span class="sp-v">#'+sp.dfl.rk+'</span><i>$100</i></div>';
   return c?'<div class="usolp-sidepots">'+c+'</div>':'';
 }
 function _rosterWatch(standings,cnt,smMulti,ml){
@@ -7274,9 +7278,9 @@ function _rosterWatch(standings,cnt,smMulti,ml){
     var sleeper=standings.filter(function(s){return s.rk>ml&&s.sortGolfers&&s.sortGolfers.length>=6&&s.sortGolfers.every(function(g){return g.score!=null&&!g.cut;});}).sort(function(a,b){return a.total-b.total;})[0]||null;
     function sc(v){return v>0?'+'+v:v===0?'E':v;}
     var c='';
-    if(carrying)c+='<div class="usolp-sp rw-hot" title="Most-rostered golfer playing well — lifting the field"><span class="sp-ic">🔥</span><b>Carrying</b> '+carrying.g+'<span class="sp-v">'+sc(carrying.s)+' · '+carrying.n+'×</span></div>';
-    if(dragging&&(dragging.cut||dragging.s>0))c+='<div class="usolp-sp rw-cold" title="Widely-rostered golfer struggling — pulling entries down"><span class="sp-ic">🧊</span><b>Dragging</b> '+dragging.g+'<span class="sp-v">'+(dragging.cut?'CUT':sc(dragging.s))+' · '+dragging.n+'×</span></div>';
-    if(sleeper)c+='<div class="usolp-sp rw-sleep" title="All 6 golfers made the cut and posted a score, but the entry is still mid-pack — poised to climb"><span class="sp-ic">😴</span><b>Sleeper</b> '+sleeper.nm+'<span class="sp-v">all 6 alive · #'+sleeper.rk+'</span></div>';
+    if(carrying)c+='<div class="usolp-sp rw-hot" title="Most-rostered golfer playing well — lifting the field"><b>Carrying</b> '+carrying.g+'<span class="sp-v">'+sc(carrying.s)+' · '+carrying.n+'×</span></div>';
+    if(dragging&&(dragging.cut||dragging.s>0))c+='<div class="usolp-sp rw-cold" title="Widely-rostered golfer struggling — pulling entries down"><b>Dragging</b> '+dragging.g+'<span class="sp-v">'+(dragging.cut?'CUT':sc(dragging.s))+' · '+dragging.n+'×</span></div>';
+    if(sleeper)c+='<div class="usolp-sp rw-sleep" title="All 6 golfers made the cut and posted a score, but the entry is still mid-pack — poised to climb"><b>Sleeper</b> '+sleeper.nm+'<span class="sp-v">all 6 alive · #'+sleeper.rk+'</span></div>';
     return c?'<div class="usolp-sidepots">'+c+'</div>':'';
   }catch(e){return'';}
 }
@@ -7327,15 +7331,15 @@ async function renderUsoLivePool(){
   let h='<div class="usolp-head"><h3 style="margin:0"><span class="ls-live-dot" style="background:var(--uso);display:inline-block;margin-right:.3rem"></span>Live Pool Leaderboard</h3>'+tsToggleHTML('uso-live-pool')+'</div>';
   h+='<div style="font-size:.55rem;color:var(--td);font-family:var(--fb);margin-bottom:.3rem">'+(rnd?'Round '+rnd+' · ':'')+fieldStarted+'/'+data.length+' golfers started · <span style="color:var(--gl)">'+updated+'</span> <button onclick="renderUsoLivePool()" title="Refresh now" style="border:1px solid var(--br);background:var(--bc);border-radius:4px;cursor:pointer;font-size:.6rem;padding:0 .35rem;color:var(--uso)">⟳</button></div>';
   h+='<div class="usolp-strip">';
-  if(dhLeader)h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>Dark Horse leader:</b> '+dhLeader.nm+' <span class="usolp-dh-sc">'+(dhLeader.score>0?'+':'')+(dhLeader.score===0?'E':dhLeader.score)+(dhLeader.pos?' · T'+dhLeader.pos:'')+'</span> <span class="usolp-dh-own">— '+dhLeader.owner+'</span></div>';
-  else h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>'+Object.keys(dhSet).length+' dark horses</b> in play — single-pick longshots to root for</div>';
+  if(dhLeader)h+='<div class="usolp-dh"><span class="dh-tag" style="margin-right:.3rem">DH</span><b>Dark Horse leader:</b> '+dhLeader.nm+' <span class="usolp-dh-sc">'+(dhLeader.score>0?'+':'')+(dhLeader.score===0?'E':dhLeader.score)+(dhLeader.pos?' · T'+dhLeader.pos:'')+'</span> <span class="usolp-dh-own">— '+dhLeader.owner+'</span></div>';
+  else h+='<div class="usolp-dh"><span class="dh-tag" style="margin-right:.3rem">DH</span><b>'+Object.keys(dhSet).length+' dark horses</b> in play — single-pick longshots to root for</div>';
   h+=payH+'</div>';
   var _sp=null;try{_sp=_seasonSidePots(standings);}catch(e){}
   h+=_sidePotsHTML(_sp);
   try{h+=_rosterWatch(standings,cnt,smMulti,ml);}catch(e){}
   h+='<div style="margin-bottom:.3rem"><input id="usolp-search" placeholder="Search entry..." oninput="filterUsoLivePool()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:130px"> <span style="font-size:.5rem;color:var(--td);font-family:var(--fb)">best 4 of 6 to par − position bonus</span></div>';
   h+='<div style="font-size:.5rem;color:var(--td);font-family:var(--fb);margin:0 0 .3rem"><b style="color:var(--ts)">YTD</b> = projected season rank if the event ended now · <span style="color:var(--gl)">▲</span>/<span style="color:var(--rd)">▼</span> = spots moved vs your current season rank</div>';
-  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc usolp-tight"><thead><tr><th style="width:24px">#</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th style="width:58px" title="Projected season rank if the event ended now; arrow = spots moved vs current rank">YTD</th><th>Best 4 of 6 — counted bold · dropped faded · 🐎 dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc usolp-tight"><thead><tr><th style="width:24px">#</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th style="width:58px" title="Projected season rank if the event ended now; arrow = spots moved vs current rank">YTD</th><th>Best 4 of 6 — counted bold · dropped faded · DH = dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
   standings.slice(0,25).forEach(function(s){h+=_usoLpRow(s);});
   h+='</tbody></table></div><div style="text-align:center;padding:.4rem"><button class="btn-pill" onclick="expandUsoLivePool()">Show all '+standings.length+' entries ↓</button></div>';
   el.innerHTML=h;window._usoLpStandings=standings;_applySecSize('uso-live-pool');
@@ -7346,10 +7350,9 @@ function _ytdTag(s){
   if(s.ytdMove>0){arrow='▲ '+s.ytdMove;acol='var(--gl)';}
   else if(s.ytdMove<0){arrow='▼ '+Math.abs(s.ytdMove);acol='var(--rd)';}
   else{arrow='–';acol='var(--td)';}
-  var r=s.projRank,rc,rw;
+  var r=s.projRank,N=(window._usoLpCtx&&window._usoLpCtx.ytdN)||108,third=Math.max(12,Math.ceil(N/3)),rc,rw;
   if(r<=3){rc='var(--gn)';rw='700';}
-  else if(r<=10){rc='var(--gl)';rw='600';}
-  else if(r<=25){rc='var(--ts)';rw='500';}
+  else if(r<=third){var t=Math.min(1,(r-3)/Math.max(1,(third-3))),g=[42,125,82],sl=[120,128,140];rc='rgb('+Math.round(g[0]+(sl[0]-g[0])*t)+','+Math.round(g[1]+(sl[1]-g[1])*t)+','+Math.round(g[2]+(sl[2]-g[2])*t)+')';rw=r<=10?'600':'500';}
   else{rc='var(--td)';rw='400';}
   return '<span style="font-family:var(--fm);font-weight:'+rw+';font-size:.56rem;color:'+rc+'">#'+r+'</span> <span style="font-family:var(--fm);font-weight:700;font-size:.66rem;color:'+acol+'">'+arrow+'</span>';
 }
@@ -7359,7 +7362,7 @@ function _usoLpRow(s){
   const sv=s.countedN>0?(s.total>0?'+'+s.total:s.total===0?'E':s.total):'–';
   const me=(typeof loadMe==='function'&&loadMe()&&s.nm.toLowerCase().includes(loadMe().toLowerCase()))?'me':'';
   const rw=[s.rk<=3?'t3':'',s.rk<=ml?'im':'',me].filter(Boolean).join(' ');
-  const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'🐎':'')+g.name;if(g.score!=null)label+=' ('+(g.score>0?'+':'')+(g.score===0?'E':g.score)+')';else if(g.cut)label+=' (CUT)';else label+=' (—)';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';const hl=g.bonus>0?'background:rgba(196,160,53,.1);border-radius:3px;padding:0 1px':(g.dh?'background:rgba(110,42,62,.07);border-radius:3px;padding:0 1px':'');return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
+  const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'<span class="dh-tag">DH</span>':'')+g.name;if(g.score!=null)label+=' ('+(g.score>0?'+':'')+(g.score===0?'E':g.score)+')';else if(g.cut)label+=' (CUT)';else label+=' (—)';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';const hl=g.bonus>0?'background:rgba(196,160,53,.1);border-radius:3px;padding:0 1px':(g.dh?'background:rgba(110,42,62,.07);border-radius:3px;padding:0 1px':'');return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
   const bonTxt=s.bonus>0?'<span style="color:var(--go);font-family:var(--fm)">−'+s.bonus+'</span>':'<span style="color:var(--td)">0</span>';
   return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'"'+(s.rk>3?' style="color:var(--uso)"':'')+'>'+s.rk+'</td><td class="nc" style="font-size:.62rem">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td>'+_ytdTag(s)+'</td><td style="font-size:.52rem;line-height:1.28">'+gTags+'</td></tr>';
 }
@@ -7405,7 +7408,7 @@ async function fetchEspnScoring(force){
   }catch(e){}
   _espnLoading=false;return _espnScore.by;
 }
-var _FLAG2={USA:'us',ENG:'gb-eng',SCO:'gb-sct',WAL:'gb-wls',NIR:'gb-nir',IRL:'ie',ESP:'es',RSA:'za',AUS:'au',CAN:'ca',SWE:'se',NOR:'no',DEN:'dk',GER:'de',DEU:'de',FRA:'fr',ITA:'it',JPN:'jp',KOR:'kr',COL:'co',CHI:'cl',CHL:'cl',ARG:'ar',AUT:'at',BEL:'be',NED:'nl',NLD:'nl',FIN:'fi',MEX:'mx',NZL:'nz',ZIM:'zw',PHI:'ph',PHL:'ph',CHN:'cn',TPE:'tw',IND:'in',VEN:'ve',PUR:'pr',SUI:'ch',CHE:'ch',SVK:'sk',POL:'pl',POR:'pt',PRT:'pt',THA:'th',PAR:'py',FIJ:'fj',BRA:'br'};
+var _FLAG2={USA:'us',ENG:'gb-eng',SCO:'gb-sct',WAL:'gb-wls',NIR:'gb-nir',IRL:'ie',ESP:'es',RSA:'za',ZAF:'za',AUS:'au',CAN:'ca',SWE:'se',NOR:'no',DEN:'dk',GER:'de',DEU:'de',FRA:'fr',ITA:'it',JPN:'jp',KOR:'kr',COL:'co',CHI:'cl',CHL:'cl',ARG:'ar',AUT:'at',BEL:'be',NED:'nl',NLD:'nl',FIN:'fi',MEX:'mx',NZL:'nz',ZIM:'zw',PHI:'ph',PHL:'ph',CHN:'cn',TPE:'tw',IND:'in',VEN:'ve',PUR:'pr',SUI:'ch',CHE:'ch',SVK:'sk',POL:'pl',POR:'pt',PRT:'pt',THA:'th',PAR:'py',FIJ:'fj',BRA:'br',GBR:'gb',SVN:'si',CZE:'cz',HKG:'hk',MAS:'my',SGP:'sg',TUR:'tr',ISL:'is',KEN:'ke',IDN:'id',INA:'id',VIE:'vn',UAE:'ae',EGY:'eg',MAR:'ma',URU:'uy',CRC:'cr',DOM:'do',GUA:'gt'};
 async function renderUsoField(){
   const el=document.getElementById('pred-market-panel');if(!el)return;el.style.display='';
   let ip=null,sg=null,odds=null;
@@ -7419,7 +7422,7 @@ async function renderUsoField(){
   h+='<div class="ih-tabs" style="margin-bottom:.35rem"><button class="ih-tab'+(_usoFieldView==='simple'?' active':'')+'" onclick="setUsoFieldView(\'simple\')">Simple</button><button class="ih-tab'+(_usoFieldView==='advanced'?' active':'')+'" onclick="setUsoFieldView(\'advanced\')">Advanced</button><span style="margin-left:auto;font-size:.5rem;color:var(--td);align-self:center">updated '+updated+'</span></div>';
   if(!live){el.innerHTML=h+'<div style="text-align:center;padding:1rem;font-size:.66rem;color:var(--ts)">Live field stats appear once the U.S. Open is underway.</div>';_applySecSize('pred-market-panel');return;}
   const sgById={};if(sg&&sg.live_stats)sg.live_stats.forEach(function(p){sgById[p.dg_id]=p;});
-  const rows=ip.data.map(function(p){var s=sgById[p.dg_id]||{};return{nm:(typeof fmN==='function'?fmN(p.player_name):p.player_name),raw:p.player_name,dgId:p.dg_id,score:p.current_score,pos:p.current_pos,thru:p.thru,win:p.win,t5:p.top_5,t10:p.top_10,sgTot:s.sg_total,ott:s.sg_ott,app:s.sg_app,arg:s.sg_arg,putt:s.sg_putt,t2g:s.sg_t2g,dist:s.distance,acc:s.accuracy,gir:s.gir,prox:s.prox_fw,ip:(typeof inPool==='function'&&inPool(p.player_name))};});
+  const rows=ip.data.map(function(p){var s=sgById[p.dg_id]||{};return{nm:(typeof fmN==='function'?fmN(p.player_name):p.player_name),raw:p.player_name,dgId:p.dg_id,country:p.country,score:p.current_score,pos:p.current_pos,thru:p.thru,win:p.win,t5:p.top_5,t10:p.top_10,sgTot:s.sg_total,ott:s.sg_ott,app:s.sg_app,arg:s.sg_arg,putt:s.sg_putt,t2g:s.sg_t2g,dist:s.distance,acc:s.accuracy,gir:s.gir,prox:s.prox_fw,ip:(typeof inPool==='function'&&inPool(p.player_name))};});
   rows.sort(function(a,b){var pa=_parsePos(a.pos).pos||999,pb=_parsePos(b.pos).pos||999;if(pa!==pb)return pa-pb;return (a.score==null?99:a.score)-(b.score==null?99:b.score);});
   if(_usoFieldView==='simple'){
     _rankField(rows,[{key:'sgTot',hb:true},{key:'ott',hb:true},{key:'app',hb:true},{key:'arg',hb:true},{key:'putt',hb:true},{key:'t2g',hb:true},{key:'dist',hb:true},{key:'acc',hb:true},{key:'gir',hb:true}]);
@@ -7428,37 +7431,38 @@ async function renderUsoField(){
     var esBy=_espnScore.by||{};
     if((!_espnScore.ts||Date.now()-_espnScore.ts>270000)&&!_espnLoading){fetchEspnScoring().then(function(){if(_usoFieldView==='simple')renderUsoField();});}
     if(typeof _pcLoadBase==='function'&&(!_pcData.ts||Date.now()-_pcData.ts>600000)&&!_pcLoading){_pcLoadBase().then(function(){if(_usoFieldView==='simple')renderUsoField();});}
-    var sk=(typeof _pcData!=='undefined'&&_pcData.skills)||{},rkd=(typeof _pcData!=='undefined'&&_pcData.rankings)||{};
+    var sk=(typeof _pcData!=='undefined'&&_pcData.skills)||{},rkd=(typeof _pcData!=='undefined'&&_pcData.rankings)||{},dcp=(typeof _pcData!=='undefined'&&_pcData.decomp)||{};
     var dists=[],accs=[];rows.forEach(function(r){var s=sk[r.dgId];if(s){if(s.driving_dist!=null)dists.push(s.driving_dist);if(s.driving_acc!=null)accs.push(s.driving_acc);}});
     dists.sort(function(a,b){return a-b;});accs.sort(function(a,b){return a-b;});
     function _pct(arr,v){if(v==null||arr.length<2)return null;var i=0;while(i<arr.length&&arr[i]<v)i++;return i/(arr.length-1);}
     function sgFmt(v){return (v>0?'+':'')+v.toFixed(2);}
-    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm)">\u2013</td>';var cl=sgColor(r['_rk_'+key],fieldN);return'<td style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+';font-family:var(--fm)">'+fmt(v)+'</td>';}
+    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm)">–</td>';var cl=sgColor(r['_rk_'+key],fieldN);return'<td style="font-family:var(--fm);padding:1px 2px"><span style="display:inline-block;min-width:30px;padding:1px 4px;border-radius:4px;background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+fmt(v)+'</span></td>';}
     function flag(c){if(!c)return'';var m=_FLAG2[c];return m?'<img src="https://flagcdn.com/20x15/'+m+'.png" width="15" height="11" loading="lazy" style="border-radius:2px;margin-right:.28rem;vertical-align:-1px">':'<span style="font-size:.44rem;color:var(--td);margin-right:.25rem">'+c+'</span>';}
     function badges(r){var s=sk[r.dgId];if(!s)return'';var dp=_pct(dists,s.driving_dist),ap=_pct(accs,s.driving_acc),o='';
       if(dp!=null&&dp>=0.8)o+='<span class="ptag pt-l" title="Long off the tee">L</span>';else if(dp!=null&&dp<=0.2)o+='<span class="ptag pt-s" title="Short off the tee">S</span>';
       if(ap!=null&&ap>=0.8)o+='<span class="ptag pt-a" title="Accurate driver">A</span>';else if(ap!=null&&ap<=0.2)o+='<span class="ptag pt-i" title="Inaccurate driver">I</span>';
       return o?' '+o:'';}
-    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par; bar behind = model win chance">Score</th><th>Pos</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P\u00b7B\u207a\u00b7Bog\u207a</th><th title="Strokes Gained Total (cumulative)">SG Tot</th><th title="Off the Tee">OTT</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Driving distance">DIST</th><th title="Driving accuracy">ACC</th><th title="Greens in reg">GIR</th></tr></thead><tbody>';
+    h+='<div style="font-size:.5rem;color:var(--td);font-family:var(--fb);margin-bottom:.25rem">Tap any player for bio, rankings &amp; form · SG = strokes gained vs field (cumulative)</div>';
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par; bar behind = model win chance">Score</th><th>Pos</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P·B⁺·Bog⁺</th><th title="Strokes Gained Total (cumulative)">SG Tot</th><th title="Off the Tee">OTT</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Driving distance">DIST</th><th title="Driving accuracy">ACC</th><th title="Greens in reg">GIR</th></tr></thead><tbody>';
     rows.forEach(function(r){
       var scC=r.score==null?'var(--td)':r.score<0?'var(--gl)':r.score>0?'var(--rd)':'var(--tp)';
-      var scT=r.score==null?'\u2013':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
+      var scT=r.score==null?'–':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
       var wp=r.win||0,bw=Math.min(100,Math.round(wp/maxWin*100));
       var wpct=wp>0?(wp*100>=10?Math.round(wp*100)+'%':(wp*100).toFixed(1)+'%'):'<1%';
       var sc=esBy[_dgScoreKey(r.raw)];
-      var scoreBreak=sc&&(sc.pars+sc.birdiePlus+sc.bogeyPlus)>0?('<span style="color:var(--ts)">'+sc.pars+'</span><span style="color:var(--td)">/</span><span style="color:var(--gl);font-weight:600">'+sc.birdiePlus+'</span><span style="color:var(--td)">/</span><span style="color:var(--rd);font-weight:600">'+sc.bogeyPlus+'</span>'):'<span style="color:var(--td)">\u2013</span>';
-      var rkRec=rkd[r.dgId]||{};
-      h+='<tr><td class="nc" style="font-size:.64rem;white-space:nowrap">'+flag(rkRec.country)+'<span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</span>'+badges(r)+'</td>'+
+      var scoreBreak=sc&&(sc.pars+sc.birdiePlus+sc.bogeyPlus)>0?('<span style="color:var(--ts)">'+sc.pars+'</span><span style="color:var(--td)">/</span><span style="color:var(--gl);font-weight:600">'+sc.birdiePlus+'</span><span style="color:var(--td)">/</span><span style="color:var(--rd);font-weight:600">'+sc.bogeyPlus+'</span>'):'<span style="color:var(--td)">–</span>';
+      var rkRec=rkd[r.dgId]||{};var ctry=r.country||rkRec.country;var isAm=(rkRec.am===1)||((dcp[r.dgId]&&dcp[r.dgId].am)===1);
+      h+='<tr><td class="nc" style="font-size:.64rem;white-space:nowrap">'+flag(ctry)+'<span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</span>'+(isAm?'<span class="am-tag" title="Amateur">a</span>':'')+badges(r)+'</td>'+
         '<td style="position:relative;font-family:var(--fm);font-weight:700;min-width:42px" title="model win chance '+wpct+'"><span style="position:absolute;left:0;top:2px;bottom:2px;width:'+bw+'%;background:rgba(110,42,62,.16);border-radius:2px"></span><span style="position:relative;color:'+scC+'">'+scT+'</span></td>'+
-        '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'\u2013')+'</td>'+
-        '<td title="'+(sc?('ESPN thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+(r.score!=null?(' \u00b7 DG '+(r.score>0?'+':'')+r.score+(sc.toPar===r.score?' \u2713':' \u26a0')):'')):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreBreak+'</td>'+
+        '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
+        '<td title="'+(sc?('ESPN thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+(r.score!=null?(' · DG '+(r.score>0?'+':'')+r.score+(sc.toPar===r.score?' ✓':' ⚠')):'')):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreBreak+'</td>'+
         sgCell(r,'sgTot',sgFmt)+sgCell(r,'ott',sgFmt)+sgCell(r,'app',sgFmt)+sgCell(r,'arg',sgFmt)+sgCell(r,'putt',sgFmt)+sgCell(r,'t2g',sgFmt)+
         sgCell(r,'dist',function(v){return Math.round(v);})+
         sgCell(r,'acc',function(v){return Math.round(v*100)+'%';})+
         sgCell(r,'gir',function(v){return Math.round(v*100)+'%';})+'</tr>';
     });
     h+='</tbody></table></div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center;font-size:.5rem;color:var(--td);margin-top:.3rem;font-family:var(--fb)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(20,190,90,.75);vertical-align:-1px"></span> gaining vs field</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(225,50,35,.6);vertical-align:-1px"></span> losing</span><span><span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.28);vertical-align:-1px"></span> bar behind score = win chance</span><span><span class="ptag pt-l">L</span> long <span class="ptag pt-s">S</span> short <span class="ptag pt-a">A</span> accurate <span class="ptag pt-i">I</span> inaccurate</span><span>'+rows.length+' players \u00b7 scroll \u2192</span></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center;font-size:.5rem;color:var(--td);margin-top:.3rem;font-family:var(--fb)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(20,190,90,.6);vertical-align:-1px"></span> gaining vs field</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(225,50,35,.5);vertical-align:-1px"></span> losing</span><span><span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.28);vertical-align:-1px"></span> bar = win chance</span><span><span class="ptag pt-l">L</span> long <span class="ptag pt-s">S</span> short <span class="ptag pt-a">A</span> accurate <span class="ptag pt-i">I</span> inaccurate <span class="am-tag">a</span> amateur</span><span>'+rows.length+' players · scroll →</span></div>';
 
   } else {
     var ALLBOOKS=[{k:'draftkings',l:'DK'},{k:'fanduel',l:'FD'},{k:'betmgm',l:'MGM'},{k:'caesars',l:'CZR'},{k:'pointsbet',l:'PB'},{k:'bet365',l:'365'}];
@@ -7501,7 +7505,7 @@ function _renderUsoPicks(ip){
   list.sort(function(a,b){return b.n-a.n;});
   const dhCount=list.filter(function(p){return p.dh;}).length;
   let h='<div class="usolp-head"><h3 style="margin:0">Pool Picks</h3>'+tsToggleHTML('uso-picks')+'</div>';
-  h+='<div style="font-size:.55rem;color:var(--td);font-style:italic;font-family:var(--fb);margin-bottom:.4rem">Who the '+N+' entries backed · ranked by live <b>value</b> (finish vs salary) · '+dhCount+' dark horses (🐎)</div>';
+  h+='<div style="font-size:.55rem;color:var(--td);font-style:italic;font-family:var(--fb);margin-bottom:.4rem">Who the '+N+' entries backed · ranked by live <b>value</b> (finish vs salary) · '+dhCount+' dark horses (DH)</div>';
   // Simplified: two conditional-formatted lists — Best & Worst value
   var maxVal=Math.max.apply(null,list.map(function(p){return p.val||0;}).concat([0.001]));
   function vrows(arr){return arr.map(function(p){
@@ -7509,7 +7513,7 @@ function _renderUsoPicks(ip){
     var bw=p.val!=null?Math.max(4,Math.round(p.val/maxVal*100)):0;
     var valC=p.val==null?'var(--td)':p.val>=6?'var(--gl)':p.val>=3?'var(--ts)':'var(--rd)';
     var barBg=p.val>=6?'rgba(42,125,82,.22)':p.val>=3?'rgba(88,104,130,.16)':'rgba(139,35,50,.14)';
-    return '<tr><td class="nc" style="font-size:.63rem">'+(p.dh?'🐎 ':'')+'<span class="pc-link" data-nm="'+_pcEsc(p.nm)+'">'+p.nm+'</span> <span title="picked by '+p.n+' entries ('+p.pct+'%)" style="font-family:var(--fm);font-size:.52rem;color:var(--go);font-weight:700">'+p.n+'×</span></td>'+
+    return '<tr><td class="nc" style="font-size:.63rem">'+(p.dh?'<span class="dh-tag">DH</span> ':'')+'<span class="pc-link" data-nm="'+_pcEsc(p.nm)+'">'+p.nm+'</span> <span title="picked by '+p.n+' entries ('+p.pct+'%)" style="font-family:var(--fm);font-size:.52rem;color:var(--go);font-weight:700">'+p.n+'×</span></td>'+
       '<td style="position:relative;min-width:70px;font-family:var(--fm);font-weight:700"><span style="position:absolute;left:1px;top:3px;bottom:3px;width:'+bw+'%;background:'+barBg+';border-radius:2px"></span><span style="position:relative;color:'+valC+'">'+(p.val!=null?p.val.toFixed(1):'–')+'</span></td>'+
       '<td style="font-family:var(--fm);color:'+scC+'">'+(p.cut?'CUT':scT)+'</td>'+
       '<td style="font-family:var(--fm);color:var(--ts)">'+(p.pos!=null?'T'+p.pos:'–')+'</td>'+
@@ -7518,7 +7522,7 @@ function _renderUsoPicks(ip){
   if(live){
     var _vd=list.filter(function(p){return p.val!=null;});
     var _best=_vd.slice().sort(function(a,b){return b.val-a.val;}).slice(0,10);
-    var _worst=_vd.slice().sort(function(a,b){return a.val-b.val;}).slice(0,10);
+    var _worst=_vd.slice().sort(function(a,b){return (a.val-b.val)||((b.sal||0)-(a.sal||0));}).slice(0,10);
     var _thead='<thead><tr><th style="text-align:left">Golfer</th><th>Value</th><th>Score</th><th>Pos</th><th>Salary</th></tr></thead>';
     h+='<div style="font-size:.64rem;font-weight:700;color:var(--gl);font-family:var(--fb);margin:.2rem 0 .15rem">Best value</div><div class="tw" style="margin:0;border-radius:5px"><table class="tc">'+_thead+'<tbody>'+vrows(_best)+'</tbody></table></div>';
     h+='<div style="font-size:.64rem;font-weight:700;color:var(--rd);font-family:var(--fb);margin:.55rem 0 .15rem">Worst value</div><div class="tw" style="margin:0;border-radius:5px"><table class="tc">'+_thead+'<tbody>'+vrows(_worst)+'</tbody></table></div>';
