@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v38 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v39 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7084,7 +7084,7 @@ const USO_PLAYER_META={
   "Hojgaard":{nm:"Nicolai Hojgaard",sal:7200,own:2},
   "Horschel":{nm:"Billy Horschel",sal:6400,own:1},
   "Hovland":{nm:"Viktor Hovland",sal:7900,own:18},
-  "Im":{nm:"Si Woo Kim",sal:8000,own:12},
+  "Im":{nm:"Sungjae Im",sal:8000,own:12},
   "James":{nm:"Benjamin James",sal:6500,own:2},
   "Johnson":{nm:"Dustin Johnson",sal:6900,own:2},
   "Jordan":{nm:"Matthew Jordan",sal:6200,own:1},
@@ -7206,7 +7206,7 @@ const USO_ROSTERS=[
   {nm:"Putt4Dough",tb:273,g:["English","McIlroy","McNealy","Reed","Schauffele","Smith"]},
   {nm:"Reid30",tb:284,g:["Aberg","Gotterup","Harman","Schauffele","Smith","Thomas"]},
   {nm:"rjm",tb:267,g:["Bridgeman","Harman","Henley","McIlroy","Rahm","Rose"]},
-  {nm:"Ronners",tb:276,g:["Burns","Fleetwood","MacIntyre","Rai","Roy","Scheffler"]},
+  {nm:"Ronners",tb:276,g:["Burns","Fleetwood","MacIntyre","Rai","McIlroy","Scheffler"]},
   {nm:"Ryan Reddy",tb:280,g:["Clark","Gotterup","Hatton","Rahm","Rose","Spieth"]},
   {nm:"Ryan Smith",tb:284,g:["Clark","Henley","Im","Rahm","Schauffele","Thomas"]},
   {nm:"ryankozack",tb:279,g:["Bradley","Gotterup","Hatton","Scheffler","Smith","Thomas"]},
@@ -7514,11 +7514,12 @@ function renderUsoPicks(){
 function _renderUsoPicks(ip){
   const el=document.getElementById('uso-picks');if(!el)return;
   const evName=(ip&&ip.info&&ip.info.event_name)||'';const live=/u\.?\s*s\.?\s*open/i.test(evName)&&ip&&ip.data&&ip.data.length;
-  const sm={};if(live)ip.data.forEach(function(p){var k=_lnKey(p.player_name);var pp=_parsePos(p.current_pos);if(!sm[k]||(sm[k].s==null&&p.current_score!=null))sm[k]={s:p.current_score,pos:pp.pos,cut:pp.cut||p.make_cut===0,thru:p.thru};});
+  const sm={},smFull={},smLn={};if(live)ip.data.forEach(function(p){var pp=_parsePos(p.current_pos);var rec={s:p.current_score,pos:pp.pos,cut:pp.cut||p.make_cut===0,thru:p.thru};var k=_lnKey(p.player_name);if(!sm[k]||(sm[k].s==null&&p.current_score!=null))sm[k]=rec;smFull[_fullNameNorm(p.player_name)]=rec;(smLn[k]=smLn[k]||[]).push({rec:rec,fn:_fullNameNorm(p.player_name)});});
   const cnt={};USO_ROSTERS.forEach(function(e){e.g.forEach(function(g){cnt[g]=(cnt[g]||0)+1;});});
   const meta=(typeof USO_PLAYER_META!=='undefined')?USO_PLAYER_META:{};
   const N=USO_ROSTERS.length;
-  const list=Object.keys(cnt).map(function(g){var m=meta[g]||{};var d=sm[_lnKey(g)]||{};
+  function _resolvePick(g){var m=meta[g]||{};if(live&&m.nm){var f=_fullNameNorm(m.nm);if(smFull[f])return smFull[f];var parts=String(m.nm).trim().split(/\s+/);var last=_norm(parts[parts.length-1]);var fp=_norm(parts[0]).slice(0,4);var cands=smLn[last]||[];var hit=cands.find(function(c){return fp&&c.fn.indexOf(fp)>=0;});if(hit)return hit.rec;if(cands.length)return cands[0].rec;}return (live?sm[_lnKey(g)]:null)||{};}
+  const list=Object.keys(cnt).map(function(g){var m=meta[g]||{};var d=_resolvePick(g);
     var sal=m.sal||null;var pos=d.pos!=null?d.pos:null;
     // live value: better position + lower salary = higher value. valuePts = max(0,71-pos); value = pts / (sal/1000)
     var val=null;if(live&&!d.cut&&pos!=null&&sal){var pts=Math.max(0,71-pos);val=pts/(sal/1000);}
