@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v25 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v26 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -900,6 +900,11 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 /* Top-5 paying rows = gold money shade */
 tbody tr.pay td{background:rgba(196,160,53,.11)!important}
 tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
+
+/* Fix: live-pool rows transparent (match see-through); tints + hover still apply */
+#uso-live-pool tbody tr{background-color:transparent!important}
+#uso-live-pool tbody tr td{background-color:transparent}
+#uso-live-pool tbody tr:hover td{background-color:var(--bh)}
 </style>
 </head>
 <body>
