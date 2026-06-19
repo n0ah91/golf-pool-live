@@ -1,7 +1,24 @@
 # COLOR AUDIT — The Majors Pool Dashboard
 **Date:** 2026-03-17 | **File:** index.html (single-file dashboard)
 
-## CSS Custom Properties (Rollback Block)
+> ## ⚠️ SUPERSEDED — see current palette below (updated 2026-06-18)
+> The rollback block in this file documents the **old dark "Augusta Noir" theme**. Since March 2026 `index.html` was redesigned to the current **light "Majors" theme**, and the dark version was archived to `index-augusta-noir.html` (deprecated). The dark values below are **historical only**. The canonical palette and design system now live in **`UI_PRESENTATION_EXCELLENCE_SKILL.md`**.
+>
+> **Current `index.html` `:root` (light, canonical):**
+> ```css
+> :root{
+>   --bd:#f5f4f0; --bm:#ffffff; --bc:#ffffff; --bca:#f0efeb; --bh:#e8e7e2; --br:#d4d2ca; --brl:#bfbdb5;
+>   --gn:#006747; --gl:#2a7d52; --go:#9a7e28;                    /* green-primary / positive / gold */
+>   --tb:#1a1f3a; --tp:#2a3350; --ts:#586882; --td:#8895a8;      /* heading / body / secondary / dim */
+>   --rd:#8b2332; --uso:#6e2a3e; --uso2:#8a3a52;                  /* over-par / Shinnecock claret */
+>   --r1:#c4a035; --r2:#8895a8; --r3:#6b4c2a;                     /* podium */
+>   --fd/--fb/--fh:'DM Sans'; --fm:'DM Mono';
+> }
+> ```
+
+---
+
+## CSS Custom Properties (Rollback Block) — HISTORICAL (dark Augusta Noir, archived in index-augusta-noir.html)
 
 ```css
 :root {
