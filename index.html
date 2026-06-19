@@ -860,6 +860,11 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .pc-sgval{width:40px;text-align:right;font-family:var(--fm);font-weight:600;flex:0 0 auto}
 .pc-sgmeta{font-size:.56rem;color:var(--td);margin-top:.3rem;font-family:var(--fm)}
 .pc-foot{margin-top:.7rem;border-top:1px solid var(--br);padding:.4rem 0;font-size:.5rem;color:var(--td);text-align:center}
+
+/* US Open live-tab: single clean underline (was doubled inset+after) */
+.nav button.live-tab.active{box-shadow:none}
+.nav button.live-tab.active::after{left:0;right:0;bottom:0;height:2px;background:var(--uso)}
+.nav button.live-tab::before{box-shadow:none}
 </style>
 </head>
 <body>
@@ -7251,20 +7256,18 @@ async function renderUsoLivePool(){
   else h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>'+Object.keys(dhSet).length+' dark horses</b> in play — single-pick longshots to root for</div>';
   h+=payH+'</div>';
   h+='<div style="margin-bottom:.3rem"><input id="usolp-search" placeholder="Search entry..." oninput="filterUsoLivePool()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:130px"> <span style="font-size:.5rem;color:var(--td);font-family:var(--fb)">best 4 of 6 to par − position bonus</span></div>';
-  h+='<div class="tw" style="margin:0;border-radius:5px"><table><thead><tr><th style="width:24px">#</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th style="width:58px" title="projected year-to-date rank">YTD</th><th>Best 4 of 6 — counted bold · dropped faded · 🐎 dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="width:24px">#</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th style="width:58px" title="projected year-to-date rank">YTD</th><th>Best 4 of 6 — counted bold · dropped faded · 🐎 dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
   standings.slice(0,25).forEach(function(s){h+=_usoLpRow(s);});
   h+='</tbody></table></div><div style="text-align:center;padding:.4rem"><button class="btn-pill" onclick="expandUsoLivePool()">Show all '+standings.length+' entries ↓</button></div>';
   el.innerHTML=h;window._usoLpStandings=standings;_applySecSize('uso-live-pool');
 }
 function _ytdTag(s){
   if(s.projRank==null)return'<span style="color:var(--td)">–</span>';
-  var r=s.projRank,n=(window._usoLpCtx&&window._usoLpCtx.ytdN)||108;
-  var col=r<=3?'#9a7e28':r<=10?'#2a7d52':r<=25?'#4a9e6e':r<=Math.ceil(n*0.55)?'var(--tp)':r<=Math.ceil(n*0.8)?'#c07a4a':'#b03b48';
   var arrow,acol;
-  if(s.ytdMove>0){arrow='▲'+s.ytdMove;acol='var(--gl)';}
-  else if(s.ytdMove<0){arrow='▼'+Math.abs(s.ytdMove);acol='var(--rd)';}
-  else{arrow='=';acol='var(--td)';}
-  return '<span style="font-family:var(--fm);font-weight:700;color:'+col+'">#'+r+'</span> <span style="font-size:.52rem;font-family:var(--fm);color:'+acol+'">'+arrow+'</span>';
+  if(s.ytdMove>0){arrow='▲ '+s.ytdMove;acol='var(--gl)';}
+  else if(s.ytdMove<0){arrow='▼ '+Math.abs(s.ytdMove);acol='var(--rd)';}
+  else{arrow='–';acol='var(--td)';}
+  return '<span style="font-family:var(--fm);font-weight:400;font-size:.56rem;color:var(--td)">#'+s.projRank+'</span> <span style="font-family:var(--fm);font-weight:700;font-size:.66rem;color:'+acol+'">'+arrow+'</span>';
 }
 function _usoLpRow(s){
   const ml=(window._usoLpCtx&&window._usoLpCtx.ml)||35;
@@ -7272,9 +7275,9 @@ function _usoLpRow(s){
   const sv=s.countedN>0?(s.total>0?'+'+s.total:s.total===0?'E':s.total):'–';
   const me=(typeof loadMe==='function'&&loadMe()&&s.nm.toLowerCase().includes(loadMe().toLowerCase()))?'me':'';
   const rw=[s.rk<=3?'t3':'',s.rk<=ml?'im':'',me].filter(Boolean).join(' ');
-  const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'🐎':'')+g.name;if(g.score!=null)label+=' ('+(g.score>0?'+':'')+(g.score===0?'E':g.score)+')';else if(g.cut)label+=' (CUT)';else label+=' (—)';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';const hl=g.bonus>0?'background:rgba(196,160,53,.12);border-radius:3px;padding:0 2px':(g.dh?'background:rgba(110,42,62,.08);border-radius:3px;padding:0 2px':'');return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
+  const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'🐎':'')+g.name;if(g.score!=null)label+=' ('+(g.score>0?'+':'')+(g.score===0?'E':g.score)+')';else if(g.cut)label+=' (CUT)';else label+=' (—)';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';const hl=g.bonus>0?'background:rgba(196,160,53,.1);border-radius:3px;padding:0 1px':(g.dh?'background:rgba(110,42,62,.07);border-radius:3px;padding:0 1px':'');return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
   const bonTxt=s.bonus>0?'<span style="color:var(--go);font-family:var(--fm)">−'+s.bonus+'</span>':'<span style="color:var(--td)">0</span>';
-  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'">'+s.rk+'</td><td class="nc">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td>'+_ytdTag(s)+'</td><td style="font-size:.56rem">'+gTags+'</td></tr>';
+  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'">'+s.rk+'</td><td class="nc">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td>'+_ytdTag(s)+'</td><td style="font-size:.53rem;line-height:1.45">'+gTags+'</td></tr>';
 }
 window.filterUsoLivePool=function(){var q=(document.getElementById('usolp-search')||{}).value;var qq=(q||'').toLowerCase();var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var rows=qq?window._usoLpStandings.filter(function(s){return s.nm.toLowerCase().includes(qq);}):window._usoLpStandings.slice(0,25);var h='';rows.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
 window.expandUsoLivePool=function(){var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
@@ -7284,13 +7287,15 @@ let _usoFieldView='simple',_usoFieldTimer=null,_usoFieldBooks={draftkings:1,fand
 window.setUsoFieldView=function(v){_usoFieldView=v;renderUsoField();};
 window.toggleUsoBook=function(k){_usoFieldBooks[k]=_usoFieldBooks[k]?0:1;renderUsoField();};
 /* conditional-format helpers */
-function _pctColor(p){if(p==null)return'var(--td)';var hue=Math.round(p*132);var lt=58+Math.round((1-Math.abs(p-0.5)*2)*4);return'hsl('+hue+',64%,'+lt+'%)';}
+function _pctColor(p){if(p==null)return'var(--td)';var g=[42,125,82],n=[88,104,130],r=[139,35,50],a,b,t;if(p>=0.5){a=n;b=g;t=(p-0.5)*2;}else{a=r;b=n;t=p*2;}return'rgb('+Math.round(a[0]+(b[0]-a[0])*t)+','+Math.round(a[1]+(b[1]-a[1])*t)+','+Math.round(a[2]+(b[2]-a[2])*t)+')';}
 function _ordSuf(n){var v=n%100;if(v>=11&&v<=13)return'th';switch(n%10){case 1:return'st';case 2:return'nd';case 3:return'rd';default:return'th';}}
 function _rankField(rows,specs){specs.forEach(function(sp){var arr=rows.filter(function(r){return r[sp.key]!=null;}).slice().sort(function(a,b){return sp.hb?b[sp.key]-a[sp.key]:a[sp.key]-b[sp.key];});var n=arr.length;arr.forEach(function(r,i){r['_rk_'+sp.key]=i+1;r['_pct_'+sp.key]=n>1?1-(i/(n-1)):1;});});}
 /* ESPN per-player scoring (pars / birdies+ / bogeys+) — concurrency-limited, 4.5-min cache */
 let _espnScore={ts:0,by:{}},_espnLoading=false;
-function _espnKey(dn){if(!dn)return'';var p=String(dn).trim().split(/\s+/);return p[p.length-1].toLowerCase().replace(/[^a-z]/g,'')+'|'+((p[0]||'')[0]||'').toLowerCase();}
-function _dgScoreKey(nm){var s=String(nm||'');if(s.indexOf(',')>=0){var a=s.split(',');return a[0].trim().toLowerCase().replace(/[^a-z]/g,'')+'|'+((a[1]||'').trim()[0]||'').toLowerCase();}var p=s.trim().split(/\s+/);return p[p.length-1].toLowerCase().replace(/[^a-z]/g,'')+'|'+((p[0]||'')[0]||'').toLowerCase();}
+function _norm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[øØ]/g,'o').replace(/[æÆ]/g,'ae').replace(/[ðÐ]/g,'d').replace(/[þÞ]/g,'th').replace(/[łŁ]/g,'l').toLowerCase().replace(/[^a-z]/g,'');}
+function _fullNameNorm(nm){var s=String(nm||'');var parts=s.indexOf(',')>=0?[(s.split(',')[1]||'').trim(),s.split(',')[0].trim()]:s.trim().split(/\s+/);return parts.map(_norm).join('');}
+function _espnKey(dn){return _fullNameNorm(dn);}
+function _dgScoreKey(nm){return _fullNameNorm(nm);}
 async function fetchEspnScoring(force){
   if(_espnLoading)return _espnScore.by;
   if(!force&&_espnScore.ts&&Date.now()-_espnScore.ts<270000&&Object.keys(_espnScore.by).length)return _espnScore.by;
@@ -7305,10 +7310,11 @@ async function fetchEspnScoring(force){
     var by={},queue=started.slice();
     async function worker(){while(queue.length){var c=queue.shift();var aid=c.athlete.id;try{
       var u='https://sports.core.api.espn.com/v2/sports/golf/leagues/pga/events/'+eventId+'/competitions/'+eventId+'/competitors/'+aid+'/linescores';
-      var j=await(await fetch(u)).json();var e=0,b=0,p=0,bog=0;
+      var j=await(await fetch(u)).json();var e=0,b=0,p=0,bog=0,tp=0,hp=0;
       (j.items||[]).forEach(function(rd){(rd.linescores||[]).forEach(function(h){var n=h.scoreType&&h.scoreType.name;if(!n)return;n=String(n).toUpperCase();
+        if(typeof h.value==='number'&&typeof h.par==='number'){tp+=(h.value-h.par);hp++;}
         if(/EAGLE|ALBATROSS|DOUBLE_EAGLE/.test(n))e++;else if(n==='BIRDIE')b++;else if(n==='PAR')p++;else if(/BOGEY/.test(n))bog++;});});
-      by[_espnKey(c.athlete.displayName)]={birdiePlus:b+e,pars:p,bogeyPlus:bog,thru:(p+b+e+bog)};
+      by[_espnKey(c.athlete.displayName)]={birdiePlus:b+e,pars:p,bogeyPlus:bog,thru:hp,toPar:tp};
     }catch(err){}}}
     var ws=[];for(var i=0;i<8;i++)ws.push(worker());await Promise.all(ws);
     if(Object.keys(by).length)_espnScore={ts:Date.now(),by:by};
@@ -7349,8 +7355,8 @@ async function renderUsoField(){
       h+='<tr><td class="nc" style="font-size:.64rem"><span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</span></td>'+
         '<td style="font-family:var(--fm);font-weight:700;color:'+scC+'">'+scT+'</td>'+
         '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
-        '<td style="font-family:var(--fm);font-size:.58rem;white-space:nowrap">'+scoreCell+'</td>'+
-        '<td style="position:relative;font-family:var(--fm);color:var(--gl);font-weight:600;min-width:46px"><span style="position:absolute;left:1px;right:1px;top:3px;bottom:3px;width:'+bw+'%;background:rgba(122,205,140,.20);border-radius:2px"></span><span style="position:relative">'+_winOdds(r.win)+'</span></td>'+
+        '<td title="'+(sc?('ESPN: thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+' to par'+(r.score!=null?(" \u00b7 DG "+(r.score>0?"+":"")+r.score+(sc.toPar===r.score?" \u2713":" \u26a0")):"")):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreCell+'</td>'+
+        '<td style="position:relative;font-family:var(--fm);color:var(--gl);font-weight:600;min-width:46px"><span style="position:absolute;left:1px;right:1px;top:3px;bottom:3px;width:'+bw+'%;background:rgba(42,125,82,.15);border-radius:2px"></span><span style="position:relative">'+_winOdds(r.win)+'</span></td>'+
         rkCell(r,'sgTot')+rkCell(r,'ott')+rkCell(r,'app')+rkCell(r,'arg')+rkCell(r,'putt')+rkCell(r,'t2g')+
         valCell(r,'dist',function(v){return Math.round(v);})+
         valCell(r,'acc',function(v){return Math.round(v*100)+'%';})+
@@ -7398,21 +7404,22 @@ function _renderUsoPicks(ip){
   list.sort(function(a,b){return b.n-a.n;});
   const dhCount=list.filter(function(p){return p.dh;}).length;
   let h='<div class="usolp-head"><h3 style="margin:0">Pool Picks</h3>'+tsToggleHTML('uso-picks')+'</div>';
-  h+='<div style="font-size:.55rem;color:var(--td);font-style:italic;font-family:var(--fb);margin-bottom:.4rem">Who the '+N+' entries backed · live score, salary, ownership &amp; current value · '+dhCount+' dark horses (🐎)</div>';
+  h+='<div style="font-size:.55rem;color:var(--td);font-style:italic;font-family:var(--fb);margin-bottom:.4rem">Who the '+N+' entries backed · ranked by live <b>value</b> (finish vs salary) · '+dhCount+' dark horses (🐎)</div>';
   // best value chips (live)
   if(live){var vl=list.filter(function(p){return p.val!=null;}).sort(function(a,b){return b.val-a.val;}).slice(0,4);
     if(vl.length){h+='<div class="usolp-strip" style="margin-bottom:.4rem"><div class="usolp-pay" style="background:linear-gradient(135deg,rgba(42,125,82,.08),rgba(42,125,82,.03));border-color:rgba(42,125,82,.25)"><b style="color:var(--gl)">Best value now:</b> '+vl.map(function(p){return p.nm+' <span style="font-family:var(--fm);color:var(--gl)">'+p.val.toFixed(1)+'</span>';}).join(' · ')+'</div></div>';}}
-  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Golfer</th><th title="picked by N of our entries">Picks</th><th>Score</th><th>Pos</th><th>Salary</th><th title="field ownership">Field</th><th title="live value: position vs salary">Value</th></tr></thead><tbody>';
+  var maxVal=Math.max.apply(null,list.map(function(p){return p.val||0;}).concat([0.001]));
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Golfer</th><th title="live value — finish position vs salary">Value</th><th>Score</th><th>Pos</th><th>Salary</th></tr></thead><tbody>';
   function rows(arr){return arr.map(function(p){
     var scT=p.score==null?'–':(p.score>0?'+'+p.score:p.score===0?'E':p.score);var scC=p.cut?'var(--td)':p.score<0?'var(--gl)':p.score>0?'var(--rd)':'var(--tp)';
-    var valC=p.val==null?'var(--td)':p.val>=6?'var(--gl)':p.val>=3?'var(--tp)':'var(--ts)';
-    return'<tr><td class="nc" style="font-size:.64rem">'+(p.dh?'🐎 ':'')+'<span class="pc-link" data-nm="'+_pcEsc(p.nm)+'">'+p.nm+'</span></td>'+
-      '<td style="font-family:var(--fm)"><b style="color:var(--go)">'+p.n+'</b> <span style="color:var(--td);font-size:.52rem">'+p.pct+'%</span></td>'+
+    var bw=p.val!=null?Math.max(4,Math.round(p.val/maxVal*100)):0;
+    var valC=p.val==null?'var(--td)':p.val>=6?'var(--gl)':p.val>=3?'var(--ts)':'var(--td)';
+    var barBg=p.val>=6?'rgba(42,125,82,.20)':p.val>=3?'rgba(88,104,130,.16)':'rgba(136,149,168,.12)';
+    return'<tr><td class="nc" style="font-size:.63rem">'+(p.dh?'🐎 ':'')+'<span class="pc-link" data-nm="'+_pcEsc(p.nm)+'">'+p.nm+'</span> <span title="picked by '+p.n+' entries ('+p.pct+'%)" style="font-family:var(--fm);font-size:.52rem;color:var(--go);font-weight:700">'+p.n+'×</span></td>'+
+      '<td style="position:relative;min-width:74px;font-family:var(--fm);font-weight:700">'+(p.val!=null?'<span style="position:absolute;left:1px;top:3px;bottom:3px;width:'+bw+'%;background:'+barBg+';border-radius:2px"></span><span style="position:relative;color:'+valC+'">'+p.val.toFixed(1)+'</span>':'<span style="color:var(--td)">–</span>')+'</td>'+
       '<td style="font-family:var(--fm);color:'+scC+'">'+(p.cut?'CUT':scT)+'</td>'+
       '<td style="font-family:var(--fm);color:var(--ts)">'+(p.pos!=null?'T'+p.pos:'–')+'</td>'+
-      '<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'–')+'</td>'+
-      '<td style="font-family:var(--fm);color:var(--ts)">'+(p.own!=null?p.own+'%':'–')+'</td>'+
-      '<td style="font-family:var(--fm);font-weight:600;color:'+valC+'">'+(p.val!=null?p.val.toFixed(1):'–')+'</td></tr>';}).join('');}
+      '<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'–')+'</td></tr>';}).join('');}
   h+=rows(list.slice(0,15))+'</tbody></table></div>';
   h+='<details style="margin-top:.3rem"><summary style="cursor:pointer;font-size:.6rem;color:var(--go);font-family:var(--fb);padding:.25rem 0">Show all '+list.length+' picked golfers ▸</summary><div class="tw" style="margin:.3rem 0 0;border-radius:5px;max-height:360px;overflow-y:auto"><table class="tc"><tbody>'+rows(list.slice(15))+'</tbody></table></div></details>';
   el.innerHTML=h;_applySecSize('uso-picks');
@@ -7427,7 +7434,7 @@ function startUsoLivePool(){
 
 /* ===== PLAYER CARD — click any player for bio, rankings, SG profile, course fit ===== */
 let _pcData={ts:0,rankings:{},skills:{},decomp:{},byName:{},espnIds:{},meta:{}},_pcCache={},_pcLoading=false;
-function _pcKey(nm){if(!nm)return'';var s=String(nm);var last,fi;if(s.indexOf(',')>=0){var a=s.split(',');last=a[0];fi=(a[1]||'').trim()[0]||'';}else{var p=s.trim().split(/\s+/);last=p[p.length-1];fi=(p[0]||'')[0]||'';}return last.toLowerCase().replace(/[^a-z]/g,'')+'|'+fi.toLowerCase();}
+function _pcKey(nm){return (typeof _fullNameNorm==='function')?_fullNameNorm(nm):String(nm||'').toLowerCase().replace(/[^a-z]/g,'');}
 function _pcFull(nm){if(!nm)return'';var s=String(nm);if(s.indexOf(',')>=0){var a=s.split(',');return (a[1]||'').trim()+' '+a[0].trim();}return s;}
 function _pcEsc(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 async function _pcLoadBase(){
