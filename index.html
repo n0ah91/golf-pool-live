@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v35 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v36 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7548,6 +7548,11 @@ function _renderUsoPicks(ip){
     var _thead='<thead><tr><th style="text-align:left">Golfer</th><th>Value</th><th>Score</th><th>Pos</th><th>Salary</th></tr></thead>';
     h+='<div style="font-size:.64rem;font-weight:700;color:var(--gl);font-family:var(--fb);margin:.2rem 0 .15rem">Best value</div><div class="tw" style="margin:0;border-radius:5px"><table class="tc">'+_thead+'<tbody>'+vrows(_best)+'</tbody></table></div>';
     h+='<div style="font-size:.64rem;font-weight:700;color:var(--rd);font-family:var(--fb);margin:.55rem 0 .15rem">Worst value</div><div class="tw" style="margin:0;border-radius:5px"><table class="tc">'+_thead+'<tbody>'+vrows(_worst)+'</tbody></table></div>';
+    var _pl={};USO_ROSTERS.forEach(function(e){e.g.forEach(function(g){_pl[_lnKey(g)]=1;});});
+    if(typeof _pcLoadBase==='function'&&!_pcData.ts&&!_pcLoading){_pcLoadBase().then(function(){renderUsoPicks();});}
+    var _rk=(typeof _pcData!=='undefined'&&_pcData.rankings)||{};
+    var _fa=((ip&&ip.data)||[]).filter(function(p){return !_pl[_lnKey(p.player_name)]&&p.current_score!=null&&p.make_cut!==0;}).map(function(p){var r=_rk[p.dg_id]||{};return {nm:(typeof fmN==='function'?fmN(p.player_name):p.player_name),score:p.current_score,pos:p.current_pos,owgr:r.owgr_rank};}).sort(function(a,b){return a.score-b.score;}).slice(0,12);
+    if(_fa.length){h+='<div style="font-size:.64rem;font-weight:700;color:var(--uso2);font-family:var(--fb);margin:.55rem 0 .15rem">Free agents <span style="font-weight:400;color:var(--td);font-size:.52rem">- in the field, picked by no one</span></div>';h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><tbody>'+_fa.map(function(p){var scT=p.score>0?'+'+p.score:p.score===0?'E':p.score;var scC=p.score<0?'var(--gl)':p.score>0?'var(--rd)':'var(--tp)';var og=(p.owgr&&p.owgr<=85)?' <span style="font-size:.46rem;color:var(--go);font-weight:700">#'+p.owgr+' OWGR</span>':'';return '<tr><td class="nc" style="font-size:.6rem">'+p.nm+og+'</td><td style="font-family:var(--fm);color:'+scC+'">'+scT+'</td><td style="font-family:var(--fm);color:var(--ts)">'+(p.pos||'-')+'</td></tr>';}).join('')+'</tbody></table></div>';}
   } else {
     h+='<div style="text-align:center;padding:1rem;font-size:.66rem;color:var(--ts)">Live value ranking appears once the U.S. Open is underway.</div>';
   }
