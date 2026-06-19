@@ -1,5 +1,5 @@
 /* Service Worker — Golf Majors Pool Dashboard */
-const CACHE = 'gmp-v23';
+const CACHE = 'gmp-v24';
 const ASSETS = [
   './',
   './index.html',
