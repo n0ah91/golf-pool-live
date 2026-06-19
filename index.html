@@ -1150,6 +1150,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 </main>
 <footer class="ft"><a href="https://account.venmo.com/u/NoahStancamp" target="_blank" style="color:#00205b;text-decoration:none;letter-spacing:.04em;font-size:.72rem;display:inline-block;font-weight:500;margin-bottom:.4rem">🍻 Cheers</a><br>The Majors Pool &middot; Est. 2017 &middot; Live Dashboard</footer>
 <script>
+/* ===== Analytics (GoatCounter) — pageviews auto, clicks via gcEvent() ===== */
+var GC_CODE=''; /* set to your GoatCounter site code, e.g. 'noah-golf' for noah-golf.goatcounter.com */
+(function(){if(!GC_CODE)return;var s=document.createElement('script');s.async=true;s.src='//gc.zgo.at/count.js';s.setAttribute('data-goatcounter','https://'+GC_CODE+'.goatcounter.com/count');document.head.appendChild(s);})();
+function gcEvent(name){try{if(window.GC_CODE&&window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:String(name).slice(0,128),title:String(name).slice(0,128),event:true});}catch(e){}}
 /* Font size control */
 var _fsLevel=parseInt(localStorage.getItem('fsLevel')||'0');
 (function(){if(_fsLevel)document.documentElement.style.fontSize=(16+_fsLevel*2)+'px';})();
@@ -1461,7 +1465,7 @@ function yrCard(y,s){
     <div class="dt">${s.entry_used}</div>${s.winnings?'<div class="dt" style="color:var(--go)">'+Math.round(s.winnings).toLocaleString()+'</div>':''}</div>`;}
 
 /* ===== NAV ===== */
-function go(t){S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.remove('active'));
+function go(t){gcEvent('tab/'+t);S.tab=t;document.querySelectorAll('.pn2').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(t)?.classList.add('active');
   ['history','uso-tab','upcoming','masters-results','players-results','open-tab','rules'].forEach((x,i)=>{if(x===t)document.querySelectorAll('.nav button')[i]?.classList.add('active');});
@@ -7198,7 +7202,7 @@ const USO_PAYOUTS=[{p:'1st',v:500},{p:'2nd',v:325},{p:'3rd',v:200},{p:'4th',v:12
 
 /* Reusable per-section text-size control (zoom-based) */
 const _SEC_ZOOM={sm:0.85,md:1,lg:1.18};
-function setSecSize(id,sz){var el=document.getElementById(id);if(!el)return;el.style.zoom=_SEC_ZOOM[sz]||1;el.querySelectorAll('.ts-btn[data-ts]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-ts')===sz);});try{localStorage.setItem('secSize_'+id,sz);}catch(e){}}
+function setSecSize(id,sz){gcEvent('textsize/'+sz);var el=document.getElementById(id);if(!el)return;el.style.zoom=_SEC_ZOOM[sz]||1;el.querySelectorAll('.ts-btn[data-ts]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-ts')===sz);});try{localStorage.setItem('secSize_'+id,sz);}catch(e){}}
 function _secSizeGet(id){try{return localStorage.getItem('secSize_'+id)||'md';}catch(e){return'md';}}
 function tsToggleHTML(id){var cur=_secSizeGet(id);return '<div class="ts-toggle" role="group" aria-label="Text size">'+['sm','md','lg'].map(function(s){return '<button class="ts-btn'+(s===cur?' active':'')+'" data-ts="'+s+'" onclick="setSecSize(\''+id+'\',\''+s+'\')">A</button>';}).join('')+'</div>';}
 function _applySecSize(id){var el=document.getElementById(id);if(!el)return;el.style.zoom=_SEC_ZOOM[_secSizeGet(id)]||1;}
@@ -7280,12 +7284,12 @@ function _usoLpRow(s){
   return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'">'+s.rk+'</td><td class="nc">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td>'+_ytdTag(s)+'</td><td style="font-size:.53rem;line-height:1.45">'+gTags+'</td></tr>';
 }
 window.filterUsoLivePool=function(){var q=(document.getElementById('usolp-search')||{}).value;var qq=(q||'').toLowerCase();var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var rows=qq?window._usoLpStandings.filter(function(s){return s.nm.toLowerCase().includes(qq);}):window._usoLpStandings.slice(0,25);var h='';rows.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
-window.expandUsoLivePool=function(){var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
+window.expandUsoLivePool=function(){gcEvent('livepool-expand');var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
 
 /* ---------- 2) LIVE FIELD (Simple = rank-vs-field + scoring · Advanced = sportsbook odds) ---------- */
 let _usoFieldView='simple',_usoFieldTimer=null,_usoFieldBooks={draftkings:1,fanduel:1,betmgm:1,caesars:1,pointsbet:0,bet365:0};
-window.setUsoFieldView=function(v){_usoFieldView=v;renderUsoField();};
-window.toggleUsoBook=function(k){_usoFieldBooks[k]=_usoFieldBooks[k]?0:1;renderUsoField();};
+window.setUsoFieldView=function(v){gcEvent('field-view/'+v);_usoFieldView=v;renderUsoField();};
+window.toggleUsoBook=function(k){gcEvent('book/'+k);_usoFieldBooks[k]=_usoFieldBooks[k]?0:1;renderUsoField();};
 /* conditional-format helpers */
 function _pctColor(p){if(p==null)return'var(--td)';var g=[42,125,82],n=[88,104,130],r=[139,35,50],a,b,t;if(p>=0.5){a=n;b=g;t=(p-0.5)*2;}else{a=r;b=n;t=p*2;}return'rgb('+Math.round(a[0]+(b[0]-a[0])*t)+','+Math.round(a[1]+(b[1]-a[1])*t)+','+Math.round(a[2]+(b[2]-a[2])*t)+')';}
 function _ordSuf(n){var v=n%100;if(v>=11&&v<=13)return'th';switch(n%10){case 1:return'st';case 2:return'nd';case 3:return'rd';default:return'th';}}
@@ -7529,7 +7533,7 @@ window.openPlayerCard=async function(name,dgId){
   h+='<div class="pc-foot">Bio: ESPN/Wikipedia · Rankings &amp; skill: DataGolf · Live: DataGolf/ESPN</div>';
   showPcModal(h);
 };
-document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('.pc-link');if(t){e.preventDefault();openPlayerCard(t.getAttribute('data-nm'),t.getAttribute('data-dgid')||null);}});
+document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('.pc-link');if(t){e.preventDefault();gcEvent('player/'+t.getAttribute('data-nm'));openPlayerCard(t.getAttribute('data-nm'),t.getAttribute('data-dgid')||null);}});
 
 /* ===== U.S. OPEN — POOL STANDINGS + LIVE SG (wired for go-live Jun 18) ===== */
 /* Final pool standings (populated from POOL_RESULTS[26] once entry picks/scores land) */
