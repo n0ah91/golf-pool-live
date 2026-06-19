@@ -1,5 +1,7 @@
-# UI Presentation Excellence Skill
+# Site Stewardship & UI Excellence Skill
 **golf-pool-live Dashboard — `index.html` (single-file, light theme · canonical)**
+
+> This is the **single governance doc** for the dashboard (UI + event-state + cache/deploy). It deliberately consolidates what could be separate "stewardship / event-state" skills into one file — multiple overlapping governance docs are themselves a drift risk. Keep it as the one source of truth.
 
 This skill guarantees every update, feature, or content generation keeps the dashboard **beautiful, consistent, data-true, scannable for live tournament use, and light on GitHub Pages**. It works *with* (never overrides) the other repo specs: `COURSE_DATA_SKILL.md`, `WEEKLY_TOURNAMENT_TEMPLATE.md`, `DATA_VERIFICATION_SKILL.md`, `COLOR_AUDIT_2026-03-17.md`, and project `CLAUDE.md`.
 
@@ -69,6 +71,49 @@ Defined in `index.html` `:root`. **Never hard-code a color that has a variable.*
 - Fabricating/assuming missing data.
 - Breaking coherence across tournament tabs (US Open, Masters, PGA, Open, Players, YTD/History).
 - Perf-heavy additions (many Chart instances, unbounded fetch fan-out) without measurement.
+
+## Tournament event-state discipline
+This is a lightweight tournament OS, not a static page. There is always **one active event** plus upcoming + archived ones. Before touching any event code, identify: active event, upcoming event, archived events, active course, active odds panel, active roster const, active live-stats source, active nav tab.
+
+**Target pattern (migrate toward this — see "Deferred refactors"):** a single source-of-truth object the UI reads, instead of tournament labels hardcoded in many places:
+```js
+const ACTIVE_EVENT = {
+  key:'uso', name:'U.S. Open', course:'Shinnecock Hills Golf Club', venueLabel:'Shinnecock Hills',
+  dates:{start:'2026-06-18', end:'2026-06-21'},
+  rosterConst:'USO_ROSTERS', oddsPanelId:'uso-odds-panel', livePanelId:'pred-market-panel'
+};
+```
+Until that lands, **do not add new hardcoded tournament labels** — read the existing per-tab functions and extend them.
+
+## Legacy ID aliases (do not "fix" mid-tournament)
+Some IDs carry historical names. They work; renaming them during a live event is risky. Treat as documented aliases:
+| Legacy ID | Actual current use |
+|---|---|
+| `masters-preview` | PGA archive preview panel |
+| `masters-odds-panel` | PGA archive odds panel |
+
+Migrate to neutral names (`event-preview-panel`, `archive-preview-panel`, …) only during a stable window, in one pass, with grep verification — never piecemeal.
+
+## Cache & deploy discipline
+The service worker serves **HTML network-first, assets cache-first** (`CACHE` in `sw.js`, currently `gmp-v8`; build marker `<meta name="build-version">` in `index.html`).
+- On any change to the **shell, nav, CSS, manifest assets, or major JS behavior**: bump `sw.js` `CACHE` (v8→v9…) **and** update the `build-version` meta to match. Keep the two in sync — it's the 3-second staleness check (compare `document.querySelector('meta[name=build-version]').content` to the deployed `CACHE`).
+- Pure data/markdown/doc changes do not require a bump.
+- Because HTML is network-first, a *stale scrape* by an external tool is not a real deploy bug — verify against the live URL before chasing it.
+
+## Stale-label audit (before claiming done)
+Grep the diff/region for event labels and confirm each is intentional: `Masters`, `PGA`, `U.S. Open`, `The Open`, `Players`, `upcoming`, `live`, `archive`. Never mix current-event data with archived-event data.
+
+## Renderer reuse
+Use existing renderers before writing new ones: course previews → `renderPreview()`; tournament panels → `renderTourneyPanel()`; live pool/field/picks → their existing render fns + `.tc`/`.pc-*`/`.usolp-*`. No one-off card/table systems.
+
+## Completion checklist (task is NOT done until)
+- [ ] Nav still makes sense; active/upcoming/archive labels correct.
+- [ ] Existing visual system preserved (CSS vars, components, mobile).
+- [ ] No duplicate source of truth created; no new hardcoded event labels.
+- [ ] No stale tournament names introduced (ran the stale-label audit).
+- [ ] Data source or placeholder (`–`) status clear; timestamps fresh.
+- [ ] Cache/build version impact checked (bumped if shell changed).
+- [ ] Files touched + changes summarized.
 
 ## Prompt prefix (paste into project prompts)
 > "Senior maintainer of golf-pool-live. The canonical file is the light-theme `index.html`. Strictly follow `UI_PRESENTATION_EXCELLENCE_SKILL.md`, `COURSE_DATA_SKILL.md`, `WEEKLY_TOURNAMENT_TEMPLATE.md`, `DATA_VERIFICATION_SKILL.md`, `CLAUDE.md`, and existing code patterns — review them before any code. Use CSS variables only (Majors Light palette), extend existing components (`.tc`, `.pc-*`, `.usolp-*`), keep data cross-checked and attributed, stay performant on GitHub Pages. Do not reinvent or re-theme without strong justification and a matching update to the relevant skill file. `index-augusta-noir.html` is a deprecated archive — ignore its palette."
