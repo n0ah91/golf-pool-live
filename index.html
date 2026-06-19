@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v17 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v18 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -893,8 +893,9 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .am-tag{display:inline-block;font-family:var(--fm);font-size:.44rem;font-weight:700;color:#fff;background:var(--go);border-radius:2px;padding:0 2px;margin-left:2px;vertical-align:1px}
 
 /* Live Field condensed table */
-.fld td{padding:.12rem .22rem}
-.fld thead th{padding:.24rem .22rem;font-size:.55rem}
+.fld td{padding:.16rem .3rem;text-align:center}
+.fld thead th{padding:.26rem .3rem;font-size:.55rem;text-align:center}
+.fld td:first-child,.fld thead th:first-child{text-align:left}
 </style>
 </head>
 <body>
@@ -7413,7 +7414,7 @@ async function fetchEspnScoring(force){
   _espnLoading=false;return _espnScore.by;
 }
 var _FLAG2={USA:'us',ENG:'gb-eng',SCO:'gb-sct',WAL:'gb-wls',NIR:'gb-nir',IRL:'ie',ESP:'es',RSA:'za',ZAF:'za',AUS:'au',CAN:'ca',SWE:'se',NOR:'no',DEN:'dk',GER:'de',DEU:'de',FRA:'fr',ITA:'it',JPN:'jp',KOR:'kr',COL:'co',CHI:'cl',CHL:'cl',ARG:'ar',AUT:'at',BEL:'be',NED:'nl',NLD:'nl',FIN:'fi',MEX:'mx',NZL:'nz',ZIM:'zw',PHI:'ph',PHL:'ph',CHN:'cn',TPE:'tw',IND:'in',VEN:'ve',PUR:'pr',SUI:'ch',CHE:'ch',SVK:'sk',POL:'pl',POR:'pt',PRT:'pt',THA:'th',PAR:'py',FIJ:'fj',BRA:'br',GBR:'gb',SVN:'si',CZE:'cz',HKG:'hk',MAS:'my',SGP:'sg',TUR:'tr',ISL:'is',KEN:'ke',IDN:'id',INA:'id',VIE:'vn',UAE:'ae',EGY:'eg',MAR:'ma',URU:'uy',CRC:'cr',DOM:'do',GUA:'gt'};
-function _fieldHeat(rank,n){if(rank==null||!n)return{bg:'transparent',fg:'var(--tb)',fw:'400'};var half=Math.ceil(n/2),q3=Math.ceil(n*0.75),bg,fw='400';if(rank<=3){bg='rgba(20,96,60,0.66)';fw='700';}else if(rank<=12){bg='rgba(32,112,72,0.40)';fw='600';}else if(rank<=half){bg='rgba(40,120,80,0.18)';}else if(rank<=q3){bg='rgba(122,40,58,0.15)';}else{bg='rgba(120,38,56,0.42)';fw='600';}return{bg:bg,fg:'var(--tb)',fw:fw};}
+function _fieldHeat(rank,n){if(rank==null||!n)return{bg:'transparent',fg:'var(--tb)',fw:'400'};var p40=Math.ceil(n*0.4),p60=Math.ceil(n*0.6),p80=Math.ceil(n*0.8),bg='transparent',fw='400';if(rank<=3){bg='rgba(31,138,84,0.32)';fw='700';}else if(rank<=12){bg='rgba(31,138,84,0.18)';fw='600';}else if(rank<=p40){bg='rgba(31,138,84,0.08)';}else if(rank<=p60){bg='transparent';}else if(rank<=p80){bg='rgba(150,45,65,0.09)';}else{bg='rgba(150,45,65,0.24)';fw='600';}return{bg:bg,fg:'var(--tb)',fw:fw};}
 async function renderUsoField(){
   const el=document.getElementById('pred-market-panel');if(!el)return;el.style.display='';
   let ip=null,sg=null,odds=null;
@@ -7442,7 +7443,7 @@ async function renderUsoField(){
     dists.sort(function(a,b){return a-b;});accs.sort(function(a,b){return a-b;});
     function _pct(arr,v){if(v==null||arr.length<2)return null;var i=0;while(i<arr.length&&arr[i]<v)i++;return i/(arr.length-1);}
     function sgFmt(v){var s=v>0?'+':(v<0?'−':'');return '<span style="font-size:.72em;opacity:.6">'+s+'</span>'+Math.abs(v).toFixed(1);}
-    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm)">–</td>';var rk=r['_rk_'+key],cl=_fieldHeat(rk,fieldN),top=rk!=null&&rk<=5,fg=top?'var(--go)':cl.fg,fw=top?'700':cl.fw;return'<td style="font-family:var(--fm);padding:0 1px"><span style="display:inline-block;min-width:20px;padding:0 3px;border-radius:3px;font-size:.92em;background:'+cl.bg+';color:'+fg+';font-weight:'+fw+'">'+fmt(v)+'</span></td>';}
+    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm);text-align:center">–</td>';var rk=r['_rk_'+key],cl=_fieldHeat(rk,fieldN),top=rk!=null&&rk<=5,fg=top?'#8a6a12':cl.fg,fw=top?'700':cl.fw;return'<td style="font-family:var(--fm);text-align:center;background:'+cl.bg+';color:'+fg+';font-weight:'+fw+'">'+fmt(v)+'</td>';}
     function flag(c){if(!c)return'';var m=_FLAG2[c];return m?'<img src="https://flagcdn.com/20x15/'+m+'.png" width="12" height="9" loading="lazy" style="border-radius:2px;margin-right:.28rem;vertical-align:-1px">':'<span style="font-size:.44rem;color:var(--td);margin-right:.25rem">'+c+'</span>';}
     function badges(r){var s=sk[r.dgId];if(!s)return'';var dp=_pct(dists,s.driving_dist),ap=_pct(accs,s.driving_acc),o='';
       if(dp!=null&&dp>=0.8)o+='<span class="ptag pt-l" title="Long off the tee">L</span>';else if(dp!=null&&dp<=0.2)o+='<span class="ptag pt-s" title="Short off the tee">S</span>';
