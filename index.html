@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v14 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v15 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7438,8 +7438,8 @@ async function renderUsoField(){
     dists.sort(function(a,b){return a-b;});accs.sort(function(a,b){return a-b;});
     function _pct(arr,v){if(v==null||arr.length<2)return null;var i=0;while(i<arr.length&&arr[i]<v)i++;return i/(arr.length-1);}
     function sgFmt(v){return (v>0?'+':'')+v.toFixed(2);}
-    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm)">–</td>';var cl=_fieldHeat(r['_rk_'+key],fieldN);return'<td style="font-family:var(--fm);padding:1px 2px"><span style="display:inline-block;min-width:30px;padding:1px 4px;border-radius:4px;background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+fmt(v)+'</span></td>';}
-    function flag(c){if(!c)return'';var m=_FLAG2[c];return m?'<img src="https://flagcdn.com/20x15/'+m+'.png" width="15" height="11" loading="lazy" style="border-radius:2px;margin-right:.28rem;vertical-align:-1px">':'<span style="font-size:.44rem;color:var(--td);margin-right:.25rem">'+c+'</span>';}
+    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm)">–</td>';var rk=r['_rk_'+key],cl=_fieldHeat(rk,fieldN),top=rk!=null&&rk<=10,ex=top?';box-shadow:inset 0 0 0 1px rgba(154,126,40,.6)':'',fg=top?'var(--go)':cl.fg,fw=top?'700':cl.fw;return'<td style="font-family:var(--fm);padding:1px 2px"><span style="display:inline-block;min-width:30px;padding:1px 4px;border-radius:4px;background:'+cl.bg+';color:'+fg+';font-weight:'+fw+ex+'">'+fmt(v)+'</span></td>';}
+    function flag(c){if(!c)return'';var m=_FLAG2[c];return m?'<img src="https://flagcdn.com/20x15/'+m+'.png" width="12" height="9" loading="lazy" style="border-radius:2px;margin-right:.28rem;vertical-align:-1px">':'<span style="font-size:.44rem;color:var(--td);margin-right:.25rem">'+c+'</span>';}
     function badges(r){var s=sk[r.dgId];if(!s)return'';var dp=_pct(dists,s.driving_dist),ap=_pct(accs,s.driving_acc),o='';
       if(dp!=null&&dp>=0.8)o+='<span class="ptag pt-l" title="Long off the tee">L</span>';else if(dp!=null&&dp<=0.2)o+='<span class="ptag pt-s" title="Short off the tee">S</span>';
       if(ap!=null&&ap>=0.8)o+='<span class="ptag pt-a" title="Accurate driver">A</span>';else if(ap!=null&&ap<=0.2)o+='<span class="ptag pt-i" title="Inaccurate driver">I</span>';
