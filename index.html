@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v13 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v14 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7409,6 +7409,7 @@ async function fetchEspnScoring(force){
   _espnLoading=false;return _espnScore.by;
 }
 var _FLAG2={USA:'us',ENG:'gb-eng',SCO:'gb-sct',WAL:'gb-wls',NIR:'gb-nir',IRL:'ie',ESP:'es',RSA:'za',ZAF:'za',AUS:'au',CAN:'ca',SWE:'se',NOR:'no',DEN:'dk',GER:'de',DEU:'de',FRA:'fr',ITA:'it',JPN:'jp',KOR:'kr',COL:'co',CHI:'cl',CHL:'cl',ARG:'ar',AUT:'at',BEL:'be',NED:'nl',NLD:'nl',FIN:'fi',MEX:'mx',NZL:'nz',ZIM:'zw',PHI:'ph',PHL:'ph',CHN:'cn',TPE:'tw',IND:'in',VEN:'ve',PUR:'pr',SUI:'ch',CHE:'ch',SVK:'sk',POL:'pl',POR:'pt',PRT:'pt',THA:'th',PAR:'py',FIJ:'fj',BRA:'br',GBR:'gb',SVN:'si',CZE:'cz',HKG:'hk',MAS:'my',SGP:'sg',TUR:'tr',ISL:'is',KEN:'ke',IDN:'id',INA:'id',VIE:'vn',UAE:'ae',EGY:'eg',MAR:'ma',URU:'uy',CRC:'cr',DOM:'do',GUA:'gt'};
+function _fieldHeat(rank,n){if(rank==null||!n)return{bg:'transparent',fg:'var(--td)',fw:'400'};var t=Math.max(0,Math.min(1,(rank-1)/(Math.max(2,n)-1)));var col,inten;if(t<=0.5){inten=(0.5-t)/0.5;col=[30,105,68];}else{inten=(t-0.5)/0.5;col=[122,40,58];}var a=0.05+inten*0.30;var fw=inten>0.66?'700':(inten>0.33?'600':'400');return{bg:'rgba('+col[0]+','+col[1]+','+col[2]+','+a.toFixed(3)+')',fg:'var(--tb)',fw:fw};}
 async function renderUsoField(){
   const el=document.getElementById('pred-market-panel');if(!el)return;el.style.display='';
   let ip=null,sg=null,odds=null;
@@ -7437,7 +7438,7 @@ async function renderUsoField(){
     dists.sort(function(a,b){return a-b;});accs.sort(function(a,b){return a-b;});
     function _pct(arr,v){if(v==null||arr.length<2)return null;var i=0;while(i<arr.length&&arr[i]<v)i++;return i/(arr.length-1);}
     function sgFmt(v){return (v>0?'+':'')+v.toFixed(2);}
-    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm)">–</td>';var cl=sgColor(r['_rk_'+key],fieldN);return'<td style="font-family:var(--fm);padding:1px 2px"><span style="display:inline-block;min-width:30px;padding:1px 4px;border-radius:4px;background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+fmt(v)+'</span></td>';}
+    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm)">–</td>';var cl=_fieldHeat(r['_rk_'+key],fieldN);return'<td style="font-family:var(--fm);padding:1px 2px"><span style="display:inline-block;min-width:30px;padding:1px 4px;border-radius:4px;background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+'">'+fmt(v)+'</span></td>';}
     function flag(c){if(!c)return'';var m=_FLAG2[c];return m?'<img src="https://flagcdn.com/20x15/'+m+'.png" width="15" height="11" loading="lazy" style="border-radius:2px;margin-right:.28rem;vertical-align:-1px">':'<span style="font-size:.44rem;color:var(--td);margin-right:.25rem">'+c+'</span>';}
     function badges(r){var s=sk[r.dgId];if(!s)return'';var dp=_pct(dists,s.driving_dist),ap=_pct(accs,s.driving_acc),o='';
       if(dp!=null&&dp>=0.8)o+='<span class="ptag pt-l" title="Long off the tee">L</span>';else if(dp!=null&&dp<=0.2)o+='<span class="ptag pt-s" title="Short off the tee">S</span>';
@@ -7463,7 +7464,7 @@ async function renderUsoField(){
         sgCell(r,'gir',function(v){return Math.round(v*100)+'%';})+'</tr>';
     });
     h+='</tbody></table></div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center;font-size:.5rem;color:var(--td);margin-top:.3rem;font-family:var(--fb)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(20,190,90,.6);vertical-align:-1px"></span> gaining vs field</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(225,50,35,.5);vertical-align:-1px"></span> losing</span><span title="Shade behind the score = DataGolf odds"><span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.34);vertical-align:-1px"></span> win odds <span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.12);vertical-align:-1px;margin-left:.3rem"></span> top-10 odds (behind)</span><span><span class="ptag pt-l">L</span> long <span class="ptag pt-s">S</span> short <span class="ptag pt-a">A</span> accurate <span class="ptag pt-i">I</span> inaccurate <span class="am-tag">a</span> amateur</span><span>'+rows.length+' players · scroll →</span></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center;font-size:.5rem;color:var(--td);margin-top:.3rem;font-family:var(--fb)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(30,105,68,.36);vertical-align:-1px"></span> gaining vs field</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(122,40,58,.36);vertical-align:-1px"></span> losing</span><span title="Shade behind the score = DataGolf odds"><span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.34);vertical-align:-1px"></span> win odds <span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.12);vertical-align:-1px;margin-left:.3rem"></span> top-10 odds (behind)</span><span><span class="ptag pt-l">L</span> long <span class="ptag pt-s">S</span> short <span class="ptag pt-a">A</span> accurate <span class="ptag pt-i">I</span> inaccurate <span class="am-tag">a</span> amateur</span><span>'+rows.length+' players · scroll →</span></div>';
 
   } else {
     var ALLBOOKS=[{k:'draftkings',l:'DK'},{k:'fanduel',l:'FD'},{k:'betmgm',l:'MGM'},{k:'caesars',l:'CZR'},{k:'pointsbet',l:'PB'},{k:'bet365',l:'365'}];
