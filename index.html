@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v10 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v11 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -883,6 +883,10 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .usolp-sp.rw-hot{border-left-color:#c4682a}.usolp-sp.rw-hot b{color:#c4682a}
 .usolp-sp.rw-cold{border-left-color:#2960a8}.usolp-sp.rw-cold b{color:#2960a8}
 .usolp-sp.rw-sleep{border-left-color:var(--uso2)}.usolp-sp.rw-sleep b{color:var(--uso2)}
+
+/* Live Field player-type badges */
+.ptag{display:inline-block;font-family:var(--fm);font-size:.46rem;font-weight:700;line-height:1;padding:1px 2px;border-radius:2px;margin-left:1px;vertical-align:1px;color:#fff}
+.pt-l{background:#2a7d52}.pt-s{background:#c4682a}.pt-a{background:#2960a8}.pt-i{background:#8b2332}
 </style>
 </head>
 <body>
@@ -7401,10 +7405,11 @@ async function fetchEspnScoring(force){
   }catch(e){}
   _espnLoading=false;return _espnScore.by;
 }
+var _FLAG2={USA:'us',ENG:'gb-eng',SCO:'gb-sct',WAL:'gb-wls',NIR:'gb-nir',IRL:'ie',ESP:'es',RSA:'za',AUS:'au',CAN:'ca',SWE:'se',NOR:'no',DEN:'dk',GER:'de',DEU:'de',FRA:'fr',ITA:'it',JPN:'jp',KOR:'kr',COL:'co',CHI:'cl',CHL:'cl',ARG:'ar',AUT:'at',BEL:'be',NED:'nl',NLD:'nl',FIN:'fi',MEX:'mx',NZL:'nz',ZIM:'zw',PHI:'ph',PHL:'ph',CHN:'cn',TPE:'tw',IND:'in',VEN:'ve',PUR:'pr',SUI:'ch',CHE:'ch',SVK:'sk',POL:'pl',POR:'pt',PRT:'pt',THA:'th',PAR:'py',FIJ:'fj',BRA:'br'};
 async function renderUsoField(){
   const el=document.getElementById('pred-market-panel');if(!el)return;el.style.display='';
   let ip=null,sg=null,odds=null;
-  try{var calls=[dgF('preds/in-play',{tour:'pga'}),dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt,sg_t2g,sg_total,distance,accuracy,gir,prox_fw',round:'event_avg',display:'value'})];
+  try{var calls=[dgF('preds/in-play',{tour:'pga'}),dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt,sg_t2g,sg_total,distance,accuracy,gir,prox_fw',round:'event_cumulative',display:'value'})];
     if(_usoFieldView==='advanced')calls.push(dgF('betting-tools/outrights',{tour:'pga',market:'win',odds_format:'decimal'}).catch(function(){return null;}));
     var res=await Promise.all(calls);ip=res[0];sg=res[1];odds=res[2]||null;}catch(e){}
   const evName=(ip&&ip.info&&ip.info.event_name)||'';
@@ -7417,32 +7422,44 @@ async function renderUsoField(){
   const rows=ip.data.map(function(p){var s=sgById[p.dg_id]||{};return{nm:(typeof fmN==='function'?fmN(p.player_name):p.player_name),raw:p.player_name,dgId:p.dg_id,score:p.current_score,pos:p.current_pos,thru:p.thru,win:p.win,t5:p.top_5,t10:p.top_10,sgTot:s.sg_total,ott:s.sg_ott,app:s.sg_app,arg:s.sg_arg,putt:s.sg_putt,t2g:s.sg_t2g,dist:s.distance,acc:s.accuracy,gir:s.gir,prox:s.prox_fw,ip:(typeof inPool==='function'&&inPool(p.player_name))};});
   rows.sort(function(a,b){var pa=_parsePos(a.pos).pos||999,pb=_parsePos(b.pos).pos||999;if(pa!==pb)return pa-pb;return (a.score==null?99:a.score)-(b.score==null?99:b.score);});
   if(_usoFieldView==='simple'){
-    // rank vs field
     _rankField(rows,[{key:'sgTot',hb:true},{key:'ott',hb:true},{key:'app',hb:true},{key:'arg',hb:true},{key:'putt',hb:true},{key:'t2g',hb:true},{key:'dist',hb:true},{key:'acc',hb:true},{key:'gir',hb:true}]);
     var maxWin=Math.max.apply(null,rows.map(function(r){return r.win||0;}).concat([0.0001]));
-    // kick ESPN scoring (async) and re-render once when it arrives
+    var fieldN=rows.filter(function(r){return r.sgTot!=null;}).length||rows.length;
     var esBy=_espnScore.by||{};
     if((!_espnScore.ts||Date.now()-_espnScore.ts>270000)&&!_espnLoading){fetchEspnScoring().then(function(){if(_usoFieldView==='simple')renderUsoField();});}
-    function rkCell(r,key){var rk=r['_rk_'+key];if(rk==null)return'<td style="color:var(--td)">–</td>';var c=_pctColor(r['_pct_'+key]);return'<td style="font-family:var(--fm);color:'+c+';font-weight:600">'+rk+'<span style="font-size:.48rem;opacity:.65">'+_ordSuf(rk)+'</span></td>';}
-    function valCell(r,key,fmt){if(r[key]==null)return'<td style="color:var(--td)">–</td>';var c=_pctColor(r['_pct_'+key]);return'<td style="font-family:var(--fm);color:'+c+';font-weight:600">'+fmt(r[key])+'</td>';}
-    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par">Score</th><th>Pos</th><th title="Pars · Birdies+ (incl. eagles) · Bogeys+">P·B⁺·Bog⁺</th><th title="DataGolf model win odds (rounded to 5)">Win</th><th title="rank vs field — Strokes Gained Total">SG&nbsp;Tot</th><th title="rank — Off the Tee">OTT</th><th title="rank — Approach">APP</th><th title="rank — Around Green">ARG</th><th title="rank — Putting">PUTT</th><th title="rank — Tee to Green">T2G</th><th title="rank — Driving distance">DIST</th><th title="rank — Driving accuracy">ACC</th><th title="rank — Greens in reg">GIR</th></tr></thead><tbody>';
+    if(typeof _pcLoadBase==='function'&&(!_pcData.ts||Date.now()-_pcData.ts>600000)&&!_pcLoading){_pcLoadBase().then(function(){if(_usoFieldView==='simple')renderUsoField();});}
+    var sk=(typeof _pcData!=='undefined'&&_pcData.skills)||{},rkd=(typeof _pcData!=='undefined'&&_pcData.rankings)||{};
+    var dists=[],accs=[];rows.forEach(function(r){var s=sk[r.dgId];if(s){if(s.driving_dist!=null)dists.push(s.driving_dist);if(s.driving_acc!=null)accs.push(s.driving_acc);}});
+    dists.sort(function(a,b){return a-b;});accs.sort(function(a,b){return a-b;});
+    function _pct(arr,v){if(v==null||arr.length<2)return null;var i=0;while(i<arr.length&&arr[i]<v)i++;return i/(arr.length-1);}
+    function sgFmt(v){return (v>0?'+':'')+v.toFixed(2);}
+    function sgCell(r,key,fmt){var v=r[key];if(v==null)return'<td style="color:var(--td);font-family:var(--fm)">\u2013</td>';var cl=sgColor(r['_rk_'+key],fieldN);return'<td style="background:'+cl.bg+';color:'+cl.fg+';font-weight:'+cl.fw+';font-family:var(--fm)">'+fmt(v)+'</td>';}
+    function flag(c){if(!c)return'';var m=_FLAG2[c];return m?'<img src="https://flagcdn.com/20x15/'+m+'.png" width="15" height="11" loading="lazy" style="border-radius:2px;margin-right:.28rem;vertical-align:-1px">':'<span style="font-size:.44rem;color:var(--td);margin-right:.25rem">'+c+'</span>';}
+    function badges(r){var s=sk[r.dgId];if(!s)return'';var dp=_pct(dists,s.driving_dist),ap=_pct(accs,s.driving_acc),o='';
+      if(dp!=null&&dp>=0.8)o+='<span class="ptag pt-l" title="Long off the tee">L</span>';else if(dp!=null&&dp<=0.2)o+='<span class="ptag pt-s" title="Short off the tee">S</span>';
+      if(ap!=null&&ap>=0.8)o+='<span class="ptag pt-a" title="Accurate driver">A</span>';else if(ap!=null&&ap<=0.2)o+='<span class="ptag pt-i" title="Inaccurate driver">I</span>';
+      return o?' '+o:'';}
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par; bar behind = model win chance">Score</th><th>Pos</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P\u00b7B\u207a\u00b7Bog\u207a</th><th title="Strokes Gained Total (cumulative)">SG Tot</th><th title="Off the Tee">OTT</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Driving distance">DIST</th><th title="Driving accuracy">ACC</th><th title="Greens in reg">GIR</th></tr></thead><tbody>';
     rows.forEach(function(r){
       var scC=r.score==null?'var(--td)':r.score<0?'var(--gl)':r.score>0?'var(--rd)':'var(--tp)';
-      var scT=r.score==null?'–':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
+      var scT=r.score==null?'\u2013':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
       var wp=r.win||0,bw=Math.min(100,Math.round(wp/maxWin*100));
+      var wpct=wp>0?(wp*100>=10?Math.round(wp*100)+'%':(wp*100).toFixed(1)+'%'):'<1%';
       var sc=esBy[_dgScoreKey(r.raw)];
-      var scoreCell=sc&&(sc.pars+sc.birdiePlus+sc.bogeyPlus)>0?('<span style="color:var(--ts)">'+sc.pars+'</span><span style="color:var(--td)"> / </span><span style="color:var(--gl);font-weight:600">'+sc.birdiePlus+'</span><span style="color:var(--td)"> / </span><span style="color:var(--rd);font-weight:600">'+sc.bogeyPlus+'</span>'):'<span style="color:var(--td)">–</span>';
-      h+='<tr><td class="nc" style="font-size:.64rem"><span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</span></td>'+
-        '<td style="font-family:var(--fm);font-weight:700;color:'+scC+'">'+scT+'</td>'+
-        '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
-        '<td title="'+(sc?('ESPN: thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+' to par'+(r.score!=null?(" \u00b7 DG "+(r.score>0?"+":"")+r.score+(sc.toPar===r.score?" \u2713":" \u26a0")):"")):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreCell+'</td>'+
-        '<td style="position:relative;font-family:var(--fm);color:var(--gl);font-weight:600;min-width:46px"><span style="position:absolute;left:1px;right:1px;top:3px;bottom:3px;width:'+bw+'%;background:rgba(42,125,82,.15);border-radius:2px"></span><span style="position:relative">'+_winOdds(r.win)+'</span></td>'+
-        rkCell(r,'sgTot')+rkCell(r,'ott')+rkCell(r,'app')+rkCell(r,'arg')+rkCell(r,'putt')+rkCell(r,'t2g')+
-        valCell(r,'dist',function(v){return Math.round(v);})+
-        valCell(r,'acc',function(v){return Math.round(v*100)+'%';})+
-        valCell(r,'gir',function(v){return Math.round(v*100)+'%';})+'</tr>';
+      var scoreBreak=sc&&(sc.pars+sc.birdiePlus+sc.bogeyPlus)>0?('<span style="color:var(--ts)">'+sc.pars+'</span><span style="color:var(--td)">/</span><span style="color:var(--gl);font-weight:600">'+sc.birdiePlus+'</span><span style="color:var(--td)">/</span><span style="color:var(--rd);font-weight:600">'+sc.bogeyPlus+'</span>'):'<span style="color:var(--td)">\u2013</span>';
+      var rkRec=rkd[r.dgId]||{};
+      h+='<tr><td class="nc" style="font-size:.64rem;white-space:nowrap">'+flag(rkRec.country)+'<span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</span>'+badges(r)+'</td>'+
+        '<td style="position:relative;font-family:var(--fm);font-weight:700;min-width:42px" title="model win chance '+wpct+'"><span style="position:absolute;left:0;top:2px;bottom:2px;width:'+bw+'%;background:rgba(110,42,62,.16);border-radius:2px"></span><span style="position:relative;color:'+scC+'">'+scT+'</span></td>'+
+        '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'\u2013')+'</td>'+
+        '<td title="'+(sc?('ESPN thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+(r.score!=null?(' \u00b7 DG '+(r.score>0?'+':'')+r.score+(sc.toPar===r.score?' \u2713':' \u26a0')):'')):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreBreak+'</td>'+
+        sgCell(r,'sgTot',sgFmt)+sgCell(r,'ott',sgFmt)+sgCell(r,'app',sgFmt)+sgCell(r,'arg',sgFmt)+sgCell(r,'putt',sgFmt)+sgCell(r,'t2g',sgFmt)+
+        sgCell(r,'dist',function(v){return Math.round(v);})+
+        sgCell(r,'acc',function(v){return Math.round(v*100)+'%';})+
+        sgCell(r,'gir',function(v){return Math.round(v*100)+'%';})+'</tr>';
     });
-    h+='</tbody></table></div><div style="font-size:.48rem;color:var(--td);text-align:right;margin-top:.15rem">Win = DG model odds · SG/DIST/ACC/GIR shown as rank vs field (1st = best) · P·B⁺·Bog⁺ = pars / birdies+ / bogeys+ (ESPN) · scroll → · '+rows.length+' players</div>';
+    h+='</tbody></table></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center;font-size:.5rem;color:var(--td);margin-top:.3rem;font-family:var(--fb)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(20,190,90,.75);vertical-align:-1px"></span> gaining vs field</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(225,50,35,.6);vertical-align:-1px"></span> losing</span><span><span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.28);vertical-align:-1px"></span> bar behind score = win chance</span><span><span class="ptag pt-l">L</span> long <span class="ptag pt-s">S</span> short <span class="ptag pt-a">A</span> accurate <span class="ptag pt-i">I</span> inaccurate</span><span>'+rows.length+' players \u00b7 scroll \u2192</span></div>';
+
   } else {
     var ALLBOOKS=[{k:'draftkings',l:'DK'},{k:'fanduel',l:'FD'},{k:'betmgm',l:'MGM'},{k:'caesars',l:'CZR'},{k:'pointsbet',l:'PB'},{k:'bet365',l:'365'}];
     var books=ALLBOOKS.filter(function(b){return _usoFieldBooks[b.k];});
