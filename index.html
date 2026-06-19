@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v26 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v27 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7310,7 +7310,7 @@ async function renderUsoLivePool(){
   const updated=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
   const payH='<div class="usolp-pay"><b>In the money:</b> '+USO_PAYOUTS.map(function(x){return '<span>'+x.p+' $'+x.v+'</span>';}).join('')+' <span class="usolp-pay-dh">+ Dark Horse bonuses</span></div>';
   if(!isUsoLive){
-    el.innerHTML='<div class="usolp-head"><h3 style="margin:0">Live Pool Leaderboard</h3>'+tsToggleHTML('uso-live-pool')+'</div>'+payH+
+    el.innerHTML='<div class="usolp-head"><h3 style="margin:0">Live Pool Leaderboard</h3>'+tsToggleHTML('uso-live-pool')+'</div>'+
       '<div style="text-align:center;padding:1rem .5rem;font-size:.66rem;color:var(--ts);line-height:1.6"><div style="font-size:1.1rem;margin-bottom:.2rem">⛳</div><b style="color:var(--tb)">'+USO_ROSTERS.length+' rosters locked &amp; loaded.</b><br>Live scoring begins when the U.S. Open tees off — best 4 of 6 to par plus leaderboard bonus (1st = 10 … 10th = 1), ranked live with a year-to-date projection. Refreshes every 5 min.'+(evName?'<div style="font-size:.5rem;color:var(--td);margin-top:.4rem">DataGolf feed on: '+evName+'</div>':'')+'</div>';
     _applySecSize('uso-live-pool');return;
   }
@@ -7347,7 +7347,7 @@ async function renderUsoLivePool(){
   h+='<div class="usolp-strip">';
   if(dhLeader)h+='<div class="usolp-dh"><span class="dh-tag" style="margin-right:.3rem">DH</span><b>Dark Horse leader:</b> '+dhLeader.nm+' <span class="usolp-dh-sc">'+(dhLeader.score>0?'+':'')+(dhLeader.score===0?'E':dhLeader.score)+(dhLeader.pos?' · T'+dhLeader.pos:'')+'</span> <span class="usolp-dh-own">— '+dhLeader.owner+'</span></div>';
   else h+='<div class="usolp-dh"><span class="dh-tag" style="margin-right:.3rem">DH</span><b>'+Object.keys(dhSet).length+' dark horses</b> in play — single-pick longshots to root for</div>';
-  h+=payH+'</div>';
+  h+='</div>';
   var _sp=null;try{_sp=_seasonSidePots(standings);}catch(e){}
   h+=_sidePotsHTML(_sp);
   try{h+=_rosterWatch(standings,cnt,smMulti,ml);}catch(e){}
