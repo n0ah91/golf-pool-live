@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v41 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v42 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7432,12 +7432,12 @@ async function fetchEspnScoring(force){
 }
 var _FLAG2={USA:'us',ENG:'gb-eng',SCO:'gb-sct',WAL:'gb-wls',NIR:'gb-nir',IRL:'ie',ESP:'es',RSA:'za',ZAF:'za',AUS:'au',CAN:'ca',SWE:'se',NOR:'no',DEN:'dk',GER:'de',DEU:'de',FRA:'fr',ITA:'it',JPN:'jp',KOR:'kr',COL:'co',CHI:'cl',CHL:'cl',ARG:'ar',AUT:'at',BEL:'be',NED:'nl',NLD:'nl',FIN:'fi',MEX:'mx',NZL:'nz',ZIM:'zw',PHI:'ph',PHL:'ph',CHN:'cn',TPE:'tw',IND:'in',VEN:'ve',PUR:'pr',SUI:'ch',CHE:'ch',SVK:'sk',POL:'pl',POR:'pt',PRT:'pt',THA:'th',PAR:'py',FIJ:'fj',BRA:'br',GBR:'gb',SVN:'si',CZE:'cz',HKG:'hk',MAS:'my',SGP:'sg',TUR:'tr',ISL:'is',KEN:'ke',IDN:'id',INA:'id',VIE:'vn',UAE:'ae',EGY:'eg',MAR:'ma',URU:'uy',CRC:'cr',DOM:'do',GUA:'gt'};
 function _fieldHeat(rank,n){if(rank==null||!n)return{bg:'transparent',fg:'var(--tb)',fw:'400'};var p40=Math.ceil(n*0.4),p60=Math.ceil(n*0.6),p80=Math.ceil(n*0.8),bg='transparent',fw='400';if(rank<=3){bg='rgba(31,138,84,0.32)';fw='700';}else if(rank<=12){bg='rgba(31,138,84,0.18)';fw='600';}else if(rank<=p40){bg='rgba(31,138,84,0.08)';}else if(rank<=p60){bg='transparent';}else if(rank<=p80){bg='rgba(150,45,65,0.09)';}else{bg='rgba(150,45,65,0.24)';fw='600';}return{bg:bg,fg:'var(--tb)',fw:fw};}
+function _fmtTee(s){var m=String(s||"").match(/(\d{1,2}):(\d{2})/);if(!m)return"";var hh=+m[1],ap=hh>=12?"p":"a",hr=hh%12||12;return hr+":"+m[2]+ap;}
 async function renderUsoField(){
   const el=document.getElementById('pred-market-panel');if(!el)return;el.style.display='';
-  let ip=null,sg=null,odds=null;
-  try{var calls=[dgF('preds/in-play',{tour:'pga'}),dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt,sg_t2g,sg_total,distance,accuracy,gir,prox_fw',round:'event_cumulative',display:'value'})];
-    if(_usoFieldView==='advanced')calls.push(dgF('betting-tools/outrights',{tour:'pga',market:'win',odds_format:'decimal'}).catch(function(){return null;}));
-    var res=await Promise.all(calls);ip=res[0];sg=res[1];odds=res[2]||null;}catch(e){}
+  let ip=null,sg=null,odds=null,fu=null;
+  try{var calls=[dgF('preds/in-play',{tour:'pga'}),dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_ott,sg_app,sg_arg,sg_putt,sg_t2g,sg_total,distance,accuracy,gir,prox_fw',round:'event_cumulative',display:'value'}),dgF('field-updates',{tour:'pga'}).catch(function(){return null;})];
+    var res=await Promise.all(calls);ip=res[0];sg=res[1];fu=res[2]||null;}catch(e){}
   const evName=(ip&&ip.info&&ip.info.event_name)||'';
   const live=/u\.?\s*s\.?\s*open/i.test(evName)&&ip&&ip.data&&ip.data.length;
   const updated=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
@@ -7452,6 +7452,7 @@ async function renderUsoField(){
     var maxWin=Math.max.apply(null,rows.map(function(r){return r.win||0;}).concat([0.0001]));
     var maxT10=Math.max.apply(null,rows.map(function(r){return r.t10||0;}).concat([0.01]));
     var fieldN=rows.filter(function(r){return r.sgTot!=null;}).length||rows.length;
+    var teeByDg={},_cr=(fu&&fu.current_round)||null;if(fu&&fu.field)fu.field.forEach(function(p){var t=(p.teetimes||[]).find(function(x){return x.round_num===_cr;});if(t&&t.teetime)teeByDg[p.dg_id]=_fmtTee(t.teetime);});
     var esBy=_espnScore.by||{};
     if((!_espnScore.ts||Date.now()-_espnScore.ts>270000)&&!_espnLoading){fetchEspnScoring().then(function(){if(_usoFieldView==='simple')renderUsoField();});}
     if(typeof _pcLoadBase==='function'&&(!_pcData.ts||Date.now()-_pcData.ts>600000)&&!_pcLoading){_pcLoadBase().then(function(){if(_usoFieldView==='simple')renderUsoField();});}
@@ -7479,7 +7480,7 @@ async function renderUsoField(){
       h+='<tr><td class="nc" style="font-size:.6rem;white-space:nowrap">'+flag(ctry)+'<span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+dn+'</span>':dn)+'</span>'+(isAm?'<span class="am-tag" title="Amateur">a</span>':'')+badges(r)+'</td>'+
         '<td style="font-family:var(--fm);font-weight:700;font-size:.7rem;color:'+scC+'">'+scT+'</td>'+
         '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos?(''+r.pos).replace(/^T/,''):'–')+'</td>'+
-        '<td style="font-family:var(--fm);color:var(--td);font-size:.58rem;text-align:center">'+(r.thru===18?'F':(r.thru>0?r.thru:'–'))+'</td>'+
+        '<td style="font-family:var(--fm);color:var(--td);font-size:.58rem;text-align:center">'+(r.thru===18?'F':(r.thru>0?r.thru:(teeByDg[r.dgId]?'<span style="font-size:.5rem;font-style:italic;opacity:.9">'+teeByDg[r.dgId]+'</span>':'–')))+'</td>'+
         '<td title="Win '+wpct+' · Top-10 '+t10p+' (DataGolf)" style="text-align:center"><span style="display:inline-block;position:relative;width:30px;height:5px;border-radius:3px;background:rgba(120,80,95,.12);vertical-align:middle"><span style="position:absolute;left:0;top:0;bottom:0;width:'+t10W+'%;background:rgba(138,58,82,.28);border-radius:3px"></span><span style="position:absolute;left:0;top:0;bottom:0;width:'+winW+'%;background:rgba(138,58,82,.78);border-radius:3px"></span></span></td>'+
         '<td title="'+(sc?('ESPN thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+(r.score!=null?(' · DG '+(r.score>0?'+':'')+r.score+(sc.toPar===r.score?' ✓':' ⚠')):'')):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreBreak+'</td>'+
         sgCell(r,'dist',function(v){return Math.round(v);})+sgCell(r,'acc',function(v){return Math.round(v*100)+'%';})+sgCell(r,'app',sgFmt)+sgCell(r,'arg',sgFmt)+sgCell(r,'putt',sgFmt)+sgCell(r,'t2g',sgFmt)+sgCell(r,'ott',sgFmt)+sgCell(r,'sgTot',sgFmt)+'</tr>';
