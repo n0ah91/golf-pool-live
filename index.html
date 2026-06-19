@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v20 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v21 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7425,8 +7425,8 @@ async function renderUsoField(){
   const live=/u\.?\s*s\.?\s*open/i.test(evName)&&ip&&ip.data&&ip.data.length;
   const updated=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
   let h='<div class="usolp-head"><h3 style="margin:0"><span class="ls-live-dot" style="background:var(--uso);display:inline-block;margin-right:.3rem"></span>Live Field</h3>'+tsToggleHTML('pred-market-panel')+'</div>';
-  h+='<div class="ih-tabs" style="margin-bottom:.35rem"><button class="ih-tab'+(_usoFieldView==='simple'?' active':'')+'" onclick="setUsoFieldView(\'simple\')">Simple</button><button class="ih-tab'+(_usoFieldView==='advanced'?' active':'')+'" onclick="setUsoFieldView(\'advanced\')">Advanced</button><span style="margin-left:auto;font-size:.5rem;color:var(--td);align-self:center">updated '+updated+'</span></div>';
-  if(!live){el.innerHTML=h+'<div style="text-align:center;padding:1rem;font-size:.66rem;color:var(--ts)">Live field stats appear once the U.S. Open is underway.</div>';_applySecSize('pred-market-panel');return;}
+  h+='<div style="text-align:right;font-size:.5rem;color:var(--td);margin-bottom:.25rem">updated '+updated+'</div>';
+    if(!live){el.innerHTML=h+'<div style="text-align:center;padding:1rem;font-size:.66rem;color:var(--ts)">Live field stats appear once the U.S. Open is underway.</div>';_applySecSize('pred-market-panel');return;}
   const sgById={};if(sg&&sg.live_stats)sg.live_stats.forEach(function(p){sgById[p.dg_id]=p;});
   const rows=ip.data.map(function(p){var s=sgById[p.dg_id]||{};return{nm:(typeof fmN==='function'?fmN(p.player_name):p.player_name),raw:p.player_name,dgId:p.dg_id,country:p.country,score:p.current_score,pos:p.current_pos,thru:p.thru,win:p.win,t5:p.top_5,t10:p.top_10,sgTot:s.sg_total,ott:s.sg_ott,app:s.sg_app,arg:s.sg_arg,putt:s.sg_putt,t2g:s.sg_t2g,dist:s.distance,acc:s.accuracy,gir:s.gir,prox:s.prox_fw,ip:(typeof inPool==='function'&&inPool(p.player_name))};});
   rows.sort(function(a,b){var pa=_parsePos(a.pos).pos||999,pb=_parsePos(b.pos).pos||999;if(pa!==pb)return pa-pb;return (a.score==null?99:a.score)-(b.score==null?99:b.score);});
@@ -7450,7 +7450,7 @@ async function renderUsoField(){
       if(ap!=null&&ap>=0.8)o+='<span class="ptag pt-a" title="Accurate driver">A</span>';else if(ap!=null&&ap<=0.2)o+='<span class="ptag pt-i" title="Inaccurate driver">I</span>';
       return o?' '+o:'';}
     h+='<div style="font-size:.5rem;color:var(--td);font-family:var(--fb);margin-bottom:.25rem">Tap any player for bio, rankings &amp; form · SG = strokes gained vs field (cumulative)</div>';
-    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc fld"><thead><tr><th style="text-align:left">Player</th><th title="score to par">Score</th><th>Pos</th><th title="Win / Top-10 odds (DataGolf): dark = win, light = top-10">Odds</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P·B⁺·Bog⁺</th><th title="Driving distance (rank vs field)">DIST</th><th title="Driving accuracy">ACC</th><th title="Strokes Gained Total (cumulative)">SG Tot</th><th title="Tee to Green">T2G</th><th title="Putting">PUTT</th><th title="Around Green">ARG</th><th title="Approach">APP</th><th title="Off the Tee">OTT</th></tr></thead><tbody>';
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc fld"><thead><tr><th style="text-align:left">Player</th><th title="score to par">Score</th><th>Pos</th><th title="Win / Top-10 odds (DataGolf): dark = win, light = top-10">Odds</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P·B⁺·Bog⁺</th><th title="Driving distance (rank vs field)">DIST</th><th title="Driving accuracy">ACC</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Off the Tee">OTT</th><th title="Strokes Gained Total (cumulative)">SG Tot</th></tr></thead><tbody>';
     rows.forEach(function(r){
       var scC=r.score==null?'var(--td)':r.score<0?'var(--gn)':r.score>0?'var(--rd)':'var(--tb)';
       var scT=r.score==null?'–':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
@@ -7464,7 +7464,7 @@ async function renderUsoField(){
         '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
         '<td title="Win '+wpct+' · Top-10 '+t10p+' (DataGolf)" style="text-align:center"><span style="display:inline-block;position:relative;width:30px;height:5px;border-radius:3px;background:rgba(120,80,95,.12);vertical-align:middle"><span style="position:absolute;left:0;top:0;bottom:0;width:'+t10W+'%;background:rgba(138,58,82,.28);border-radius:3px"></span><span style="position:absolute;left:0;top:0;bottom:0;width:'+winW+'%;background:rgba(138,58,82,.78);border-radius:3px"></span></span></td>'+
         '<td title="'+(sc?('ESPN thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+(r.score!=null?(' · DG '+(r.score>0?'+':'')+r.score+(sc.toPar===r.score?' ✓':' ⚠')):'')):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreBreak+'</td>'+
-        sgCell(r,'dist',function(v){return Math.round(v);})+sgCell(r,'acc',function(v){return Math.round(v*100)+'%';})+sgCell(r,'sgTot',sgFmt)+sgCell(r,'t2g',sgFmt)+sgCell(r,'putt',sgFmt)+sgCell(r,'arg',sgFmt)+sgCell(r,'app',sgFmt)+sgCell(r,'ott',sgFmt)+'</tr>';
+        sgCell(r,'dist',function(v){return Math.round(v);})+sgCell(r,'acc',function(v){return Math.round(v*100)+'%';})+sgCell(r,'app',sgFmt)+sgCell(r,'arg',sgFmt)+sgCell(r,'putt',sgFmt)+sgCell(r,'t2g',sgFmt)+sgCell(r,'ott',sgFmt)+sgCell(r,'sgTot',sgFmt)+'</tr>';
     });
     h+='</tbody></table></div>';
     h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center;font-size:.5rem;color:var(--td);margin-top:.3rem;font-family:var(--fb)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(24,100,64,.55);vertical-align:-1px"></span> top of field</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(120,38,56,.44);vertical-align:-1px"></span> bottom</span><span title="Shade behind the score = DataGolf odds"><span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.34);vertical-align:-1px"></span> win odds <span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.12);vertical-align:-1px;margin-left:.3rem"></span> top-10 odds</span><span><span class="ptag pt-l">L</span> long <span class="ptag pt-s">S</span> short <span class="ptag pt-a">A</span> accurate <span class="ptag pt-i">I</span> inaccurate <span class="am-tag">a</span> amateur</span><span>'+rows.length+' players · scroll →</span></div>';
