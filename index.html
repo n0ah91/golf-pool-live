@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v28 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v29 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -905,6 +905,11 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 #uso-live-pool tbody tr{background-color:transparent!important}
 #uso-live-pool tbody tr td{background-color:transparent}
 #uso-live-pool tbody tr:hover td{background-color:var(--bh)}
+
+/* Tenure tags on live-pool entries */
+.ten-tag{font-family:var(--fb);font-size:.5rem;font-style:italic;margin-left:.25rem;color:var(--td);vertical-align:1px;letter-spacing:.02em;white-space:nowrap}
+.ten-og{color:var(--go);font-style:normal;font-weight:700;font-size:.46rem;letter-spacing:.05em}
+.ten-rk{color:var(--gn);font-style:italic}
 </style>
 </head>
 <body>
@@ -7370,6 +7375,9 @@ function _ytdTag(s){
   else{rc='var(--td)';rw='400';}
   return '<span style="font-family:var(--fm);font-weight:'+rw+';font-size:.5rem;color:'+rc+'">#'+r+'</span><span style="font-family:var(--fm);font-weight:500;font-size:.5rem;color:'+acol+';margin-left:2px">'+arrow+'</span>';
 }
+var _tenureMap=null;
+function _tenure(nm){if(!_tenureMap){_tenureMap={};if(typeof DB!=='undefined'&&DB.participants)DB.participants.forEach(function(p){var s=(p.career&&p.career.total_seasons)||0;(p.all_entry_names||[]).concat([p.canonical_name]).forEach(function(n){if(n){var k=n.toLowerCase();_tenureMap[k]=Math.max(_tenureMap[k]||0,s);}});});}var s=_tenureMap[(nm||'').toLowerCase()]||0;if(s>=8)return{t:'OG',c:'og'};if(s===7)return{t:'7+',c:'v'};if(s===6)return{t:'6+',c:'v'};if(s===5)return{t:'5+',c:'v'};if(s===1)return{t:'rookie',c:'rk'};return null;}
+function _tenureTag(nm){var x=_tenure(nm);return x?' <span class="ten-tag ten-'+x.c+'">'+x.t+'</span>':'';}
 function _usoLpRow(s){
   const ml=(window._usoLpCtx&&window._usoLpCtx.ml)||35;
   const sc=s.countedN>0?(s.total<0?'sg':s.total>0?'sb':''):'';
@@ -7378,7 +7386,7 @@ function _usoLpRow(s){
   const rw=[s.rk<=5?'pay':'',(s.rk>5&&s.rk<=ml)?'im':'',s.rk<=3?'t3':'',me].filter(Boolean).join(' ');
   const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'<span class="dh-tag">DH</span>':'')+g.name;var _st,_sc;if(g.score!=null){_st=(g.score>0?'+'+g.score:g.score===0?'E':''+g.score);_sc=g.score<0?'var(--gl)':g.score>0?'var(--rd)':'var(--td)';}else if(g.cut){_st='CUT';_sc='var(--td)';}else{_st='—';_sc='var(--td)';}label+=' <span style="color:'+_sc+';font-weight:600">'+_st+'</span>';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';var _bg=g.dh?'rgba(196,160,53,.18)':((g.score!=null&&!g.cut)?(g.score<=-3?'rgba(31,138,84,.14)':g.score<0?'rgba(31,138,84,.07)':g.score===0?'':g.score<=2?'rgba(150,45,65,.06)':'rgba(150,45,65,.12)'):'');const hl=_bg?'background:'+_bg+';border-radius:3px;padding:0 1px':'';return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
   const bonTxt=s.bonus>0?'<span style="color:var(--go);font-family:var(--fm)">−'+s.bonus+'</span>':'<span style="color:var(--td)">0</span>';
-  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'"'+(s.rk>3?' style="color:var(--uso)"':'')+'>'+s.rk+'</td><td style="text-align:center">'+_ytdTag(s)+'</td><td class="nc" style="font-size:.62rem">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td style="font-size:.52rem;line-height:1.28">'+gTags+'</td></tr>';
+  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'"'+(s.rk>3?' style="color:var(--uso)"':'')+'>'+s.rk+'</td><td style="text-align:center">'+_ytdTag(s)+'</td><td class="nc" style="font-size:.62rem">'+s.nm+_tenureTag(s.nm)+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td style="font-size:.52rem;line-height:1.28">'+gTags+'</td></tr>';
 }
 window.filterUsoLivePool=function(){var q=(document.getElementById('usolp-search')||{}).value;var qq=(q||'').toLowerCase();var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var rows=qq?window._usoLpStandings.filter(function(s){return s.nm.toLowerCase().includes(qq);}):window._usoLpStandings.slice(0,25);var h='';rows.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
 window.expandUsoLivePool=function(){gcEvent('livepool-expand');var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
