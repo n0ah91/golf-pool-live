@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v8 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v9 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -865,6 +865,17 @@ td,th{padding:.32rem .28rem;font-size:.75rem}.cd{margin:0 .45rem .55rem;padding:
 .nav button.live-tab.active{box-shadow:none}
 .nav button.live-tab.active::after{left:0;right:0;bottom:0;height:2px;background:var(--uso)}
 .nav button.live-tab::before{box-shadow:none}
+
+/* Season side-pot chips in the live-pool strip */
+.usolp-sidepots{display:flex;gap:.4rem;flex-wrap:wrap;margin:-.05rem 0 .45rem}
+.usolp-sp{flex:1 1 165px;display:flex;align-items:center;gap:.3rem;font-size:.56rem;font-family:var(--fb);color:var(--tp);background:var(--bca);border:1px solid var(--br);border-left:3px solid var(--uso);border-radius:0 6px 6px 0;padding:.3rem .5rem;overflow:hidden}
+.usolp-sp b{color:var(--uso);margin-right:.25rem;white-space:nowrap}
+.usolp-sp .sp-ic{font-size:.75rem;flex:0 0 auto}
+.usolp-sp .sp-v{font-family:var(--fm);color:var(--tb);font-weight:600;margin-left:auto;white-space:nowrap}
+.usolp-sp i{font-style:normal;font-size:.5rem;color:var(--go);font-weight:700;border:1px solid rgba(154,126,40,.4);border-radius:3px;padding:0 .2rem;margin-left:.3rem;flex:0 0 auto}
+.usolp-sp.sp-money{border-left-color:var(--go)}.usolp-sp.sp-money b{color:var(--go)}
+.usolp-sp.sp-bb{border-left-color:var(--gn)}.usolp-sp.sp-bb b{color:var(--gn)}
+.usolp-sp.sp-dfl{border-left-color:var(--rd)}.usolp-sp.sp-dfl b{color:var(--rd)}
 </style>
 </head>
 <body>
@@ -7209,6 +7220,39 @@ function _applySecSize(id){var el=document.getElementById(id);if(!el)return;el.s
 
 /* ---------- 1) LIVE POOL LEADERBOARD ---------- */
 let _usoPoolTimer=null;
+function _seasonSidePots(standings){
+  var ents=[];try{ents=(typeof e4y==='function')?e4y('2026'):[];}catch(e){}
+  if(!ents.length||!standings||!standings.length)return null;
+  var byName={};ents.forEach(function(e){if(e.entry_used)byName[e.entry_used.toLowerCase()]=e;});
+  // Money List: season event winnings + projected U.S. Open event payout (top 5)
+  var usoPay=[500,325,200,125,75],projPay={};
+  standings.forEach(function(s){if(s.rk>=1&&s.rk<=5)projPay[s.nm.toLowerCase()]=usoPay[s.rk-1];});
+  var money=ents.map(function(e){var proj=projPay[(e.entry_used||'').toLowerCase()]||0;return{nm:e.entry_used,amt:(e.winnings||0)+proj};}).filter(function(x){return x.nm;});
+  money.sort(function(a,b){return b.amt-a.amt;});
+  var moneyLeader=(money[0]&&money[0].amt>0)?money[0]:null;
+  // Bounce-Back: started poorly (early avg rank in bottom ~60%) then climbed in the live pool
+  var N=standings.length,bb=null;
+  standings.forEach(function(s){
+    var e=byName[s.nm.toLowerCase()];if(!e)return;
+    var early=[e.players,e.masters,e.pga].filter(function(v){return v!=null;});
+    if(!early.length)return;
+    var earlyAvg=early.reduce(function(a,b){return a+b;},0)/early.length;
+    if(earlyAvg<N*0.4)return; // must have actually started rough
+    var swing=earlyAvg-s.rk;
+    if(swing>0&&(!bb||swing>bb.swing))bb={nm:s.nm,from:Math.round(earlyAvg),to:s.rk,swing:Math.round(swing)};
+  });
+  // DFL: current bottom of the live pool
+  var last=standings[standings.length-1];
+  var dfl=last?{nm:last.nm,rk:last.rk,total:last.total}:null;
+  return{money:moneyLeader,bb:bb,dfl:dfl};
+}
+function _sidePotsHTML(sp){
+  if(!sp)return'';var c='';
+  if(sp.money)c+='<div class="usolp-sp sp-money" title="Season money list leader — event payouts so far plus projected U.S. Open payout. Money List award: $75."><span class="sp-ic">💰</span><b>Money List</b> '+sp.money.nm+'<span class="sp-v">$'+Math.round(sp.money.amt).toLocaleString()+'</span><i>$75</i></div>';
+  if(sp.bb)c+='<div class="usolp-sp sp-bb" title="Bounce-Back — biggest climb from a poor early-season start (Masters/Players/PGA) into the live pool. Award: $100."><span class="sp-ic">📈</span><b>Bounce-Back</b> '+sp.bb.nm+'<span class="sp-v">#'+sp.bb.from+'→#'+sp.bb.to+'</span><i>$100</i></div>';
+  if(sp.dfl)c+='<div class="usolp-sp sp-dfl" title="Dead F\'n Last watch — current bottom of the live pool. Award: $100."><span class="sp-ic">💀</span><b>DFL watch</b> '+sp.dfl.nm+'<span class="sp-v">#'+sp.dfl.rk+'</span><i>$100</i></div>';
+  return c?'<div class="usolp-sidepots">'+c+'</div>':'';
+}
 async function renderUsoLivePool(){
   const el=document.getElementById('uso-live-pool');if(!el)return;
   if(typeof USO_ROSTERS==='undefined'||!USO_ROSTERS.length){el.style.display='none';return;}
@@ -7259,8 +7303,11 @@ async function renderUsoLivePool(){
   if(dhLeader)h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>Dark Horse leader:</b> '+dhLeader.nm+' <span class="usolp-dh-sc">'+(dhLeader.score>0?'+':'')+(dhLeader.score===0?'E':dhLeader.score)+(dhLeader.pos?' · T'+dhLeader.pos:'')+'</span> <span class="usolp-dh-own">— '+dhLeader.owner+'</span></div>';
   else h+='<div class="usolp-dh"><span class="usolp-dh-icon">🐎</span><b>'+Object.keys(dhSet).length+' dark horses</b> in play — single-pick longshots to root for</div>';
   h+=payH+'</div>';
+  var _sp=null;try{_sp=_seasonSidePots(standings);}catch(e){}
+  h+=_sidePotsHTML(_sp);
   h+='<div style="margin-bottom:.3rem"><input id="usolp-search" placeholder="Search entry..." oninput="filterUsoLivePool()" style="font-family:var(--fb);font-size:.65rem;padding:.25rem .5rem;background:var(--bc);color:var(--tp);border:1px solid var(--br);border-radius:5px;outline:0;width:130px"> <span style="font-size:.5rem;color:var(--td);font-family:var(--fb)">best 4 of 6 to par − position bonus</span></div>';
-  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="width:24px">#</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th style="width:58px" title="projected year-to-date rank">YTD</th><th>Best 4 of 6 — counted bold · dropped faded · 🐎 dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
+  h+='<div style="font-size:.5rem;color:var(--td);font-family:var(--fb);margin:0 0 .3rem"><b style="color:var(--ts)">YTD</b> = projected season rank if the event ended now · <span style="color:var(--gl)">▲</span>/<span style="color:var(--rd)">▼</span> = spots moved vs your current season rank</div>';
+  h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="width:24px">#</th><th>Entry</th><th style="width:44px">Total</th><th style="width:32px" title="leaderboard position bonus">Bon</th><th style="width:58px" title="Projected season rank if the event ended now; arrow = spots moved vs current rank">YTD</th><th>Best 4 of 6 — counted bold · dropped faded · 🐎 dark horse · top-10 gold</th></tr></thead><tbody id="usolp-body">';
   standings.slice(0,25).forEach(function(s){h+=_usoLpRow(s);});
   h+='</tbody></table></div><div style="text-align:center;padding:.4rem"><button class="btn-pill" onclick="expandUsoLivePool()">Show all '+standings.length+' entries ↓</button></div>';
   el.innerHTML=h;window._usoLpStandings=standings;_applySecSize('uso-live-pool');
@@ -7281,7 +7328,7 @@ function _usoLpRow(s){
   const rw=[s.rk<=3?'t3':'',s.rk<=ml?'im':'',me].filter(Boolean).join(' ');
   const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'🐎':'')+g.name;if(g.score!=null)label+=' ('+(g.score>0?'+':'')+(g.score===0?'E':g.score)+')';else if(g.cut)label+=' (CUT)';else label+=' (—)';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';const hl=g.bonus>0?'background:rgba(196,160,53,.1);border-radius:3px;padding:0 1px':(g.dh?'background:rgba(110,42,62,.07);border-radius:3px;padding:0 1px':'');return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
   const bonTxt=s.bonus>0?'<span style="color:var(--go);font-family:var(--fm)">−'+s.bonus+'</span>':'<span style="color:var(--td)">0</span>';
-  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'">'+s.rk+'</td><td class="nc">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td>'+_ytdTag(s)+'</td><td style="font-size:.53rem;line-height:1.45">'+gTags+'</td></tr>';
+  return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'"'+(s.rk>3?' style="color:var(--uso)"':'')+'>'+s.rk+'</td><td class="nc" style="font-size:.62rem">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td>'+_ytdTag(s)+'</td><td style="font-size:.53rem;line-height:1.45">'+gTags+'</td></tr>';
 }
 window.filterUsoLivePool=function(){var q=(document.getElementById('usolp-search')||{}).value;var qq=(q||'').toLowerCase();var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var rows=qq?window._usoLpStandings.filter(function(s){return s.nm.toLowerCase().includes(qq);}):window._usoLpStandings.slice(0,25);var h='';rows.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
 window.expandUsoLivePool=function(){gcEvent('livepool-expand');var tb=document.getElementById('usolp-body');if(!tb||!window._usoLpStandings)return;var h='';window._usoLpStandings.forEach(function(s){h+=_usoLpRow(s);});tb.innerHTML=h;};
@@ -7425,6 +7472,7 @@ function _renderUsoPicks(ip){
       '<td style="font-family:var(--fm);color:var(--ts)">'+(p.pos!=null?'T'+p.pos:'–')+'</td>'+
       '<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'–')+'</td></tr>';}).join('');}
   h+=rows(list.slice(0,15))+'</tbody></table></div>';
+  if(live){var _vd=list.filter(function(p){return p.val!=null;});var _best=_vd.slice().sort(function(a,b){return b.val-a.val;}).slice(0,12);var _worst=_vd.slice().sort(function(a,b){return a.val-b.val;}).slice(0,12);h+='<div style="margin-top:.55rem;font-size:.62rem;font-weight:700;color:var(--gl);font-family:var(--fb)">▲ Best value right now</div><div class="tw" style="margin:.15rem 0 0;border-radius:5px"><table class="tc"><tbody>'+rows(_best)+'</tbody></table></div>';h+='<div style="margin-top:.55rem;font-size:.62rem;font-weight:700;color:var(--rd);font-family:var(--fb)">▼ Worst value right now</div><div class="tw" style="margin:.15rem 0 0;border-radius:5px"><table class="tc"><tbody>'+rows(_worst)+'</tbody></table></div>';}
   h+='<details style="margin-top:.3rem"><summary style="cursor:pointer;font-size:.6rem;color:var(--go);font-family:var(--fb);padding:.25rem 0">Show all '+list.length+' picked golfers ▸</summary><div class="tw" style="margin:.3rem 0 0;border-radius:5px;max-height:360px;overflow-y:auto"><table class="tc"><tbody>'+rows(list.slice(15))+'</tbody></table></div></details>';
   el.innerHTML=h;_applySecSize('uso-picks');
 }
