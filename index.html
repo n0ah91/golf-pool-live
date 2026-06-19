@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v12 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v13 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7427,6 +7427,7 @@ async function renderUsoField(){
   if(_usoFieldView==='simple'){
     _rankField(rows,[{key:'sgTot',hb:true},{key:'ott',hb:true},{key:'app',hb:true},{key:'arg',hb:true},{key:'putt',hb:true},{key:'t2g',hb:true},{key:'dist',hb:true},{key:'acc',hb:true},{key:'gir',hb:true}]);
     var maxWin=Math.max.apply(null,rows.map(function(r){return r.win||0;}).concat([0.0001]));
+    var maxT10=Math.max.apply(null,rows.map(function(r){return r.t10||0;}).concat([0.01]));
     var fieldN=rows.filter(function(r){return r.sgTot!=null;}).length||rows.length;
     var esBy=_espnScore.by||{};
     if((!_espnScore.ts||Date.now()-_espnScore.ts>270000)&&!_espnLoading){fetchEspnScoring().then(function(){if(_usoFieldView==='simple')renderUsoField();});}
@@ -7443,17 +7444,17 @@ async function renderUsoField(){
       if(ap!=null&&ap>=0.8)o+='<span class="ptag pt-a" title="Accurate driver">A</span>';else if(ap!=null&&ap<=0.2)o+='<span class="ptag pt-i" title="Inaccurate driver">I</span>';
       return o?' '+o:'';}
     h+='<div style="font-size:.5rem;color:var(--td);font-family:var(--fb);margin-bottom:.25rem">Tap any player for bio, rankings &amp; form · SG = strokes gained vs field (cumulative)</div>';
-    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par; bar behind = model win chance">Score</th><th>Pos</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P·B⁺·Bog⁺</th><th title="Strokes Gained Total (cumulative)">SG Tot</th><th title="Off the Tee">OTT</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Driving distance">DIST</th><th title="Driving accuracy">ACC</th><th title="Greens in reg">GIR</th></tr></thead><tbody>';
+    h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Player</th><th title="score to par · shade behind = odds to finish: darker = win, lighter = top-10">Score</th><th>Pos</th><th title="Pars / Birdies+ (incl. eagles) / Bogeys+">P·B⁺·Bog⁺</th><th title="Strokes Gained Total (cumulative)">SG Tot</th><th title="Off the Tee">OTT</th><th title="Approach">APP</th><th title="Around Green">ARG</th><th title="Putting">PUTT</th><th title="Tee to Green">T2G</th><th title="Driving distance">DIST</th><th title="Driving accuracy">ACC</th><th title="Greens in reg">GIR</th></tr></thead><tbody>';
     rows.forEach(function(r){
       var scC=r.score==null?'var(--td)':r.score<0?'var(--gl)':r.score>0?'var(--rd)':'var(--tp)';
       var scT=r.score==null?'–':(r.score>0?'+'+r.score:r.score===0?'E':r.score);
-      var wp=r.win||0,bw=Math.min(100,Math.round(wp/maxWin*100));
-      var wpct=wp>0?(wp*100>=10?Math.round(wp*100)+'%':(wp*100).toFixed(1)+'%'):'<1%';
+      var wp=r.win||0,t10=r.t10||0,winW=Math.min(100,Math.round(wp/maxT10*100)),t10W=Math.min(100,Math.round(t10/maxT10*100));
+      var wpct=wp>0?(wp*100>=10?Math.round(wp*100)+'%':(wp*100).toFixed(1)+'%'):'<1%';var t10p=t10>0?Math.round(t10*100)+'%':'–';
       var sc=esBy[_dgScoreKey(r.raw)];
       var scoreBreak=sc&&(sc.pars+sc.birdiePlus+sc.bogeyPlus)>0?('<span style="color:var(--ts)">'+sc.pars+'</span><span style="color:var(--td)">/</span><span style="color:var(--gl);font-weight:600">'+sc.birdiePlus+'</span><span style="color:var(--td)">/</span><span style="color:var(--rd);font-weight:600">'+sc.bogeyPlus+'</span>'):'<span style="color:var(--td)">–</span>';
       var rkRec=rkd[r.dgId]||{};var ctry=r.country||rkRec.country;var isAm=(rkRec.am===1)||((dcp[r.dgId]&&dcp[r.dgId].am)===1);
       h+='<tr><td class="nc" style="font-size:.64rem;white-space:nowrap">'+flag(ctry)+'<span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+r.nm+'</span>':r.nm)+'</span>'+(isAm?'<span class="am-tag" title="Amateur">a</span>':'')+badges(r)+'</td>'+
-        '<td style="position:relative;font-family:var(--fm);font-weight:700;min-width:42px" title="model win chance '+wpct+'"><span style="position:absolute;left:0;top:2px;bottom:2px;width:'+bw+'%;background:rgba(110,42,62,.16);border-radius:2px"></span><span style="position:relative;color:'+scC+'">'+scT+'</span></td>'+
+        '<td style="position:relative;font-family:var(--fm);font-weight:700;min-width:42px" title="Win '+wpct+' · Top-10 '+t10p+' (DataGolf model)"><span style="position:absolute;left:0;top:2px;bottom:2px;width:'+t10W+'%;background:rgba(110,42,62,.10);border-radius:2px"></span><span style="position:absolute;left:0;top:2px;bottom:2px;width:'+winW+'%;background:rgba(110,42,62,.34);border-radius:2px"></span><span style="position:relative;color:'+scC+'">'+scT+'</span></td>'+
         '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
         '<td title="'+(sc?('ESPN thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+(r.score!=null?(' · DG '+(r.score>0?'+':'')+r.score+(sc.toPar===r.score?' ✓':' ⚠')):'')):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreBreak+'</td>'+
         sgCell(r,'sgTot',sgFmt)+sgCell(r,'ott',sgFmt)+sgCell(r,'app',sgFmt)+sgCell(r,'arg',sgFmt)+sgCell(r,'putt',sgFmt)+sgCell(r,'t2g',sgFmt)+
@@ -7462,7 +7463,7 @@ async function renderUsoField(){
         sgCell(r,'gir',function(v){return Math.round(v*100)+'%';})+'</tr>';
     });
     h+='</tbody></table></div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center;font-size:.5rem;color:var(--td);margin-top:.3rem;font-family:var(--fb)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(20,190,90,.6);vertical-align:-1px"></span> gaining vs field</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(225,50,35,.5);vertical-align:-1px"></span> losing</span><span><span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.28);vertical-align:-1px"></span> bar = win chance</span><span><span class="ptag pt-l">L</span> long <span class="ptag pt-s">S</span> short <span class="ptag pt-a">A</span> accurate <span class="ptag pt-i">I</span> inaccurate <span class="am-tag">a</span> amateur</span><span>'+rows.length+' players · scroll →</span></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:.3rem .7rem;align-items:center;font-size:.5rem;color:var(--td);margin-top:.3rem;font-family:var(--fb)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(20,190,90,.6);vertical-align:-1px"></span> gaining vs field</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(225,50,35,.5);vertical-align:-1px"></span> losing</span><span title="Shade behind the score = DataGolf odds"><span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.34);vertical-align:-1px"></span> win odds <span style="display:inline-block;width:14px;height:8px;border-radius:2px;background:rgba(110,42,62,.12);vertical-align:-1px;margin-left:.3rem"></span> top-10 odds (behind)</span><span><span class="ptag pt-l">L</span> long <span class="ptag pt-s">S</span> short <span class="ptag pt-a">A</span> accurate <span class="ptag pt-i">I</span> inaccurate <span class="am-tag">a</span> amateur</span><span>'+rows.length+' players · scroll →</span></div>';
 
   } else {
     var ALLBOOKS=[{k:'draftkings',l:'DK'},{k:'fanduel',l:'FD'},{k:'betmgm',l:'MGM'},{k:'caesars',l:'CZR'},{k:'pointsbet',l:'PB'},{k:'bet365',l:'365'}];
