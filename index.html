@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v37 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v38 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7478,7 +7478,7 @@ async function renderUsoField(){
       var rkRec=rkd[r.dgId]||{};var ctry=r.country||rkRec.country;var isAm=(rkRec.am===1)||((dcp[r.dgId]&&dcp[r.dgId].am)===1);var dn=(r.raw&&r.raw.indexOf(',')>=0)?((r.raw.split(',')[1]||'').trim().charAt(0)+'. '+r.raw.split(',')[0].trim()):r.nm;
       h+='<tr><td class="nc" style="font-size:.6rem;white-space:nowrap">'+flag(ctry)+'<span class="pc-link" data-dgid="'+(r.dgId||'')+'" data-nm="'+_pcEsc(r.raw)+'">'+(r.ip?'<span style="color:var(--go)">'+dn+'</span>':dn)+'</span>'+(isAm?'<span class="am-tag" title="Amateur">a</span>':'')+badges(r)+'</td>'+
         '<td style="font-family:var(--fm);font-weight:700;font-size:.7rem;color:'+scC+'">'+scT+'</td>'+
-        '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos||'–')+'</td>'+
+        '<td style="font-family:var(--fm);color:var(--ts)">'+(r.pos?(''+r.pos).replace(/^T/,''):'–')+'</td>'+
         '<td title="Win '+wpct+' · Top-10 '+t10p+' (DataGolf)" style="text-align:center"><span style="display:inline-block;position:relative;width:30px;height:5px;border-radius:3px;background:rgba(120,80,95,.12);vertical-align:middle"><span style="position:absolute;left:0;top:0;bottom:0;width:'+t10W+'%;background:rgba(138,58,82,.28);border-radius:3px"></span><span style="position:absolute;left:0;top:0;bottom:0;width:'+winW+'%;background:rgba(138,58,82,.78);border-radius:3px"></span></span></td>'+
         '<td title="'+(sc?('ESPN thru '+sc.thru+', '+(sc.toPar>0?'+':'')+sc.toPar+(r.score!=null?(' · DG '+(r.score>0?'+':'')+r.score+(sc.toPar===r.score?' ✓':' ⚠')):'')):'no ESPN data')+'" style="font-family:var(--fm);font-size:.58rem;white-space:nowrap;cursor:help">'+scoreBreak+'</td>'+
         sgCell(r,'dist',function(v){return Math.round(v);})+sgCell(r,'acc',function(v){return Math.round(v*100)+'%';})+sgCell(r,'app',sgFmt)+sgCell(r,'arg',sgFmt)+sgCell(r,'putt',sgFmt)+sgCell(r,'t2g',sgFmt)+sgCell(r,'ott',sgFmt)+sgCell(r,'sgTot',sgFmt)+'</tr>';
@@ -7538,7 +7538,7 @@ function _renderUsoPicks(ip){
     return '<tr><td class="nc" style="font-size:.63rem">'+(p.dh?'<span class="dh-tag">DH</span> ':'')+'<span class="pc-link" data-nm="'+_pcEsc(p.nm)+'">'+p.nm+'</span> <span title="picked by '+p.n+' entries ('+p.pct+'%)" style="font-family:var(--fm);font-size:.52rem;color:var(--go);font-weight:700">'+p.n+'×</span></td>'+
       '<td style="position:relative;min-width:70px;font-family:var(--fm);font-weight:700"><span style="position:absolute;left:1px;top:3px;bottom:3px;width:'+bw+'%;background:'+barBg+';border-radius:2px"></span><span style="position:relative;color:'+valC+'">'+(p.val!=null?p.val.toFixed(1):'–')+'</span></td>'+
       '<td style="font-family:var(--fm);color:'+scC+'">'+(p.cut?'CUT':scT)+'</td>'+
-      '<td style="font-family:var(--fm);color:var(--ts)">'+(p.pos!=null?'T'+p.pos:'–')+'</td>'+
+      '<td style="font-family:var(--fm);color:var(--ts)">'+(p.pos!=null?p.pos:'–')+'</td>'+
       '<td style="font-family:var(--fm);color:var(--td)">'+(p.sal?'$'+(p.sal/1000).toFixed(1)+'k':'–')+'</td></tr>';
   }).join('');}
   if(live){
@@ -7554,7 +7554,7 @@ function _renderUsoPicks(ip){
     var _rk=(typeof _pcData!=='undefined'&&_pcData.rankings)||{};
     var _fa=Object.keys(_rk).map(function(id){return _rk[id];}).filter(function(p){return p.owgr_rank&&p.owgr_rank<=80;}).map(function(p){var ln=_lnKey(p.player_name),c=_cbl[ln]||0,lv=_lvm[ln];return {nm:(typeof fmN==='function'?fmN(p.player_name):p.player_name),owgr:p.owgr_rank,n:c,pct:Math.round(c/_N*100),lv:lv};}).sort(function(a,b){return (a.pct-b.pct)||(a.owgr-b.owgr);}).slice(0,15);
     if(_fa.length){h+='<div style="font-size:.64rem;font-weight:700;color:var(--uso2);font-family:var(--fb);margin:.55rem 0 .05rem">Free agents <span style="font-weight:400;color:var(--td);font-size:.5rem">- best players, lightest ownership (saving for The Open?)</span></div>';
-      h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Golfer</th><th>OWGR</th><th>Owned</th><th>U.S. Open</th></tr></thead><tbody>'+_fa.map(function(x){var owc=x.pct<=5?'var(--gl)':x.pct<=12?'var(--ts)':'var(--td)';var inF=x.lv&&!x.lv.cut&&x.lv.s!=null;var sc=x.lv?(x.lv.cut?'CUT':(x.lv.s==null?'-':((x.lv.s>0?'+'+x.lv.s:x.lv.s===0?'E':x.lv.s)+' '+(x.lv.pos||'')))):'<span style="color:var(--td)">resting</span>';var scc=inF?(x.lv.s<0?'var(--gl)':x.lv.s>0?'var(--rd)':'var(--tp)'):'var(--td)';return '<tr><td class="nc" style="font-size:.6rem">'+x.nm+'</td><td style="font-family:var(--fm);color:var(--ts)">#'+x.owgr+'</td><td style="font-family:var(--fm);font-weight:700;color:'+owc+'">'+x.pct+'%<span style="font-weight:400;color:var(--td);font-size:.5rem"> ('+x.n+')</span></td><td style="font-family:var(--fm);font-size:.56rem;color:'+scc+'">'+sc+'</td></tr>';}).join('')+'</tbody></table></div>';}
+      h+='<div class="tw" style="margin:0;border-radius:5px"><table class="tc"><thead><tr><th style="text-align:left">Golfer</th><th>OWGR</th><th>Owned</th><th>U.S. Open</th></tr></thead><tbody>'+_fa.map(function(x){var owc=x.pct<=5?'var(--gl)':x.pct<=12?'var(--ts)':'var(--td)';var inF=x.lv&&!x.lv.cut&&x.lv.s!=null;var sc=x.lv?(x.lv.cut?'CUT':(x.lv.s==null?'-':((x.lv.s>0?'+'+x.lv.s:x.lv.s===0?'E':x.lv.s)+' '+(''+(x.lv.pos||'')).replace(/^T/,'')))):'<span style="color:var(--td)">resting</span>';var scc=inF?(x.lv.s<0?'var(--gl)':x.lv.s>0?'var(--rd)':'var(--tp)'):'var(--td)';return '<tr><td class="nc" style="font-size:.6rem">'+x.nm+'</td><td style="font-family:var(--fm);color:var(--ts)">#'+x.owgr+'</td><td style="font-family:var(--fm);font-weight:700;color:'+owc+'">'+x.pct+'%<span style="font-weight:400;color:var(--td);font-size:.5rem"> ('+x.n+')</span></td><td style="font-family:var(--fm);font-size:.56rem;color:'+scc+'">'+sc+'</td></tr>';}).join('')+'</tbody></table></div>';}
   } else {
     h+='<div style="text-align:center;padding:1rem;font-size:.66rem;color:var(--ts)">Live value ranking appears once the U.S. Open is underway.</div>';
   }
@@ -7638,7 +7638,7 @@ window.openPlayerCard=async function(name,dgId){
   if(b.age)h+='<span>Age '+b.age+'</span>';
   if(b.pro)h+='<span>Pro \''+String(b.pro).slice(2)+'</span>';
   h+='</div>';
-  if(live){var scT=live.score==null?'':(live.score>0?'+'+live.score:live.score===0?'E':live.score);h+='<div class="pc-live">⛳ <b>'+_pcEsc(_pcData.meta.event||'Live')+'</b> · <span style="color:'+(live.score<0?'var(--gl)':live.score>0?'var(--rd)':'var(--tp)')+';font-weight:700">'+scT+'</span> '+(live.pos||'')+' · thru '+(live.thru||0)+' · win '+(live.win!=null?(live.win*100).toFixed(1)+'%':'–')+(esc?' · <span style="color:var(--gl)">'+esc.birdiePlus+' bird+</span>/<span style="color:var(--rd)">'+esc.bogeyPlus+' bog+</span>':'')+'</div>';}
+  if(live){var scT=live.score==null?'':(live.score>0?'+'+live.score:live.score===0?'E':live.score);h+='<div class="pc-live">⛳ <b>'+_pcEsc(_pcData.meta.event||'Live')+'</b> · <span style="color:'+(live.score<0?'var(--gl)':live.score>0?'var(--rd)':'var(--tp)')+';font-weight:700">'+scT+'</span> '+(''+(live.pos||'')).replace(/^T/,'')+' · thru '+(live.thru||0)+' · win '+(live.win!=null?(live.win*100).toFixed(1)+'%':'–')+(esc?' · <span style="color:var(--gl)">'+esc.birdiePlus+' bird+</span>/<span style="color:var(--rd)">'+esc.bogeyPlus+' bog+</span>':'')+'</div>';}
   h+='</div></div>';
   // bio prose
   if(wiki&&wiki.extract)h+='<div class="pc-bio">'+_pcEsc(wiki.extract.slice(0,320))+(wiki.extract.length>320?'…':'')+' <a href="'+(wiki.url||'#')+'" target="_blank" rel="noopener" class="pc-srclink">Wikipedia ↗</a></div>';
