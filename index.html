@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v40 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v41 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1193,7 +1193,7 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 </div>
 </section>
 </main>
-<footer class="ft"><a href="https://account.venmo.com/u/NoahStancamp" target="_blank" style="color:#00205b;text-decoration:none;letter-spacing:.04em;font-size:.72rem;display:inline-block;font-weight:500;margin-bottom:.4rem">🍻 Cheers</a><br>The Majors Pool &middot; Est. 2017 &middot; Live Dashboard</footer>
+<footer class="ft"><a href="https://account.venmo.com/u/NoahStancamp" target="_blank" style="color:#00205b;text-decoration:none;letter-spacing:.04em;font-size:.72rem;display:inline-block;font-weight:500;margin-bottom:.4rem">🍻 Cheers</a><br>The Majors Pool &middot; Est. 2017 &middot; Live Dashboard <span id="build-stamp" style="opacity:.5;font-size:.85em;font-family:var(--fm)"></span></footer>
 <script>
 /* ===== Analytics (GoatCounter) — pageviews auto, clicks via gcEvent() ===== */
 var GC_CODE='n0ah9'; /* GoatCounter site code -> n0ah9.goatcounter.com */
@@ -2805,7 +2805,7 @@ if('serviceWorker' in navigator){
 }
 
 /* ===== INIT ===== */
-document.addEventListener('DOMContentLoaded',()=>{try{populateMe();}catch(e){console.warn('populateMe:',e);}try{populateHFilters();rHistory();}catch(e){console.warn('history:',e);}try{rLive();}catch(e){console.warn('rLive:',e);}try{renderUsoTab();}catch(e){console.warn('renderUsoTab:',e);}dgConn();setTimeout(fetchPreviewOdds,1000);setTimeout(fetchPredictionMarkets,2500);});
+document.addEventListener('DOMContentLoaded',()=>{try{populateMe();}catch(e){console.warn('populateMe:',e);}try{populateHFilters();rHistory();}catch(e){console.warn('history:',e);}try{rLive();}catch(e){console.warn('rLive:',e);}try{renderUsoTab();}catch(e){console.warn('renderUsoTab:',e);}dgConn();setTimeout(fetchPreviewOdds,1000);setTimeout(fetchPredictionMarkets,2500);try{var _bs=document.getElementById('build-stamp'),_bv=document.querySelector('meta[name=build-version]');if(_bs&&_bv)_bs.textContent='· '+((_bv.content.match(/gmp-v\d+/)||[''])[0]);}catch(e){}});
 
 
 /* ===== COURSE DATA ===== */
