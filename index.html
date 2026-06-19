@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v21 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v22 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7367,7 +7367,7 @@ function _usoLpRow(s){
   const sv=s.countedN>0?(s.total>0?'+'+s.total:s.total===0?'E':s.total):'–';
   const me=(typeof loadMe==='function'&&loadMe()&&s.nm.toLowerCase().includes(loadMe().toLowerCase()))?'me':'';
   const rw=[s.rk<=3?'t3':'',s.rk<=ml?'im':'',me].filter(Boolean).join(' ');
-  const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'<span class="dh-tag">DH</span>':'')+g.name;var _st,_sc;if(g.score!=null){_st=(g.score>0?'+'+g.score:g.score===0?'E':''+g.score);_sc=g.score<0?'var(--gl)':g.score>0?'var(--rd)':'var(--td)';}else if(g.cut){_st='CUT';_sc='var(--td)';}else{_st='—';_sc='var(--td)';}label+=' <span style="color:'+_sc+';font-weight:600">'+_st+'</span>';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';const hl=g.bonus>0?'background:rgba(196,160,53,.1);border-radius:3px;padding:0 1px':(g.dh?'background:rgba(110,42,62,.07);border-radius:3px;padding:0 1px':'');return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
+  const gTags=s.sortGolfers.map(function(g){const cls=g.counted?'er-g counted':(g.score!==null?'er-g dropped':'er-g');let label=(g.dh?'<span class="dh-tag">DH</span>':'')+g.name;var _st,_sc;if(g.score!=null){_st=(g.score>0?'+'+g.score:g.score===0?'E':''+g.score);_sc=g.score<0?'var(--gl)':g.score>0?'var(--rd)':'var(--td)';}else if(g.cut){_st='CUT';_sc='var(--td)';}else{_st='—';_sc='var(--td)';}label+=' <span style="color:'+_sc+';font-weight:600">'+_st+'</span>';const top10=g.bonus>0?'<sup style="color:var(--go);font-weight:700;font-size:.5rem"> +'+g.bonus+'</sup>':'';var _bg=(g.score!=null&&!g.cut)?(g.score<=-3?'rgba(31,138,84,.14)':g.score<0?'rgba(31,138,84,.07)':g.score===0?'':g.score<=2?'rgba(150,45,65,.06)':'rgba(150,45,65,.12)'):'';const hl=_bg?'background:'+_bg+';border-radius:3px;padding:0 1px':'';return'<span class="'+cls+(g.cut?' cut':'')+'" style="'+hl+'">'+label+top10+'</span>';}).join(' ');
   const bonTxt=s.bonus>0?'<span style="color:var(--go);font-family:var(--fm)">−'+s.bonus+'</span>':'<span style="color:var(--td)">0</span>';
   return'<tr class="'+rw+'"><td class="rc '+(s.rk<=3?'r'+s.rk:'')+'"'+(s.rk>3?' style="color:var(--uso)"':'')+'>'+s.rk+'</td><td class="nc" style="font-size:.62rem">'+s.nm+'</td><td class="'+sc+'" style="font-weight:700;font-family:var(--fm)">'+sv+'</td><td style="font-family:var(--fm);font-size:.6rem">'+bonTxt+'</td><td>'+_ytdTag(s)+'</td><td style="font-size:.52rem;line-height:1.28">'+gTags+'</td></tr>';
 }
