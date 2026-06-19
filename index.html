@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v31 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v32 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -7376,7 +7376,7 @@ function _ytdTag(s){
   return '<span style="font-family:var(--fm);font-weight:'+rw+';font-size:.44rem;color:'+rc+'">#'+r+'</span><span style="font-family:var(--fm);font-weight:500;font-size:.44rem;color:'+acol+';margin-left:1px">'+arrow+'</span>';
 }
 var _tenureMap=null;
-function _tenure(nm){if(!_tenureMap){_tenureMap={};if(typeof DB!=='undefined'&&DB.participants)DB.participants.forEach(function(p){var s=(p.career&&p.career.total_seasons)||0;(p.all_entry_names||[]).concat([p.canonical_name]).forEach(function(n){if(n){var k=n.toLowerCase();_tenureMap[k]=Math.max(_tenureMap[k]||0,s);}});});}var s=_tenureMap[(nm||'').toLowerCase()]||0;if(s>=8)return{t:'OG',c:'og'};if(s===7)return{t:'7+',c:'v'};if(s===6)return{t:'6+',c:'v'};if(s===5)return{t:'5+',c:'v'};if(s===1)return{t:'rookie',c:'rk'};return null;}
+function _tenure(nm){if(!_tenureMap){_tenureMap={};if(typeof DB!=='undefined'&&DB.participants)DB.participants.forEach(function(p){var s=(p.career&&p.career.total_seasons)||0;(p.all_entry_names||[]).concat([p.canonical_name]).forEach(function(n){if(n){var k=n.toLowerCase();_tenureMap[k]=Math.max(_tenureMap[k]||0,s);}});});}var s=_tenureMap[(nm||'').toLowerCase()]||0;if(s>=8)return{t:'OG',c:'og'};if(s===1)return{t:'RK',c:'rk'};return null;}
 function _tenureTag(nm){var x=_tenure(nm);return x?' <span class="ten-tag ten-'+x.c+'">'+x.t+'</span>':'';}
 function _usoLpRow(s){
   const ml=(window._usoLpCtx&&window._usoLpCtx.ml)||35;
