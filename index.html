@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v42 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v43 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -923,8 +923,8 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 <span id="me-badge" class="me-badge"></span>
 </div>
 <nav class="nav">
-<button onclick="go('history')">YTD &amp; Hist.</button>
-<button class="live-tab active" onclick="go('uso-tab')">U.S. Open</button>
+<button class="active" onclick="go('history')">YTD &amp; Hist.</button>
+<button class="live-tab" onclick="go('uso-tab')">U.S. Open</button>
 <button onclick="go('upcoming')">PGA</button>
 <button onclick="go('masters-results')">Masters</button>
 <button onclick="go('players-results')">Players</button>
@@ -932,7 +932,7 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 <button onclick="go('rules')">Rules</button>
 </nav>
 <main>
-<section id="history" class="pn2">
+<section id="history" class="pn2 active">
 <div class="ctrl" id="h-ctrl" style="position:sticky;top:36px;z-index:40;background:var(--bm);border-bottom:1px solid var(--br);display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
 <select id="hyr" onchange="chgH()"></select>
 <select id="hev" onchange="chgH()"></select>
@@ -1019,7 +1019,7 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 
 
 </section>
-<section id="uso-tab" class="pn2 active">
+<section id="uso-tab" class="pn2">
 
 <!-- LIVE pool leaderboard (rosters loaded; scores compute during play) -->
 <div class="cd" id="uso-live-pool"></div>
