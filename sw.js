@@ -1,5 +1,5 @@
-/* Service Worker — Golf Majors Pool Dashboard */
-const CACHE = 'gmp-v49';
+﻿/* Service Worker â€” Golf Majors Pool Dashboard */
+const CACHE = 'gmp-v50';
 const ASSETS = [
   './',
   './index.html',
@@ -34,7 +34,7 @@ self.addEventListener('fetch', e => {
   // Skip non-GET and cross-origin
   if (e.request.method !== 'GET' || url.origin !== location.origin) return;
 
-  // HTML pages — network first, fall back to cache
+  // HTML pages â€” network first, fall back to cache
   if (e.request.mode === 'navigate' || e.request.headers.get('accept')?.includes('text/html')) {
     e.respondWith(
       fetch(e.request)
@@ -48,7 +48,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Everything else — cache first, fall back to network
+  // Everything else â€” cache first, fall back to network
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
@@ -60,3 +60,4 @@ self.addEventListener('fetch', e => {
     })
   );
 });
+
