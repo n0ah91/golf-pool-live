@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v45 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v46 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1401,24 +1401,12 @@ function renderSeasonDetails(all,lb,paidOut,pot){
       h+='<div class="snap-list">';
       dhs.forEach(function(nm){
         var dh=DARK_HORSE_PAYOUTS[nm];
-        var ev=dh.event==='players'?'The Players':dh.event==='masters'?'Masters':dh.event==='pga'?'PGA':dh.event;
+        var ev=dh.event==='players'?'The Players':dh.event==='masters'?'Masters':dh.event==='pga'?'PGA':dh.event==='uso'?'U.S. Open':dh.event;
         h+='<div class="snap-row"><b>'+nm+'</b> <span class="snap-tag tg-'+dh.event+'">'+ev+'</span> <span class="snap-amt">+$'+dh.amt+'</span></div>';
       });
       h+='</div></div>';
     }
   }
-  // 3. Standout Performances
-  h+='<div class="snap-blk"><div class="snap-h">Standout Performances</div>';
-  h+='<div class="snap-sub">Top-5 finishes from this season</div>';
-  h+='<div class="snap-list">';
-  ['players','masters','pga'].forEach(function(k){
-    var top5=[...all].filter(function(e){return e[k]!=null&&e[k]<=5;}).sort(function(a,b){return a[k]-b[k];});
-    if(top5.length){
-      var evLbl=lb[k]||k;
-      h+='<div class="snap-row"><span class="snap-tag tg-'+k+'">'+evLbl+'</span> '+top5.map(function(e){return '<b>#'+e[k]+'</b> '+e.entry_used;}).join(' · ')+'</div>';
-    }
-  });
-  h+='</div></div>';
   // 4. Movers
   var movers=all.filter(function(e){return e._plRk!=null&&e.rank!=null;}).map(function(e){return {nm:e.entry_used,from:e._plRk,to:e.rank,diff:e._plRk-e.rank};});
   var up=[...movers].sort(function(a,b){return b.diff-a.diff;}).slice(0,3);
@@ -1440,26 +1428,26 @@ function renderSeasonDetails(all,lb,paidOut,pot){
   // 5. Trends
   var hot=[];var cold=[];
   all.forEach(function(e){
-    if(e.players!=null&&e.masters!=null&&e.pga!=null){
-      if(e.players>e.masters&&e.masters>e.pga)hot.push({nm:e.entry_used,r:[e.players,e.masters,e.pga]});
-      if(e.players<e.masters&&e.masters<e.pga)cold.push({nm:e.entry_used,r:[e.players,e.masters,e.pga]});
+    if(e.players!=null&&e.masters!=null&&e.pga!=null&&e.uso!=null){
+      if(e.players>e.masters&&e.masters>e.pga&&e.pga>e.uso)hot.push({nm:e.entry_used,r:[e.players,e.masters,e.pga,e.uso]});
+      if(e.players<e.masters&&e.masters<e.pga&&e.pga<e.uso)cold.push({nm:e.entry_used,r:[e.players,e.masters,e.pga,e.uso]});
     }
   });
   if(hot.length){
     h+='<div class="snap-blk"><div class="snap-h">Trending Up</div>';
-    h+='<div class="snap-sub">Improved finish in each of 3 events (Players → Masters → PGA)</div>';
+    h+='<div class="snap-sub">Improved finish in each of 4 events (Players → Masters → PGA → U.S. Open)</div>';
     h+='<div class="snap-list">';
-    hot.sort(function(a,b){return (a.r[2]-a.r[0])-(b.r[2]-b.r[0]);}).slice(0,5).forEach(function(m){
-      h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → </span><b class="snap-emp up">#'+m.r[2]+'</b></div>';
+    hot.sort(function(a,b){return (a.r[3]-a.r[0])-(b.r[3]-b.r[0]);}).slice(0,5).forEach(function(m){
+      h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → #'+m.r[2]+' → </span><b class="snap-emp up">#'+m.r[3]+'</b></div>';
     });
     h+='</div></div>';
   }
   if(cold.length){
     h+='<div class="snap-blk"><div class="snap-h">Trending Down</div>';
-    h+='<div class="snap-sub">Worse finish in each of 3 events (Players → Masters → PGA)</div>';
+    h+='<div class="snap-sub">Worse finish in each of 4 events (Players → Masters → PGA → U.S. Open)</div>';
     h+='<div class="snap-list">';
-    cold.sort(function(a,b){return (b.r[2]-b.r[0])-(a.r[2]-a.r[0]);}).slice(0,5).forEach(function(m){
-      h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → </span><b class="snap-emp dn">#'+m.r[2]+'</b></div>';
+    cold.sort(function(a,b){return (b.r[3]-b.r[0])-(a.r[3]-a.r[0]);}).slice(0,5).forEach(function(m){
+      h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → #'+m.r[2]+' → </span><b class="snap-emp dn">#'+m.r[3]+'</b></div>';
     });
     h+='</div></div>';
   }
@@ -1638,7 +1626,7 @@ function rSeasonView(y){
       '<div class="combo-row">'+
         '<div class="combo-cell wide"><div class="combo-v go">'+(leader?leader.entry_used:'-')+'</div><div class="combo-l">'+(y==='2026'?'Current Leader':y+' Champion')+'</div></div>'+
         '<div class="combo-sep"></div>'+
-        '<div class="combo-cell"><div class="combo-v gl">'+leaderScoreTxt+'</div><div class="combo-l">'+(y==='2026'?'thru 3':'final')+'</div></div>'+
+        '<div class="combo-cell"><div class="combo-v gl">'+leaderScoreTxt+'</div><div class="combo-l">'+(y==='2026'?'thru 4':'final')+'</div></div>'+
       '</div>'+
     '</div></div>';
   // Awards
@@ -4991,8 +4979,7 @@ const POOL_RESULTS = {
       {rk:103,nm:"JWIII #2",tp:12,rp:12,r:[284,295,295,290],win:0,fed:112,td:0},
       {rk:105,nm:"Bpratt",tp:17,rp:25,bn:-8,r:[288,280,303,306],win:0,fed:402,td:3},
       {rk:106,nm:"Reid30",tp:31,rp:34,bn:-3,r:[287,290,302,307],win:0,fed:213,td:1},
-      {rk:107,nm:"BillHoffman",tp:32,win:0,td:999,_dnp:true},
-      {rk:108,nm:"Tim Maleck",tp:32,win:0,td:999,_dnp:true}
+      {rk:107,nm:"Tim Maleck",tp:32,win:0,td:999,_dnp:true}
     ],
     players: [
       {pos:1,wr:15,nm:'Cameron Young',sal:7700,own:0.26,sc:-13,dkv:402.7,pk:28,pa:45,bi:20,ea:0,bo:5,db:1,tr:0,al:0},
@@ -5405,9 +5392,7 @@ const POOL_RESULTS = {
       {rk:103,nm:"Andrew Pikul",tp:52,win:0,td:999,_dnp:true},
       {rk:104,nm:"BTR",tp:52,win:0,td:999,_dnp:true},
       {rk:105,nm:"KlinkbeilJr",tp:52,win:0,td:999,_dnp:true},
-      {rk:106,nm:"Matthew Cramer",tp:52,win:0,td:999,_dnp:true},
-      {rk:107,nm:"Max Prosser",tp:52,win:0,td:999,_dnp:true},
-      {rk:108,nm:"TuliusJamasy",tp:52,win:0,td:999,_dnp:true}
+      {rk:106,nm:"Max Prosser",tp:52,win:0,td:999,_dnp:true},{rk:107,nm:"TuliusJamasy",tp:52,win:0,td:999,_dnp:true}
     ],
     players: [
       {wr:1,nm:"Scottie Scheffler",sal:11900,own:0.45,pk:47,sc:-2,pa:46,bi:14,ea:0,bo:12,db:0,tr:0,al:0},
