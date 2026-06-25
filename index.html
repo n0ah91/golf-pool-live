@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v48 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v49 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1684,7 +1684,7 @@ function rSeasonView(y){
   h+='<div class="tw"><table><thead><tr>';
   h+='<th class="'+(ss.c==='rank'?'s':'')+'" onclick="sS(\'rank\')">Rk'+si('rank',ss)+'</th>';
   h+='<th class="'+(ss.c==='entry_used'?'s':'')+'" onclick="sS(\'entry_used\')">Entry'+si('entry_used',ss)+'</th>';
-  h+='<th class="'+(ss.c==='total'?'s':'')+'" onclick="sS(\'total\')">Total'+si('total',ss)+'</th>';
+  h+='<th class="'+(ss.c==='total'?'s':'')+'" onclick="sS(\'total\')" title="Net strokes to par across the majors (lower = better)">'+(y==='2026'?'To Par':'Total')+si('total',ss)+'</th>';
   EK.forEach(function(k){h+='<th class="ev-th '+(ss.c===k?'s':'')+'" onclick="sS(\''+k+'\')">'+lb[k]+si(k,ss)+'</th>';});
   h+='<th class="'+(ss.c==='winnings'?'s':'')+'" onclick="sS(\'winnings\')">Won'+si('winnings',ss)+'</th>';
   h+='</tr></thead><tbody>';
@@ -1694,20 +1694,33 @@ function rSeasonView(y){
   visible.forEach(function(e){
     var rc=e.rank===1?'r1':e.rank===2?'r2':e.rank===3?'r3':'';
     var rw=[e.rank!=null&&e.rank<=3?'t3':(e.rank!=null&&e.rank<=ml?'im':''),e.rank===ml?'ml-row':'',isMe(e)?'me':''].filter(Boolean).join(' ');
-    var tc=e.total==null?'n':e.total<0?'g':e.total>0?'b':'n';
-    var td2=e.total==null?'DNS':(e.total>0?'+'+e.total:e.total);var rd=e.rank==null?'DNS':e.rank;
+    var _tp=(typeof YTD_TOPAR_2026!=='undefined'&&y==='2026')?(YTD_TOPAR_2026[e.entry_used]||YTD_TOPAR_2026[e.person]||null):null;
+    var _net=_tp?_tp.net:null;
+    var tc,td2;
+    if(_net!=null){tc=_net<0?'g':_net>0?'b':'n';td2=_net>0?'+'+_net:_net===0?'E':_net;}
+    else{tc=e.total==null?'n':e.total<0?'g':e.total>0?'b':'n';td2=e.total==null?'DNS':(e.total>0?'+'+e.total:e.total);}
+    var rd=e.rank==null?'DNS':e.rank;
     var yh='';if(e.rank!=null){
       // For 2026+: show tournament-over-tournament rank change (Players rank → YTD rank)
       var pr=e._plRk!=null&&e.masters!=null?e._plRk:pmap[e.person];
       if(pr!=null&&pr!==e.rank){var diff=pr-e.rank;yh=diff>0?'<span class="yoy up">\u25B2'+diff+'</span>':diff<0?'<span class="yoy dn">\u25BC'+Math.abs(diff)+'</span>':'<span class="yoy">=</span>';}
       else if(pr!=null)yh='<span class="yoy">=</span>';
       else if(isRookie(e.person,y))yh='<span class="yoy nw">NEW</span>';}
-    var ec='';EK.forEach(function(k){var v=e[k];if(v==null){ec+='<td class="fc fc-na">–</td>';}else{
+    var _TPK={players:'p',masters:'m',pga:'g',uso:'u'};
+    var ec='';EK.forEach(function(k){
+      var v=e[k];
+      var par=(_tp&&_TPK[k]&&_tp[_TPK[k]]!=null)?_tp[_TPK[k]]:null;
+      if(v==null&&par==null){ec+='<td class="fc fc-na">–</td>';return;}
       var medal=v===1?'gold':v===2?'silver':v===3?'bronze':'';
-      var tier=v<=10?'top':v<=25?'good':v>=Math.max(80,tot*.85)?'bad':'mid';
-      var label=v;
-      ec+='<td class="fc fc-'+tier+(medal?' fc-'+medal:'')+'" title="'+(medal?(v===1?'🥇 ':v===2?'🥈 ':'🥉 ')+'Rank #'+v:'Rank #'+v)+'">'+label+'</td>';
-    }});
+      if(par!=null){
+        var pcl=par<=-15?'top':par<0?'good':par===0?'mid':'bad';
+        var plabel=par>0?'+'+par:par===0?'E':par;
+        ec+='<td class="fc fc-'+pcl+(medal?' fc-'+medal:'')+'" title="'+(lb[k]||k)+': '+plabel+' to par'+(v!=null?' · finished #'+v:'')+'">'+plabel+'</td>';
+      } else {
+        var tier=v<=10?'top':v<=25?'good':v>=Math.max(80,tot*.85)?'bad':'mid';
+        ec+='<td class="fc fc-'+tier+(medal?' fc-'+medal:'')+'" title="Rank #'+v+'">'+v+'</td>';
+      }
+    });
     var w=e.winnings?(e.winnings%1===0?e.winnings.toLocaleString():e.winnings.toFixed(2)):'-';var wc=e.winnings?'wi':'wi z';
     var pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
     h+='<tr class="'+rw+'" onclick="toggleDet(this,\''+e.id+'\')"><td class="rc '+rc+'">'+rd+yh+'</td>'+
@@ -5585,6 +5598,8 @@ const DARK_HORSE_PAYOUTS={
   'Bridget Stancampiano':{event:'pga',amt:50},
   'Mark Regan':{event:'uso',amt:50}
 };
+/* Per-event to-par (workbook score - 16x course par) + net to-par. p=Players m=Masters g=PGA u=U.S.Open */
+var YTD_TOPAR_2026={"Luckyducks":{"p":-63,"m":-49,"g":-35,"u":46,"net":-101},"DavidAke":{"p":-61,"m":-44,"g":51,"u":5,"net":-49},"Neill Stokes":{"p":-51,"m":-48,"g":16,"u":70,"net":-13},"Vandelay Industries":{"p":-68,"m":-27,"g":-19,"u":-7,"net":-121},"Ryan Smith":{"p":-61,"m":-33,"g":26,"u":-1,"net":-69},"dwilhelm":{"p":-68,"m":-26,"g":-10,"u":-23,"net":-127},"tbi020309":{"p":-47,"m":-43,"g":-18,"u":46,"net":-62},"sdh4":{"p":-68,"m":-21,"g":-9,"u":29,"net":-69},"CKobis":{"p":-44,"m":-44,"g":-32,"u":-16,"net":-136},"Putt4Dough":{"p":-28,"m":-59,"g":-26,"u":41,"net":-72},"Max Prosser":{"p":-38,"m":-48,"g":51,"u":-14,"net":-49},"Mark Regan":{"p":-40,"m":-46,"g":-21,"u":-40,"net":-147},"Mike Miller":{"p":-47,"m":-38,"g":-11,"u":37,"net":-59},"dfirth":{"p":-60,"m":-25,"g":1,"u":-5,"net":-89},"jfirth":{"p":-40,"m":-44,"g":21,"u":33,"net":-30},"Kengolf":{"p":-58,"m":-23,"g":23,"u":-15,"net":-73},"Putt Before U Nut":{"p":-39,"m":-40,"g":-2,"u":45,"net":-36},"Bstancam":{"p":-43,"m":-36,"g":0,"u":14,"net":-65},"Jhamlin":{"p":-26,"m":-51,"g":-10,"u":8,"net":-79},"Dylan Smith":{"p":-31,"m":-46,"g":-29,"u":-10,"net":-116},"Toastking12":{"p":-37,"m":-38,"g":1,"u":1,"net":-73},"Zebo15":{"p":-56,"m":-17,"g":-7,"u":111,"net":31},"tbane22":{"p":-32,"m":-40,"g":-35,"u":43,"net":-64},"Modesti":{"p":-11,"m":-59,"g":-23,"u":-20,"net":-113},"ScottSummerson":{"p":-39,"m":-31,"g":-28,"u":-14,"net":-112},"Howie":{"p":-49,"m":-21,"g":-23,"u":30,"net":-63},"Ryan Reddy":{"p":-51,"m":-18,"g":26,"u":-7,"net":-50},"andersanders":{"p":-48,"m":-19,"g":13,"u":4,"net":-50},"chrobb":{"p":-25,"m":-40,"g":-8,"u":3,"net":-70},"David Wheeler":{"p":-13,"m":-51,"g":-16,"u":-7,"net":-87},"BigRicks":{"p":-31,"m":-32,"g":-7,"u":-6,"net":-76},"NFoley":{"p":-32,"m":-31,"g":19,"u":-9,"net":-53},"Scharf's Horseman":{"p":-36,"m":-27,"g":2,"u":10,"net":-51},"Big Al":{"p":-38,"m":-25,"g":28,"u":16,"net":-19},"MParekh10":{"p":-31,"m":-31,"g":-6,"u":40,"net":-28},"BTR":{"p":-20,"m":-41,"g":51,"u":25,"net":15},"Kevin Struempfler":{"p":-25,"m":-36,"g":-36,"u":7,"net":-90},"PapaDaws":{"p":-28,"m":-33,"g":-10,"u":0,"net":-71},"kmo":{"p":-43,"m":-18,"g":-24,"u":16,"net":-69},"Chris McLeod":{"p":-22,"m":-38,"g":-8,"u":20,"net":-48},"Chuck Jackson":{"p":-25,"m":-35,"g":-14,"u":11,"net":-63},"Ian Rapp":{"p":-35,"m":-25,"g":-11,"u":15,"net":-56},"Team Lowe":{"p":3,"m":-61,"g":-6,"u":-21,"net":-85},"big-sled-6647":{"p":-24,"m":-34,"g":-24,"u":7,"net":-75},"long-draw-1117":{"p":-30,"m":-28,"g":16,"u":-6,"net":-48},"My Favorite Fairportian":{"p":-58,"m":0,"g":-7,"u":15,"net":-50},"MoWil":{"p":-28,"m":-29,"g":-27,"u":-16,"net":-100},"Burkey's Bogeys":{"p":-39,"m":-17,"g":-17,"u":-27,"net":-100},"Broadway":{"p":-34,"m":-21,"g":-2,"u":1,"net":-56},"Crying Koepkas":{"p":-8,"m":-46,"g":-6,"u":37,"net":-23},"Ronners":{"p":-24,"m":-30,"g":-3,"u":-15,"net":-72},"Pewey31":{"p":-42,"m":-12,"g":-7,"u":83,"net":22},"keen-arm-9499":{"p":-23,"m":-30,"g":-17,"u":16,"net":-54},"Jmeesh27":{"p":-30,"m":-23,"g":-16,"u":-27,"net":-96},"BillHoffman":{"p":-41,"m":-11,"g":-23,"u":55,"net":-20},"Fluffyhead":{"p":-11,"m":-40,"g":-8,"u":32,"net":-27},"We've Got Balls":{"p":-18,"m":-33,"g":-24,"u":-22,"net":-97},"Heartherors":{"p":-22,"m":-29,"g":-15,"u":-4,"net":-70},"rjm":{"p":-35,"m":-15,"g":-15,"u":21,"net":-44},"Jordman8":{"p":-1,"m":-48,"g":15,"u":9,"net":-25},"smak":{"p":-10,"m":-39,"g":30,"u":-14,"net":-33},"SOStancamp":{"p":-12,"m":-37,"g":-6,"u":38,"net":-17},"TheGunners":{"p":-13,"m":-36,"g":-12,"u":44,"net":-17},"Justin Alves":{"p":-31,"m":-18,"g":-18,"u":35,"net":-32},"CornerstoneCowboy":{"p":-38,"m":-11,"g":-21,"u":16,"net":-54},"Brendan":{"p":-29,"m":-18,"g":-7,"u":111,"net":57},"WilkinsFam":{"p":-35,"m":-12,"g":4,"u":0,"net":-43},"The Pelican":{"p":-26,"m":-20,"g":-24,"u":18,"net":-52},"Duder":{"p":-28,"m":-18,"g":-3,"u":12,"net":-37},"Chris Edwards":{"p":-13,"m":-32,"g":-20,"u":58,"net":-7},"krgolfer18":{"p":-42,"m":-3,"g":-8,"u":-25,"net":-78},"mtown10":{"p":-5,"m":-38,"g":-14,"u":-21,"net":-78},"Bobby Beeman":{"p":-50,"m":7,"g":-20,"u":-1,"net":-64},"Bridget Stancampiano":{"p":-43,"m":2,"g":-24,"u":-5,"net":-70},"m.manilla":{"p":5,"m":-45,"g":2,"u":16,"net":-22},"Lady golfer":{"p":-33,"m":-6,"g":0,"u":111,"net":72},"Jennings":{"p":4,"m":-42,"g":-22,"u":-16,"net":-76},"Kyle K":{"p":-19,"m":-19,"g":-18,"u":31,"net":-25},"Travis Shevlin":{"p":-34,"m":-4,"g":-5,"u":89,"net":46},"Aldo":{"p":-34,"m":-4,"g":-13,"u":-13,"net":-64},"dan_firth":{"p":-9,"m":-28,"g":-15,"u":20,"net":-32},"Andrew Pikul":{"p":-21,"m":-15,"g":51,"u":-17,"net":-2},"CowboyMonkey":{"p":-23,"m":-13,"g":-21,"u":20,"net":-37},"Young_Falcon":{"p":-41,"m":6,"g":-9,"u":-3,"net":-47},"Greyson":{"p":-13,"m":-21,"g":-1,"u":18,"net":-17},"TBrown":{"p":-18,"m":-12,"g":27,"u":27,"net":24},"Will Tennant":{"p":-16,"m":-12,"g":26,"u":-16,"net":-18},"Firth":{"p":0,"m":-25,"g":-9,"u":-6,"net":-40},"Ollie Janzen":{"p":-11,"m":-14,"g":4,"u":9,"net":-12},"Lewy":{"p":-21,"m":-4,"g":-28,"u":-21,"net":-74},"apslotnick":{"p":-16,"m":-7,"g":-4,"u":-6,"net":-33},"Matthew Cramer":{"p":-3,"m":-18,"g":51,"u":111,"net":141},"Commish":{"p":-17,"m":-4,"g":-7,"u":7,"net":-21},"Dude, Where's My Par":{"p":-13,"m":-7,"g":8,"u":8,"net":-4},"Schad":{"p":-14,"m":-6,"g":3,"u":6,"net":-11},"KlinkbeilJr":{"p":-27,"m":8,"g":51,"u":-2,"net":30},"JWIII":{"p":-17,"m":0,"g":-6,"u":44,"net":21},"tjnovak11":{"p":2,"m":-17,"g":-20,"u":-16,"net":-51},"Jordan Brock":{"p":-26,"m":12,"g":-9,"u":-11,"net":-34},"ryankozack":{"p":-9,"m":-1,"g":-11,"u":-1,"net":-22},"EddieZdo":{"p":12,"m":-21,"g":-10,"u":7,"net":-12},"wbetts":{"p":-20,"m":16,"g":-22,"u":-14,"net":-40},"Reid30":{"p":31,"m":-32,"g":17,"u":14,"net":30},"JWIII #2":{"p":12,"m":-9,"g":-9,"u":-15,"net":-21},"Bpratt":{"p":17,"m":-7,"g":-14,"u":23,"net":19},"Tim Maleck":{"p":31,"m":-46,"g":-26,"u":111,"net":70},"THE-SUPERB-OWL-142":{"p":-7,"m":16,"g":-9,"u":-20,"net":-20},"TuliusJamasy":{"p":1,"m":16,"g":51,"u":111,"net":179}};
 /* ===== PATCH: inject PGA Championship results into 2026 season ===== */
 (function(){
   var pr=POOL_RESULTS[33];
