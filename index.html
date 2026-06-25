@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v46 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v47 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -924,7 +924,7 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 </div>
 <nav class="nav">
 <button class="active" onclick="go('history')">YTD &amp; Hist.</button>
-<button class="live-tab" onclick="go('uso-tab')">U.S. Open</button>
+<button onclick="go('uso-tab')">U.S. Open</button>
 <button onclick="go('upcoming')">PGA</button>
 <button onclick="go('masters-results')">Masters</button>
 <button onclick="go('players-results')">Players</button>
@@ -942,7 +942,7 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 </div>
 <div class="quick-links">
 <a href="https://splashsports.com" target="_blank" class="splash-link">Splash Sports ↗</a>
-<a href="javascript:go('uso-tab')" class="preview-link uso live">U.S. Open — This Week →</a>
+<a href="javascript:go('uso-tab')" class="preview-link uso">U.S. Open — Final →</a>
 <a href="javascript:go('open-tab')" class="preview-link open">Royal Birkdale Preview →</a>
 </div>
 <div id="h-body"></div>
@@ -1337,6 +1337,27 @@ function isRookie(person,y){
 }
 
 /* ===== SUPERLATIVES ===== */
+/* Real pool dollars earned per entry (actual payouts, not fantasy winnings):
+   exact $ from POOL_RESULTS for Players/Masters/PGA, tie-aware top-5 for the
+   U.S. Open (derived from finish ranks; no POOL_RESULTS[26]), plus dark-horse bonuses. */
+function _realDollars(y){
+  var d={};if(y!=='2026'||typeof POOL_RESULTS==='undefined')return d;
+  function add(n,a){if(n)d[n]=(d[n]||0)+a;}
+  [11,14,33].forEach(function(k){
+    if(POOL_RESULTS[k]&&POOL_RESULTS[k].entries)POOL_RESULTS[k].entries.forEach(function(e){if(e.win)add(e.nm,e.win);});
+  });
+  var PAY={1:500,2:325,3:200,4:125,5:75};
+  var up=e4y(y).filter(function(e){return e.uso!=null&&e.uso<=5;}).sort(function(a,b){return a.uso-b.uso;});
+  for(var i=0;i<up.length;){
+    var r=up[i].uso,g=[up[i]],j=i+1;
+    while(j<up.length&&up[j].uso===r){g.push(up[j]);j++;}
+    var pool=0;for(var q=r;q<r+g.length;q++)pool+=(PAY[q]||0);
+    var each=pool/g.length;g.forEach(function(e){add(e.entry_used,each);});
+    i=j;
+  }
+  if(typeof DARK_HORSE_PAYOUTS!=='undefined')Object.keys(DARK_HORSE_PAYOUTS).forEach(function(n){add(n,DARK_HORSE_PAYOUTS[n].amt||0);});
+  return d;
+}
 function superlatives(y){
   const ents=e4y(y).filter(e=>e.rank!=null).sort((a,b)=>a.rank-b.rank);
   const lb=EL[y]||EL['2025'];const prev=yoyMap(y);
@@ -1356,19 +1377,30 @@ function superlatives(y){
     if(!worstDrop||diff<worstDrop.diff)worstDrop={...e,diff,pr};}
   if(bestImproved&&bestImproved.diff>0)awards.push({t:'Most Improved',n:bestImproved.entry_used,d:'#'+bestImproved.pr+' \u2192 #'+bestImproved.rank+' (+'+bestImproved.diff+')'});
   if(worstDrop&&worstDrop.diff<0)awards.push({t:'Biggest Drop',n:worstDrop.entry_used,d:'#'+worstDrop.pr+' \u2192 #'+worstDrop.rank+' ('+worstDrop.diff+')'});
-  // Best single event
-  let bestSingle={r:Infinity};
-  for(const e of e4y(y)){for(const k of EK){if(e[k]!=null&&e[k]<bestSingle.r)bestSingle={r:e[k],n:e.entry_used,k};}}
-  if(bestSingle.r<Infinity)awards.push({t:'Event Ace',n:bestSingle.n,d:'#'+bestSingle.r+' in '+lb[bestSingle.k]});
+  // Largest winning margin (event winner's score vs runner-up, from POOL_RESULTS scores)
+  let bigMargin=null;
+  if(typeof POOL_RESULTS!=='undefined'){
+    const EVK={11:'players',14:'masters',33:'pga'};
+    for(const k of Object.keys(EVK)){
+      const pr=POOL_RESULTS[k];if(!pr||!pr.entries||pr.entries.length<2)continue;
+      const es=pr.entries.slice().sort((a,b)=>a.rk-b.rk);
+      if(es[0].tp==null||es[1].tp==null)continue;
+      const m=Math.abs(es[1].tp-es[0].tp);
+      if(!bigMargin||m>bigMargin.m)bigMargin={m,n:es[0].nm,k:EVK[k]};
+    }
+  }
+  if(bigMargin)awards.push({t:'Largest Margin',n:bigMargin.n,d:'Won '+lb[bigMargin.k]+' by '+bigMargin.m+(bigMargin.m===1?' stroke':' strokes')});
   // Mr. Consistent
-  const bb=boomBust(y);if(bb.length>0)awards.push({t:'Mr. Consistent',n:bb[0].entry_used,d:'\u03C3 '+bb[0].bb.toFixed(1)+' | Avg Rk '+bb[0].avgEvRank.toFixed(0)});
-  // Biggest payday — if multiple tied, show count
-  const bp=[...e4y(y)].filter(e=>e.winnings>0).sort((a,b)=>b.winnings-a.winnings);
+  const _half=Math.ceil(e4y(y).length/2);const bb=boomBust(y).filter(function(x){return x.rank!=null&&x.rank<=_half;});if(bb.length>0)awards.push({t:'Mr. Consistent',n:bb[0].entry_used,d:'\u03C3 '+bb[0].bb.toFixed(1)+' | Avg Rk '+bb[0].avgEvRank.toFixed(0)});
+  // Biggest payday — most real pool dollars earned (actual payouts)
+  const _rd=_realDollars(y);
+  const bp=Object.keys(_rd).filter(n=>_rd[n]>0).map(n=>({entry_used:n,winnings:_rd[n]})).sort((a,b)=>b.winnings-a.winnings);
   if(bp.length>0){
     const top=bp[0].winnings;
     const tied=bp.filter(e=>e.winnings===top);
-    if(tied.length===1){awards.push({t:'Biggest Payday',n:bp[0].entry_used,d:'$'+(top%1===0?top.toLocaleString():top.toFixed(2))});}
-    else {awards.push({t:'Top Earners ('+tied.length+'-way tie)',n:tied.map(e=>e.entry_used).join(', '),d:'$'+(top%1===0?top.toLocaleString():top.toFixed(2))+' each'});}
+    const fmt=v=>'$'+(v%1===0?v.toLocaleString():v.toFixed(2));
+    if(tied.length===1){awards.push({t:'Biggest Payday',n:bp[0].entry_used,d:fmt(top)});}
+    else {awards.push({t:'Top Earners ('+tied.length+'-way tie)',n:tied.map(e=>e.entry_used).join(', '),d:fmt(top)+' each'});}
   }
   return awards;
 }
@@ -1377,7 +1409,8 @@ function renderSeasonDetails(all,lb,paidOut,pot){
   if(!all||!all.length)return '';
   var h='<div class="snap-extra">';
   // 1. Money Leaderboard
-  var earners=[...all].filter(function(e){return e.winnings>0;}).sort(function(a,b){return b.winnings-a.winnings;});
+  var _rdml=(typeof _realDollars==='function')?_realDollars('2026'):{};
+  var earners=Object.keys(_rdml).filter(function(n){return _rdml[n]>0;}).map(function(n){return {entry_used:n,winnings:_rdml[n]};}).sort(function(a,b){return b.winnings-a.winnings;});
   if(earners.length){
     h+='<div class="snap-blk snap-money"><div class="snap-h">Money Leaderboard</div>';
     h+='<div class="snap-sub">'+earners.length+' paid · $'+paidOut.toLocaleString()+' of $'+pot.toLocaleString()+' awarded ('+Math.round(paidOut/pot*100)+'%)</div>';
@@ -1598,16 +1631,7 @@ function rSeasonView(y){
   var h='';
   // Compute paid-out for current year from POOL_RESULTS
   var paidOut=0;
-  if(y==='2026'&&typeof POOL_RESULTS!=='undefined'){
-    [11,14,33].forEach(function(k){
-      if(POOL_RESULTS[k]&&POOL_RESULTS[k].entries){
-        POOL_RESULTS[k].entries.forEach(function(e){if(e.win)paidOut+=e.win;});
-      }
-    });
-    if(typeof DARK_HORSE_PAYOUTS!=='undefined'){
-      Object.values(DARK_HORSE_PAYOUTS).forEach(function(dh){paidOut+=dh.amt;});
-    }
-  }
+  if(y==='2026'){var _rdp=_realDollars(y);paidOut=Object.keys(_rdp).reduce(function(s,n){return s+_rdp[n];},0);}
   var remaining=pot-paidOut;
   var paidPct=pot>0?Math.min(100,Math.round((paidOut/pot)*100)):0;
   // Stats row — 2 combined cards
