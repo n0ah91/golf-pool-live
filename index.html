@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v50 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v52 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1459,15 +1459,19 @@ function renderSeasonDetails(all,lb,paidOut,pot){
   var hot=[];var cold=[];
   all.forEach(function(e){
     if(e.players!=null&&e.masters!=null&&e.pga!=null&&e.uso!=null){
-      if(e.players>e.masters&&e.masters>e.pga&&e.pga>e.uso)hot.push({nm:e.entry_used,r:[e.players,e.masters,e.pga,e.uso]});
-      if(e.players<e.masters&&e.masters<e.pga&&e.pga<e.uso)cold.push({nm:e.entry_used,r:[e.players,e.masters,e.pga,e.uso]});
+      var r=[e.players,e.masters,e.pga,e.uso];
+      var pairs=[[r[0],r[1]],[r[1],r[2]],[r[2],r[3]]];
+      var ups=pairs.filter(function(x){return x[0]>x[1];}).length;
+      var dns=pairs.filter(function(x){return x[0]<x[1];}).length;
+      if(ups>=2)hot.push({nm:e.entry_used,r:r,str:ups});
+      if(dns>=2)cold.push({nm:e.entry_used,r:r,str:dns});
     }
   });
   if(hot.length){
     h+='<div class="snap-blk"><div class="snap-h">Trending Up</div>';
     h+='<div class="snap-sub">Improved finish in each of 4 events (Players → Masters → PGA → U.S. Open)</div>';
     h+='<div class="snap-list">';
-    hot.sort(function(a,b){return (a.r[3]-a.r[0])-(b.r[3]-b.r[0]);}).slice(0,5).forEach(function(m){
+    hot.sort(function(a,b){return b.str-a.str||(a.r[3]-a.r[0])-(b.r[3]-b.r[0]);}).slice(0,10).forEach(function(m){
       h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → #'+m.r[2]+' → </span><b class="snap-emp up">#'+m.r[3]+'</b></div>';
     });
     h+='</div></div>';
@@ -1476,7 +1480,7 @@ function renderSeasonDetails(all,lb,paidOut,pot){
     h+='<div class="snap-blk"><div class="snap-h">Trending Down</div>';
     h+='<div class="snap-sub">Worse finish in each of 4 events (Players → Masters → PGA → U.S. Open)</div>';
     h+='<div class="snap-list">';
-    cold.sort(function(a,b){return (b.r[3]-b.r[0])-(a.r[3]-a.r[0]);}).slice(0,5).forEach(function(m){
+    cold.sort(function(a,b){return b.str-a.str||(b.r[3]-b.r[0])-(a.r[3]-a.r[0]);}).slice(0,10).forEach(function(m){
       h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → #'+m.r[2]+' → </span><b class="snap-emp dn">#'+m.r[3]+'</b></div>';
     });
     h+='</div></div>';
@@ -1771,7 +1775,7 @@ function renderDgInsights(y){
       if(p.own)picks[p.nm].owns.push(p.own);
     });
   });
-  var topPicks=Object.values(picks).sort(function(a,b){return b.total-a.total;}).slice(0,5);
+  var topPicks=Object.values(picks).sort(function(a,b){return b.total-a.total;}).slice(0,10);
   if(topPicks.length){
     h+='<div class="dg-blk"><div class="dg-h">Most-Picked Golfers · Season</div>';
     h+='<div class="dg-sub">Total picks across The Players, Masters, PGA</div>';
@@ -1799,7 +1803,7 @@ function renderDgInsights(y){
     h+='<div class="dg-blk"><div class="dg-h">Best Value Picks · Low Ownership Hits</div>';
     h+='<div class="dg-sub">Under 15% owned, finished top 15</div>';
     h+='<div class="dg-list">';
-    vals.slice(0,5).forEach(function(v){
+    vals.slice(0,10).forEach(function(v){
       h+='<div class="dg-row"><b>'+v.nm+'</b> <span class="dg-tag">'+v.ev+'</span> <span class="dg-meta">T'+v.pos+' · $'+(v.sal/1000).toFixed(1)+'k · '+(v.own*100).toFixed(1)+'% own</span></div>';
     });
     h+='</div></div>';
@@ -1810,30 +1814,51 @@ function renderDgInsights(y){
     var pr=POOL_RESULTS[k];if(!pr||!pr.players)return;
     var ev=k===11?'Players':k===14?'Masters':'PGA';
     pr.players.forEach(function(p){
-      if(!p.own||p.own<0.20)return;
-      var posStr=String(p.pos||'');
-      if(posStr==='CUT'||(typeof p.sc==='number'&&p.sc>5)){
+      if(!p.own||p.own<0.15)return;
+      var posStr=String(p.pos||'');var posNum=parseInt(p.pos);
+      if(posStr==='CUT'||(typeof p.sc==='number'&&p.sc>3)||(!isNaN(posNum)&&posNum>30)){
         busts.push({nm:p.nm,own:p.own,sal:p.sal,pos:p.pos,sc:p.sc,ev:ev});
       }
     });
   });
   busts.sort(function(a,b){return b.own-a.own;});
   if(busts.length){
-    h+='<div class="dg-blk"><div class="dg-h">Chalk Busts · High Ownership Misses</div>';
-    h+='<div class="dg-sub">20%+ owned, missed cut or struggled</div>';
+    h+='<div class="dg-blk"><div class="dg-h">Biggest Busts · Chalk Disappointments</div>';
+    h+='<div class="dg-sub">15%+ owned, missed cut or finished outside top 30</div>';
     h+='<div class="dg-list">';
-    busts.slice(0,5).forEach(function(v){
+    busts.slice(0,10).forEach(function(v){
       h+='<div class="dg-row"><b>'+v.nm+'</b> <span class="dg-tag">'+v.ev+'</span> <span class="dg-meta">'+v.pos+' · '+(v.own*100).toFixed(0)+'% own'+(v.sal?' · $'+(v.sal/1000).toFixed(1)+'k':'')+'</span></div>';
+    });
+    h+='</div></div>';
+  }
+  // 4b. Contrarian Hits — barely owned but delivered top-10
+  var contrarianHits=[];
+  [11,14,33].forEach(function(k){
+    var pr=POOL_RESULTS[k];if(!pr||!pr.players)return;
+    var ev=k===11?'Players':k===14?'Masters':'PGA';
+    pr.players.forEach(function(p){
+      if(!p.own||p.own>=0.05)return;
+      var posNum=parseInt(p.pos);
+      if(!isNaN(posNum)&&posNum<=10)contrarianHits.push({nm:p.nm,own:p.own,sal:p.sal,pos:p.pos,sc:p.sc,ev:ev});
+    });
+  });
+  contrarianHits.sort(function(a,b){return (a.pos||99)-(b.pos||99);});
+  if(contrarianHits.length){
+    h+='<div class="dg-blk"><div class="dg-h">Contrarian Hits · Sleeper Picks</div>';
+    h+='<div class="dg-sub">Under 5% owned, finished top 10</div>';
+    h+='<div class="dg-list">';
+    contrarianHits.slice(0,10).forEach(function(v){
+      h+='<div class="dg-row"><b>'+v.nm+'</b> <span class="dg-tag">'+v.ev+'</span> <span class="dg-meta">#'+v.pos+' · '+(v.own*100).toFixed(1)+'% own'+(v.sal?' · $'+(v.sal/1000).toFixed(1)+'k':'')+'</span></div>';
     });
     h+='</div></div>';
   }
   // 4. Next Up — venue fit preview
   if(typeof COURSES_DATA!=='undefined'){
-    var nextCourse='Shinnecock Hills Golf Club';
+    var nextCourse='Royal Birkdale Golf Club';
     var cd=COURSES_DATA[nextCourse];
     if(cd){
-      h+='<div class="dg-blk dg-next"><div class="dg-h">Next Up · U.S. Open Venue</div>';
-      h+='<div class="dg-sub">Shinnecock Hills · Jun 18–21 · Par '+cd.par+' · '+cd.yardageDisplay+'</div>';
+      h+='<div class="dg-blk dg-next"><div class="dg-h">Next Up · The Open Championship</div>';
+      h+='<div class="dg-sub">Royal Birkdale · Jul 16–19 · Par '+cd.par+' · '+cd.yardageDisplay+'</div>';
       h+='<div class="dg-list">';
       var sg=cd.sgEmphasis||{};
       h+='<div class="dg-row"><b>SG Emphasis</b> <span class="dg-meta">Tee '+Math.round((sg.ott||0)*100)+'% · App '+Math.round((sg.app||0)*100)+'% · ARG '+Math.round((sg.arg||0)*100)+'% · Putt '+Math.round((sg.putt||0)*100)+'%</span></div>';
@@ -1841,7 +1866,7 @@ function renderDgInsights(y){
       h+='<div class="dg-row"><b>Profile</b> <span class="dg-meta">'+cd.courseType+' · '+cd.distanceVsAccuracy+'</span></div>';
       var corr=(cd.correlatedCourses||[]).slice(0,3).join(' · ');
       if(corr)h+='<div class="dg-row"><b>Similar To</b> <span class="dg-meta">'+corr+'</span></div>';
-      h+='<div class="dg-row dg-cta"><a href="javascript:go(\'uso-tab\')" class="btn-pill" style="display:inline-block">Open U.S. Open Tab →</a></div>';
+      h+='<div class="dg-row dg-cta"><a href="javascript:go(\'open-tab\')" class="btn-pill" style="display:inline-block">Open The Open Tab →</a></div>';
       h+='</div></div>';
     }
   }
