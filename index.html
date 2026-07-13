@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v55 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v56 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1084,6 +1084,9 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
   </div>
   <div id="open-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading Open odds...</div></div>
 </div>
+
+<!-- Full Open Championship history — all champions since 1946, Birkdale years highlighted -->
+<div class="cd" id="open-history" style="margin-top:.4rem"></div>
 </section>
 <section id="rules" class="pn2">
 <div class="cd" style="max-width:640px;margin-left:auto;margin-right:auto">
@@ -3371,7 +3374,52 @@ const PAST_WINNERS = {
     {yr:2004,nm:'Todd Hamilton',sc:'-10 (PO)',r2:'Ernie Els',cs:'Royal Troon'},
     {yr:2003,nm:'Ben Curtis',sc:'-1',r2:'Thomas Bjorn/Vijay Singh',cs:'Royal St George's'},
     {yr:1998,nm:'Mark O'Meara',sc:'E (PO)',r2:'Brian Watts',cs:'Royal Birkdale'},
-    {yr:1991,nm:'Ian Baker-Finch',sc:'-8',r2:'Mike Harwood',cs:'Royal Birkdale'}
+    {yr:1991,nm:'Ian Baker-Finch',sc:'-8',r2:'Mike Harwood',cs:'Royal Birkdale'},
+    {yr:1990,nm:'Nick Faldo',sc:'-18',r2:'Mark McNulty/Payne Stewart',cs:'St Andrews'},
+    {yr:1989,nm:'Mark Calcavecchia',sc:'-13 (PO)',r2:'Greg Norman/Wayne Grady',cs:'Royal Troon'},
+    {yr:1988,nm:'Seve Ballesteros',sc:'-11',r2:'Nick Price',cs:'Royal Lytham'},
+    {yr:1987,nm:'Nick Faldo',sc:'-5',r2:'Paul Azinger/Rodger Davis',cs:'Muirfield'},
+    {yr:1986,nm:'Greg Norman',sc:'-12',r2:"Gordon J. Brand",cs:'Turnberry'},
+    {yr:1985,nm:'Sandy Lyle',sc:'-2',r2:'Payne Stewart',cs:"Royal St George's"},
+    {yr:1984,nm:'Seve Ballesteros',sc:'-12',r2:'Bernhard Langer/Tom Watson',cs:'St Andrews'},
+    {yr:1983,nm:'Tom Watson',sc:'-9',r2:'Hale Irwin/Andy Bean',cs:'Royal Birkdale'},
+    {yr:1982,nm:'Tom Watson',sc:'-4',r2:'Peter Oosterhuis/Nick Price',cs:'Royal Troon'},
+    {yr:1981,nm:'Bill Rogers',sc:'-4',r2:'Bernhard Langer',cs:"Royal St George's"},
+    {yr:1980,nm:'Tom Watson',sc:'-13',r2:'Lee Trevino',cs:'Muirfield'},
+    {yr:1979,nm:'Seve Ballesteros',sc:'-1',r2:'Jack Nicklaus/Ben Crenshaw',cs:'Royal Lytham'},
+    {yr:1978,nm:'Jack Nicklaus',sc:'-7',r2:'Simon Owen/Ben Crenshaw/Tom Kite',cs:'St Andrews'},
+    {yr:1977,nm:'Tom Watson',sc:'-12',r2:'Jack Nicklaus',cs:'Turnberry'},
+    {yr:1976,nm:'Johnny Miller',sc:'-9',r2:'Jack Nicklaus/Seve Ballesteros',cs:'Royal Birkdale'},
+    {yr:1975,nm:'Tom Watson',sc:'-9 (PO)',r2:'Jack Newton',cs:'Carnoustie'},
+    {yr:1974,nm:'Gary Player',sc:'-2',r2:'Peter Oosterhuis',cs:'Royal Lytham'},
+    {yr:1973,nm:'Tom Weiskopf',sc:'-12',r2:'Neil Coles/Johnny Miller',cs:'Royal Troon'},
+    {yr:1972,nm:'Lee Trevino',sc:'-6',r2:'Jack Nicklaus',cs:'Muirfield'},
+    {yr:1971,nm:'Lee Trevino',sc:'-14',r2:'Lu Liang Huan',cs:'Royal Birkdale'},
+    {yr:1970,nm:'Jack Nicklaus',sc:'-5 (PO)',r2:'Doug Sanders',cs:'St Andrews'},
+    {yr:1969,nm:'Tony Jacklin',sc:'-12',r2:'Bob Charles',cs:'Royal Lytham'},
+    {yr:1968,nm:'Gary Player',sc:'+1',r2:'Jack Nicklaus/Bob Charles',cs:'Carnoustie'},
+    {yr:1967,nm:'Roberto De Vicenzo',sc:'-10',r2:'Jack Nicklaus',cs:'Royal Liverpool'},
+    {yr:1966,nm:'Jack Nicklaus',sc:'-2',r2:'Dave Thomas/Doug Sanders',cs:'Muirfield'},
+    {yr:1965,nm:'Peter Thomson',sc:'-7',r2:"Brian Huggett/Christy O'Connor",cs:'Royal Birkdale'},
+    {yr:1964,nm:'Tony Lema',sc:'-9',r2:'Jack Nicklaus',cs:'St Andrews'},
+    {yr:1963,nm:'Bob Charles',sc:'-8 (PO)',r2:'Phil Rodgers',cs:'Royal Lytham'},
+    {yr:1962,nm:'Arnold Palmer',sc:'-12',r2:'Kel Nagle',cs:'Royal Troon'},
+    {yr:1961,nm:'Arnold Palmer',sc:'-14',r2:'Dai Rees',cs:'Royal Birkdale'},
+    {yr:1960,nm:'Kel Nagle',sc:'-10',r2:'Arnold Palmer',cs:'St Andrews'},
+    {yr:1959,nm:'Gary Player',sc:'-2',r2:'Flory Van Donck',cs:'Muirfield'},
+    {yr:1958,nm:'Peter Thomson',sc:'284 (PO)',r2:'Dave Thomas',cs:'Royal Lytham'},
+    {yr:1957,nm:'Bobby Locke',sc:'-8',r2:'Peter Thomson',cs:'St Andrews'},
+    {yr:1956,nm:'Peter Thomson',sc:'286',r2:'Flory Van Donck',cs:'Royal Liverpool'},
+    {yr:1955,nm:'Peter Thomson',sc:'281',r2:'Johnny Fallon',cs:'St Andrews'},
+    {yr:1954,nm:'Peter Thomson',sc:'283',r2:'Syd Scott/Dai Rees/Bobby Locke',cs:'Royal Birkdale'},
+    {yr:1953,nm:'Ben Hogan',sc:'282',r2:'Frank Stranahan/Dai Rees/Tony Cerda/Peter Thomson',cs:'Carnoustie'},
+    {yr:1952,nm:'Bobby Locke',sc:'287',r2:'Peter Thomson',cs:'Royal Lytham'},
+    {yr:1951,nm:'Max Faulkner',sc:'285',r2:'Antonio Cerda',cs:'Royal Portrush'},
+    {yr:1950,nm:'Bobby Locke',sc:'279',r2:'Roberto De Vicenzo',cs:'Royal Troon'},
+    {yr:1949,nm:'Bobby Locke',sc:'283 (PO)',r2:'Harry Bradshaw',cs:"Royal St George's"},
+    {yr:1948,nm:'Henry Cotton',sc:'284',r2:'Fred Daly',cs:'Muirfield'},
+    {yr:1947,nm:'Fred Daly',sc:'293',r2:'Reg Horne/Frank Stranahan',cs:'Royal Liverpool'},
+    {yr:1946,nm:'Sam Snead',sc:'290',r2:'Bobby Locke/Johnny Bulla',cs:'St Andrews'}
   ]
 };
 
@@ -8208,6 +8256,46 @@ function renderOpenTab(){
     el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
   }
   fetchOpenOdds();
+  renderOpenHistory();
+}
+function renderOpenHistory(){
+  var el=document.getElementById('open-history');if(!el)return;
+  var pw=(typeof PAST_WINNERS!=='undefined'&&PAST_WINNERS.open)||[];
+  if(!pw.length){el.style.display='none';return;}
+  var birkdale='Royal Birkdale';
+  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem">';
+  h+='<span style="font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--tb)">Full Championship History</span>';
+  h+='<span style="font-size:.6rem;color:var(--ts)">1946–present · WWII &amp; COVID gaps omitted</span></div>';
+  h+='<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap">';
+  h+='<span style="font-size:.57rem;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:.05em">Legend:</span>';
+  h+='<span style="display:inline-flex;align-items:center;gap:.25rem;font-size:.6rem;color:#6b4e8e;font-weight:600;background:rgba(107,78,142,.08);border:1px solid rgba(107,78,142,.3);border-radius:4px;padding:.12rem .35rem">';
+  h+='🟣 Royal Birkdale</span>';
+  h+='<span style="font-size:.57rem;color:var(--ts)">'+pw.filter(function(w){return w.cs&&w.cs.indexOf(birkdale)>=0;}).length+' times · Next: 2026</span>';
+  h+='</div>';
+  h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.6rem">';
+  h+='<thead><tr style="border-bottom:1px solid var(--br)">';
+  h+='<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Yr</th>';
+  h+='<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Champion</th>';
+  h+='<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Score</th>';
+  h+='<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Venue</th>';
+  h+='</tr></thead><tbody>';
+  pw.forEach(function(w){
+    var isBk=w.cs&&w.cs.indexOf(birkdale)>=0;
+    var rowStyle=isBk?'background:rgba(107,78,142,.06);border-left:3px solid #6b4e8e':'border-left:3px solid transparent';
+    var sc=w.sc||'–';if(sc==='-')sc='–';
+    h+='<tr style="border-bottom:1px solid var(--br);'+rowStyle+'">';
+    h+='<td style="padding:.22rem .3rem;color:var(--ts);font-family:var(--fm);font-size:.58rem;white-space:nowrap">'+w.yr+'</td>';
+    h+='<td style="padding:.22rem .3rem;font-family:var(--fb);font-weight:'+(isBk?'700':'500')+';color:'+(isBk?'#6b4e8e':'var(--tb)')+'">'+w.nm+'</td>';
+    h+='<td style="padding:.22rem .3rem;color:var(--go);font-family:var(--fm);white-space:nowrap">'+sc+'</td>';
+    h+='<td style="padding:.22rem .3rem;color:var(--td);font-size:.57rem;white-space:nowrap">'+(isBk?'<b style="color:#6b4e8e">'+w.cs+'</b>':w.cs||'–')+'</td>';
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<div style="margin-top:.35rem;padding:.25rem .3rem;background:rgba(107,78,142,.06);border-radius:5px;border:1px solid rgba(107,78,142,.2)">';
+  h+='<span style="font-size:.6rem;font-weight:700;color:#6b4e8e">At Royal Birkdale (10 Opens): </span>';
+  var bkWins=pw.filter(function(w){return w.cs&&w.cs.indexOf(birkdale)>=0;});
+  h+='<span style="font-size:.6rem;color:var(--td)">'+bkWins.map(function(w){return w.yr+' '+w.nm;}).join(' · ')+'</span></div>';
+  el.innerHTML=h;
 }
 
 /* ===== PGA CHAMPIONSHIP TAB — TOURNAMENT PREVIEW + ODDS ===== */
