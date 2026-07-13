@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v53 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v54 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -928,7 +928,7 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 <button onclick="go('upcoming')">PGA</button>
 <button onclick="go('masters-results')">Masters</button>
 <button onclick="go('players-results')">Players</button>
-<button class="up-tab" onclick="go('open-tab')">The Open</button>
+<button onclick="go('open-tab')">The Open</button>
 <button onclick="go('rules')">Rules</button>
 </nav>
 <main>
@@ -1063,9 +1063,34 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
   <div id="pred-market-footer" style="margin-top:.3rem"></div>
 </div>
 </section>
-<section id="open-tab" class="pn2 upcoming-tab">
-<div class="up-banner"><span class="up-dot"></span>Upcoming — July 16–19, 2026 · Royal Birkdale</div>
+<section id="open-tab" class="pn2">
+
+<!-- Open Championship banner (dynamic state) -->
+<div class="cd" id="open-banner-bar" style="margin-bottom:.4rem;padding:.32rem .6rem;background:linear-gradient(135deg,#1a1a40 0%,#2d1b4e 100%);border-radius:7px;display:flex;align-items:center;gap:.45rem">
+  <span id="open-banner-dot" style="width:7px;height:7px;border-radius:50%;background:#6b4e8e;flex-shrink:0;transition:background .4s"></span>
+  <span id="open-banner-txt" style="font-family:var(--fb);font-size:.65rem;color:#e8e0f4;letter-spacing:.04em;font-weight:600">The Open Championship · Royal Birkdale · July 16–19</span>
+</div>
+
+<!-- Pool leaderboard (empty until OPEN_ROSTERS loaded; live scoring during Jul 16-19) -->
+<div class="cd" id="open-live-pool" style="margin-bottom:.4rem"></div>
+
+<!-- Course preview -->
 <div id="open-preview"></div>
+
+<!-- The Open Outright Odds -->
+<div class="cd" id="open-odds-panel" style="margin-top:.4rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">
+    <div class="cf-section-title" style="margin:0">The Open Outright Odds</div>
+    <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20 · DG Model vs Sportsbooks</span>
+  </div>
+  <div id="open-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading Open odds...</div></div>
+</div>
+
+<!-- Live Field (shown once The Open is in-play Jul 16–19) -->
+<div class="cd" id="open-field-panel" style="margin-top:.4rem;display:none">
+  <div class="cf-section-title" style="margin:0 0 .3rem">Live Field</div>
+  <div id="open-field-body"><div style="text-align:center;padding:.8rem;font-size:.65rem;color:var(--ts)">Loading live field...</div></div>
+</div>
 </section>
 <section id="rules" class="pn2">
 <div class="cd" style="max-width:640px;margin-left:auto;margin-right:auto">
@@ -7283,6 +7308,19 @@ const USO_PLAYER_META={
   "Young":{nm:"Cameron Young",sal:9100,own:10}
 };
 
+/* ===== THE OPEN CHAMPIONSHIP — PLAYER META (salary + field ownership, keyed by last name) ===== */
+const OPEN_PLAYER_META={
+  /* Populated when picks are submitted — same structure as USO_PLAYER_META */
+  /* "Scheffler":{nm:"Scottie Scheffler",sal:10000,own:22}, */
+};
+
+/* ===== 2026 OPEN CHAMPIONSHIP POOL ROSTERS (last names · tiebreaker = predicted winning score) ===== */
+/* OPEN_ROSTERS is populated when pool picks are submitted (deadline: before Jul 16 tee-off)      */
+const OPEN_ROSTERS=[
+  /* entries go here — same format as USO_ROSTERS                                                  */
+  /* {nm:"Entry Name",tb:268,g:["Scheffler","McIlroy","Rory","Fleetwood","Rose","Spieth"]},        */
+];
+
 /* ===== 2026 U.S. OPEN POOL ROSTERS (104 entries · 6 picks each, last names) ===== */
 const USO_ROSTERS=[
   {nm:"Aldo",tb:276,g:["Clark","Fleetwood","Hatton","Rose","Spaun","Young"]},
@@ -8013,14 +8051,147 @@ function checkUsoLive(){
   var preOdds=document.getElementById('uso-odds-panel');if(preOdds)preOdds.style.display=liveWin?'none':'';
   if(liveWin&&typeof startUsoLiveStats==='function'&&!window._usoLiveStatsStarted){window._usoLiveStatsStarted=true;startUsoLiveStats();}
 }
+function updateOpenBanner(){
+  var dot=document.getElementById('open-banner-dot');
+  var txt=document.getElementById('open-banner-txt');
+  if(!txt)return;
+  var now=new Date();
+  var start=new Date(2026,6,16),end=new Date(2026,6,20);
+  if(now>=start&&now<end){
+    txt.textContent='\u25CF LIVE \u00B7 152nd Open Championship \u00B7 Royal Birkdale';
+    if(dot){dot.style.background='#c084fc';dot.style.boxShadow='0 0 6px #c084fc';}
+  }else if(now<start){
+    var days=Math.ceil((start-now)/86400000);
+    var lead=days<=0?'Tees off today':days===1?'Tees off tomorrow':'Tees off in '+days+' days';
+    txt.textContent=lead+' \u00B7 152nd Open Championship \u00B7 Royal Birkdale \u00B7 July 16\u201319';
+    if(dot)dot.style.background='#6b4e8e';
+  }else{
+    txt.textContent='152nd Open Championship \u00B7 Royal Birkdale \u00B7 July 16\u201319 \u00B7 Final';
+    if(dot)dot.style.background='#6b4e8e';
+  }
+}
+let _openLiveChecked=false;
+function checkOpenLive(){
+  if(_openLiveChecked)return;_openLiveChecked=true;
+  var now=new Date();var start=new Date(2026,6,16),end=new Date(2026,6,20);
+  var liveWin=now>=start&&now<end;
+  var fp=document.getElementById('open-field-panel');if(fp)fp.style.display=liveWin?'':'none';
+  var op=document.getElementById('open-odds-panel');if(op)op.style.display=liveWin?'none':'';
+}
+function renderOpenLivePool(){
+  var el=document.getElementById('open-live-pool');if(!el)return;
+  if(typeof OPEN_ROSTERS==='undefined'||!OPEN_ROSTERS.length){
+    el.innerHTML='<div style="text-align:center;padding:.85rem .6rem;font-size:.68rem;color:var(--td)">' +
+      '<div style="font-size:.8rem;margin-bottom:.25rem">\uD83C\uDFCC\uFE0F Pool Picks Pending</div>' +
+      'Rosters due before July 16 tee-off. Standings &amp; live scoring will appear here once picks are in.</div>';
+    return;
+  }
+  var cnt={};
+  OPEN_ROSTERS.forEach(function(e){e.g.forEach(function(g){cnt[g]=(cnt[g]||0)+1;});});
+  var meta=(typeof OPEN_PLAYER_META!=='undefined')?OPEN_PLAYER_META:{};
+  var total=OPEN_ROSTERS.length;
+  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">';
+  h+='<span style="font-family:var(--fb);font-size:.72rem;font-weight:700;color:var(--tb)">The Open Pool Picks</span>';
+  h+='<span style="font-size:.55rem;color:var(--ts)">'+total+' entries</span></div>';
+  // Ownership summary
+  var pops=Object.keys(cnt).map(function(g){var rec=meta[g]||{};return{g:(rec.nm||g),n:cnt[g],pct:Math.round(cnt[g]/total*100),sal:rec.sal||null};});
+  pops.sort(function(a,b){return b.n-a.n;});
+  h+='<div style="font-size:.58rem;color:var(--ts);margin-bottom:.35rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Ownership</div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:.18rem;margin-bottom:.5rem">';
+  pops.slice(0,20).forEach(function(p){
+    var bg=p.pct>=30?'rgba(34,139,34,.12)':p.pct>=15?'rgba(59,130,246,.08)':'var(--bca)';
+    h+='<div style="background:'+bg+';border:1px solid var(--br);border-radius:4px;padding:.15rem .35rem;white-space:nowrap">';
+    h+='<span style="font-family:var(--fb);font-size:.6rem;color:var(--tb);font-weight:600">'+p.g+'</span>';
+    h+='<span style="font-size:.52rem;color:var(--ts);margin-left:.2rem">'+p.pct+'%</span>';
+    if(p.sal)h+='<span style="font-size:.52rem;color:var(--td);margin-left:.15rem">$'+(p.sal/1000).toFixed(1)+'k</span>';
+    h+='</div>';
+  });
+  h+='</div>';
+  // Entry table with tiebreakers
+  h+='<div style="font-size:.58rem;color:var(--ts);margin-bottom:.2rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em">All Entries</div>';
+  h+='<div style="overflow-x:auto"><table class="tc" style="font-size:.58rem"><thead><tr>';
+  h+='<th style="text-align:left">Entry</th><th>TB</th>';
+  for(var i=1;i<=6;i++)h+='<th>P'+i+'</th>';
+  h+='</tr></thead><tbody>';
+  OPEN_ROSTERS.forEach(function(e){
+    h+='<tr><td style="text-align:left;font-family:var(--fb);font-weight:500;white-space:nowrap">'+e.nm+'</td>';
+    h+='<td style="color:var(--ts)">'+e.tb+'</td>';
+    e.g.slice(0,6).forEach(function(g){
+      var rec=meta[g]||{};var nm=rec.nm||g;
+      h+='<td style="white-space:nowrap;color:var(--tp)">'+nm+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  el.innerHTML=h;
+}
+let _openOddsFetched=false;
+async function fetchOpenOdds(){
+  if(_openOddsFetched)return;
+  _openOddsFetched=true;
+  var el=document.getElementById('open-odds-body');
+  if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading Open Championship odds from sportsbooks...</div>';
+  try{
+    var data=await dgF('betting-tools/outrights',{tour:'pga',market:'win',odds_format:'decimal'});
+    var players=[];
+    if(Array.isArray(data))players=data;
+    else if(data&&data.odds&&Array.isArray(data.odds))players=data.odds;
+    else{for(var k of Object.keys(data||{})){if(Array.isArray(data[k])){players=data[k];break;}}}
+    if(!players.length){el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">No Open Championship odds available yet</div>';return;}
+    var BOOKS=[{key:'draftkings',label:'DK'},{key:'fanduel',label:'FD'},{key:'betmgm',label:'MGM'},{key:'caesars',label:'CZR'}];
+    var decToAm=function(d){if(!d)return null;return d>=2?'+'+(Math.round((d-1)*100)):'-'+Math.round(100/(d-1));};
+    function getDgOdds(p){
+      if(p.datagolf&&typeof p.datagolf==='object'){return p.datagolf.baseline_history_fit||p.datagolf.baseline||null;}
+      if(typeof p.datagolf_base_history_fit==='number')return p.datagolf_base_history_fit;
+      if(typeof p.baseline_history_fit==='number')return p.baseline_history_fit;
+      return null;
+    }
+    players.sort(function(a,b){return(getDgOdds(a)||999)-(getDgOdds(b)||999);});
+    var top20=players.slice(0,20);
+    var h='<table class="pm-table"><thead><tr>';
+    h+='<th style="text-align:left">#</th><th style="text-align:left">Player</th>';
+    h+='<th title="DataGolf model implied probability">DG Win%</th>';
+    BOOKS.forEach(function(b){h+='<th title="'+b.key+'">'+b.label+'</th>';});
+    h+='</tr></thead><tbody>';
+    top20.forEach(function(p,i){
+      var nm=typeof fmN==='function'?fmN(p.player_name||''):p.player_name||'';
+      var dgDec=getDgOdds(p);
+      var dgPct=dgDec?(100/dgDec).toFixed(1)+'%':'\u2013';
+      var bookOdds=BOOKS.map(function(b){var o=typeof p[b.key]==='number'?p[b.key]:(p[b.key]&&p[b.key].odds||null);return{key:b.key,label:b.label,dec:o,am:decToAm(o)};});
+      var decVals=bookOdds.filter(function(b){return b.dec&&b.dec>1;}).map(function(b){return b.dec;});
+      var maxDec=decVals.length?Math.max.apply(null,decVals):null,minDec=decVals.length?Math.min.apply(null,decVals):null;
+      var range=maxDec&&minDec?maxDec-minDec:0;
+      h+='<tr>';
+      h+='<td style="color:var(--td);font-size:.55rem">'+(i+1)+'</td>';
+      h+='<td style="text-align:left;font-family:var(--fb);font-weight:500">'+nm+'</td>';
+      h+='<td style="color:var(--gl);font-weight:600;font-size:.62rem">'+dgPct+'</td>';
+      bookOdds.forEach(function(b){
+        if(!b.am){h+='<td style="color:var(--td)">–</td>';return;}
+        var shade='';
+        if(range>0&&b.dec){var t=(b.dec-minDec)/range;if(t>0.85)shade='background:rgba(20,180,80,.10);color:#0d7a3a;font-weight:600';else if(t<0.15)shade='background:rgba(210,60,40,.08);color:#b84020';}
+        h+='<td style="font-size:.58rem;font-family:var(--fm);'+shade+'">'+b.am+'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table>';
+    h+='<div style="text-align:right;font-size:.48rem;color:var(--td);margin-top:.15rem">Sportsbook outrights via DataGolf \u00B7 Updated '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true})+' ET</div>';
+    el.innerHTML=h;
+  }catch(e){
+    el.innerHTML='<div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--rd)">Failed to load odds: '+e.message+'</div>';
+  }
+}
 function renderOpenTab(){
+  updateOpenBanner();
+  checkOpenLive();
+  renderOpenLivePool();
   if(_openTabRendered)return;
   _openTabRendered=true;
-  const el=document.getElementById('open-preview');
+  var el=document.getElementById('open-preview');
   if(!el)return;
-  const courseName='Royal Birkdale Golf Club';
+  var courseName='Royal Birkdale Golf Club';
   if(typeof COURSES_DATA!=='undefined'&&COURSES_DATA[courseName]){
-    const toggle='<div style="display:flex;justify-content:center;gap:.4rem;margin:.4rem 0;padding:.3rem 0">'+
+    var toggle='<div style="display:flex;justify-content:center;gap:.4rem;margin:.4rem 0;padding:.3rem 0">'+
       '<button id="open-basic-btn" class="pv-basic" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
       '<button id="open-adv-btn" class="pv-adv" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
     el.innerHTML=toggle+'<div id="open-preview-target"></div>';
@@ -8029,6 +8200,7 @@ function renderOpenTab(){
   }else{
     el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
   }
+  fetchOpenOdds();
 }
 
 /* ===== PGA CHAMPIONSHIP TAB — TOURNAMENT PREVIEW + ODDS ===== */
