@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v58 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v59 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -3374,14 +3374,24 @@ const PAST_WINNERS = {
     {yr:2005,nm:'Tiger Woods',sc:'-14',r2:'Colin Montgomerie',cs:'St Andrews'},
     {yr:2004,nm:'Todd Hamilton',sc:'-10 (PO)',r2:'Ernie Els',cs:'Royal Troon'},
     {yr:2003,nm:'Ben Curtis',sc:'-1',r2:'Thomas Bjorn/Vijay Singh',cs:"Royal St George's"},
+    {yr:2002,nm:'Ernie Els',sc:'-6 (PO)',r2:'Thomas Levet/Stuart Appleby/Steve Elkington',cs:'Muirfield'},
+    {yr:2001,nm:'David Duval',sc:'-10',r2:'Niclas Fasth',cs:'Royal Lytham'},
+    {yr:2000,nm:'Tiger Woods',sc:'-19',r2:'Thomas Bjorn/Ernie Els',cs:'St Andrews'},
+    {yr:1999,nm:'Paul Lawrie',sc:'+6 (PO)',r2:'Justin Leonard/Jean Van de Velde',cs:'Carnoustie'},
     {yr:1998,nm:"Mark O'Meara",sc:'E (PO)',r2:'Brian Watts',cs:'Royal Birkdale'},
+    {yr:1997,nm:'Justin Leonard',sc:'-12',r2:'Darren Clarke/Jesper Parnevik',cs:'Royal Troon'},
+    {yr:1996,nm:'Tom Lehman',sc:'-13',r2:'Mark McCumber/Ernie Els',cs:'Royal Lytham'},
+    {yr:1995,nm:'John Daly',sc:'-6 (PO)',r2:'Costantino Rocca',cs:'St Andrews'},
+    {yr:1994,nm:'Nick Price',sc:'-12',r2:'Jesper Parnevik',cs:'Turnberry'},
+    {yr:1993,nm:'Greg Norman',sc:'-13',r2:'Nick Faldo',cs:"Royal St George's"},
+    {yr:1992,nm:'Nick Faldo',sc:'-12',r2:'John Cook',cs:'Muirfield'},
     {yr:1991,nm:'Ian Baker-Finch',sc:'-8',r2:'Mike Harwood',cs:'Royal Birkdale'},
     {yr:1990,nm:'Nick Faldo',sc:'-18',r2:'Mark McNulty/Payne Stewart',cs:'St Andrews'},
     {yr:1989,nm:'Mark Calcavecchia',sc:'-13 (PO)',r2:'Greg Norman/Wayne Grady',cs:'Royal Troon'},
     {yr:1988,nm:'Seve Ballesteros',sc:'-11',r2:'Nick Price',cs:'Royal Lytham'},
     {yr:1987,nm:'Nick Faldo',sc:'-5',r2:'Paul Azinger/Rodger Davis',cs:'Muirfield'},
-    {yr:1986,nm:'Greg Norman',sc:'-12',r2:"Gordon J. Brand",cs:'Turnberry'},
-    {yr:1985,nm:'Sandy Lyle',sc:'-2',r2:'Payne Stewart',cs:"Royal St George's"},
+    {yr:1986,nm:'Greg Norman',sc:'E',r2:"Gordon J. Brand",cs:'Turnberry'},
+    {yr:1985,nm:'Sandy Lyle',sc:'+2',r2:'Payne Stewart',cs:"Royal St George's"},
     {yr:1984,nm:'Seve Ballesteros',sc:'-12',r2:'Bernhard Langer/Tom Watson',cs:'St Andrews'},
     {yr:1983,nm:'Tom Watson',sc:'-9',r2:'Hale Irwin/Andy Bean',cs:'Royal Birkdale'},
     {yr:1982,nm:'Tom Watson',sc:'-4',r2:'Peter Oosterhuis/Nick Price',cs:'Royal Troon'},
@@ -3731,7 +3741,7 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName, wxWindow) {
     // Past winners — outer dropdown, 10 visible, nested dropdown for older
     '<div class="cf-block">' +
       '<details class="cf-details">' +
-        '<summary class="cf-details-sum">Past Winners <span style="font-size:.5rem;color:var(--td);font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--fb)">' + pw.length + ' years · tap for stories</span></summary>' +
+        '<summary class="cf-details-sum">Past Winners <span style="font-size:.5rem;color:var(--td);font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--fb)">' + pw.length + ' champions</span></summary>' +
         '<div class="cf-details-body" style="padding:.3rem .4rem">' +
           (pw.length ? '<div style="font-size:.65rem">' +
             pw.slice(0,10).map(function(w){
@@ -8265,38 +8275,49 @@ function renderOpenHistory(){
   var pw=(typeof PAST_WINNERS!=='undefined'&&PAST_WINNERS.open)||[];
   if(!pw.length){el.style.display='none';return;}
   var birkdale='Royal Birkdale';
-  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem">';
-  h+='<span style="font-family:var(--fd);font-size:.82rem;font-weight:700;color:var(--tb)">Full Championship History</span>';
-  h+='<span style="font-size:.6rem;color:var(--ts)">1946–present · WWII &amp; COVID gaps omitted</span></div>';
-  h+='<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;flex-wrap:wrap">';
-  h+='<span style="font-size:.57rem;font-weight:600;color:var(--ts);text-transform:uppercase;letter-spacing:.05em">Legend:</span>';
-  h+='<span style="display:inline-flex;align-items:center;gap:.25rem;font-size:.6rem;color:#6b4e8e;font-weight:600;background:rgba(107,78,142,.08);border:1px solid rgba(107,78,142,.3);border-radius:4px;padding:.12rem .35rem">';
-  h+='🟣 Royal Birkdale</span>';
-  h+='<span style="font-size:.57rem;color:var(--ts)">'+pw.filter(function(w){return w.cs&&w.cs.indexOf(birkdale)>=0;}).length+' times · Next: 2026</span>';
-  h+='</div>';
-  h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.6rem">';
-  h+='<thead><tr style="border-bottom:1px solid var(--br)">';
-  h+='<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Yr</th>';
-  h+='<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Champion</th>';
-  h+='<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Score</th>';
-  h+='<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Venue</th>';
-  h+='</tr></thead><tbody>';
-  pw.forEach(function(w){
-    var isBk=w.cs&&w.cs.indexOf(birkdale)>=0;
-    var rowStyle=isBk?'background:rgba(107,78,142,.06);border-left:3px solid #6b4e8e':'border-left:3px solid transparent';
-    var sc=w.sc||'–';if(sc==='-')sc='–';
-    h+='<tr style="border-bottom:1px solid var(--br);'+rowStyle+'">';
-    h+='<td style="padding:.22rem .3rem;color:var(--ts);font-family:var(--fm);font-size:.58rem;white-space:nowrap">'+w.yr+'</td>';
-    h+='<td style="padding:.22rem .3rem;font-family:var(--fb);font-weight:'+(isBk?'700':'500')+';color:'+(isBk?'#6b4e8e':'var(--tb)')+'">'+w.nm+'</td>';
-    h+='<td style="padding:.22rem .3rem;color:var(--go);font-family:var(--fm);white-space:nowrap">'+sc+'</td>';
-    h+='<td style="padding:.22rem .3rem;color:var(--td);font-size:.57rem;white-space:nowrap">'+(isBk?'<b style="color:#6b4e8e">'+w.cs+'</b>':w.cs||'–')+'</td>';
-    h+='</tr>';
-  });
-  h+='</tbody></table></div>';
-  h+='<div style="margin-top:.35rem;padding:.25rem .3rem;background:rgba(107,78,142,.06);border-radius:5px;border:1px solid rgba(107,78,142,.2)">';
-  h+='<span style="font-size:.6rem;font-weight:700;color:#6b4e8e">At Royal Birkdale (10 Opens): </span>';
+  var bkCount=pw.filter(function(w){return w.cs&&w.cs.indexOf(birkdale)>=0;}).length;
   var bkWins=pw.filter(function(w){return w.cs&&w.cs.indexOf(birkdale)>=0;});
-  h+='<span style="font-size:.6rem;color:var(--td)">'+bkWins.map(function(w){return w.yr+' '+w.nm;}).join(' · ')+'</span></div>';
+  function _rowHtml(w){
+    var isBk=w.cs&&w.cs.indexOf(birkdale)>=0;
+    var sc=w.sc||'–';if(sc==='-')sc='–';
+    var rs=isBk?'background:rgba(107,78,142,.06);border-left:3px solid #6b4e8e':'border-left:3px solid transparent';
+    return '<tr style="border-bottom:1px solid var(--br);'+rs+'">'
+      +'<td style="padding:.22rem .3rem;color:var(--ts);font-family:var(--fm);font-size:.58rem;white-space:nowrap">'+w.yr+'</td>'
+      +'<td style="padding:.22rem .3rem;font-family:var(--fb);font-weight:'+(isBk?'700':'500')+';color:'+(isBk?'#6b4e8e':'var(--tb)')+'">'+w.nm+'</td>'
+      +'<td style="padding:.22rem .3rem;color:var(--go);font-family:var(--fm);white-space:nowrap">'+sc+'</td>'
+      +'<td style="padding:.22rem .3rem;color:var(--td);font-size:.57rem;white-space:nowrap">'+(isBk?'<b style="color:#6b4e8e">'+w.cs+'</b>':w.cs||'–')+'</td>'
+      +'</tr>';
+  }
+  var thead='<thead><tr style="border-bottom:1px solid var(--br)">'
+    +'<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Yr</th>'
+    +'<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Champion</th>'
+    +'<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Score</th>'
+    +'<th style="text-align:left;padding:.2rem .3rem;color:var(--ts);font-weight:600;font-size:.55rem;text-transform:uppercase;letter-spacing:.04em">Venue</th>'
+    +'</tr></thead>';
+  var top10=pw.slice(0,10).map(_rowHtml).join('');
+  var rest=pw.slice(10);
+  var restCount=rest.length;
+  var restRows=rest.map(_rowHtml).join('');
+  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem">';
+  h+='<span style="font-family:var(--fd);font-size:.8rem;font-weight:700;color:var(--tb)">Full Championship History</span>';
+  h+='<span style="font-size:.57rem;color:var(--ts)">';
+  h+='<span style="display:inline-flex;align-items:center;gap:.2rem;color:#6b4e8e;font-weight:600;background:rgba(107,78,142,.08);border:1px solid rgba(107,78,142,.3);border-radius:3px;padding:.08rem .28rem;font-size:.55rem">';
+  h+='🟣 Birkdale</span> '+bkCount+' times · Next: 2026</span></div>';
+  h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.6rem">';
+  h+=thead+'<tbody>'+top10+'</tbody></table></div>';
+  if(restCount>0){
+    h+='<details style="margin-top:.25rem">'
+      +'<summary style="cursor:pointer;font-size:.6rem;color:var(--ts);font-family:var(--fb);padding:.2rem 0">'
+      +'Show '+restCount+' more champions (1946–'+rest[0].yr+') ▸ Royal Birkdale years highlighted</summary>'
+      +'<div style="overflow-x:auto;margin-top:.25rem">'
+      +'<table style="width:100%;border-collapse:collapse;font-size:.6rem">'+thead+'<tbody>'+restRows+'</tbody></table>'
+      +'</div>'
+      +'<div style="margin-top:.3rem;padding:.22rem .3rem;background:rgba(107,78,142,.06);border-radius:5px;border:1px solid rgba(107,78,142,.2)">'
+      +'<span style="font-size:.58rem;font-weight:700;color:#6b4e8e">At Royal Birkdale: </span>'
+      +'<span style="font-size:.58rem;color:var(--td)">'+bkWins.map(function(w){return w.yr+' '+w.nm;}).join(' · ')+'</span>'
+      +'</div>'
+      +'</details>';
+  }
   el.innerHTML=h;
 }
 
