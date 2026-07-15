@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-06-18 · gmp-v59 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-06-18 · gmp-v60 · uso-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1027,7 +1027,7 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 <div class="cd" id="uso-tourney" style="display:none"></div>
 
 <!-- Archived: Shinnecock Hills Preview + Pre-Tournament Odds -->
-<details class="cd" id="uso-archive" open style="margin-top:.4rem;padding:.3rem .6rem">
+<details class="cd" id="uso-archive" style="margin-top:.4rem;padding:.3rem .6rem">
   <summary style="cursor:pointer;font-family:var(--fd);font-size:.72rem;font-weight:600;color:var(--tp);letter-spacing:.04em;text-transform:uppercase;padding:.2rem 0">📁 Shinnecock Hills Preview &amp; Odds (Archive)</summary>
   <div style="margin-top:.4rem">
     <div id="uso-preview"></div>
@@ -1077,6 +1077,9 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 <!-- Course preview -->
 <div id="open-preview"></div>
 
+<!-- Full Open Championship history — all champions since 1946, Birkdale years highlighted -->
+<div class="cd" id="open-history" style="margin-top:.4rem"></div>
+
 <!-- The Open Outright Odds -->
 <div class="cd" id="open-odds-panel" style="margin-top:.4rem">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">
@@ -1085,9 +1088,6 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
   </div>
   <div id="open-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading Open odds...</div></div>
 </div>
-
-<!-- Full Open Championship history — all champions since 1946, Birkdale years highlighted -->
-<div class="cd" id="open-history" style="margin-top:.4rem"></div>
 </section>
 <section id="rules" class="pn2">
 <div class="cd" style="max-width:640px;margin-left:auto;margin-right:auto">
@@ -3464,7 +3464,7 @@ function getDateEvent() {
  *  When overrideCourseName/overrideEvName are set, renders for that course
  *  instead of the current live event (used by upcoming-event cards). */
 let _wxEventWindow=null;
-function renderPreview(targetEl, overrideCourseName, overrideEvName, wxWindow) {
+function renderPreview(targetEl, overrideCourseName, overrideEvName, wxWindow, opts) {
   const el = targetEl || document.getElementById('live-preview');
   if (!el) return;
   // Show the collapsible wrapper if rendering into the default location
@@ -3739,6 +3739,7 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName, wxWindow) {
       '</div>':'') +
 
     // Past winners — outer dropdown, 10 visible, nested dropdown for older
+    (opts && opts.hidePW ? '' :
     '<div class="cf-block">' +
       '<details class="cf-details">' +
         '<summary class="cf-details-sum">Past Winners <span style="font-size:.5rem;color:var(--td);font-weight:400;text-transform:none;letter-spacing:0;font-family:var(--fb)">' + pw.length + ' champions</span></summary>' +
@@ -3775,7 +3776,7 @@ function renderPreview(targetEl, overrideCourseName, overrideEvName, wxWindow) {
             }).join('') + venueHTML + '</div></details>' : '') +
         '</div>' +
       '</details>' +
-    '</div>' +
+    '</div>') +
 
     // Weather & Conditions — collapsed by default
     '<details class="cf-details uc-advanced" style="'+ (_previewMode==='basic'?'display:none':'') +'">' +
@@ -8262,7 +8263,7 @@ function renderOpenTab(){
       '<button id="open-basic-btn" class="pv-basic" onclick="setPreviewMode(\'basic\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:var(--gn);color:#fff;font-weight:700;box-shadow:0 1px 4px rgba(82,183,136,.3)">Basic</button>'+
       '<button id="open-adv-btn" class="pv-adv" onclick="setPreviewMode(\'advanced\')" style="font-family:var(--fb);font-size:.7rem;padding:.3rem 1rem;border-radius:6px;cursor:pointer;border:none;background:transparent;color:var(--ts);font-weight:500">Advanced</button></div>';
     el.innerHTML=toggle+'<div id="open-preview-target"></div>';
-    renderPreview(document.getElementById('open-preview-target'),courseName,'The Open Championship',{start:'2026-07-16',end:'2026-07-19',label:'Championship',rounds:{'2026-07-16':'1','2026-07-17':'2','2026-07-18':'3','2026-07-19':'4'}});
+    renderPreview(document.getElementById('open-preview-target'),courseName,'The Open Championship',{start:'2026-07-16',end:'2026-07-19',label:'Championship',rounds:{'2026-07-16':'1','2026-07-17':'2','2026-07-18':'3','2026-07-19':'4'}},{hidePW:true});
     syncPvButtons();
   }else{
     el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
