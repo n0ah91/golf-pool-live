@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-07-17 · gmp-v70 · open-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-07-17 · gmp-v71 · open-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1077,27 +1077,30 @@ tbody tr.pay:hover td{background:rgba(196,160,53,.17)!important}
 <!-- Open live pool standings -->
 <div class="cd" id="open-live-pool" style="margin-bottom:.4rem"></div>
 
+<!-- Strokes Gained leaderboard for The Open -->
+<div class="cd" id="open-sg-stats" style="margin-bottom:.4rem"></div>
+
+<!-- The Open Outright Odds (above preview) -->
+<div class="cd" id="open-odds-panel" style="margin-bottom:.4rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">
+    <div class="cf-section-title" style="margin:0">The Open Outright Odds</div>
+    <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20 · DG Model vs Sportsbooks</span>
+  </div>
+  <div id="open-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading Open odds...</div></div>
+</div>
+
+<!-- Course preview -->
+<div id="open-preview"></div>
+
+<!-- Full Open Championship history — archived -->
+<div class="cd" id="open-history" style="display:none"></div>
+
 <!-- USO Final + YTD side by side -->
 <div id="open-uso-ytd-panel" style="display:none;margin-bottom:.4rem">
   <div style="display:flex;gap:.4rem;align-items:flex-start">
     <div class="cd" id="open-uso-final" style="flex:1;min-width:0"></div>
     <div class="cd" id="open-ytd-panel" style="flex:1;min-width:0"></div>
   </div>
-</div>
-
-<!-- Course preview -->
-<div id="open-preview"></div>
-
-<!-- Full Open Championship history — all champions since 1946, Birkdale years highlighted -->
-<div class="cd" id="open-history" style="margin-top:.4rem"></div>
-
-<!-- The Open Outright Odds -->
-<div class="cd" id="open-odds-panel" style="margin-top:.4rem">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.3rem">
-    <div class="cf-section-title" style="margin:0">The Open Outright Odds</div>
-    <span style="font-size:.5rem;color:var(--td);font-family:var(--fb);font-weight:400">Top 20 · DG Model vs Sportsbooks</span>
-  </div>
-  <div id="open-odds-body"><div style="text-align:center;padding:.5rem;font-size:.65rem;color:var(--ts)">Loading Open odds...</div></div>
 </div>
 </section>
 <section id="rules" class="pn2">
@@ -8621,6 +8624,35 @@ function renderOpenLivePool(){
   var cashLeader={nm:'',amt:0};
   if(cashRows.length&&cashRows[0].grandTotal>0){cashLeader={nm:cashRows[0].nm,amt:cashRows[0].grandTotal};}
 
+  /* -- Comeback tracker (early season rank vs current YTD rank) -- */
+  var topCB=[];
+  if(typeof YTD_TOPAR_2026!=='undefined'){
+    var _mArr=[],_pmArr=[];
+    Object.keys(YTD_TOPAR_2026).forEach(function(nm){
+      var d=YTD_TOPAR_2026[nm];
+      if(d.m!==111)_mArr.push({nm:nm,sc:d.m});
+      var twoEv=(d.m!==111?d.m:0)+(d.p!==111?d.p:0);
+      if(d.m!==111||d.p!==111)_pmArr.push({nm:nm,sc:twoEv});
+    });
+    _mArr.sort(function(a,b){return a.sc-b.sc;});
+    _pmArr.sort(function(a,b){return a.sc-b.sc;});
+    var _mRk={},_pmRk={};
+    _mArr.forEach(function(r,i){_mRk[r.nm.toLowerCase()]=i+1;});
+    _pmArr.forEach(function(r,i){_pmRk[r.nm.toLowerCase()]=i+1;});
+    var _cbAll=[];
+    rows.forEach(function(e){
+      var key=e.nm.toLowerCase();var d=YTD_TOPAR_2026[e.nm];if(!d)return;
+      var earlyRk=_pmRk[key]||_mRk[key];if(!earlyRk||!e.ytdRk)return;
+      var gain=earlyRk-e.ytdRk;if(gain<3)return;
+      var parts=[];
+      if(d.m!==111)parts.push('M:'+(d.m>0?'+':'')+d.m);
+      if(d.p!==111)parts.push('P:'+(d.p>0?'+':'')+d.p);
+      _cbAll.push({nm:e.nm,earlyRk:earlyRk,curr:e.ytdRk,gain:gain,early:parts.join(' ')});
+    });
+    _cbAll.sort(function(a,b){return b.gain-a.gain;});
+    topCB=_cbAll.slice(0,3);
+  }
+
   var hd='';
 
   /* ═══ BANNER ═══ */
@@ -8639,7 +8671,17 @@ function renderOpenLivePool(){
   hd+='<span style="background:rgba(201,168,64,.2);border:1px solid rgba(201,168,64,.4);border-radius:.2rem;padding:.07rem .28rem;font-size:.53rem;color:#E8D47A"><b>⛳</b> '+openLeader+'</span>';
   hd+='<span style="background:rgba(82,183,136,.18);border:1px solid rgba(82,183,136,.35);border-radius:.2rem;padding:.07rem .28rem;font-size:.53rem;color:#7AE8A8"><b>Season:</b> '+ytdLeader+'</span>';
   hd+='<span style="background:rgba(201,168,64,.13);border:1px solid rgba(201,168,64,.3);border-radius:.2rem;padding:.07rem .28rem;font-size:.53rem;color:#E8D47A">💰 <b>Cash:</b> '+(cashLeader.nm||'–')+(cashLeader.amt?' · $'+(cashLeader.amt%1===0?cashLeader.amt.toLocaleString():cashLeader.amt.toFixed(2)):'')+'</span>';
-  hd+='</div></div>';
+  hd+='</div>';
+  if(topCB.length){
+    hd+='<div style="margin-top:.16rem;display:flex;gap:.18rem;flex-wrap:wrap;align-items:center">';
+    hd+='<span style="font-size:.45rem;color:rgba(245,240,232,.38);font-weight:600;letter-spacing:.03em">📈 COMEBACK:</span>';
+    topCB.forEach(function(c){
+      hd+='<span style="background:rgba(82,183,136,.2);border:1px solid rgba(82,183,136,.4);border-radius:.2rem;padding:.04rem .2rem;font-size:.49rem;color:#7AE8A8;white-space:nowrap">'+
+          '<b>'+c.nm+'</b> #'+c.earlyRk+'→#'+c.curr+' <span style="opacity:.6">(+'+c.gain+')</span></span>';
+    });
+    hd+='</div>';
+  }
+  hd+='</div>';
 
   /* ═══ SECTION 1 — YTD TOP 10 ═══ */
   hd+='<div style="margin-bottom:.45rem">';
@@ -8824,6 +8866,65 @@ function renderOpenLivePool(){
     },0);
   }
 }
+async function fetchOpenSgStats(){
+  var el=document.getElementById('open-sg-stats');if(!el)return;
+  el.innerHTML='<div style="text-align:center;padding:.45rem;font-size:.6rem;color:var(--ts)">⏳ Loading strokes gained…</div>';
+  var data;
+  try{data=await dgF('preds/live-tournament-stats',{tour:'pga',stats:'sg_total,sg_ott,sg_app,sg_arg,sg_putt,sg_t2g',round:'event_avg',display:'value'});}
+  catch(e){el.innerHTML='';return;}
+  if(!data||!data.live_stats||!data.live_stats.length){el.innerHTML='';return;}
+  var stats=data.live_stats.filter(function(p){return p.sg_total!=null&&!isNaN(p.sg_total);});
+  stats.sort(function(a,b){return(b.sg_total||0)-(a.sg_total||0);});
+  var n=stats.length;
+  function _sgCl(v,arr){
+    var s=arr.slice().sort(function(a,b){return b-a;});
+    var idx=s.findIndex(function(x){return x===v;});
+    var pct=n>1?(idx<0?0.5:idx/(n-1)):0.5;
+    return pct<0.18?'#1A7540':pct<0.38?'#2E9A56':pct<0.62?'var(--td)':pct<0.82?'#B58030':'#9B3A3A';
+  }
+  var aOtt=stats.map(function(p){return p.sg_ott||0;});
+  var aApp=stats.map(function(p){return p.sg_app||0;});
+  var aArg=stats.map(function(p){return p.sg_arg||0;});
+  var aPtt=stats.map(function(p){return p.sg_putt||0;});
+  var aT2g=stats.map(function(p){return p.sg_t2g||0;});
+  var aTot=stats.map(function(p){return p.sg_total||0;});
+  function fsg(v){if(v==null||isNaN(v))return'–';return(v>0?'+':'')+v.toFixed(2);}
+  var top=stats.slice(0,25);
+  var h2='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.15rem">';
+  h2+='<span style="font-family:var(--fb);font-size:.66rem;font-weight:700;color:var(--tb)">Strokes Gained — Royal Birkdale</span>';
+  h2+='<span style="font-size:.43rem;color:var(--ts)">event avg · top 25 by SG Tot · '+n+' players</span></div>';
+  h2+='<div style="overflow-x:auto"><table class="tc" style="font-size:.53rem;min-width:430px;border-collapse:collapse"><thead>';
+  h2+='<tr style="border-bottom:2px solid var(--br)">';
+  h2+='<th style="width:18px;text-align:center">#</th>';
+  h2+='<th style="text-align:left">Player</th>';
+  h2+='<th style="width:52px;text-align:center;color:var(--tb)" title="SG Total">Tot</th>';
+  h2+='<th style="width:42px;text-align:center" title="SG Off-the-Tee">OTT</th>';
+  h2+='<th style="width:42px;text-align:center" title="SG Approach">APP</th>';
+  h2+='<th style="width:42px;text-align:center" title="SG Around-Green">ARG</th>';
+  h2+='<th style="width:42px;text-align:center" title="SG Putting">PUTT</th>';
+  h2+='<th style="width:42px;text-align:center" title="SG Tee-to-Green">T2G</th>';
+  h2+='</tr></thead><tbody>';
+  top.forEach(function(p,i){
+    var tot=p.sg_total||0,ott=p.sg_ott||0,app=p.sg_app||0,arg=p.sg_arg||0,ptt=p.sg_putt||0,t2g=p.sg_t2g||0;
+    var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':String(i+1);
+    var bl=i===0?'border-left:2px solid #C9A840':i===1?'border-left:2px solid #B0B0B0':i===2?'border-left:2px solid #CD7F32':'';
+    var bg=i<3?'background:rgba(201,168,64,.04);':'';
+    h2+='<tr style="border-bottom:1px solid rgba(0,0,0,.05);'+bg+bl+'">'+
+      '<td style="text-align:center;color:var(--ts);font-size:.47rem">'+medal+'</td>'+
+      '<td style="text-align:left;font-weight:'+(i<3?'700':'500')+';color:var(--tp);white-space:nowrap">'+p.player_name+'</td>'+
+      '<td style="text-align:center;font-family:var(--fm);font-weight:700;font-size:.56rem;color:'+_sgCl(tot,aTot)+'">'+fsg(tot)+'</td>'+
+      '<td style="text-align:center;font-family:var(--fm);font-size:.51rem;color:'+_sgCl(ott,aOtt)+'">'+fsg(ott)+'</td>'+
+      '<td style="text-align:center;font-family:var(--fm);font-size:.51rem;color:'+_sgCl(app,aApp)+'">'+fsg(app)+'</td>'+
+      '<td style="text-align:center;font-family:var(--fm);font-size:.51rem;color:'+_sgCl(arg,aArg)+'">'+fsg(arg)+'</td>'+
+      '<td style="text-align:center;font-family:var(--fm);font-size:.51rem;color:'+_sgCl(ptt,aPtt)+'">'+fsg(ptt)+'</td>'+
+      '<td style="text-align:center;font-family:var(--fm);font-size:.51rem;color:'+_sgCl(t2g,aT2g)+'">'+fsg(t2g)+'</td>'+
+      '</tr>';
+  });
+  h2+='</tbody></table></div>';
+  h2+='<div style="font-size:.41rem;color:var(--ts);margin-top:.08rem">SG vs PGA Tour avg · green = gaining, red = losing · DataGolf live-tournament-stats</div>';
+  el.innerHTML=h2;
+}
+
 let _openOddsFetched=false;
 async function fetchOpenOdds(){
   if(_openOddsFetched)return;
@@ -8898,7 +8999,7 @@ function renderOpenTab(){
     el.innerHTML='<div style="text-align:center;padding:1rem;color:var(--ts);font-size:.7rem">Preview unavailable</div>';
   }
   fetchOpenOdds();
-  renderOpenHistory();
+  fetchOpenSgStats();
   renderOpenLivePool();
 }
 function renderOpenUsoYtd(){
