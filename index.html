@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-07-17 · gmp-v65 · open-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-07-17 · gmp-v66 · open-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -8471,7 +8471,7 @@ function renderOpenLivePool(){
   }
   var el=document.getElementById('open-live-pool');if(!el)return;
   if(typeof OPEN_ROSTERS==='undefined'||!OPEN_ROSTERS.length){
-    el.innerHTML='<div style="text-align:center;padding:.85rem .6rem;font-size:.68rem;color:var(--td)"><div style="font-size:.8rem;margin-bottom:.25rem">⛳ Pool Picks Pending</div>Rosters due before July 16 tee-off. Standings &amp; live scoring will appear here once picks are in.</div>';
+    el.innerHTML='<div style="text-align:center;padding:.85rem .6rem;font-size:.68rem;color:var(--td)"><div style="font-size:.8rem;margin-bottom:.25rem">⛳ Pool Picks Pending</div>Standings will appear here once picks are in.</div>';
     return;
   }
   var standings=(typeof OPEN_LIVE_STANDINGS!=='undefined'&&OPEN_LIVE_STANDINGS.length)?OPEN_LIVE_STANDINGS:null;
@@ -8495,13 +8495,11 @@ function renderOpenLivePool(){
   /* Open score map */
   var openScMap={};standings.forEach(function(e){openScMap[e.nm.toLowerCase()]=e.tp;});
 
-  /* Full-season YTD rank across ALL YTD_TOPAR_2026 participants (not just Open 98) */
+  /* Full-season YTD rank across ALL YTD_TOPAR_2026 participants */
   var allYtd=[];
   if(typeof YTD_TOPAR_2026!=='undefined')Object.keys(YTD_TOPAR_2026).forEach(function(nm){
     var key=nm.toLowerCase();
-    var base=YTD_TOPAR_2026[nm].net;
-    var openAdj=(openScMap[key]!=null)?openScMap[key]:0;
-    allYtd.push({nm:nm,ytd:base+openAdj});
+    allYtd.push({nm:nm,ytd:(YTD_TOPAR_2026[nm].net)+(openScMap[key]!=null?openScMap[key]:0)});
   });
   allYtd.sort(function(a,b){return a.ytd-b.ytd;});
   var ayr={};var rn=1;
@@ -8522,21 +8520,29 @@ function renderOpenLivePool(){
   var minTp=rows[0].tp,maxTp=rows[rows.length-1].tp;
 
   function fmTp(v){return v>0?'+'+v:(v===0?'E':String(v));}
-  function fmD(v){return v===0?'$0':'$'+(v%1===0?v.toLocaleString():v.toFixed(2));}
-
-  /* Score heat map: deep green (leader) → amber → muted red */
+  function fmD(v){
+    if(v===0)return '<span style="color:var(--ts);font-size:.51rem">$0</span>';
+    return '$'+(v%1===0?v.toLocaleString():v.toFixed(2));
+  }
+  function fmDPlain(v){
+    if(!v||v===0)return '–';
+    return '$'+(v%1===0?v.toLocaleString():v.toFixed(2));
+  }
   function scColor(tp){
     var pct=(maxTp===minTp)?0:(tp-minTp)/(maxTp-minTp);
     return pct<0.2?'#1A7540':pct<0.45?'#2E9A56':pct<0.65?'#8BA83A':pct<0.82?'#B58030':'#9B3A3A';
   }
-
-  /* Row accent: gold/silver/bronze/green/none */
-  function rowSt(rk){
-    return rk===1?'background:rgba(201,168,64,.09);border-left:3px solid #C9A840;':
-           rk===2?'background:rgba(160,160,160,.07);border-left:3px solid #B0B0B0;':
-           rk===3?'background:rgba(205,127,50,.07);border-left:3px solid #CD7F32;':
-           rk<=5?'background:rgba(82,183,136,.05);border-left:2px solid rgba(82,183,136,.5);':
-           '';
+  /* Row accent — Open rank takes priority; YTD top-10 highlighted outside money */
+  function rowSt(rk,ytdRk){
+    if(rk===1) return 'background:rgba(201,168,64,.09);border-left:3px solid #C9A840;';
+    if(rk===2) return 'background:rgba(160,160,160,.07);border-left:3px solid #B0B0B0;';
+    if(rk===3) return 'background:rgba(205,127,50,.07);border-left:3px solid #CD7F32;';
+    if(rk<=5)  return 'background:rgba(82,183,136,.05);border-left:2px solid rgba(82,183,136,.5);';
+    /* YTD top-10 highlights outside the Open money */
+    if(ytdRk===1) return 'background:rgba(201,168,64,.06);border-left:2px dashed #C9A840;';
+    if(ytdRk<=3)  return 'background:rgba(52,152,219,.07);border-left:2px solid #3498DB;';
+    if(ytdRk<=10) return 'background:rgba(52,152,219,.04);border-left:2px solid rgba(52,152,219,.4);';
+    return '';
   }
   function posDisp(rk){
     return rk===1?'<span style="color:#C9A840;font-weight:800;font-size:.74rem">1</span>':
@@ -8548,16 +8554,32 @@ function renderOpenLivePool(){
   function ytdDisp(yr){
     return yr===1?'<span style="color:#C9A840;font-weight:800">1</span>':
            yr<=3?'<span style="color:#1A7540;font-weight:700">'+yr+'</span>':
-           yr<=10?'<span style="color:var(--go)">'+yr+'</span>':
+           yr<=10?'<span style="color:#3498DB;font-weight:600">'+yr+'</span>':
            yr<=25?'<span style="color:var(--gl)">'+yr+'</span>':
            '<span style="color:var(--ts)">'+yr+'</span>';
   }
+
+  /* ── Season cash standings ── */
+  var cashRows=rows.slice().sort(function(a,b){
+    if(b.projTotal!==a.projTotal)return b.projTotal-a.projTotal;
+    return a.rk-b.rk;
+  });
+  var cRn=1;
+  cashRows.forEach(function(r,i){
+    if(i>0&&cashRows[i-1].projTotal===r.projTotal)r.cashRk=cashRows[i-1].cashRk;
+    else r.cashRk=cRn;
+    cRn=i+2;
+  });
+  var cashLeader=cashRows[0]&&cashRows[0].projTotal>0?cashRows[0]:'';
+  var cashLeaderName=cashLeader?cashLeader.nm:'';
+  var cashLeaderAmt=cashLeader?cashLeader.projTotal:0;
+  var cashSecond=cashRows[1]&&cashRows[1].projTotal>0?cashRows[1]:'';
 
   var ytdLeader=allYtd.length?allYtd[0].nm:'';
   var openLeader=rows.length?rows[0].nm:'';
   var openPool=0;rows.forEach(function(e){openPool+=e.projOpen;});
 
-  /* ── Dark navy/claret header banner ── */
+  /* ── Banner ── */
   var hd='<div style="background:linear-gradient(135deg,#17273F 0%,#2A1936 100%);border-radius:.45rem;padding:.55rem .75rem .5rem;margin-bottom:.45rem;color:#F5F0E8">';
   hd+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.28rem">';
   hd+='<div style="display:flex;align-items:center;gap:.32rem">';
@@ -8571,41 +8593,42 @@ function renderOpenLivePool(){
   hd+='<div style="font-size:.56rem;color:rgba(245,240,232,.52);margin-bottom:.32rem">Season Finale · Final 2 rounds of the 2026 Majors Pool · '+rows.length+' entries</div>';
   hd+='<div style="display:flex;gap:.35rem;flex-wrap:wrap">';
   hd+='<span style="display:inline-flex;align-items:center;gap:.22rem;background:rgba(201,168,64,.2);border:1px solid rgba(201,168,64,.45);border-radius:.22rem;padding:.09rem .32rem;font-size:.55rem;color:#E8D47A">';
-  hd+='<b>⛳ Pool:</b> '+openLeader+'</span>';
+  hd+='<b>⛳ Open:</b> '+openLeader+'</span>';
   hd+='<span style="display:inline-flex;align-items:center;gap:.22rem;background:rgba(82,183,136,.18);border:1px solid rgba(82,183,136,.38);border-radius:.22rem;padding:.09rem .32rem;font-size:.55rem;color:#7AE8A8">';
-  hd+='<b>Season:</b> '+ytdLeader+'</span>';
-  hd+='<span style="display:inline-flex;align-items:center;gap:.22rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:.22rem;padding:.09rem .32rem;font-size:.55rem;color:rgba(245,240,232,.65)">';
-  hd+='💰 $'+(openPool%1===0?openPool.toLocaleString():openPool.toFixed(2))+' Open prize pool</span>';
+  hd+='<b>Season score:</b> '+ytdLeader+'</span>';
+  hd+='<span style="display:inline-flex;align-items:center;gap:.22rem;background:rgba(201,168,64,.15);border:1px solid rgba(201,168,64,.35);border-radius:.22rem;padding:.09rem .32rem;font-size:.55rem;color:#E8D47A">';
+  hd+='💰 <b>Season $:</b> '+(cashLeaderName||'–')+(cashLeaderAmt?(' · $'+(cashLeaderAmt%1===0?cashLeaderAmt.toLocaleString():cashLeaderAmt.toFixed(2))):'')+'</span>';
   hd+='</div></div>';
 
-  /* ── Table ── */
+  /* ── Main Open pool table ── */
+  hd+='<div style="font-family:var(--fb);font-size:.66rem;font-weight:700;color:var(--tb);margin-bottom:.2rem">Open Pool Standings</div>';
+  hd+='<div style="font-size:.5rem;color:var(--ts);margin-bottom:.3rem">';
+  hd+='<span style="display:inline-block;width:8px;height:8px;border-radius:1px;border-left:2px dashed #C9A840;margin-right:.2rem"></span>Gold dashed = season score leader &nbsp;';
+  hd+='<span style="display:inline-block;width:8px;height:8px;border-radius:1px;border-left:2px solid #3498DB;margin-right:.2rem"></span>Blue = YTD top 10';
+  hd+='</div>';
   hd+='<div style="overflow-x:auto"><table class="tc" style="font-size:.58rem;min-width:530px;border-collapse:collapse"><thead>';
   hd+='<tr style="border-bottom:2px solid var(--br)">';
-  hd+='<th style="width:28px;text-align:center" title="Current Open pool position">POS</th>';
-  hd+='<th style="width:30px;text-align:center" title="Full-season YTD rank (all entrants)">YTD</th>';
+  hd+='<th style="width:28px;text-align:center" title="Open pool position">POS</th>';
+  hd+='<th style="width:30px;text-align:center" title="Full-season score rank (all entrants)">YTD</th>';
   hd+='<th style="text-align:left">Entry</th>';
   hd+='<th title="Pool score to par">Score</th>';
   hd+='<th title="Roster strokes to par">Roster</th>';
   hd+='<th title="Position bonus strokes">Bonus</th>';
-  hd+='<th style="width:36px;text-align:center" title="Holes completed this event">Holes</th>';
-  hd+='<th style="width:54px;text-align:right" title="Actual winnings P+M+G+USO">YTD $</th>';
-  hd+='<th style="width:66px;text-align:right" title="YTD$ + projected Open payout at current position">Proj $</th>';
+  hd+='<th style="width:36px;text-align:center" title="Holes completed">Holes</th>';
+  hd+='<th style="width:54px;text-align:right" title="Actual cash P+M+G+USO">YTD $</th>';
+  hd+='<th style="width:66px;text-align:right" title="YTD$ + projected Open payout = projected season total">Proj $</th>';
   hd+='</tr></thead><tbody>';
 
   var divAdded=false;
   var meKey=typeof S!=='undefined'&&S&&S.me?S.me.toLowerCase():'';
 
   rows.forEach(function(e){
-    /* payout line divider */
     if(e.rk>5&&!divAdded){
       divAdded=true;
       hd+='<tr><td colspan="9" style="padding:0;height:1px;background:linear-gradient(90deg,transparent,var(--br) 25%,var(--br) 75%,transparent)"></td></tr>';
       hd+='<tr><td colspan="9" style="padding:.08rem .3rem;text-align:center"><span style="font-size:.42rem;color:var(--ts);letter-spacing:.07em;font-weight:600">— PAYOUT LINE —</span></td></tr>';
     }
-
     var key=e.nm.toLowerCase();var isMe=meKey&&key===meKey;
-
-    /* Proj$ */
     var projStr,projStyl;
     if(e.projOpen>0){
       projStr='$'+(e.projTotal%1===0?e.projTotal.toLocaleString():e.projTotal.toFixed(2));
@@ -8617,8 +8640,7 @@ function renderOpenLivePool(){
       projStr='<span style="color:var(--ts);font-size:.51rem">$0</span>';
       projStyl='';
     }
-
-    hd+='<tr style="'+rowSt(e.rk)+(isMe?';outline:1px solid var(--go);':'')+'">';
+    hd+='<tr style="'+rowSt(e.rk,e.ytdRk)+(isMe?';outline:1px solid var(--go);':'')+'">';
     hd+='<td style="text-align:center;font-family:var(--fm)">'+posDisp(e.rk)+'</td>';
     hd+='<td style="text-align:center;font-family:var(--fm)">'+ytdDisp(e.ytdRk)+'</td>';
     hd+='<td style="text-align:left;white-space:nowrap;font-family:var(--fb);font-weight:'+(isMe?'700':'500')+';'+(isMe?'color:var(--go)':'color:var(--tp)')+'">'+e.nm+'</td>';
@@ -8630,13 +8652,75 @@ function renderOpenLivePool(){
     hd+='<td style="text-align:right;'+projStyl+'font-family:var(--fm)">'+projStr+'</td>';
     hd+='</tr>';
   });
-
   hd+='</tbody></table></div>';
   hd+='<div style="display:flex;gap:.55rem;justify-content:flex-end;font-size:.44rem;color:var(--ts);margin-top:.18rem;flex-wrap:wrap">';
-  hd+='<span>YTD $ = actual winnings P+M+G+USO</span>';
-  hd+='<span><b style="color:#C9A840">gold</b> Proj $ = money position</span>';
-  hd+='<span>YTD rank = full season (all entrants)</span>';
+  hd+='<span>Proj $ = YTD$ + projected Open payout = total projected season earnings</span>';
+  hd+='<span>YTD = full-season score rank (all entrants)</span>';
   hd+='</div>';
+
+  /* ── Season Cash Projection table ── */
+  hd+='<div style="margin-top:.6rem;border-top:1px solid var(--br);padding-top:.45rem">';
+  hd+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.2rem">';
+  hd+='<span style="font-family:var(--fb);font-size:.66rem;font-weight:700;color:var(--tb)">2026 Season Cash Standings · Projected</span>';
+  hd+='<span style="font-size:.5rem;color:var(--ts)">based on current Open position</span>';
+  hd+='</div>';
+  /* Season narrative */
+  if(cashLeader&&cashSecond&&cashSecond.projTotal>0){
+    var gap=cashLeader.projTotal-cashSecond.projTotal;
+    hd+='<div style="font-size:.55rem;color:var(--td);margin-bottom:.3rem;padding:.18rem .4rem;background:var(--bca);border-radius:.25rem;border-left:2px solid #C9A840">';
+    hd+='<b style="color:var(--tb)">'+cashLeaderName+'</b> leads the season at ';
+    hd+='<b style="color:#C9A840">$'+(cashLeaderAmt%1===0?cashLeaderAmt.toLocaleString():cashLeaderAmt.toFixed(2))+'</b>';
+    hd+=' · <b>'+cashSecond.nm+'</b> trails by ';
+    hd+='<b>$'+(gap%1===0?gap.toLocaleString():gap.toFixed(2))+'</b> — ';
+    hd+=cashSecond.projOpen>0?('in money position to earn $'+(cashSecond.projOpen%1===0?cashSecond.projOpen.toLocaleString():cashSecond.projOpen.toFixed(2))+' more'):'outside payout line';
+    hd+='</div>';
+  }
+  hd+='<div style="overflow-x:auto"><table class="tc" style="font-size:.58rem;min-width:400px;border-collapse:collapse"><thead>';
+  hd+='<tr style="border-bottom:2px solid var(--br)">';
+  hd+='<th style="width:28px;text-align:center">$#</th>';
+  hd+='<th style="text-align:left">Entry</th>';
+  hd+='<th style="width:30px;text-align:center" title="Season score rank">YTD</th>';
+  hd+='<th style="width:30px;text-align:center" title="Open pool position">Open</th>';
+  hd+='<th style="width:64px;text-align:right" title="Actual P+M+G+USO winnings">Locked $</th>';
+  hd+='<th style="width:64px;text-align:right" title="Projected Open payout at current position">+Open Proj</th>';
+  hd+='<th style="width:70px;text-align:right" title="Total projected season earnings">Season Total</th>';
+  hd+='</tr></thead><tbody>';
+
+  var shownCash=0;
+  var zeroCnt=0;
+  cashRows.forEach(function(r){
+    if(r.projTotal===0){zeroCnt++;return;}
+    shownCash++;
+    var isMe=meKey&&r.nm.toLowerCase()===meKey;
+    var isCashTop=(r.cashRk<=3);
+    var rowBg=r.cashRk===1?'background:rgba(201,168,64,.08);border-left:3px solid #C9A840;':
+              r.cashRk===2?'background:rgba(160,160,160,.06);border-left:3px solid #B0B0B0;':
+              r.cashRk===3?'background:rgba(205,127,50,.06);border-left:3px solid #CD7F32;':
+              '';
+    var rkDisp=r.cashRk===1?'<span style="color:#C9A840;font-weight:800">1</span>':
+               r.cashRk===2?'<span style="color:#969696;font-weight:700">2</span>':
+               r.cashRk===3?'<span style="color:#9B6820;font-weight:700">3</span>':
+               '<span style="color:var(--td)">'+r.cashRk+'</span>';
+    var totalClr=r.cashRk===1?'color:#C9A840;font-weight:800;':r.projOpen>0?'color:var(--go);font-weight:700;':'color:var(--td);';
+    hd+='<tr style="'+rowBg+(isMe?';outline:1px solid var(--go);':'')+'">';
+    hd+='<td style="text-align:center;font-family:var(--fm)">'+rkDisp+'</td>';
+    hd+='<td style="text-align:left;white-space:nowrap;font-family:var(--fb);font-weight:'+(isMe?'700':'500')+';'+(isMe?'color:var(--go)':'color:var(--tp)')+'">'+r.nm+'</td>';
+    hd+='<td style="text-align:center;font-family:var(--fm)">'+ytdDisp(r.ytdRk)+'</td>';
+    hd+='<td style="text-align:center;color:var(--td)">'+r.rk+'</td>';
+    hd+='<td style="text-align:right;color:var(--td);font-family:var(--fm)">'+(r.prior>0?'$'+(r.prior%1===0?r.prior.toLocaleString():r.prior.toFixed(2)):'<span style="color:var(--ts)">–</span>')+'</td>';
+    hd+='<td style="text-align:right;font-family:var(--fm);color:'+(r.projOpen>0?'var(--go)':'var(--ts)')+'">'+( r.projOpen>0?'$'+(r.projOpen%1===0?r.projOpen.toLocaleString():r.projOpen.toFixed(2)):'–')+'</td>';
+    hd+='<td style="text-align:right;font-family:var(--fm);'+totalClr+'">';
+    hd+='$'+(r.projTotal%1===0?r.projTotal.toLocaleString():r.projTotal.toFixed(2))+'</td>';
+    hd+='</tr>';
+  });
+  if(zeroCnt>0){
+    hd+='<tr><td colspan="7" style="text-align:center;color:var(--ts);font-size:.52rem;padding:.2rem .3rem">';
+    hd+=zeroCnt+' entries · $0 projected season earnings</td></tr>';
+  }
+  hd+='</tbody></table></div>';
+  hd+='<div style="text-align:right;font-size:.44rem;color:var(--ts);margin-top:.15rem">';
+  hd+='Locked $ = final P+M+G+USO winnings · Open Proj = current position payout · updates with leaderboard';
+  hd+='</div></div>';
 
   el.innerHTML=hd;el.style.display='';
 }
