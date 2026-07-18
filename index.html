@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-07-17 · gmp-v64 · open-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-07-17 · gmp-v65 · open-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -8464,158 +8464,181 @@ function checkOpenLive(){
   var op=document.getElementById('open-odds-panel');if(op)op.style.display=liveWin?'none':'';
 }
 function renderOpenLivePool(){
+  if(!document.getElementById('op3-css')){
+    var _st=document.createElement('style');_st.id='op3-css';
+    _st.textContent='@keyframes opPulse{0%,100%{box-shadow:0 0 4px #4ADE80}50%{box-shadow:0 0 12px #4ADE80,0 0 22px rgba(74,222,128,.4)}}';
+    document.head.appendChild(_st);
+  }
   var el=document.getElementById('open-live-pool');if(!el)return;
   if(typeof OPEN_ROSTERS==='undefined'||!OPEN_ROSTERS.length){
-    el.innerHTML='<div style="text-align:center;padding:.85rem .6rem;font-size:.68rem;color:var(--td)">' +
-      '<div style="font-size:.8rem;margin-bottom:.25rem">\uD83C\uDFCC\uFE0F Pool Picks Pending</div>' +
-      'Rosters due before July 16 tee-off. Standings &amp; live scoring will appear here once picks are in.</div>';
+    el.innerHTML='<div style="text-align:center;padding:.85rem .6rem;font-size:.68rem;color:var(--td)"><div style="font-size:.8rem;margin-bottom:.25rem">⛳ Pool Picks Pending</div>Rosters due before July 16 tee-off. Standings &amp; live scoring will appear here once picks are in.</div>';
     return;
   }
   var standings=(typeof OPEN_LIVE_STANDINGS!=='undefined'&&OPEN_LIVE_STANDINGS.length)?OPEN_LIVE_STANDINGS:null;
   if(!standings){el.style.display='none';return;}
 
-  /* ── Build prior-event winnings map (Players+Masters+PGA+USO+DH) ── */
+  /* prior winnings P+M+G+USO+DH */
   var priorWin={};
-  var priorMap={};
   [11,14,33,26].forEach(function(k){
     var pr=(typeof POOL_RESULTS!=='undefined')?POOL_RESULTS[k]:null;
     if(!pr||!pr.entries)return;
-    pr.entries.forEach(function(e){
-      var key=e.nm.toLowerCase();
-      priorWin[key]=(priorWin[key]||0)+(e.win||0);
-      if(!priorMap[key])priorMap[key]=e.nm;
-    });
+    pr.entries.forEach(function(e){var key=e.nm.toLowerCase();priorWin[key]=(priorWin[key]||0)+(e.win||0);});
   });
   if(typeof DARK_HORSE_PAYOUTS!=='undefined'){
     Object.keys(DARK_HORSE_PAYOUTS).forEach(function(nm){
-      var dh=DARK_HORSE_PAYOUTS[nm];
-      var key=nm.toLowerCase();
-      priorWin[key]=(priorWin[key]||0)+(dh.amt||0);
+      var dh=DARK_HORSE_PAYOUTS[nm];priorWin[nm.toLowerCase()]=(priorWin[nm.toLowerCase()]||0)+(dh.amt||0);
     });
   }
 
-  /* ── Projected Open payout by current rank ── */
-  function openProjPay(rk){
-    if(rk===1)return 500;
-    if(rk===2)return 262.5;
-    if(rk===3)return 175;
-    if(rk===4)return 125;
-    if(rk===5)return 75;
-    return 0;
-  }
+  function openProjPay(rk){return rk===1?500:rk===2?262.5:rk===3?175:rk===4?125:rk===5?75:0;}
 
-  /* ── YTD score = prior net (P+M+G+USO) + current Open score ── */
-  var ytdBase={};
-  if(typeof YTD_TOPAR_2026!=='undefined'){
-    Object.keys(YTD_TOPAR_2026).forEach(function(nm){
-      ytdBase[nm.toLowerCase()]=YTD_TOPAR_2026[nm].net;
-    });
-  }
+  /* Open score map */
+  var openScMap={};standings.forEach(function(e){openScMap[e.nm.toLowerCase()]=e.tp;});
 
-  /* ── Build merged rows ── */
+  /* Full-season YTD rank across ALL YTD_TOPAR_2026 participants (not just Open 98) */
+  var allYtd=[];
+  if(typeof YTD_TOPAR_2026!=='undefined')Object.keys(YTD_TOPAR_2026).forEach(function(nm){
+    var key=nm.toLowerCase();
+    var base=YTD_TOPAR_2026[nm].net;
+    var openAdj=(openScMap[key]!=null)?openScMap[key]:0;
+    allYtd.push({nm:nm,ytd:base+openAdj});
+  });
+  allYtd.sort(function(a,b){return a.ytd-b.ytd;});
+  var ayr={};var rn=1;
+  allYtd.forEach(function(r,i){
+    if(i>0&&allYtd[i-1].ytd===r.ytd)ayr[r.nm.toLowerCase()]=ayr[allYtd[i-1].nm.toLowerCase()];
+    else ayr[r.nm.toLowerCase()]=rn;
+    rn=i+2;
+  });
+
+  /* merged rows */
   var rows=standings.map(function(e){
     var key=e.nm.toLowerCase();
-    var base=(ytdBase[key]!=null)?ytdBase[key]:0;
-    var ytdFull=base+e.tp;
-    var prior=priorWin[key]||0;
-    var projOpen=openProjPay(e.rk);
+    var prior=priorWin[key]||0;var projOpen=openProjPay(e.rk);
     return{rk:e.rk,nm:e.nm,tp:e.tp,rp:e.rp,bn:e.bn,holes:e.holes,
-           ytdFull:ytdFull,ytdBase:base,prior:prior,
-           projOpen:projOpen,projTotal:prior+projOpen};
+           prior:prior,projOpen:projOpen,projTotal:prior+projOpen,ytdRk:ayr[key]||99};
   });
+  rows.sort(function(a,b){return a.rk-b.rk;});
+  var minTp=rows[0].tp,maxTp=rows[rows.length-1].tp;
 
-  /* ── YTD rank across all pool entries ── */
-  var sortedYtd=rows.slice().sort(function(a,b){return a.ytdFull-b.ytdFull;});
-  var ytdRk={};
-  var rkNum=1;
-  sortedYtd.forEach(function(r,i){
-    if(i>0&&sortedYtd[i-1].ytdFull===r.ytdFull){ytdRk[r.nm.toLowerCase()]=ytdRk[sortedYtd[i-1].nm.toLowerCase()];}
-    else{ytdRk[r.nm.toLowerCase()]=rkNum;}
-    rkNum=i+2;
-  });
-
-  /* ── Format helpers ── */
   function fmTp(v){return v>0?'+'+v:(v===0?'E':String(v));}
-  function fmMoney(v){if(!v)return '<span style="color:var(--ts)">–</span>';return '$'+(v%1===0?v.toLocaleString():v.toFixed(2));}
-  function rkArrow(pos,ytd){
-    var diff=pos-ytd;
-    if(Math.abs(diff)<2)return '';
-    if(diff>0)return '<span style="font-size:.44rem;color:#e05;margin-left:1px" title="YTD rank better than Open rank">\u25bc</span>';
-    return '<span style="font-size:.44rem;color:var(--gl);margin-left:1px" title="YTD rank worse than Open rank">\u25b2</span>';
+  function fmD(v){return v===0?'$0':'$'+(v%1===0?v.toLocaleString():v.toFixed(2));}
+
+  /* Score heat map: deep green (leader) → amber → muted red */
+  function scColor(tp){
+    var pct=(maxTp===minTp)?0:(tp-minTp)/(maxTp-minTp);
+    return pct<0.2?'#1A7540':pct<0.45?'#2E9A56':pct<0.65?'#8BA83A':pct<0.82?'#B58030':'#9B3A3A';
   }
 
-  /* ── Sort by current Open rank ── */
-  rows.sort(function(a,b){return a.rk-b.rk;});
+  /* Row accent: gold/silver/bronze/green/none */
+  function rowSt(rk){
+    return rk===1?'background:rgba(201,168,64,.09);border-left:3px solid #C9A840;':
+           rk===2?'background:rgba(160,160,160,.07);border-left:3px solid #B0B0B0;':
+           rk===3?'background:rgba(205,127,50,.07);border-left:3px solid #CD7F32;':
+           rk<=5?'background:rgba(82,183,136,.05);border-left:2px solid rgba(82,183,136,.5);':
+           '';
+  }
+  function posDisp(rk){
+    return rk===1?'<span style="color:#C9A840;font-weight:800;font-size:.74rem">1</span>':
+           rk===2?'<span style="color:#969696;font-weight:700">2</span>':
+           rk===3?'<span style="color:#9B6820;font-weight:700">3</span>':
+           rk<=5?'<span style="color:var(--go)">'+rk+'</span>':
+           '<span style="color:var(--td)">'+rk+'</span>';
+  }
+  function ytdDisp(yr){
+    return yr===1?'<span style="color:#C9A840;font-weight:800">1</span>':
+           yr<=3?'<span style="color:#1A7540;font-weight:700">'+yr+'</span>':
+           yr<=10?'<span style="color:var(--go)">'+yr+'</span>':
+           yr<=25?'<span style="color:var(--gl)">'+yr+'</span>':
+           '<span style="color:var(--ts)">'+yr+'</span>';
+  }
 
-  var meKey=typeof S!=='undefined'&&S.me?S.me.toLowerCase():'';
-  var total=rows.length;
+  var ytdLeader=allYtd.length?allYtd[0].nm:'';
+  var openLeader=rows.length?rows[0].nm:'';
+  var openPool=0;rows.forEach(function(e){openPool+=e.projOpen;});
 
-  var hd='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.25rem">';
-  hd+='<span style="font-family:var(--fb);font-size:.72rem;font-weight:700;color:var(--tb)">The Open 2026 — Pool Standings</span>';
-  hd+='<span style="font-size:.52rem;color:var(--ts)">'+total+' entries · R2 in progress</span></div>';
+  /* ── Dark navy/claret header banner ── */
+  var hd='<div style="background:linear-gradient(135deg,#17273F 0%,#2A1936 100%);border-radius:.45rem;padding:.55rem .75rem .5rem;margin-bottom:.45rem;color:#F5F0E8">';
+  hd+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.28rem">';
+  hd+='<div style="display:flex;align-items:center;gap:.32rem">';
+  hd+='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ADE80;animation:opPulse 2s ease-in-out infinite"></span>';
+  hd+='<span style="font-family:var(--fb);font-weight:700;font-size:.7rem;letter-spacing:.02em;color:#4ADE80">LIVE</span>';
+  hd+='<span style="color:rgba(245,240,232,.35);margin:0 .1rem">·</span>';
+  hd+='<span style="font-size:.64rem;font-weight:600;letter-spacing:.01em">152nd Open Championship · Royal Birkdale</span>';
+  hd+='</div>';
+  hd+='<span style="font-size:.54rem;color:rgba(245,240,232,.5);background:rgba(255,255,255,.1);padding:.08rem .3rem;border-radius:.18rem;letter-spacing:.05em">R2 OF 4</span>';
+  hd+='</div>';
+  hd+='<div style="font-size:.56rem;color:rgba(245,240,232,.52);margin-bottom:.32rem">Season Finale · Final 2 rounds of the 2026 Majors Pool · '+rows.length+' entries</div>';
+  hd+='<div style="display:flex;gap:.35rem;flex-wrap:wrap">';
+  hd+='<span style="display:inline-flex;align-items:center;gap:.22rem;background:rgba(201,168,64,.2);border:1px solid rgba(201,168,64,.45);border-radius:.22rem;padding:.09rem .32rem;font-size:.55rem;color:#E8D47A">';
+  hd+='<b>⛳ Pool:</b> '+openLeader+'</span>';
+  hd+='<span style="display:inline-flex;align-items:center;gap:.22rem;background:rgba(82,183,136,.18);border:1px solid rgba(82,183,136,.38);border-radius:.22rem;padding:.09rem .32rem;font-size:.55rem;color:#7AE8A8">';
+  hd+='<b>Season:</b> '+ytdLeader+'</span>';
+  hd+='<span style="display:inline-flex;align-items:center;gap:.22rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:.22rem;padding:.09rem .32rem;font-size:.55rem;color:rgba(245,240,232,.65)">';
+  hd+='💰 $'+(openPool%1===0?openPool.toLocaleString():openPool.toFixed(2))+' Open prize pool</span>';
+  hd+='</div></div>';
 
-  hd+='<div style="overflow-x:auto"><table class="tc" style="font-size:.58rem;min-width:520px"><thead><tr>';
-  hd+='<th title="Current Open pool position" style="width:28px">POS</th>';
-  hd+='<th title="Season YTD rank (Players+Masters+PGA+USO+Open R2)" style="width:32px">YTD</th>';
+  /* ── Table ── */
+  hd+='<div style="overflow-x:auto"><table class="tc" style="font-size:.58rem;min-width:530px;border-collapse:collapse"><thead>';
+  hd+='<tr style="border-bottom:2px solid var(--br)">';
+  hd+='<th style="width:28px;text-align:center" title="Current Open pool position">POS</th>';
+  hd+='<th style="width:30px;text-align:center" title="Full-season YTD rank (all entrants)">YTD</th>';
   hd+='<th style="text-align:left">Entry</th>';
-  hd+='<th title="Open pool score (total to par)">Score</th>';
+  hd+='<th title="Pool score to par">Score</th>';
   hd+='<th title="Roster strokes to par">Roster</th>';
   hd+='<th title="Position bonus strokes">Bonus</th>';
-  hd+='<th title="Holes remaining this event" style="width:36px">Holes</th>';
-  hd+='<th title="Actual winnings earned P+M+G+USO (final)" style="width:52px">YTD $</th>';
-  hd+='<th title="YTD winnings + projected Open payout at current standing" style="width:58px">Proj $</th>';
+  hd+='<th style="width:36px;text-align:center" title="Holes completed this event">Holes</th>';
+  hd+='<th style="width:54px;text-align:right" title="Actual winnings P+M+G+USO">YTD $</th>';
+  hd+='<th style="width:66px;text-align:right" title="YTD$ + projected Open payout at current position">Proj $</th>';
   hd+='</tr></thead><tbody>';
 
+  var divAdded=false;
+  var meKey=typeof S!=='undefined'&&S&&S.me?S.me.toLowerCase():'';
+
   rows.forEach(function(e){
-    var key=e.nm.toLowerCase();
-    var isMe=(meKey&&key===meKey);
-    var isTop3=(e.rk<=3);
-    var rkClr=e.rk===1?'var(--go)':e.rk<=3?'var(--gl)':'var(--td)';
-    var ytdN=ytdRk[key]||'–';
-    var ytdClr=ytdN===1?'var(--go)':ytdN<=3?'var(--gl)':ytdN<=10?'var(--tp)':'var(--ts)';
-    var projClr=e.projOpen>0?'var(--go)':'var(--ts)';
+    /* payout line divider */
+    if(e.rk>5&&!divAdded){
+      divAdded=true;
+      hd+='<tr><td colspan="9" style="padding:0;height:1px;background:linear-gradient(90deg,transparent,var(--br) 25%,var(--br) 75%,transparent)"></td></tr>';
+      hd+='<tr><td colspan="9" style="padding:.08rem .3rem;text-align:center"><span style="font-size:.42rem;color:var(--ts);letter-spacing:.07em;font-weight:600">— PAYOUT LINE —</span></td></tr>';
+    }
 
-    hd+='<tr style="'+(isTop3?'background:rgba(82,183,136,.05)':'')+(isMe?';outline:1px solid var(--go)':'')+'">';
+    var key=e.nm.toLowerCase();var isMe=meKey&&key===meKey;
 
-    // POS
-    hd+='<td style="color:'+rkClr+';font-family:var(--fm);font-weight:700;text-align:center">'+e.rk+'</td>';
+    /* Proj$ */
+    var projStr,projStyl;
+    if(e.projOpen>0){
+      projStr='$'+(e.projTotal%1===0?e.projTotal.toLocaleString():e.projTotal.toFixed(2));
+      projStyl='font-weight:700;color:'+(e.rk===1?'#C9A840':'var(--go)')+';';
+    } else if(e.prior>0){
+      projStr='$'+(e.prior%1===0?e.prior.toLocaleString():e.prior.toFixed(2));
+      projStyl='color:var(--td);';
+    } else {
+      projStr='<span style="color:var(--ts);font-size:.51rem">$0</span>';
+      projStyl='';
+    }
 
-    // YTD
-    hd+='<td style="color:'+ytdClr+';font-family:var(--fm);font-weight:600;text-align:center">'+ytdN+rkArrow(e.rk,ytdN)+'</td>';
-
-    // Entry
-    hd+='<td style="text-align:left;font-family:var(--fb);font-weight:'+(isMe?'700':'500')+';white-space:nowrap;'+(isMe?'color:var(--go)':'')+'">'+e.nm+'</td>';
-
-    // Score
-    hd+='<td style="color:var(--gl);font-weight:700;font-family:var(--fm)">'+fmTp(e.tp)+'</td>';
-
-    // Roster
+    hd+='<tr style="'+rowSt(e.rk)+(isMe?';outline:1px solid var(--go);':'')+'">';
+    hd+='<td style="text-align:center;font-family:var(--fm)">'+posDisp(e.rk)+'</td>';
+    hd+='<td style="text-align:center;font-family:var(--fm)">'+ytdDisp(e.ytdRk)+'</td>';
+    hd+='<td style="text-align:left;white-space:nowrap;font-family:var(--fb);font-weight:'+(isMe?'700':'500')+';'+(isMe?'color:var(--go)':'color:var(--tp)')+'">'+e.nm+'</td>';
+    hd+='<td style="font-weight:700;font-family:var(--fm);color:'+scColor(e.tp)+'">'+fmTp(e.tp)+'</td>';
     hd+='<td style="color:var(--tp)">'+fmTp(e.rp)+'</td>';
-
-    // Bonus
     hd+='<td style="color:var(--td)">'+(e.bn!==0?String(e.bn):'–')+'</td>';
-
-    // Holes
     hd+='<td style="color:var(--ts);font-size:.52rem;text-align:center">'+(e.holes>0?String(e.holes):'–')+'</td>';
-
-    // YTD $
-    hd+='<td style="text-align:right;color:var(--td);font-family:var(--fm)">'+fmMoney(e.prior)+'</td>';
-
-    // Proj $
-    var projStr=e.projOpen>0?fmMoney(e.projTotal):fmMoney(e.prior)||'<span style="color:var(--ts)">–</span>';
-    hd+='<td style="text-align:right;font-weight:'+(e.projOpen>0?'700':'400')+';color:'+(e.projOpen>0?'var(--go)':'var(--td)')+';font-family:var(--fm)">'+projStr+'</td>';
-
+    hd+='<td style="text-align:right;color:var(--td);font-family:var(--fm)">'+(e.prior>0?'$'+(e.prior%1===0?e.prior.toLocaleString():e.prior.toFixed(2)):'<span style="color:var(--ts)">–</span>')+'</td>';
+    hd+='<td style="text-align:right;'+projStyl+'font-family:var(--fm)">'+projStr+'</td>';
     hd+='</tr>';
   });
 
   hd+='</tbody></table></div>';
-  hd+='<div style="display:flex;gap:.5rem;justify-content:flex-end;font-size:.46rem;color:var(--td);margin-top:.15rem;flex-wrap:wrap">';
-  hd+='<span><b style="color:var(--tb)">YTD $</b> = actual earnings Players+Masters+PGA+USO</span>';
-  hd+='<span><b style="color:var(--go)">Proj $</b> = YTD + projected Open payout at current rank</span>';
+  hd+='<div style="display:flex;gap:.55rem;justify-content:flex-end;font-size:.44rem;color:var(--ts);margin-top:.18rem;flex-wrap:wrap">';
+  hd+='<span>YTD $ = actual winnings P+M+G+USO</span>';
+  hd+='<span><b style="color:#C9A840">gold</b> Proj $ = money position</span>';
+  hd+='<span>YTD rank = full season (all entrants)</span>';
   hd+='</div>';
 
-  el.innerHTML=hd;
-  el.style.display='';
+  el.innerHTML=hd;el.style.display='';
 }
 let _openOddsFetched=false;
 async function fetchOpenOdds(){
