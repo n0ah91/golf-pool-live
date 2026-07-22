@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="build-version" content="2026-07-17 · gmp-v79 · open-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
+<meta name="build-version" content="2026-07-17 · gmp-v80 · open-live"><!-- bump with sw.js CACHE on any shell/CSS/nav/major-JS change -->
 <title>The Majors Pool</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1434,7 +1434,7 @@ function renderSeasonDetails(all,lb,paidOut,pot){
       h+='<div class="snap-list">';
       dhs.forEach(function(nm){
         var dh=DARK_HORSE_PAYOUTS[nm];
-        var ev=dh.event==='players'?'The Players':dh.event==='masters'?'Masters':dh.event==='pga'?'PGA':dh.event==='uso'?'U.S. Open':dh.event;
+        var ev=dh.event==='players'?'The Players':dh.event==='masters'?'Masters':dh.event==='pga'?'PGA':dh.event==='uso'?'U.S. Open':dh.event==='open'?'The Open':dh.event;
         h+='<div class="snap-row"><b>'+nm+'</b> <span class="snap-tag tg-'+dh.event+'">'+ev+'</span>'+(dh.player?' <span class="snap-path">'+dh.player+'</span>':'')+' <span class="snap-amt">+$'+dh.amt+'</span></div>';
       });
       h+='</div></div>';
@@ -1458,34 +1458,40 @@ function renderSeasonDetails(all,lb,paidOut,pot){
     down.forEach(function(m){if(m.diff<0)h+='<div class="snap-row"><span class="snap-arrow dn">−'+Math.abs(m.diff)+'</span><b>'+m.nm+'</b> <span class="snap-path">#'+m.from+' → #'+m.to+'</span></div>';});
     h+='</div></div>';
   }
-  // 5. Trends
+  // 5. Trends — full 5-event season
   var hot=[];var cold=[];
+  var EV_ORDER_T=['players','masters','pga','uso','open'];
   all.forEach(function(e){
-    if(e.players!=null&&e.masters!=null&&e.pga!=null&&e.uso!=null){
-      var r=[e.players,e.masters,e.pga,e.uso];
-      var pairs=[[r[0],r[1]],[r[1],r[2]],[r[2],r[3]]];
-      var ups=pairs.filter(function(x){return x[0]>x[1];}).length;
-      var dns=pairs.filter(function(x){return x[0]<x[1];}).length;
-      if(ups>=2)hot.push({nm:e.entry_used,r:r,str:ups});
-      if(dns>=2)cold.push({nm:e.entry_used,r:r,str:dns});
-    }
+    var rs=EV_ORDER_T.map(function(k){return e[k];}).filter(function(v){return v!=null;});
+    if(rs.length<3)return;
+    var first=rs[0],last=rs[rs.length-1],net=first-last;
+    var raw=EV_ORDER_T.map(function(k){return e[k];});
+    hot.push({nm:e.entry_used,raw:raw,net:net,first:first,last:last});
+    cold.push({nm:e.entry_used,raw:raw,net:net,first:first,last:last});
   });
+  hot=hot.filter(function(x){return x.net>0;}).sort(function(a,b){return b.net-a.net||a.last-b.last;}).slice(0,10);
+  cold=cold.filter(function(x){return x.net<0;}).sort(function(a,b){return a.net-b.net||b.last-a.last;}).slice(0,10);
+  function renderTrendRow(m,dir){
+    var pts=m.raw.map(function(v,i){
+      if(v==null)return'<span class="snap-path">—</span>';
+      var rest=m.raw.slice(i+1);var isLast=rest.every(function(x){return x==null;});
+      return isLast?'<b class="snap-emp '+dir+'">#'+v+'</b>':'<span class="snap-path">#'+v+'</span>';
+    }).join('<span class="snap-path"> → </span>');
+    var delta=m.net>0?'<span class="snap-amt up">▲'+m.net+'</span>':'<span class="snap-amt dn">▼'+Math.abs(m.net)+'</span>';
+    return'<div class="snap-row"><b>'+m.nm+'</b> '+delta+' '+pts+'</div>';
+  }
   if(hot.length){
     h+='<div class="snap-blk"><div class="snap-h">Trending Up</div>';
-    h+='<div class="snap-sub">Improved finish in each of 4 events (Players → Masters → PGA → U.S. Open)</div>';
+    h+='<div class="snap-sub">Biggest net rank climb across all 5 events (start → finish)</div>';
     h+='<div class="snap-list">';
-    hot.sort(function(a,b){return b.str-a.str||(a.r[3]-a.r[0])-(b.r[3]-b.r[0]);}).slice(0,10).forEach(function(m){
-      h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → #'+m.r[2]+' → </span><b class="snap-emp up">#'+m.r[3]+'</b></div>';
-    });
+    hot.forEach(function(m){h+=renderTrendRow(m,'up');});
     h+='</div></div>';
   }
   if(cold.length){
     h+='<div class="snap-blk"><div class="snap-h">Trending Down</div>';
-    h+='<div class="snap-sub">Worse finish in each of 4 events (Players → Masters → PGA → U.S. Open)</div>';
+    h+='<div class="snap-sub">Biggest net rank drop across all 5 events (start → finish)</div>';
     h+='<div class="snap-list">';
-    cold.sort(function(a,b){return b.str-a.str||(b.r[3]-b.r[0])-(a.r[3]-a.r[0]);}).slice(0,10).forEach(function(m){
-      h+='<div class="snap-row"><b>'+m.nm+'</b> <span class="snap-path">#'+m.r[0]+' → #'+m.r[1]+' → #'+m.r[2]+' → </span><b class="snap-emp dn">#'+m.r[3]+'</b></div>';
-    });
+    cold.forEach(function(m){h+=renderTrendRow(m,'dn');});
     h+='</div></div>';
   }
   // 6. Missed Events
@@ -1693,7 +1699,6 @@ function rSeasonView(y){
   h+='<th class="'+(ss.c==='entry_used'?'s':'')+'" onclick="sS(\'entry_used\')">Entry'+si('entry_used',ss)+'</th>';
   h+='<th class="'+(ss.c==='total'?'s':'')+'" onclick="sS(\'total\')" title="Net strokes to par across the majors (lower = better)">'+(y==='2026'?'To Par':'Total')+si('total',ss)+'</th>';
   EK.forEach(function(k){h+='<th class="ev-th '+(ss.c===k?'s':'')+'" onclick="sS(\''+k+'\')">'+lb[k]+si(k,ss)+'</th>';});
-  h+='<th class="'+(ss.c==='winnings'?'s':'')+'" onclick="sS(\'winnings\')">Won'+si('winnings',ss)+'</th>';
   h+='</tr></thead><tbody>';
   var searchActive=!!q;
   var showAll=S.showAll||searchActive;
@@ -1723,11 +1728,11 @@ function rSeasonView(y){
       var tip='Rank #'+v+(par!=null?' · '+(par>0?'+'+par:par===0?'E':par)+' to par':'');
       ec+='<td class="fc fc-'+tier+(medal?' fc-'+medal:'')+'" title="'+tip+'">'+(v!=null?v:'–')+'</td>';
     });
-    var w=e.winnings?(e.winnings%1===0?e.winnings.toLocaleString():e.winnings.toFixed(2)):'-';var wc=e.winnings?'wi':'wi z';
+    
     var pn=e.person!==e.entry_used&&e.person!=='Unknown'?e.person:'';
     h+='<tr class="'+rw+'" onclick="toggleDet(this,\''+e.id+'\')"><td class="rc '+rc+'">'+rd+yh+'</td>'+
       '<td class="nc">'+e.entry_used+_tenureBadge(e.entry_used)+(pn?'<br><span class="pn">'+pn+'</span>':'')+'</td>'+
-      '<td><span class="tp '+tc+'">'+td2+'</span></td>'+ec+'<td class="'+wc+'">'+w+'</td></tr>';
+      '<td><span class="tp '+tc+'">'+td2+'</span></td>'+ec+'</tr>';
   });
   h+='</tbody></table></div>';
   if(!searchActive&&d.length>25){
@@ -1855,23 +1860,21 @@ function renderDgInsights(y){
     });
     h+='</div></div>';
   }
-  // 4. Next Up — venue fit preview
-  if(typeof COURSES_DATA!=='undefined'){
-    var nextCourse='Royal Birkdale Golf Club';
-    var cd=COURSES_DATA[nextCourse];
-    if(cd){
-      h+='<div class="dg-blk dg-next"><div class="dg-h">Next Up · The Open Championship</div>';
-      h+='<div class="dg-sub">Royal Birkdale · Jul 16–19 · Par '+cd.par+' · '+cd.yardageDisplay+'</div>';
-      h+='<div class="dg-list">';
-      var sg=cd.sgEmphasis||{};
-      h+='<div class="dg-row"><b>SG Emphasis</b> <span class="dg-meta">Tee '+Math.round((sg.ott||0)*100)+'% · App '+Math.round((sg.app||0)*100)+'% · ARG '+Math.round((sg.arg||0)*100)+'% · Putt '+Math.round((sg.putt||0)*100)+'%</span></div>';
-      h+='<div class="dg-row"><b>Defense</b> <span class="dg-meta">'+cd.bunkerCount+' bunkers · '+cd.avgRoughHeight+' rough · '+cd.greensSpeed+' greens · '+cd.windExposure+' wind</span></div>';
-      h+='<div class="dg-row"><b>Profile</b> <span class="dg-meta">'+cd.courseType+' · '+cd.distanceVsAccuracy+'</span></div>';
-      var corr=(cd.correlatedCourses||[]).slice(0,3).join(' · ');
-      if(corr)h+='<div class="dg-row"><b>Similar To</b> <span class="dg-meta">'+corr+'</span></div>';
-      h+='<div class="dg-row dg-cta"><a href="javascript:go(\'open-tab\')" class="btn-pill" style="display:inline-block">Open The Open Tab →</a></div>';
-      h+='</div></div>';
+  // 4. The Open Championship — season recap
+  {
+    var openTop5=(typeof OPEN_LIVE_STANDINGS!=='undefined')?OPEN_LIVE_STANDINGS.slice(0,5):[];
+    h+='<div class="dg-blk dg-next"><div class="dg-h">The Open Championship · Final ✓</div>';
+    h+='<div class="dg-sub">Royal Birkdale · Jul 16–19 · Season complete — all 5 majors done</div>';
+    h+='<div class="dg-list">';
+    if(openTop5.length){
+      h+='<div class="dg-row"><b>Pool Top 5</b> <span class="dg-meta">';
+      h+=openTop5.map(function(e,i){return'#'+(i+1)+'\xa0'+e.nm+(e.tp!=null?' ('+(e.tp>0?'+':'')+e.tp+')':'');}).join(' · ');
+      h+='</span></div>';
     }
+    h+='<div class="dg-row"><b>Dark Horse ✓</b> <span class="dg-meta">Chuck Jackson — Casey Jarvis (+$50)</span></div>';
+    h+='<div class="dg-row"><b>Real-World Champion</b> <span class="dg-meta">Scottie Scheffler — Royal Birkdale</span></div>';
+    h+='<div class="dg-row dg-cta"><a href="javascript:go(\'open-tab\')" class="btn-pill" style="display:inline-block">Open Standings →</a></div>';
+    h+='</div></div>';
   }
   h+='</div></div>';
   return h;
